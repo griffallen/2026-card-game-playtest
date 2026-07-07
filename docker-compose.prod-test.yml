@@ -17,6 +17,7 @@ services:
       retries: 20
   app:
     build: .
+    image: newgame:test
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/cardgame
       ADMIN_PASSWORD: change-me
