@@ -106,7 +106,7 @@ export function gameRoutes(app: FastifyInstance) {
         rulesConfig: config,
         cardSet: cardSet as object,
         hostId: req.user.id,
-        hostDeck: deck,
+        hostDeck: { ...deck, player: req.user.username },
       },
       include: { host: true, guest: true },
     })
@@ -126,7 +126,7 @@ export function gameRoutes(app: FastifyInstance) {
     const cardSet = { ...(game.cardSet as object), ...guestCards }
     const updated = await prisma.game.update({
       where: { id: game.id },
-      data: { guestId: req.user.id, guestDeck: deck, cardSet, status: 'active' },
+      data: { guestId: req.user.id, guestDeck: { ...deck, player: req.user.username }, cardSet, status: 'active' },
       include: { host: true, guest: true },
     })
     return { game: gameSummary(updated) }

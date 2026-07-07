@@ -21,7 +21,7 @@ export function cardDefFromRow(row: Card): CardDef {
   }
 }
 
-interface DeckSnapshot { name: string; slugs: string[] }
+interface DeckSnapshot { name: string; slugs: string[]; player?: string }
 
 export function initialState(game: Game): GameState {
   const rules = normalizeRules(game.rulesConfig as Partial<RulesConfig>)
@@ -33,8 +33,8 @@ export function initialState(game: Game): GameState {
     rules,
     cardSet,
     players: [
-      { name: host.name, deck: host.slugs },
-      { name: guest.name, deck: guest.slugs },
+      { name: host.player ?? host.name, deck: host.slugs },
+      { name: guest.player ?? guest.name, deck: guest.slugs },
     ],
   })
 }

@@ -1,0 +1,28 @@
+# Full-stack rehearsal of the production image against a throwaway Postgres.
+#   docker compose -f docker-compose.prod-test.yml up --build
+# App on http://localhost:3000, DB on localhost:5433 (no clash with local dev PG).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cardgame
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/cardgame
+      ADMIN_PASSWORD: change-me
+      PORT: "3000"
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy

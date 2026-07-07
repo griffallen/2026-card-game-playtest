@@ -27,8 +27,8 @@ export function InfluenceTrack({ influence, mine, theirs, myName, theirName }: {
         />
       </div>
       <div className="mt-1.5 flex justify-between text-[10px] text-dim">
-        <span>◄ {theirName} wins at {theirs}</span>
-        <span>{myName} wins at {mine} ►</span>
+        <span>◄ {theirName} {theirName === 'You' ? 'win' : 'wins'} at {theirs}</span>
+        <span>{myName} {myName === 'You' ? 'win' : 'wins'} at {mine} ►</span>
       </div>
     </div>
   )

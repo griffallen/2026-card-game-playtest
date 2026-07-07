@@ -192,6 +192,7 @@ export function GameTable() {
           <PlayerBar
             name={names[foe]} life={their.life} handCount={their.handCount} deckCount={their.deckCount}
             discardCount={their.discard.length} resources={their.resources.filter(r => !r.exhausted).length}
+            resourceTotal={their.resources.length}
             online={online[foe]} enemy
             baseGlow={isHighlighted({ kind: 'base', seat: foe })}
             onClick={() => clickTarget({ kind: 'base', seat: foe })}
