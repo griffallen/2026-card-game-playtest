@@ -1,0 +1,4 @@
+/* Demo entry stylesheet: shared theme + make Tailwind scan the shared UI package,
+   which lives outside this app's root and is invisible to default source detection. */
+@import '../../web/src/theme.css';
+@source '../../web/src';

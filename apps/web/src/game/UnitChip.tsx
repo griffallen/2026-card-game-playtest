@@ -31,7 +31,7 @@ export function UnitChip({ unit, mine, glow, onClick }: {
     >
       <div className="relative h-[50px] overflow-hidden rounded-sm bg-black/40">
         {!artBroken
-          ? <img src={`/cards/${unit.slug}.jpg`} alt="" draggable={false} onError={() => setArtBroken(true)} className="h-full w-full object-cover" />
+          ? <img src={`${import.meta.env.BASE_URL}cards/${unit.slug}.jpg`} alt="" draggable={false} onError={() => setArtBroken(true)} className="h-full w-full object-cover" />
           : <ProceduralArt slug={unit.slug} color={mine ? 'yellow' : 'red'} type="unit" className="h-full w-full [&>svg]:h-full [&>svg]:w-full" />}
         {unit.imprisoned && (
           <div className="absolute inset-0 grid place-items-center bg-black/45 text-lg" aria-label="imprisoned">⛓️</div>

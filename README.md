@@ -12,6 +12,10 @@ That's it. Nothing else to install for the design and spec phases — no Node, n
 
 When you're done for the day, say **"let's wrap up"** — the agent saves a session summary and a handoff so the next session (yours or Blaine's) picks up exactly where this one left off.
 
+## Try it right now — no install
+
+**https://blainebooher.com/new-game-demo/** — the full rules engine running in your browser: play hotseat or vs a baseline AI, watch bot games, run batch simulations, and read the design audit. Every game exports a seed + action log for perfectly reproducible bug/balance reports. Redeploy after changes with `./scripts/deploy-demo.sh` (publishes to the public `new-game-demo` repo — Pages isn't available on this private repo's plan).
+
 ## The prototype is live
 
 A playable two-player online prototype now exists: accounts, deck selection, remote play over websockets, spectators, undo, a card browser, and an admin hall for tuning cards/decks/rules without code.

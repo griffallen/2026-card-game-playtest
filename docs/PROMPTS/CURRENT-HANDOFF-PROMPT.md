@@ -12,8 +12,8 @@ Rules v1.2 was reconciled with the July 5 card sheets into a complete playable r
 ## Next
 
 1. Read `CLAUDE.md`, then `docs/AGENT/playtest.md`.
-2. If this is the designer's session: start from `docs/GAME-FLOW.md` — it's the game as it plays now, with every prototype ruling flagged and five open questions queued.
-3. Play games. Log what feels wrong. Most fixes are a rules-parameter edit (admin → Rules) or a card-number edit (admin → Cards) — reserve engine changes for real mechanics shifts, and run those through a mini design → spec pass first (DECISIONS.md + docs/SPECS/game-rules.md).
+2. If this is the designer's session: start from **https://blainebooher.com/new-game-demo/** — a zero-install static build with hotseat play, a baseline AI opponent, AI-vs-AI watching, an in-browser batch simulator, and the full **Design Audit** (every ruling + ranked balance proposals). Games and sim runs export seed+action files: perfectly reproducible reports. `docs/GAME-FLOW.md` is the same story in doc form.
+3. Play games. Log what feels wrong. Most fixes are a rules-parameter edit (admin → Rules) or a card-number edit (admin → Cards) — reserve engine changes for real mechanics shifts, and run those through a mini design → spec pass first (DECISIONS.md + docs/SPECS/game-rules.md). Redeploy the demo after balance edits with `./scripts/deploy-demo.sh`.
 
 ## Open questions
 

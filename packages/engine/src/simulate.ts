@@ -1,28 +1,32 @@
-import type { CardSet, GameAction, GameState, RulesConfig, SimResult } from './types.ts'
+import type { CardSet, GameState, RulesConfig, SimResult } from './types.ts'
 import { EngineError } from './types.ts'
-import { rngInt } from './rng.ts'
-import { assertConservation, influenceFor } from './helpers.ts'
+import { assertConservation } from './helpers.ts'
 import { createGame } from './setup.ts'
 import { applyAction } from './engine.ts'
 import { getLegalActions } from './legal.ts'
 import { DEFAULT_RULES } from './rules.ts'
 import { CARD_SET } from './cards/index.ts'
+import { POLICIES, type PolicyName } from './ai.ts'
 
 const MAX_ACTIONS = 4000
 
+export interface SimOpts {
+  rules?: RulesConfig
+  cardSet?: CardSet
+  policyA?: PolicyName
+  policyB?: PolicyName
+}
+
 /**
- * Headless random-policy playout (simulation spec v0). Deterministic: the policy rng derives
- * from the game seed, so one seed reproduces the entire game, bugs included.
- * The policy passes only 15% of the time when other actions exist — pure-uniform players
- * mutually pass forever once decks run dry.
+ * Headless playout with a pluggable policy per seat (simulation spec).
+ * Deterministic: policy rng derives from the game seed — one seed reproduces
+ * the entire game, bugs included.
  */
-export function simulateRandomGame(
-  seed: number,
-  deckA: string[],
-  deckB: string[],
-  rules: RulesConfig = DEFAULT_RULES,
-  cardSet: CardSet = CARD_SET,
-): SimResult {
+export function simulateGame(seed: number, deckA: string[], deckB: string[], opts: SimOpts = {}): SimResult {
+  const rules = opts.rules ?? DEFAULT_RULES
+  const cardSet = opts.cardSet ?? CARD_SET
+  const policies = [POLICIES[opts.policyA ?? 'random'], POLICIES[opts.policyB ?? 'random']] as const
+
   let state: GameState = createGame({
     seed, rules, cardSet,
     players: [{ name: 'SimA', deck: deckA }, { name: 'SimB', deck: deckB }],
@@ -36,23 +40,11 @@ export function simulateRandomGame(
     if (++actions > MAX_ACTIONS) {
       throw new EngineError('livelock', `seed ${seed}: no winner after ${MAX_ACTIONS} actions (turn ${state.turn})`)
     }
-    const legal = getLegalActions(state, state.actorSeat)
-    if (!legal.length) throw new EngineError('stuck', `seed ${seed}: no legal actions and no winner`)
-
-    const nonPass = legal.filter(a => a.type !== 'pass' && a.type !== 'skipResource')
-    let choice: GameAction
-    let roll: number
-    ;[roll, policyRng] = rngInt(policyRng, 100)
-    if (nonPass.length && roll >= 15) {
-      let i: number
-      ;[i, policyRng] = rngInt(policyRng, nonPass.length)
-      choice = nonPass[i]
-    } else {
-      let i: number
-      ;[i, policyRng] = rngInt(policyRng, legal.length)
-      choice = legal[i]
+    if (!getLegalActions(state, state.actorSeat).length) {
+      throw new EngineError('stuck', `seed ${seed}: no legal actions and no winner`)
     }
-
+    let choice
+    ;[choice, policyRng] = policies[state.actorSeat](state, state.actorSeat, policyRng)
     state = applyAction(state, choice, state.actorSeat).state
     assertConservation(state)
     minInfluence = Math.min(minInfluence, state.influence)
@@ -64,9 +56,18 @@ export function simulateRandomGame(
     winReason: state.winReason ?? 'unknown',
     turns: state.turn,
     actions,
-    minInfluence: influenceForRaw(minInfluence),
-    maxInfluence: influenceForRaw(maxInfluence),
+    minInfluence: minInfluence === 0 ? 0 : minInfluence,
+    maxInfluence: maxInfluence === 0 ? 0 : maxInfluence,
   }
 }
 
-const influenceForRaw = (v: number) => (v === 0 ? 0 : v)
+/** Back-compat alias used by the v0 harness tests. */
+export function simulateRandomGame(
+  seed: number,
+  deckA: string[],
+  deckB: string[],
+  rules: RulesConfig = DEFAULT_RULES,
+  cardSet: CardSet = CARD_SET,
+): SimResult {
+  return simulateGame(seed, deckA, deckB, { rules, cardSet })
+}
