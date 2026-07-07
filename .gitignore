@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+dist/
+coverage/
+.env
+*.local
+
+# Excel HTML export (redundant with docs/REFERENCES/extracted/)
+docs/REFERENCES/New Game June 2026/
