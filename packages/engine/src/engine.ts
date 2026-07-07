@@ -219,6 +219,7 @@ function attack(state: GameState, attackerId: string, target: TargetRef, seat: S
   if (hasKw(state, attacker, 'cantAttack')) fail('cant-attack', 'this unit cannot attack')
 
   const ranged = hasKw(state, attacker, 'ranged')
+  const reach = hasKw(state, attacker, 'reach')
 
   if (target.kind === 'base') {
     if (target.seat === seat) fail('bad-target', 'cannot attack your own base')
@@ -241,7 +242,7 @@ function attack(state: GameState, attackerId: string, target: TargetRef, seat: S
 
   const sameZone = defender.zone === attacker.zone
   const adjacentZone = adjacent(defender.zone, attacker.zone)
-  if (!sameZone && !(ranged && adjacentZone)) fail('bad-zone', ranged ? 'target is out of range' : 'combat happens within one zone')
+  if (!sameZone && !((ranged || reach) && adjacentZone)) fail('bad-zone', ranged || reach ? 'target is out of range' : 'combat happens within one zone')
 
   const guards = guardsFor(state, defender.owner, defender.zone)
   if (guards.length && !guards.some(g => g.id === defender.id)) fail('guard', 'a Guard unit must be attacked first')

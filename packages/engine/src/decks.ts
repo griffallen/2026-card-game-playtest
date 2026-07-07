@@ -1,0 +1,37 @@
+import { RED_CARDS, YELLOW_CARDS } from './cards/index.ts'
+
+export interface PrebuiltDeck {
+  slug: string
+  name: string
+  color: 'red' | 'yellow'
+  description: string
+  cards: { slug: string; count: number }[]
+}
+
+// Red has 36 uniques; duplicate the twelve cheapest (cost ≤ 3 core) to reach 48 (DECISIONS 25).
+const RED_DOUBLES = new Set(RED_CARDS.filter(c => c.cost <= 2).map(c => c.slug))
+{
+  // cost ≤2 gives 10 slugs; add the two cost-3 workhorses for exactly 12 doubles
+  RED_DOUBLES.add('rageforged-brute')
+  RED_DOUBLES.add('volcanic-slam')
+}
+
+export const PREBUILT_DECKS: PrebuiltDeck[] = [
+  {
+    slug: 'crimson-assault',
+    name: 'Crimson Assault',
+    color: 'red',
+    description: 'Overwhelm them before your own recklessness catches up. Rush, Breakthrough, and fire everywhere.',
+    cards: RED_CARDS.map(c => ({ slug: c.slug, count: RED_DOUBLES.has(c.slug) ? 2 : 1 })),
+  },
+  {
+    slug: 'radiant-order',
+    name: 'Radiant Order',
+    color: 'yellow',
+    description: 'Wall up, imprison the threats, and let Influence carry you to an inevitable victory.',
+    cards: YELLOW_CARDS.map(c => ({ slug: c.slug, count: 1 })),
+  },
+]
+
+export const deckSlugs = (d: PrebuiltDeck): string[] =>
+  d.cards.flatMap(c => Array.from({ length: c.count }, () => c.slug))

@@ -40,7 +40,7 @@ Phases run in order; only Resource and Main take input.
 
 | Phase | What happens |
 |---|---|
-| **Reset** | Resolve start-of-turn triggers (ordered: active player's effects first, each side by unit entry order), then apply **prison decay** (−1 Influence to the jailer per unit they hold imprisoned), then ready all of the active player's cards (units + resources). |
+| **Reset** | Apply **prison decay** first (−1 Influence to the jailer per unit they held imprisoned coming into the turn — decay-before-triggers, else a start-of-turn imprison would instantly self-break at 0 influence), then resolve start-of-turn triggers (active player's units in entry order), then ready all of the active player's cards (units + resources). |
 | **Draw** | Active player draws `drawPerTurn` (2). Game turn 1 draws `firstTurnDraw` (1) instead. Drawing from an empty deck draws nothing. |
 | **Resource** | Active player may resource up to `resourcesPerTurn` (1) card from hand, face up, or skip. |
 | **Main** | Action alternation — see §1.5. |

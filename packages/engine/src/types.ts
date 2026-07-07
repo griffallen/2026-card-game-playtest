@@ -11,7 +11,7 @@ export const adjacent = (a: ZoneId, b: ZoneId) => Math.abs(a - b) === 1
 
 // ─── Keywords ────────────────────────────────────────────────────────────────
 export type KeywordName =
-  | 'guard' | 'armor' | 'rush' | 'ranged' | 'flying'
+  | 'guard' | 'armor' | 'rush' | 'ranged' | 'reach' | 'flying'
   | 'breakthrough' | 'overextend' | 'cantAttack' | 'untargetable'
 export interface KeywordSpec { k: KeywordName; n?: number }
 

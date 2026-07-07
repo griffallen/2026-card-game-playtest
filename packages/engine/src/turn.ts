@@ -10,6 +10,17 @@ export function startTurn(state: GameState) {
   const seat = state.activeSeat
   log(state, seat, `— Turn ${state.turn}: ${state.sides[seat].name} —`)
 
+  // Prison decay FIRST: upkeep for prisoners you were already holding. Running it after
+  // start-of-turn triggers would instantly break any prison taken this very phase
+  // (imprison → decay → below threshold → release), which guts every SOT jailer card.
+  const held = unitsOf(state).filter(u => u.imprisoned?.by === seat).length
+  if (held > 0 && state.rules.prisonDecayPerUnit > 0) {
+    addInfluence(state, seat, -held * state.rules.prisonDecayPerUnit)
+    log(state, seat, `${state.sides[seat].name} pays ${held * state.rules.prisonDecayPerUnit} influence to hold ${held} prisoner${held > 1 ? 's' : ''}`)
+    stateBasedCleanup(state, seat)
+  }
+  if (state.winner !== null) return
+
   // Reset: start-of-turn triggers (active seat's units + their upgrades, id order)
   for (const u of unitsOf(state, seat)) {
     if (state.winner !== null) return
@@ -25,15 +36,6 @@ export function startTurn(state: GameState) {
       }
     }
   }
-
-  // Prison decay: −1 influence per unit this seat holds imprisoned (v1.2)
-  const held = unitsOf(state).filter(u => u.imprisoned?.by === seat).length
-  if (held > 0 && state.rules.prisonDecayPerUnit > 0) {
-    addInfluence(state, seat, -held * state.rules.prisonDecayPerUnit)
-    log(state, seat, `${state.sides[seat].name} pays ${held * state.rules.prisonDecayPerUnit} influence to hold ${held} prisoner${held > 1 ? 's' : ''}`)
-    stateBasedCleanup(state, seat)
-  }
-  if (state.winner !== null) return
 
   // Ready
   for (const u of unitsOf(state, seat)) u.exhausted = false

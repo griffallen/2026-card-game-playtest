@@ -19,8 +19,10 @@ export function log(state: GameState, seat: Seat | null, msg: string) {
 }
 
 /** Influence from a seat's perspective (+ = toward that seat's win). */
-export const influenceFor = (state: GameState, seat: Seat) =>
-  seat === 0 ? state.influence : -state.influence
+export function influenceFor(state: GameState, seat: Seat): number {
+  const v = seat === 0 ? state.influence : -state.influence
+  return v === 0 ? 0 : v // normalize -0
+}
 
 export function addInfluence(state: GameState, seat: Seat, n: number) {
   if (n === 0) return
