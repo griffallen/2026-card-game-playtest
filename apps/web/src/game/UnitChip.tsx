@@ -20,6 +20,7 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }:
   if (unit.keywords.some(k => k.startsWith('guard'))) chips.push('🛡')
   if (unit.armor > 0) chips.push(`◈${unit.armor}`)
   if (unit.sick) chips.push('💤')
+  if (unit.overextendedBy > 0) chips.push(`🔥${unit.overextendedBy}`)
   const tooltip = [`${unit.name}`, unit.keywords.join(', '), unit.upgrades.length ? `Upgrades: ${unit.upgrades.map(u => u.name).join(', ')}` : '']
     .filter(Boolean).join('\n')
 

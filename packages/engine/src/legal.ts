@@ -1,6 +1,6 @@
 import type { GameAction, GameState, Seat, TargetRef, TargetSpec, UnitInstance, ZoneId } from './types.ts'
 import { ZONES, adjacent, homeZone } from './types.ts'
-import { defOf, effPower, hasKw, idNum, isSick, other, unitsInZone, unitsOf } from './helpers.ts'
+import { defOf, effPower, hasKw, idNum, isSick, kwOf, other, unitsInZone, unitsOf } from './helpers.ts'
 
 /**
  * Every action `seat` may legally take right now. Mirrors applyAction's validation exactly —
@@ -13,6 +13,9 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   const out: GameAction[] = []
 
   if (state.phase === 'setup') {
+    // mulligan while a smaller hand could still bank (decision 32)
+    const nextCount = state.rules.startingHandSize - (state.mulligans[seat] + 1) * state.rules.mulliganPenalty
+    if (nextCount >= state.rules.startingResources) out.push({ type: 'mulligan' })
     // every combination of startingResources cards from hand
     const hand = state.sides[seat].hand
     const n = state.rules.startingResources
@@ -57,9 +60,13 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
       const zones = hasKw(state, unit, 'flying') ? ZONES.filter(z => z !== unit.zone)
         : ZONES.filter(z => adjacent(z, unit.zone))
       for (const to of zones) out.push({ type: 'move', unit: unit.id, to })
-      // attacks
+      // attacks (with the overextend variant when the unit can gamble — decision 35)
       if (!hasKw(state, unit, 'cantAttack')) {
-        for (const target of attackTargets(state, unit)) out.push({ type: 'attack', attacker: unit.id, target })
+        const canOE = typeof kwOf(state, unit, 'overextend') === 'number'
+        for (const target of attackTargets(state, unit)) {
+          out.push({ type: 'attack', attacker: unit.id, target })
+          if (canOE) out.push({ type: 'attack', attacker: unit.id, target, overextend: true })
+        }
       }
     }
   }

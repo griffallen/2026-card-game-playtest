@@ -35,6 +35,17 @@ Numbered, in the order they were made. Format: decision — reason.
 24. ⚑ **All targets are chosen when an action is submitted; the engine never pauses mid-resolution for input. Strictly-beneficial "may" effects auto-apply.** — Keeps the engine a pure deterministic reducer (same inputs → same game), which is what makes replay, undo, and simulation work.
 25. ⚑ **Deck lists:** Yellow = all 48 uniques ×1. Red = 36 uniques + a second copy of each of the twelve cost-1/cost-2 cards = 48. — Meets the 48-card minimum deterministically; Red's curve wants cheap duplicates.
 
+## Designer session #1 (2026-07-08 — the designer's spreadsheet notes, relayed by the builder)
+
+32. ✅ **Unlimited mulligans, one fewer card each redraw** (designer ruling). Runs before banking; floor = the bank size. Parameter `mulliganPenalty` (1).
+33. ✅ **Empty-deck draws hurt: −1 life and −1 influence per missing card** (designer ruling; supersedes ⚑19's forgiving no-op). Parameters `emptyDrawLifeLoss` / `emptyDrawInfluenceLoss`.
+34. ✅ **Influence is earned by events, never by existing** (designer: "I didn't want any passive influence… triggered upon something happening like defending or defeating a unit"). Conservative first pass: the printed "Influence: +N" on yellow's guard units → *when this unit defends, gain N*; Exemplar Knight → *when it defeats a unit, gain N*; actions/upgrades keep pay-on-play (the play is the event). Per-card triggers become a designer-editable column in the card CSV.
+35. ✅ **Overextend is an optional combat gamble** (designer definition, superseding ⚑13/⚑14): when attacking, you *may* overextend for +N power; the unit takes N self-damage at end of turn (armor doesn't soften self-inflicted strain). Printed "Overextend N" on *actions* is inert pending the designer's card pass — the influence-cede reading is removed everywhere.
+36. ✅ **Movement/exhaust-march ratified by the designer** — the telegraph is intentional: "a barrier for aggressive decks to work against." ⚑5 → settled.
+37. ⚑ **Prison is on notice** — designer: "not sold on this mechanic, we may need to address later and remove these cards." Kept functional; no new prison-dependent design until he decides.
+38. ⏸ **Combat redesign (multi-unit attacks + defender interception) is designed but paused** at the builder's direction until the turn-structure rework lands. Draft ruleset lives in the session notes.
+39. 📋 **All 84 cards are acknowledged AI-generated drafts, not canon** — the engine's structured-effect validation is the gold standard; cards get normalized through the designer's CSV pass.
+
 31. ✅ **Setup resources are a player choice** (decided by the builder from playtest experience, 2026-07-08, superseding the ⚑ auto-bank simplification in game-rules §1.3): after drawing 7, each player picks which `startingResources` (2) cards to bank, first player choosing first. A `chooseStartingResources` rules parameter (default **true**) preserves the auto-bank mode for A/B testing. — The choice is real strategy (bank your two dead cards vs. keep options) and the zero-input setup was only ever a shortcut.
 
 ## Product / engineering

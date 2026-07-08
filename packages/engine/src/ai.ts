@@ -26,27 +26,36 @@ export function randomPolicy(state: GameState, seat: Seat, rngState: number): [G
 function attackScore(state: GameState, attackerId: string, target: GameAction & { type: 'attack' }): number {
   const attacker = state.units[attackerId]
   if (!attacker) return 0
-  let power = effPower(state, attacker)
   const oe = kwOf(state, attacker, 'overextend')
-  if (typeof oe === 'number' && unitsInZone(state, attacker.zone, attacker.owner).length === 1) power += oe
+  const oeN = target.overextend && typeof oe === 'number' ? oe : 0
+  const power = effPower(state, attacker) + oeN
+  const atkRemaining = effHealth(state, attacker) - attacker.damage
+  const surviveGamble = atkRemaining > oeN // will the end-of-turn bill kill it?
 
-  if (target.target.kind === 'base') return 90 + power * 4 // pressure the win condition
+  if (target.target.kind === 'base') {
+    let s = 90 + power * 4
+    if (oeN) s = surviveGamble ? s - oeN : 5 // extra face damage is worth strain, not suicide
+    return s
+  }
 
   if (target.target.kind !== 'unit') return 0
   const defender = state.units[target.target.id]
   if (!defender) return 0
   const dealt = Math.max(0, power - effArmor(state, defender))
+  const dealtPlain = Math.max(0, power - oeN - effArmor(state, defender))
   const defRemaining = effHealth(state, defender) - defender.damage
   const counter = defender.imprisoned ? 0 : Math.max(0, effPower(state, defender) - effArmor(state, attacker))
-  const atkRemaining = effHealth(state, attacker) - attacker.damage
   const kills = dealt >= defRemaining
-  const dies = counter >= atkRemaining
+  const dies = counter >= atkRemaining || (oeN > 0 && counter + oeN >= atkRemaining)
   const defValue = defOf(state, defender.id).cost + effPower(state, defender)
   const atkValue = defOf(state, attacker.id).cost + power
 
-  if (kills && !dies) return 70 + defValue * 3
+  // only gamble when the bonus is what converts the kill
+  if (oeN > 0 && dealtPlain >= defRemaining) return 2
+
+  if (kills && !dies) return 70 + defValue * 3 - oeN
   if (kills && dies) return 40 + (defValue - atkValue) * 3
-  if (dealt > 0 && !dies) return 15 + dealt
+  if (dealt > 0 && !dies) return oeN > 0 ? 3 : 15 + dealt // chip damage isn't worth strain
   return dealt > 0 ? 4 : 0
 }
 
@@ -92,6 +101,7 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
         score = 30 + action.cards.reduce((s, id) => s + defOf(state, id).cost, 0)
         break
       }
+      case 'mulligan': score = 2; break // baseline bot keeps what it's dealt
       case 'attack': score = attackScore(state, action.attacker, action); break
       case 'play': score = playScore(state, seat, action); break
       case 'move': score = moveScore(state, seat, action); break

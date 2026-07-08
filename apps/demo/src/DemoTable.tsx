@@ -49,6 +49,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const [skipToMyTurn, setSkipToMyTurn] = useState(false)
   const [inspect, setInspect] = useState<Inspect>(null)
   const [setupPicks, setSetupPicks] = useState<string[]>([])
+  const [armOverextend, setArmOverextend] = useState(false)
   const logRef = useRef<HTMLDivElement>(null)
 
   // Policy rng travels WITH the history (snapshot after every action), so stepping
@@ -111,6 +112,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
 
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight }, [view.log])
   useEffect(() => { setSetupPicks([]) }, [view.actorSeat, view.phase])
+  useEffect(() => { setArmOverextend(false) }, [selection?.kind === 'unit' ? selection.id : null])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') { setSelection(null); setConfirming(null); setInspect(null); setLethalPlay(null) }
@@ -207,7 +209,8 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     if (!isHighlighted(ref) || !selection) return
     if (selection.kind === 'unit') {
       if (ref.kind === 'zone') apply({ type: 'move', unit: selection.id, to: ref.zone }, seat)
-      else apply({ type: 'attack', attacker: selection.id, target: ref }, seat)
+      else apply({ type: 'attack', attacker: selection.id, target: ref, ...(armOverextend ? { overextend: true } : {}) }, seat)
+      setArmOverextend(false)
       return
     }
     if (selection.kind === 'targeting') {
@@ -294,6 +297,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
 
   // Selection controls render twice: in the sidebar (desktop) and a floating dock (phones,
   // where the sidebar sits below the fold and taps would otherwise appear to do nothing).
+  const canMulligan = view.actions.some(a => a.type === 'mulligan')
   const selectionControls = view.phase === 'setup' && myWindow ? (
     <div className="flex flex-wrap items-center gap-1.5">
       <button
@@ -303,6 +307,12 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       >
         Bank these {setupN} ⬢
       </button>
+      {canMulligan && (
+        <button className="btn !py-1 text-xs" title="shuffle back and redraw one fewer card — as often as you dare"
+          onClick={() => { setSetupPicks([]); apply({ type: 'mulligan' }, seat) }}>
+          Mulligan ↻ (redraw {view.hand.length - 1})
+        </button>
+      )}
       {setupPicks.length > 0 && (
         <button className="btn !py-1 text-xs" onClick={() => setSetupPicks([])}>Clear</button>
       )}
@@ -347,6 +357,18 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       {selection?.kind === 'unit' && (
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-xs text-goldbright">Tap a glowing target: dashed zone = move · red glow = attack.</span>
+          {(() => {
+            const u = view.zones.flatMap(z => z.units).find(x => x.id === selection.id)
+            const oe = u?.keywords.find(k => k.startsWith('overextend'))
+            if (!oe) return null
+            const n = Number(oe.split(' ')[1] ?? 0)
+            return (
+              <label className={`flex cursor-pointer items-center gap-1.5 rounded border px-2 py-1 text-xs ${armOverextend ? 'border-[#e2583e] text-[#ff9a5e]' : 'hairline text-dim'}`}>
+                <input type="checkbox" className="h-3.5 w-3.5 accent-[#e2583e]" checked={armOverextend} onChange={e => setArmOverextend(e.target.checked)} />
+                Overextend: +{n} power now, {n} self-damage at end of turn
+              </label>
+            )
+          })()}
           <button className="btn !py-1 text-xs" onClick={() => setInspect({ kind: 'unit', id: selection.id })}>ⓘ details</button>
           <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel</button>
         </div>

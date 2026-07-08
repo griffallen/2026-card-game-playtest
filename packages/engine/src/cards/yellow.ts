@@ -3,16 +3,16 @@ import { influence, makeBuilders } from './builders.ts'
 
 const { unit, action, upgrade } = makeBuilders('yellow')
 
-const INF_NOTE = '⚑ "Influence: +N" grants its controller N Influence once, when the card enters play (DECISIONS 15).'
+const INF_NOTE = 'Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).'
 const AUTO_NOTE = '⚑ Imprison target is auto-picked: strongest eligible enemy unit (deterministic; DECISIONS/spec §3.3).'
 const DECAY_NOTE = '⚑ The printed "at the start of your turn, lose 1 Influence" is the global Prison Decay rule (v1.2) — not charged twice.'
 
 /** Yellow — order and containment: Guard, Armor, Imprison, Influence. 48 cards from the July 5 sheet. */
 export const YELLOW_CARDS: CardDef[] = [
   unit(1, 'Vanguard Sentinel', 1, 2, {
-    text: 'Guard. Influence: +1.',
+    text: 'Guard. When this defends, gain 1 Influence.',
     kw: [{ k: 'guard' }],
-    onPlay: [influence(1)],
+    onDefend: [influence(1)],
     designerNote: INF_NOTE,
   }),
   action(1, 'Radiant Aegis', {
@@ -34,9 +34,9 @@ export const YELLOW_CARDS: CardDef[] = [
     ],
   }),
   unit(2, 'Sunguard Defender', 2, 3, {
-    text: 'Guard. Influence: +1.',
+    text: 'Guard. When this defends, gain 1 Influence.',
     kw: [{ k: 'guard' }],
-    onPlay: [influence(1)],
+    onDefend: [influence(1)],
     designerNote: INF_NOTE,
   }),
   action(2, 'Hold the Line', {
@@ -62,9 +62,9 @@ export const YELLOW_CARDS: CardDef[] = [
     designerNote: '⚑ The 10+ rider is redundant while imprisoned (prisoners cannot attack at all) — dropped pending design.',
   }),
   unit(3, 'Justicar Enforcer', 3, 4, {
-    text: 'Guard. Influence: +2.',
+    text: 'Guard. When this defends, gain 2 Influence.',
     kw: [{ k: 'guard' }],
-    onPlay: [influence(2)],
+    onDefend: [influence(2)],
     designerNote: INF_NOTE,
   }),
   unit(3, 'Sanctified Bastion', 0, 6, {
@@ -92,9 +92,9 @@ export const YELLOW_CARDS: CardDef[] = [
     onPlay: [{ op: 'heal', t: 'chosen0', n: 3 }, influence(1)],
   }),
   unit(3, 'Bulwark Protector', 2, 5, {
-    text: 'Guard. Influence: +1.',
+    text: 'Guard. When this defends, gain 1 Influence.',
     kw: [{ k: 'guard' }],
-    onPlay: [influence(1)],
+    onDefend: [influence(1)],
     designerNote: INF_NOTE,
   }),
   upgrade(3, 'Chain of Law', {
@@ -108,9 +108,9 @@ export const YELLOW_CARDS: CardDef[] = [
     designerNote: AUTO_NOTE + ' "Another zone" = any zone other than the Justiciar\'s.',
   }),
   unit(4, 'Exemplar Knight', 4, 4, {
-    text: 'When this attacks, give it +2 Power this turn. Influence: +1.',
+    text: 'When this attacks, give it +2 Power this turn. When it defeats a unit, gain 1 Influence.',
     onAttack: [{ op: 'buff', t: 'self', p: 2, dur: 'turn' }],
-    onPlay: [influence(1)],
+    onKill: [influence(1)],
     designerNote: INF_NOTE,
   }),
   action(4, 'Radiant Wall', {
@@ -170,9 +170,9 @@ export const YELLOW_CARDS: CardDef[] = [
     startOfTurn: { ops: [{ op: 'influence', n: 1 }] },
   }),
   unit(5, 'Custodian of Law', 4, 6, {
-    text: 'Guard. Influence: +2.',
+    text: 'Guard. When this defends, gain 2 Influence.',
     kw: [{ k: 'guard' }],
-    onPlay: [influence(2)],
+    onDefend: [influence(2)],
     designerNote: INF_NOTE,
   }),
   action(5, 'Imprisonment Chamber', {
@@ -263,9 +263,9 @@ export const YELLOW_CARDS: CardDef[] = [
     designerNote: DECAY_NOTE,
   }),
   unit(8, "Light's Vanguard", 6, 8, {
-    text: 'Flying, Guard. Influence: +2.',
+    text: 'Flying, Guard. When this defends, gain 2 Influence.',
     kw: [{ k: 'flying' }, { k: 'guard' }],
-    onPlay: [influence(2)],
+    onDefend: [influence(2)],
     designerNote: '⚑ Flying is undefined in rules v1.2 — implemented as "may move to any zone, ignoring adjacency". Needs design.',
   }),
 ]

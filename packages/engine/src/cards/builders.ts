@@ -17,9 +17,7 @@ export function makeBuilders(color: Color) {
   }
 }
 
-/** Overextend printed on an action/upgrade: shift Influence N toward your opponent (DECISIONS ⚑14). */
-export const overextend = (n: number): Op => ({ op: 'influence', n: -n })
-/** The "Influence: +N" static line: controller gains N when the card enters play (DECISIONS ⚑15). */
+/** Influence ops are always event-earned (decision 34): attach to onDefend/onKill/onPlay per card. */
 export const influence = (n: number): Op => ({ op: 'influence', n })
 
 export const toSet = (cards: CardDef[]) => Object.fromEntries(cards.map(c => [c.slug, c]))

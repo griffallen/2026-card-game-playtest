@@ -138,21 +138,32 @@ describe('breakthrough and overextend', () => {
     expect(s.sides[p2].life).toBe(16)
   })
 
-  it('overextend grants +N power only when alone in its zone', () => {
+  it('overextend is an opt-in gamble: +N power now, N self-damage at end of turn (decision 35)', () => {
     let { s, p1, p2 } = arena()
-    const solo = put(s, p1, 'loner', 1)     // 2/2, overextend 3 → hits for 5 alone
-    const big = put(s, p2, 'brute', 1)      // 4/3 — survives 2, dies to 5... wait 5 ≥ 3 health → dies; alone case kills
-    s = act(s, p1, { type: 'attack', attacker: solo, target: { kind: 'unit', id: big } })
-    expect(s.units[big]).toBeUndefined()
+    // without the flag: no bonus — the 4/3 brute survives a 2-power hit
+    const gambler = put(s, p1, 'loner', 1)  // 2/2, overextend 3
+    const big = put(s, p2, 'brute', 1)      // 4/3
+    s = act(s, p1, { type: 'attack', attacker: gambler, target: { kind: 'unit', id: big } })
+    expect(s.units[big]).toBeDefined()
+    expect(s.units[big].damage).toBe(2)
 
-    // now with company: no bonus (2 damage), brute survives
-    const dup = put(s, p1, 'loner', 1)
-    put(s, p1, 'pawn', 1)
-    const big2 = put(s, p2, 'brute', 1)
+    // with the flag against a counter-less target: bonus lands, then the bill kills the gambler at end of turn
+    const safeGambler = put(s, p1, 'loner', 2)
+    const chump = put(s, p2, 'brute', 2, { imprisonedBy: p1 }) // imprisoned: deals no counter-damage
     s = act(s, p2, { type: 'pass' })
-    s = act(s, p1, { type: 'attack', attacker: dup, target: { kind: 'unit', id: big2 } })
-    expect(s.units[big2]).toBeDefined()
-    expect(s.units[big2].damage).toBe(2)
+    s = act(s, p1, { type: 'attack', attacker: safeGambler, target: { kind: 'unit', id: chump }, overextend: true })
+    expect(s.units[chump]).toBeUndefined()                 // 2+3 = 5 ≥ 3 health — the gamble converted the kill
+    expect(s.units[safeGambler].overextendedBy).toBe(3)
+    s = act(s, p2, { type: 'pass' })
+    s = act(s, p1, { type: 'pass' })                       // turn ends → 3 self-damage kills the 2/2
+    expect(s.units[safeGambler]).toBeUndefined()
+
+    // units without the keyword cannot take the gamble
+    const soldier2 = put(s, p2, 'soldier', 1)
+    const targetPawn = put(s, p1, 'pawn', 1)
+    s = act(s, p2, { type: 'skipResource' })
+    expect(() => act(s, p2, { type: 'attack', attacker: soldier2, target: { kind: 'unit', id: targetPawn }, overextend: true }))
+      .toThrow(/overextend/i)
   })
 })
 

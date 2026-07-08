@@ -161,7 +161,13 @@ export function draw(state: GameState, seat: Seat, n: number) {
   const side = state.sides[seat]
   for (let i = 0; i < n; i++) {
     const id = side.deck.pop()
-    if (!id) { log(state, seat, `${side.name} has no cards left to draw`); return }
+    if (!id) {
+      // decision 33: every card that fails to appear costs life and influence
+      side.life -= state.rules.emptyDrawLifeLoss
+      addInfluence(state, seat, -state.rules.emptyDrawInfluenceLoss)
+      log(state, seat, `${side.name}'s deck is empty — the missing card costs ${state.rules.emptyDrawLifeLoss} life and ${state.rules.emptyDrawInfluenceLoss} influence (${Math.max(0, side.life)} life)`)
+      continue
+    }
     side.hand.push(id)
   }
 }

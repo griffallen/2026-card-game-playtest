@@ -1,5 +1,19 @@
 # Playtest Log
 
+## Designer session #1 — 2026-07-08 (spreadsheet notes, relayed)
+
+The designer reviewed the audit's rulings. Outcomes → decisions 32–39: mulligans (unlimited, −1 card
+each), empty-deck penalty (−1 life/−1 influence per missing card), event-earned influence (guards pay
+on defend, Exemplar on kill — no passive income, per his explicit intent), Overextend corrected to his
+definition (optional attack gamble: +N now, N self-damage at end of turn; action-printed OE inert
+pending his card pass), movement ratified, prison "on notice," combat redesign (multi-unit + defender
+interception) drafted but paused for the turn rework, and all 84 cards acknowledged as AI-drafts to be
+normalized via the new CSV workflow. Post-change sims: the game flipped from influence-dominated to
+combat-dominated (random mirror: red 29%, life 141/9; heuristic mirror: red 30%, life 57/3 — influence
+wins now nearly extinct, which hands the designer the event-value dial). Open designer questions
+carried: a better name than "base/home" (Banner/Hearth/Seat/Beacon offered), and the attack-ruleset
+knobs (do interceptors exhaust?).
+
 ## Game 004 — 2026-07-08 · Blaine (red) vs AI · seed 1425326367
 
 7. **Crimson Behemoth's splash was dead text — re-ruled live.** "Deals 2 damage to all adjacent zones" anchored on the Behemoth only ever hit Neutral (a base assault means standing in the enemy Home), which is empty by siege time. Player expectation — splash the defenders around the base — is the reading that makes the card function. New ruling: every *other* unit in the defended Home zone takes 2, both sides (own units included; red collateral). First card re-ruled from live play; the ⚑ note on the card records the change.

@@ -49,6 +49,7 @@ export function put(state: GameState, seat: Seat, slug: string, zone: ZoneId, op
     imprisoned: opts.imprisonedBy !== undefined ? { by: opts.imprisonedBy, source: null } : null,
     upgrades: [],
     mods: [],
+    overextendedBy: 0,
   }
   return id
 }

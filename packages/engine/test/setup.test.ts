@@ -102,6 +102,42 @@ describe('createGame', () => {
     expect(s.sides[second].resources.length).toBe(2)
   })
 
+  it('mulligans redraw one fewer each time and floor at the bank size (decision 32)', () => {
+    let s = make(6, true)
+    const first = s.activeSeat
+    expect(s.sides[first].hand.length).toBe(7)
+    s = applyAction(s, { type: 'mulligan' }, first).state
+    expect(s.sides[first].hand.length).toBe(6)
+    expect(s.mulligans[first]).toBe(1)
+    s = applyAction(s, { type: 'mulligan' }, first).state
+    s = applyAction(s, { type: 'mulligan' }, first).state
+    s = applyAction(s, { type: 'mulligan' }, first).state
+    s = applyAction(s, { type: 'mulligan' }, first).state   // down to 2 = the bank size
+    expect(s.sides[first].hand.length).toBe(2)
+    expect(() => applyAction(s, { type: 'mulligan' }, first)).toThrow(/bank/)
+    // conservation intact and banking still works
+    const picks = [...s.sides[first].hand]
+    s = applyAction(s, { type: 'setupBank', cards: picks }, first).state
+    expect(s.sides[first].hand.length).toBe(0)
+    expect(s.sides[first].resources.length).toBe(2)
+  })
+
+  it('drawing from an empty deck costs 1 life and 1 influence per missing card (decision 33)', () => {
+    let s = make(8, false)
+    const active = s.activeSeat
+    const other = (1 - active) as 0 | 1
+    // drain the NEXT player's deck so their turn-start double draw whiffs twice
+    const side = s.sides[other]
+    side.discard.push(...side.deck)
+    side.deck = []
+    s = applyAction(s, { type: 'skipResource' }, active).state
+    s = applyAction(s, { type: 'pass' }, active).state
+    s = applyAction(s, { type: 'pass' }, other).state       // turn flips → other draws 2 from nothing
+    expect(s.sides[other].life).toBe(20 - 2)
+    const inf = other === 0 ? s.influence : -s.influence
+    expect(inf).toBe(-2)
+  })
+
   it('rejects illegal decks', () => {
     expect(() =>
       createGame({

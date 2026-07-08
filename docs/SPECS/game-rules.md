@@ -30,7 +30,7 @@ Every card: `slug`, `name`, `color` (red|yellow), `type` (unit|action|upgrade), 
 1. Inputs: two players, each with a legal deck (≥ `deckMinSize` cards, ≤ `maxCopies` per slug), a `rulesConfig`, and a 32-bit `seed`.
 2. Shuffle both decks with the seeded RNG (Fisher–Yates; player A's deck first, then B's).
 3. First player = seeded coin flip.
-4. Each player draws `startingHandSize` (7). Then — **decision 31 (2026-07-08)** — the game opens in a **Setup phase**: each player, first player first, **chooses `startingResources` (2) cards from hand to bank face-up** (action `setupBank`). When both have banked, turn 1 begins. (`chooseStartingResources: false` restores the old zero-input mode: the last cards drawn are banked automatically.)
+4. Each player draws `startingHandSize` (7). Then the **Setup phase** (first player first): the acting player may **mulligan any number of times — shuffle the hand back, redraw `mulliganPenalty` (1) fewer cards each time** (decision 32; floor = `startingResources`) — then **chooses `startingResources` (2) cards to bank face-up** (`setupBank`, decision 31). When both have banked, turn 1 begins. (`chooseStartingResources: false` restores zero-input setup.)
 5. Influence 0, Life 20/20, turn 1, active = first player, phase = Reset.
 
 ### 1.4 Turn structure
@@ -40,7 +40,7 @@ Phases run in order; only Resource and Main take input.
 | Phase | What happens |
 |---|---|
 | **Reset** | Apply **prison decay** first (−1 Influence to the jailer per unit they held imprisoned coming into the turn — decay-before-triggers, else a start-of-turn imprison would instantly self-break at 0 influence), then resolve start-of-turn triggers (active player's units in entry order), then ready all of the active player's cards (units + resources). |
-| **Draw** | Active player draws `drawPerTurn` (2). Game turn 1 draws `firstTurnDraw` (1) instead. Drawing from an empty deck draws nothing. |
+| **Draw** | Active player draws `drawPerTurn` (2). Game turn 1 draws `firstTurnDraw` (1) instead. **Decision 33:** each card that fails to appear from an empty deck costs its owner `emptyDrawLifeLoss` (1) life and `emptyDrawInfluenceLoss` (1) influence. |
 | **Resource** | Active player may resource up to `resourcesPerTurn` (1) card from hand, face up, or skip. |
 | **Main** | Action alternation — see §1.5. |
 | **End** | Resolve end-of-turn triggers (same ordering rule), expire "this turn" modifiers, then pass the turn. |
@@ -77,7 +77,7 @@ Phases run in order; only Resource and Main take input.
    - the **enemy base**, only if the attacker stands in that enemy's Home zone.
    - **Guard:** if the defender owns a non-imprisoned Guard unit in the contested zone, the target must be such a Guard unit (base included in the protection).
 3. Resolve simultaneously:
-   - Attacker deals `power` (+Overextend bonus if it's the only friendly unit in its zone) to the target, reduced by target's Armor.
+   - Attacker deals `power` (+Overextend bonus if the attacker took the gamble — decision 35: `attack.overextend`; the unit suffers N self-damage at end of turn), reduced by target's Armor.
    - A defending **unit** deals its `power` back (reduced by attacker's Armor) — unless imprisoned (deals 0). A **base** deals nothing back.
    - **Breakthrough N:** if the defending unit is destroyed, excess damage beyond lethal — capped at N — hits the defender's controller's Life.
 4. `onAttack` triggers fire when the attack is declared; `onDefend` triggers (Yellow's "when this unit defends, gain 1 Influence") fire when a unit is chosen as the target.
@@ -139,6 +139,9 @@ Same `(rulesConfig, decks, seed, action list)` ⇒ identical states and events, 
 | `prisonDecayPerUnit` | 1 | Influence lost per imprisoned unit at jailer's turn start |
 | `prisonReleaseThreshold` | 0 | Jailer influence below this ⇒ prisons release |
 | `chooseStartingResources` | true | Setup: players pick their starting banks (false = auto-bank last drawn) |
+| `mulliganPenalty` | 1 | Cards lost per mulligan (decision 32) |
+| `emptyDrawLifeLoss` | 1 | Life lost per failed draw (decision 33) |
+| `emptyDrawInfluenceLoss` | 1 | Influence lost per failed draw (decision 33) |
 | `summoningSickness` | true | Units can't attack/move the turn they enter |
 | `moveExhausts` | true | Moving exhausts the unit |
 | `simultaneousLifeTiebreak` | `"actor"` | Who wins a both-dead tie: `actor` \| `active` \| `draw` |
@@ -151,7 +154,7 @@ Cards carry structured effects — never free text — so the engine can validat
 
 ### 3.1 Keywords (static, on units)
 
-`guard`, `armor N`, `rush`, `ranged`, `flying` (⚑), `breakthrough N`, `overextendUnit N` (+N Power attacking alone-in-zone), `cantAttack`, `untargetable` (can't be targeted by enemy actions/upgrades — Chain of Law).
+`guard`, `armor N`, `rush`, `ranged`, `reach`, `flying` (⚑), `breakthrough N`, `overextend N` (optional attack gamble: +N power now, N self-damage at end of turn — decision 35), `cantAttack`, `untargetable` (can't be targeted by enemy actions — Chain of Law).
 
 ### 3.2 Effect ops (one-shot, run in order)
 
@@ -161,7 +164,7 @@ Cards carry structured effects — never free text — so the engine can validat
 | `damageAll` | scope (zone/all/enemy), amount | e.g. Scorching Howl |
 | `heal` | target, amount | unit damage or base life (capped) |
 | `draw` | count | |
-| `influence` | amount (±, from controller's view) | Overextend-on-action = `influence: -N` |
+| `influence` | amount (±, from controller's view) | always event-attached (decision 34): onDefend / onKill / onPlay |
 | `imprison` | target(s) or filter (e.g. power ≤ N, all-in-zone) | source recorded |
 | `release` | target | |
 | `buff` | target, power/health delta, duration (`turn`/`permanent`) | |

@@ -39,6 +39,7 @@ export function GameTable() {
   const [showHelp, setShowHelp] = useState(false)
   const [inspect, setInspect] = useState<Inspect>(null)
   const [setupPicks, setSetupPicks] = useState<string[]>([])
+  const [armOverextend, setArmOverextend] = useState(false)
   const logRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -51,6 +52,7 @@ export function GameTable() {
   }, [view?.log])
   useEffect(() => { setSelection(null) }, [view?.actorSeat, view?.turn, view?.phase])
   useEffect(() => { setSetupPicks([]) }, [view?.actorSeat, view?.phase])
+  useEffect(() => { setArmOverextend(false) }, [selection?.kind === 'unit' ? selection.id : null])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setSelection(null); setConfirming(null); setInspect(null) } }
     window.addEventListener('keydown', onKey)
@@ -122,7 +124,8 @@ export function GameTable() {
     if (!isHighlighted(ref) || !selection) return
     if (selection.kind === 'unit') {
       if (ref.kind === 'zone') sendAction({ type: 'move', unit: selection.id, to: ref.zone })
-      else sendAction({ type: 'attack', attacker: selection.id, target: ref })
+      else sendAction({ type: 'attack', attacker: selection.id, target: ref, ...(armOverextend ? { overextend: true } : {}) })
+      setArmOverextend(false)
       setSelection(null)
       return
     }
@@ -338,10 +341,28 @@ export function GameTable() {
                 >
                   Bank these {setupN} ⬢
                 </button>
+                {view.actions.some(a => a.type === 'mulligan') && (
+                  <button className="btn !py-1 text-xs" title="shuffle back and redraw one fewer card"
+                    onClick={() => { setSetupPicks([]); sendAction({ type: 'mulligan' }) }}>
+                    Mulligan ↻ (redraw {view.hand.length - 1})
+                  </button>
+                )}
                 {setupPicks.length > 0 && <button className="btn !py-1 text-xs" onClick={() => setSetupPicks([])}>Clear</button>}
                 <span className="text-[11px] text-dim">tap cards to choose ({setupPicks.length}/{setupN})</span>
               </div>
             )}
+            {selection?.kind === 'unit' && myWindow && (() => {
+              const u = view.zones.flatMap(z => z.units).find(x => x.id === selection.id)
+              const oe = u?.keywords.find(k => k.startsWith('overextend'))
+              if (!oe) return null
+              const n = Number(oe.split(' ')[1] ?? 0)
+              return (
+                <label className={`mt-2 flex cursor-pointer items-center gap-1.5 rounded border px-2 py-1 text-xs ${armOverextend ? 'border-[#e2583e] text-[#ff9a5e]' : 'hairline text-dim'}`}>
+                  <input type="checkbox" className="h-3.5 w-3.5 accent-[#e2583e]" checked={armOverextend} onChange={e => setArmOverextend(e.target.checked)} />
+                  Overextend: +{n} power now, {n} self-damage at end of turn
+                </label>
+              )
+            })()}
             {selection?.kind === 'hand' && myWindow && (
               <div className="mt-2 flex flex-wrap gap-1.5 border-t hairline pt-2">
                 {view.phase === 'main' && playActionsFor(selection.id).length > 0 && (

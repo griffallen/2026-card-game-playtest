@@ -2,6 +2,7 @@ import type {
   GameAction, GameState, LogLine, Seat, TargetRef, TargetSpec, UnitInstance, ZoneId,
 } from './types.ts'
 import { EngineError, adjacent, homeZone } from './types.ts'
+import { shuffle } from './rng.ts'
 import {
   defOf, effArmor, effPower, hasKw, isSick, kwOf, log, other, unitsInZone, unitsOf,
 } from './helpers.ts'
@@ -42,9 +43,26 @@ export function applyAction(prev: GameState, action: GameAction, actorSeat: Seat
   return { state, events: state.log.slice(logStart) }
 }
 
-/** Setup phase (decision 31): each player chooses their starting banks, first player first. */
+/** Setup phase: mulligan as often as you dare (decision 32), then choose your banks (decision 31). */
 function applySetupPhase(state: GameState, action: GameAction, seat: Seat) {
-  if (action.type !== 'setupBank') fail('bad-phase', `setup: choose ${state.rules.startingResources} cards to bank`)
+  if (action.type === 'mulligan') {
+    const side = state.sides[seat]
+    const nextCount = state.rules.startingHandSize - (state.mulligans[seat] + 1) * state.rules.mulliganPenalty
+    if (nextCount < state.rules.startingResources) {
+      fail('mulligan-floor', `a smaller hand couldn't bank ${state.rules.startingResources} resources`)
+    }
+    side.deck.push(...side.hand)
+    side.hand = []
+    ;[side.deck, state.rngState] = shuffle(side.deck, state.rngState)
+    for (let i = 0; i < nextCount; i++) {
+      const id = side.deck.pop()
+      if (id) side.hand.push(id)
+    }
+    state.mulligans[seat] += 1
+    log(state, seat, `${side.name} mulligans to ${nextCount} cards`)
+    return // same player decides again: mulligan further or bank
+  }
+  if (action.type !== 'setupBank') fail('bad-phase', `setup: mulligan, or choose ${state.rules.startingResources} cards to bank`)
   const n = state.rules.startingResources
   if (action.cards.length !== n) fail('bad-setup', `choose exactly ${n} cards to bank`)
   if (new Set(action.cards).size !== n) fail('bad-setup', 'banked cards must be distinct')
@@ -103,7 +121,7 @@ function applyMainPhase(state: GameState, action: GameAction, seat: Seat) {
     }
     case 'attack': {
       if (!isActive) fail('off-turn', 'you can only attack on your turn')
-      attack(state, action.attacker, action.target, seat)
+      attack(state, action.attacker, action.target, seat, action.overextend ?? false)
       break
     }
     default: fail('bad-phase', `${(action as GameAction).type} is not a main-phase action`)
@@ -195,7 +213,7 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     state.units[action.card] = {
       id: action.card, slug: def.slug, owner: seat, zone,
       damage: 0, exhausted: false, enteredTurn: state.turn,
-      imprisoned: null, upgrades: [], mods: [],
+      imprisoned: null, upgrades: [], mods: [], overextendedBy: 0,
     }
     log(state, seat, `${side.name} deploys ${def.name}`)
     const unit = state.units[action.card]
@@ -236,13 +254,21 @@ function guardsFor(state: GameState, defender: Seat, zone: ZoneId): UnitInstance
   return unitsInZone(state, zone, defender).filter(u => !u.imprisoned && hasKw(state, u, 'guard'))
 }
 
-function attack(state: GameState, attackerId: string, target: TargetRef, seat: Seat) {
+function attack(state: GameState, attackerId: string, target: TargetRef, seat: Seat, overextend: boolean) {
   const attacker = state.units[attackerId] ?? fail('no-unit', 'no such attacker')
   if (attacker.owner !== seat) fail('not-yours', 'not your unit')
   if (attacker.imprisoned) fail('imprisoned', 'imprisoned units cannot attack')
   if (attacker.exhausted) fail('exhausted', 'exhausted units cannot attack')
   if (isSick(state, attacker)) fail('sick', 'this unit just arrived this turn')
   if (hasKw(state, attacker, 'cantAttack')) fail('cant-attack', 'this unit cannot attack')
+
+  // decision 35: overextending is an optional gamble — +N power now, N self-damage at end of turn
+  const oe = kwOf(state, attacker, 'overextend')
+  if (overextend && typeof oe !== 'number') fail('cant-overextend', 'this unit has no Overextend value')
+  if (overextend && typeof oe === 'number') {
+    attacker.overextendedBy += oe
+    log(state, seat, `${defOf(state, attackerId).name} overextends (+${oe} power — it will suffer ${oe} at end of turn)`)
+  }
 
   const ranged = hasKw(state, attacker, 'ranged')
   const reach = hasKw(state, attacker, 'reach')
@@ -257,7 +283,7 @@ function attack(state: GameState, attackerId: string, target: TargetRef, seat: S
     fireTrigger({ state, attackTarget: target, actorSeat: seat }, attacker, 'onAttack')
     fireTrigger({ state, attackTarget: target, actorSeat: seat }, attacker, 'onAttackBase')
     if (!state.units[attackerId]) return // trigger may have killed the attacker
-    const power = attackPower(state, attacker)
+    const power = attackPower(state, attacker, overextend)
     damageBase(state, target.seat, power, defOf(state, attackerId).name)
     return
   }
@@ -279,7 +305,7 @@ function attack(state: GameState, attackerId: string, target: TargetRef, seat: S
   fireTrigger({ state, attackTarget: { kind: 'unit', id: attackerId }, actorSeat: seat }, defender, 'onDefend')
   if (!state.units[attackerId] || !state.units[target.id]) return // triggers resolved the fight already
 
-  const atkPower = attackPower(state, attacker)
+  const atkPower = attackPower(state, attacker, overextend)
   const defPower = defender.imprisoned ? 0 : effPower(state, defender)
   const counter = sameZone || !ranged // cross-zone ranged shots draw no counter-damage
 
@@ -303,11 +329,11 @@ function attack(state: GameState, attackerId: string, target: TargetRef, seat: S
   if (died) fireTrigger({ state, attackTarget: target, actorSeat: seat }, attacker, 'onKill')
 }
 
-/** Attacker's power including the Overextend alone-in-zone bonus. */
-function attackPower(state: GameState, attacker: UnitInstance): number {
+/** Attacker's power; the Overextend bonus applies only when the gamble is taken (decision 35). */
+function attackPower(state: GameState, attacker: UnitInstance, overextend: boolean): number {
   let p = effPower(state, attacker)
   const oe = kwOf(state, attacker, 'overextend')
-  if (typeof oe === 'number' && unitsInZone(state, attacker.zone, attacker.owner).length === 1) p += oe
+  if (overextend && typeof oe === 'number') p += oe
   return p
 }
 

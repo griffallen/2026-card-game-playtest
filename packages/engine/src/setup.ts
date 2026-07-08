@@ -78,6 +78,7 @@ export function createGame(opts: CreateGameOpts): GameState {
     phase: rules.chooseStartingResources ? 'setup' : 'resource',
     actorSeat: first as Seat,
     setupBanked: [!rules.chooseStartingResources, !rules.chooseStartingResources],
+    mulligans: [0, 0],
     passStreak: 0,
     resourcedThisTurn: 0,
     firstPlayer: first as Seat,

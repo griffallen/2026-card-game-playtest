@@ -54,8 +54,7 @@ The keywords, as implemented:
 | **Armor X** | Every hit on this unit is reduced by X (from any source). Armor from multiple sources adds up ⚑. |
 | **Rush** | May attack *and move* ⚑ the turn it arrives (everyone else waits a turn). |
 | **Breakthrough N** | Kill the blocker with damage to spare, and up to N of the excess hits the owner's Life — from any zone. |
-| **Overextend N** (units) | +N Power while attacking as **the only friendly unit in its zone** ⚑ — the lone berserker hits harder. |
-| **Overextend N** (actions) | ⚑ The big one: playing the card **shifts Influence N toward your opponent**. Red's whole action suite pays in Influence — power now, at the cost of the shared argument. |
+| **Overextend N** | **The designer's own definition (decision 35):** an optional gamble taken with an attack — +N Power now, and the unit suffers N self-damage at end of turn. Printed on actions it's currently inert, pending the designer's card pass. |
 | **Ranged** | May shoot into an adjacent zone; never the base; cross-zone shots draw no counter-damage ⚑. |
 | **Flying** | ⚑ Placeholder: may move to *any* zone. Needs a real design. |
 
@@ -68,7 +67,7 @@ Imprisoned units stay on the board but can't attack, move, defend (no counter-da
 
 ## The two decks
 
-- **Crimson Assault (Red):** rush, burn, breakthrough. Almost every action ships Influence to the opponent — Red must win before its own recklessness hands over the game. ⚑ *Watch this in play: in 150 simulated random games, Red won 1%.* Random play is nothing like real play (a human doesn't cast Overextend actions with no board), but the direction of the signal is real: the Influence economy strongly favors Yellow as costed. Candidate knobs, in order of gentleness: trim printed "Influence: +1" lines on Yellow's vanilla guards; raise Red's Overextend payoffs; make unit-Overextend also grant something defensively; or make Influence win require holding ±15 until your next turn.
+- **Crimson Assault (Red):** rush, burn, breakthrough, and the Overextend gamble — power now, self-damage later. *Updated after designer session #1:* red no longer cedes influence at all; with the new economy (decisions 34–35) the simulations flipped from influence-dominated to combat-dominated — red wins ~30% of bot mirrors, nearly all by life. |
 - **Radiant Order (Yellow):** walls, armor, prisons, and a steady trickle of Influence from nearly every card. Wins by inevitability — or by Life once its 0-power fortresses are joined by real attackers.
 
 ## What the simulation says (and doesn't)

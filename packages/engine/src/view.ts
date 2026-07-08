@@ -19,6 +19,7 @@ function unitView(state: GameState, id: string): UnitView {
     power: effPower(state, u), health: effHealth(state, u), damage: u.damage,
     basePower: def.power ?? 0, baseHealth: def.health ?? 0, armor: effArmor(state, u),
     exhausted: u.exhausted, sick: isSick(state, u), imprisoned: !!u.imprisoned,
+    overextendedBy: u.overextendedBy,
     keywords,
     upgrades: u.upgrades.map(upId => ({ id: upId, slug: state.cardOf[upId], name: defOf(state, upId).name })),
   }

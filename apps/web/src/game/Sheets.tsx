@@ -47,6 +47,7 @@ export function UnitInspector({ unit, card, upgradeCards, onClose }: {
             {unit.imprisoned && <p className="text-[#e5a99f]">{STATUS_GLOSS.imprisoned}</p>}
             {unit.exhausted && !unit.imprisoned && <p className="text-dim">{STATUS_GLOSS.exhausted}</p>}
             {unit.sick && <p className="text-dim">{STATUS_GLOSS.sick}</p>}
+            {unit.overextendedBy > 0 && <p className="text-[#ff9a5e]">🔥 Overextended — will take {unit.overextendedBy} damage at end of turn.</p>}
           </div>
           {unit.keywords.length > 0 && (
             <div className="mt-2 border-t hairline pt-2">

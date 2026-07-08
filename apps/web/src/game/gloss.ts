@@ -7,7 +7,7 @@ export const KEYWORD_GLOSS: Record<string, string> = {
   reach: 'May attack units one zone away (bases still require standing in their Home).',
   flying: 'May move to any zone, ignoring adjacency. (Prototype ruling — needs design.)',
   breakthrough: 'On killing a unit, up to this much excess damage hits the owner\'s life.',
-  overextend: 'Unit: this much bonus power while attacking as the only friendly unit in its zone.',
+  overextend: 'Optional gamble when attacking: +N power now, N self-damage at end of turn.',
   cantAttack: 'Cannot attack.',
   untargetable: 'Cannot be targeted by enemy action cards.',
 }

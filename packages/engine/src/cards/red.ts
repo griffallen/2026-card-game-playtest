@@ -1,17 +1,16 @@
 import type { CardDef } from '../types.ts'
-import { influence, makeBuilders, overextend } from './builders.ts'
+import { makeBuilders } from './builders.ts'
 
 const { unit, action, upgrade } = makeBuilders('red')
-void influence
 
-const OE_NOTE = '⚑ Overextend on actions/upgrades is undefined in rules v1.2 — implemented as "shift Influence N toward your opponent when played" (DECISIONS 14).'
+const OE_NOTE = '⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.'
 
 /** Red — aggression: Rush, Breakthrough, Overextend, direct damage. 36 cards from the July 5 sheet. */
 export const RED_CARDS: CardDef[] = [
   unit(1, 'Cinder Initiate', 1, 1, {
     text: 'Rush. Overextend 1.',
     kw: [{ k: 'rush' }, { k: 'overextend', n: 1 }],
-    designerNote: '⚑ Unit Overextend = +N Power while attacking as the only friendly unit in its zone (DECISIONS 13).',
+    designerNote: 'Decision 35: when attacking you MAY overextend for +N power; the unit takes N damage at end of turn. A gamble, not a given.',
   }),
   unit(1, 'Spark Hound', 2, 1, {
     text: 'Rush. When this attacks, it gets +1 Power this turn.',
@@ -21,13 +20,13 @@ export const RED_CARDS: CardDef[] = [
   action(1, 'Reckless Charge', {
     text: 'Target unit gains Rush. Overextend 1.',
     targets: [{ t: 'unit', side: 'friendly' }],
-    onPlay: [{ op: 'grant', t: 'chosen0', kw: { k: 'rush' }, dur: 'perm' }, overextend(1)],
+    onPlay: [{ op: 'grant', t: 'chosen0', kw: { k: 'rush' }, dur: 'perm' }],
     designerNote: OE_NOTE,
   }),
   action(1, 'Devastating Strike', {
     text: 'Deal 2 damage to target unit or base. Overextend 1.',
     targets: [{ t: 'unitOrBase', side: 'any', baseSide: 'enemy' }],
-    onPlay: [{ op: 'damage', t: 'chosen0', n: 2 }, overextend(1)],
+    onPlay: [{ op: 'damage', t: 'chosen0', n: 2 }],
     designerNote: OE_NOTE,
   }),
   unit(2, 'Flameblade Raider', 2, 2, {
@@ -44,14 +43,13 @@ export const RED_CARDS: CardDef[] = [
     onPlay: [
       { op: 'buff', t: 'chosen0', p: 2, dur: 'turn' },
       { op: 'grant', t: 'chosen0', kw: { k: 'rush' }, dur: 'turn' },
-      overextend(1),
     ],
     designerNote: OE_NOTE,
   }),
   action(2, 'Searing Bolt', {
     text: 'Deal 2 damage to any target. Overextend 1.',
     targets: [{ t: 'unitOrBase', side: 'any', baseSide: 'any' }],
-    onPlay: [{ op: 'damage', t: 'chosen0', n: 2 }, overextend(1)],
+    onPlay: [{ op: 'damage', t: 'chosen0', n: 2 }],
     designerNote: OE_NOTE,
   }),
   unit(2, 'Berserker', 3, 2, {
@@ -61,7 +59,7 @@ export const RED_CARDS: CardDef[] = [
   action(2, 'Smash Through', {
     text: 'Target unit with Rush gains Breakthrough 2 this turn. Overextend 1.',
     targets: [{ t: 'unit', side: 'friendly', withKw: 'rush' }],
-    onPlay: [{ op: 'grant', t: 'chosen0', kw: { k: 'breakthrough', n: 2 }, dur: 'turn' }, overextend(1)],
+    onPlay: [{ op: 'grant', t: 'chosen0', kw: { k: 'breakthrough', n: 2 }, dur: 'turn' }],
     designerNote: OE_NOTE,
   }),
   unit(3, 'Rageforged Brute', 4, 3, {
@@ -71,7 +69,7 @@ export const RED_CARDS: CardDef[] = [
   action(3, 'Volcanic Slam', {
     text: 'Deal 3 damage to target unit or base. Overextend 2.',
     targets: [{ t: 'unitOrBase', side: 'any', baseSide: 'enemy' }],
-    onPlay: [{ op: 'damage', t: 'chosen0', n: 3 }, overextend(2)],
+    onPlay: [{ op: 'damage', t: 'chosen0', n: 3 }],
     designerNote: OE_NOTE,
   }),
   unit(3, 'Fiery Impaler', 3, 3, {
@@ -82,12 +80,12 @@ export const RED_CARDS: CardDef[] = [
   action(3, 'Collateral Damage', {
     text: 'Deal 2 damage to two different target units. Overextend 2.',
     targets: [{ t: 'unit', side: 'any', count: 2 }],
-    onPlay: [{ op: 'damage', t: 'chosen0', n: 2 }, { op: 'damage', t: 'chosen1', n: 2 }, overextend(2)],
+    onPlay: [{ op: 'damage', t: 'chosen0', n: 2 }, { op: 'damage', t: 'chosen1', n: 2 }],
     designerNote: OE_NOTE,
   }),
   action(3, 'Warpath', {
     text: 'All friendly units gain Rush. Overextend 2.',
-    onPlay: [{ op: 'grant', t: { side: 'friendly' }, kw: { k: 'rush' }, dur: 'perm' }, overextend(2)],
+    onPlay: [{ op: 'grant', t: { side: 'friendly' }, kw: { k: 'rush' }, dur: 'perm' }],
     designerNote: OE_NOTE,
   }),
   unit(4, 'Inferno Titan', 6, 5, {
@@ -102,7 +100,7 @@ export const RED_CARDS: CardDef[] = [
   action(4, 'Rupture', {
     text: 'Deal 4 damage to target unit or base. Overextend 3.',
     targets: [{ t: 'unitOrBase', side: 'any', baseSide: 'enemy' }],
-    onPlay: [{ op: 'damage', t: 'chosen0', n: 4 }, overextend(3)],
+    onPlay: [{ op: 'damage', t: 'chosen0', n: 4 }],
     designerNote: OE_NOTE,
   }),
   upgrade(4, 'Burning Oath', {
@@ -111,13 +109,12 @@ export const RED_CARDS: CardDef[] = [
       { s: 'aura', scope: 'attached', p: 2 },
       { s: 'aura', scope: 'attached', kw: { k: 'rush' } },
     ],
-    onPlay: [overextend(1)],
-    designerNote: OE_NOTE,
+        designerNote: OE_NOTE,
   }),
   action(4, 'Pillage', {
     text: 'Destroy target enemy upgrade. Overextend 2.',
     targets: [{ t: 'upgrade', side: 'enemy' }],
-    onPlay: [{ op: 'destroyUpgrade' }, overextend(2)],
+    onPlay: [{ op: 'destroyUpgrade' }],
     designerNote: OE_NOTE,
   }),
   unit(5, 'Doombringer', 5, 4, {
@@ -126,12 +123,12 @@ export const RED_CARDS: CardDef[] = [
   }),
   action(5, 'Relentless Assault', {
     text: 'Take an extra combat phase after this one. Overextend 3.',
-    onPlay: [{ op: 'ready', side: 'friendly' }, overextend(3)],
+    onPlay: [{ op: 'ready', side: 'friendly' }],
     designerNote: '⚑ Combat is merged into the Main Phase (DECISIONS 8), so "extra combat phase" = ready all your units; they may attack again. ' + OE_NOTE,
   }),
   action(5, 'Scorching Howl', {
     text: 'Deal 3 damage to all units. Overextend 3.',
-    onPlay: [{ op: 'damageFilter', f: { side: 'all' }, n: 3 }, overextend(3)],
+    onPlay: [{ op: 'damageFilter', f: { side: 'all' }, n: 3 }],
     designerNote: OE_NOTE,
   }),
   unit(5, 'Crimson Behemoth', 6, 6, {
@@ -153,20 +150,19 @@ export const RED_CARDS: CardDef[] = [
     onPlay: [
       { op: 'grant', t: 'chosen0', kw: { k: 'rush' }, dur: 'turn' },
       { op: 'buff', t: 'chosen0', p: 3, dur: 'turn' },
-      overextend(4),
     ],
     designerNote: OE_NOTE,
   }),
   action(6, 'Execution Swing', {
     text: 'Destroy target damaged unit. Overextend 3.',
     targets: [{ t: 'unit', side: 'any', mustBeDamaged: true }],
-    onPlay: [{ op: 'destroy', t: 'chosen0' }, overextend(3)],
+    onPlay: [{ op: 'destroy', t: 'chosen0' }],
     designerNote: OE_NOTE,
   }),
   action(6, 'Raging Inferno', {
     text: 'Deal 5 damage to target unit or base. Overextend 4.',
     targets: [{ t: 'unitOrBase', side: 'any', baseSide: 'enemy' }],
-    onPlay: [{ op: 'damage', t: 'chosen0', n: 5 }, overextend(4)],
+    onPlay: [{ op: 'damage', t: 'chosen0', n: 5 }],
     designerNote: OE_NOTE,
   }),
   unit(6, 'Warlord Garok', 5, 5, {
@@ -181,13 +177,13 @@ export const RED_CARDS: CardDef[] = [
   action(7, 'Unchained Rage', {
     text: "Double a unit's Power this turn. Overextend 4.",
     targets: [{ t: 'unit', side: 'any' }],
-    onPlay: [{ op: 'double', t: 'chosen0' }, overextend(4)],
+    onPlay: [{ op: 'double', t: 'chosen0' }],
     designerNote: OE_NOTE,
   }),
   action(7, 'Burn the Frontline', {
     text: 'Deal 4 damage to all units in one zone. Overextend 4.',
     targets: [{ t: 'zone' }],
-    onPlay: [{ op: 'damageFilter', f: { side: 'all', zone: 'chosenZone' }, n: 4 }, overextend(4)],
+    onPlay: [{ op: 'damageFilter', f: { side: 'all', zone: 'chosenZone' }, n: 4 }],
     designerNote: OE_NOTE,
   }),
   action(7, 'Last Stand', {
@@ -203,7 +199,7 @@ export const RED_CARDS: CardDef[] = [
   }),
   action(8, 'Final Onslaught', {
     text: 'You get an extra turn after this one. Overextend 5.',
-    onPlay: [{ op: 'extraTurn' }, overextend(5)],
+    onPlay: [{ op: 'extraTurn' }],
     designerNote: OE_NOTE,
   }),
 ]

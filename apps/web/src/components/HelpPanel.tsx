@@ -28,7 +28,8 @@ export function HelpPanel({ onClose }: { onClose: () => void }) {
 
         <h3 className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-goldbright">Your turn</h3>
         <div className="mt-2 flex flex-col gap-2">
-          <Row icon="🃏" title="Setup">Each player draws 7, then <b>chooses 2 cards to bank</b> as starting resources, first player first (decision 31 — the banked cards are gone for good, so most players bank what they least want to draw into).</Row>
+          <Row icon="🃏" title="Setup">Each player draws 7 and may <b>mulligan as often as they dare — redrawing one fewer card each time</b> — then <b>chooses 2 cards to bank</b> as starting resources, first player first. Banked cards are gone for good.</Row>
+          <Row icon="⏳" title="Empty deck">Every card you fail to draw costs you <b>1 life and 1 influence</b>. Slow decks own a real clock.</Row>
           <Row icon="⬢" title="Bank (resource step)">Tuck one card from hand face-up into your resource row — <i>permanently</i>. Each resource pays 1 toward card costs and refreshes every turn, so banking is +1 spending power per turn, forever. The card itself never comes back. Most turns, bank.</Row>
           <Row icon="↔" title="Then actions alternate">You act, they get a window, you act again… <b>Two passes in a row ends the turn.</b> On your turn you may play cards, move, and attack. <b>On their turn you only get card plays</b> — no attacks or moves. Resources refresh only on <i>your</i> turn, so <b>leaving some unspent is how you keep response plays open on theirs</b> — spend everything and those windows skip past you.</Row>
           <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it, so a unit marches <i>or</i> fights each turn. Freshly played units wait a turn unless they have <b>Rush</b>.</Row>
@@ -47,7 +48,7 @@ export function HelpPanel({ onClose }: { onClose: () => void }) {
         <h3 className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-goldbright">Keywords in one line</h3>
         <p className="mt-2 text-[13px] leading-relaxed text-body/90">
           <b>Rush</b> acts the turn it arrives · <b>Breakthrough N</b> spills up to N excess damage onto the owner when it kills ·
-          <b> Overextend N</b> on a <i>unit</i>: +N power attacking alone in its zone; on an <i>action</i>: cedes N influence ·
+          <b> Overextend N</b>: an optional gamble when attacking — +N power now, N self-damage at end of turn ·
           <b> Ranged</b> shoots adjacent zones, never bases · <b>Reach</b> attacks adjacent zones normally.
         </p>
 
@@ -56,11 +57,11 @@ export function HelpPanel({ onClose }: { onClose: () => void }) {
           <Row icon="🔴" title="Playing Crimson (red)">
             Go <i>wide</i> — cheap Rush bodies escort your big threats so enemy imprisons and removal hit the escorts.
             <b> Breakthrough is base damage from any zone</b>: killing their units in Neutral spills onto their life, no march required.
-            Spells must kill their target or hit the base — a burn that leaves a survivor traded influence for nothing. Budget ~8 total ceded influence per game; unit attacks are free.
+            <b> Overextend only when it converts a kill</b> — the end-of-turn bill is real. Spells must kill their target or hit the base.
           </Row>
           <Row icon="🟡" title="Playing Radiant (yellow)">
-            Walls at home, prisons on their best attacker, and let the shared track drift your way. But mind the upkeep:
-            <b> every prisoner costs you 1 influence per turn</b> — hoarding jail cells cancels your own income. Heal, stall, and win the argument.
+            Walls at home, prisons on their best attacker. <b>Your influence is earned, not given</b>: guards pay out when they're
+            attacked, so stand where red must swing. Mind the jail upkeep: <b>every prisoner costs you 1 influence per turn</b>.
           </Row>
           <Row icon="⛓" title="The prison economy cuts both ways">
             Imprisoned units draw no counter-damage — but a flooded jail taxes the jailer every turn. If you're red and they love prisons: feed them cheap bodies and bleed the track.

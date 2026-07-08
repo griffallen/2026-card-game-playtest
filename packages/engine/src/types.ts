@@ -102,6 +102,11 @@ export interface RulesConfig {
   startingResources: number
   /** true: players choose their starting banks in a Setup phase (decision 31); false: auto-bank last drawn */
   chooseStartingResources: boolean
+  /** decision 32: unlimited mulligans, drawing this many fewer cards each time */
+  mulliganPenalty: number
+  /** decision 33: failing to draw from an empty deck costs life and influence per missing card */
+  emptyDrawLifeLoss: number
+  emptyDrawInfluenceLoss: number
   drawPerTurn: number
   firstTurnDraw: number
   resourcesPerTurn: number
@@ -137,6 +142,8 @@ export interface UnitInstance {
   imprisoned: { by: Seat; source: string | null } | null
   upgrades: string[]         // upgrade instance ids
   mods: Mod[]
+  /** decision 35: damage owed at end of turn from overextending this turn */
+  overextendedBy: number
 }
 
 export interface UpgradeInstance {
@@ -167,6 +174,7 @@ export interface GameState {
   phase: 'setup' | 'resource' | 'main'
   actorSeat: Seat                     // whose action window it is
   setupBanked: [boolean, boolean]     // per-seat: starting resources chosen (setup phase)
+  mulligans: [number, number]         // per-seat mulligan count (setup phase, decision 32)
   passStreak: number
   resourcedThisTurn: number
   firstPlayer: Seat
@@ -190,12 +198,13 @@ export type TargetRef =
   | { kind: 'upgrade'; id: string }
 
 export type GameAction =
+  | { type: 'mulligan' }                     // setup phase: shuffle back, redraw one fewer (decision 32)
   | { type: 'setupBank'; cards: string[] }   // setup phase: choose starting resources
   | { type: 'resource'; card: string }
   | { type: 'skipResource' }
   | { type: 'play'; card: string; targets?: TargetRef[] }
+  | { type: 'attack'; attacker: string; target: TargetRef; overextend?: boolean } // decision 35: optional gamble
   | { type: 'move'; unit: string; to: ZoneId }
-  | { type: 'attack'; attacker: string; target: TargetRef }
   | { type: 'pass' }
   | { type: 'concede' }
 
@@ -209,6 +218,7 @@ export interface UnitView {
   power: number; health: number; damage: number
   basePower: number; baseHealth: number; armor: number
   exhausted: boolean; sick: boolean; imprisoned: boolean
+  overextendedBy: number
   keywords: string[]
   upgrades: { id: string; slug: string; name: string }[]
 }

@@ -31,18 +31,23 @@ function arena(seed = 11) {
 }
 
 describe('influence effects', () => {
-  it('yellow guard grants +1 influence on entry; red overextend action cedes it', () => {
+  it('decision 34: influence is earned by events — guards pay when they DEFEND, never for existing', () => {
     let { s, p1, p2 } = arena()
     const sentinel = toHand(s, p2, 'vanguard-sentinel')
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: sentinel })
-    expect(influenceFor(s, p2)).toBe(1)
+    expect(influenceFor(s, p2)).toBe(0)                    // entering play pays nothing now
+    // red spells no longer cede influence (decision 35 removed the artifact reading)
     const bolt = toHand(s, p1, 'searing-bolt')
     const victim = put(s, p2, 'sunguard-defender', 2)
     s = act(s, p1, { type: 'play', card: bolt, targets: [{ kind: 'unit', id: victim }] })
-    // bolt: 2 damage + overextend 1 → p1 cedes 1 → p2 now at 2
-    expect(influenceFor(s, p2)).toBe(2)
+    expect(influenceFor(s, p2)).toBe(0)
     expect(s.units[victim].damage).toBe(2)
+    // but being ATTACKED triggers the guard's influence
+    const raider = put(s, p1, 'berserker', 2)
+    s = act(s, p2, { type: 'pass' })
+    s = act(s, p1, { type: 'attack', attacker: raider, target: { kind: 'unit', id: victim } })
+    expect(influenceFor(s, p2)).toBe(1)                    // Sunguard defended → +1
   })
 
   it('influence win threshold ends the game — and Radiant Citadel raises the bar to 17', () => {

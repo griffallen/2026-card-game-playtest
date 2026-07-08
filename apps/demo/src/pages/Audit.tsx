@@ -39,6 +39,21 @@ export function Audit() {
       </P>
 
       <Card>
+        <b className="font-display text-parchment">Update — designer session #1 (July 8).</b>
+        <p className="mt-2 text-[14px] leading-relaxed text-body/90">
+          The designer reviewed this audit and ruled: <b>mulligans</b> (unlimited, one fewer card each),
+          <b> empty-deck penalties</b> (−1 life & −1 influence per missing card), <b>influence is now earned by
+          events only</b> (guards pay when they defend — no passive income), and <b>Overextend is his original
+          gamble</b>: optionally +N power on an attack, N self-damage at end of turn — red no longer cedes
+          influence at all. Movement was ratified as intentional; prison is "on notice"; a multi-unit combat
+          redesign is drafted and paused for the turn rework. Fresh sims after the changes: the game flipped
+          from influence-dominated to <b>combat-dominated</b> (bot mirrors: red ~30%, influence wins nearly
+          extinct at 3/60) — the event-trigger values are now the designer's tuning dial, editable per card in
+          the new CSV workflow. Sections below predate these rulings where they conflict.
+        </p>
+      </Card>
+
+      <Card>
         <b className="font-display text-parchment">The short version.</b>
         <ul className="ml-5 list-disc">
           <LI>The rules as written (v1.2 + the July 5 card sheets) had gaps that made them unplayable as-is — most critically, <b>no movement rules</b> and a contradiction in the turn structure. The prototype fills every gap with a documented, flagged ruling. Nothing was silently invented: 30 numbered decisions, each reversible.</LI>
