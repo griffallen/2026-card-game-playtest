@@ -4,6 +4,7 @@ import {
   type GameAction, type GameState, type HandCardView, type Seat, type TargetRef, type ZoneId,
 } from '@newgame/engine'
 import { CardFrame } from '@ui/components/CardFrame.tsx'
+import { HelpPanel } from '@ui/components/HelpPanel.tsx'
 import { UnitChip } from '@ui/game/UnitChip.tsx'
 import { InfluenceTrack } from '@ui/game/InfluenceTrack.tsx'
 import { DEMO_CARDS, aiControls, newLocalGame, type DemoConfig } from './local.ts'
@@ -35,6 +36,9 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const [toast, setToast] = useState('')
   const [paused, setPaused] = useState(false)
   const [speed, setSpeed] = useState<Speed>(config.mode === 'watch' ? 'normal' : 'fast')
+  const [showHelp, setShowHelp] = useState(false)
+  const [lethalPlay, setLethalPlay] = useState<{ card: string; cede: number } | null>(null)
+  const [skipToMyTurn, setSkipToMyTurn] = useState(false)
   const logRef = useRef<HTMLDivElement>(null)
 
   // Policy rng travels WITH the history (snapshot after every action), so stepping
@@ -78,6 +82,23 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, aiWindow, paused, speed, config.mode])
+
+  // Quality of life: when Pass is literally your only legal action (common during the
+  // opponent's turn), take it automatically — there's no decision being removed.
+  // "Skip to my turn" passes every off-turn window until the turn comes back.
+  const onlyPass = myWindow && view.actions.length === 1 && view.actions[0].type === 'pass'
+  const offTurn = myWindow && state.activeSeat !== seat
+  useEffect(() => {
+    if (state.activeSeat === seat) setSkipToMyTurn(false)
+  }, [state.activeSeat, seat])
+  useEffect(() => {
+    if (!myWindow || config.mode === 'hotseat') return
+    if (onlyPass || (skipToMyTurn && offTurn)) {
+      const t = setTimeout(() => apply({ type: 'pass' }, seat), 450)
+      return () => clearTimeout(t)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, myWindow, onlyPass, skipToMyTurn, offTurn, config.mode])
 
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight }, [view.log])
   useEffect(() => {
@@ -195,9 +216,18 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     setSelection(selection?.kind === 'hand' && selection.id === card.id ? null : { kind: 'hand', id: card.id })
   }
 
-  function beginPlay(cardId: string) {
+  function beginPlay(cardId: string, confirmedLethal = false) {
     const plays = playActionsFor(cardId)
     if (!plays.length) return
+    // Safety rail: warn when a red Overextend play would hand the opponent the influence win
+    const def = DEMO_CARDS[state.cardOf[cardId]]
+    const cede = (def.onPlay ?? []).reduce((n, op) => (op.op === 'influence' && op.n < 0 ? n + op.n : n), 0)
+    const influenceMineNow = seat === 0 ? state.influence : -state.influence
+    if (!confirmedLethal && cede < 0 && influenceMineNow + cede <= -view.thresholds[foe]) {
+      setLethalPlay({ card: cardId, cede: -cede })
+      return
+    }
+    setLethalPlay(null)
     if ((plays[0].targets?.length ?? 0) === 0) apply({ type: 'play', card: cardId }, seat)
     else setSelection({ kind: 'targeting', card: cardId, collected: [] })
   }
@@ -221,24 +251,51 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     ? 'The battle is decided.'
     : aiWindow
       ? `${names[view.actorSeat]} (AI) is thinking…`
-      : config.mode === 'hotseat'
-        ? `${names[seat]} — your window (screen follows the active seat)`
-        : view.phase === 'resource' ? 'Bank a card as a resource, or keep your hand.' : 'Your action.'
+      : skipToMyTurn && offTurn
+        ? 'Passing through to your turn…'
+        : config.mode === 'hotseat'
+          ? `${names[seat]} — your window (screen follows the active seat)`
+          : view.phase === 'resource' ? 'Bank a card as a resource, or keep your hand.' : 'Your action.'
+
+  // Contextual guidance: say WHAT you can do right now, and why passes get forced.
+  const hints: string[] = []
+  if (myWindow) {
+    const ready = my.resources.filter(r => !r.exhausted).length
+    if (view.phase === 'resource') {
+      hints.push(`Banking tucks a card away forever and pays +1 toward costs every turn — you'd have ${ready + 1} each turn after this. Most turns, bank.`)
+    } else if (onlyPass) {
+      hints.push(offTurn
+        ? 'Nothing to respond with — on their turn you can only play cards, and none are affordable right now.'
+        : 'No legal plays left: resources spent and every unit has acted. Pass to hand the window over.')
+    } else {
+      const playable = new Set(view.actions.filter(a => a.type === 'play').map(a => a.card)).size
+      const attackers = new Set(view.actions.filter(a => a.type === 'attack').map(a => a.attacker)).size
+      const movers = new Set(view.actions.filter(a => a.type === 'move').map(a => a.unit)).size
+      const bits = [
+        playable && `play ${playable} card${playable > 1 ? 's' : ''}`,
+        attackers && `attack with ${attackers} unit${attackers > 1 ? 's' : ''}`,
+        movers && `move ${movers} unit${movers > 1 ? 's' : ''}`,
+      ].filter(Boolean)
+      if (bits.length) hints.push(`Right now you can ${bits.join(' · ')} — or pass. ${ready} resource${ready === 1 ? '' : 's'} ready.`)
+      if (offTurn) hints.push('Their turn: card plays only — attacks and moves wait for yours.')
+    }
+  }
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex items-center gap-3 border-b hairline px-3 py-1.5 text-sm">
+    <div className="flex h-full flex-col max-lg:block max-lg:h-auto">
+      <div className="flex flex-wrap items-center gap-3 border-b hairline px-3 py-1.5 text-sm">
         <button className="text-dim hover:text-body" onClick={onExit}>← Setup</button>
         <span className="font-display text-parchment">{names[0]} vs {names[1]}</span>
         <span className="text-xs text-dim">Turn {view.turn} · {view.phase === 'resource' ? 'Resource step' : 'Main phase'} · seed {config.seed}</span>
         <span className="ml-auto flex gap-1.5">
+          <button className="btn !px-2.5 !py-0.5 text-xs" onClick={() => setShowHelp(true)} title="how to play">?</button>
           <button className="btn !py-0.5 text-xs" onClick={copyChronicle}>Copy chronicle</button>
           <button className="btn !py-0.5 text-xs" onClick={exportGame}>Download game file</button>
         </span>
       </div>
 
-      {/* phones: plain block flow, sidebar below the board; lg+: two-column grid */}
-      <div className="min-h-0 flex-1 overflow-y-auto lg:grid lg:grid-cols-[1fr_290px] lg:overflow-visible">
+      {/* phones: plain block flow in the page scroll (bars scroll away); lg+: two-column grid */}
+      <div className="min-h-0 flex-1 max-lg:overflow-visible lg:grid lg:grid-cols-[1fr_290px]">
         <div className="flex min-h-0 flex-col p-2">
           <PlayerBar
             name={`${names[foe]}${aiControls(config, foe) ? ' 🤖' : ''}`} life={their.life} handCount={their.handCount}
@@ -301,8 +358,26 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         <div className="flex min-h-0 flex-col gap-2 border-t hairline p-2 lg:border-l lg:border-t-0">
           <div className="panel p-3">
             <div className="text-[10px] uppercase tracking-widest text-dim">Turn {view.turn} — {names[view.activeSeat]}</div>
-            <div className={`mt-1 font-display text-parchment ${myWindow ? 'pulse-soft text-goldbright' : ''}`}>{statusLine}</div>
+            <div className={`mt-1 font-display text-parchment ${myWindow && !skipToMyTurn ? 'pulse-soft text-goldbright' : ''}`}>{statusLine}</div>
+            {hints.map((h, i) => <p key={i} className="mt-1.5 text-[11px] leading-relaxed text-dim">{h}</p>)}
+            {lethalPlay && (
+              <div className="mt-2 rounded-md border border-[#b23a2c] bg-[#b23a2c]/10 p-2 text-xs">
+                <p className="text-[#e5a99f]">
+                  ⚠ <b>{DEMO_CARDS[state.cardOf[lethalPlay.card]]?.name}</b> cedes {lethalPlay.cede} influence — that
+                  puts {names[foe]} at their winning threshold. <b>This play loses you the game.</b>
+                </p>
+                <div className="mt-1.5 flex gap-1.5">
+                  <button className="btn btn-danger !py-0.5 text-xs" onClick={() => beginPlay(lethalPlay.card, true)}>Play it anyway</button>
+                  <button className="btn !py-0.5 text-xs" onClick={() => setLethalPlay(null)}>Never mind</button>
+                </div>
+              </div>
+            )}
             <div className="mt-2 flex flex-wrap gap-1.5">
+              {offTurn && !onlyPass && config.mode === 'vs-ai' && !skipToMyTurn && (
+                <button className="btn !py-1 text-xs" onClick={() => setSkipToMyTurn(true)} title="auto-pass every response window until your turn starts">
+                  Skip to my turn ⏭
+                </button>
+              )}
               {myWindow && view.phase === 'resource' && (
                 <button className="btn !py-1 text-xs" onClick={() => apply({ type: 'skipResource' }, seat)}>Keep hand →</button>
               )}
@@ -383,6 +458,8 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           <div className="panel px-3 py-2 text-sm text-body">{toast}</div>
         </div>
       )}
+
+      {showHelp && <HelpPanel onClose={() => setShowHelp(false)} />}
 
       {view.winner !== null && !overlayDismissed && (
         <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4">

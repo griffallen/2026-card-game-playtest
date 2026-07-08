@@ -5,6 +5,7 @@ import { useGameSocket } from '../game/useGameSocket.ts'
 import { UnitChip } from '../game/UnitChip.tsx'
 import { InfluenceTrack } from '../game/InfluenceTrack.tsx'
 import { CardFrame, type CardLike } from '../components/CardFrame.tsx'
+import { HelpPanel } from '../components/HelpPanel.tsx'
 import { get } from '../api.ts'
 
 type Selection =
@@ -27,6 +28,7 @@ export function GameTable() {
   const [cardIndex, setCardIndex] = useState<Record<string, CardLike>>({})
   const [confirming, setConfirming] = useState<'concede' | 'undo' | null>(null)
   const [overlayDismissed, setOverlayDismissed] = useState(false)
+  const [showHelp, setShowHelp] = useState(false)
   const logRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -174,19 +176,20 @@ export function GameTable() {
         : `Waiting for ${names[view.actorSeat]}…`
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col max-lg:block max-lg:h-auto">
       {/* top bar */}
-      <div className="flex items-center gap-3 border-b hairline px-3 py-1.5 text-sm">
+      <div className="flex flex-wrap items-center gap-3 border-b hairline px-3 py-1.5 text-sm">
         <Link to="/" className="text-dim hover:text-body">← Lobby</Link>
         <span className="font-display text-parchment">{meta?.gameName}</span>
         <span className="text-xs text-dim">Turn {view.turn} · {phaseLabel}</span>
         {spectators > 0 && <span className="text-xs text-dim">👁 {spectators}</span>}
         <span className={`ml-auto text-xs ${connected ? 'text-dim' : 'text-[#e5a99f]'}`}>{connected ? '' : 'reconnecting…'}</span>
         {spectating && <span className="rounded bg-raised px-2 py-0.5 text-xs text-dim">spectating</span>}
+        <button className="btn !px-2.5 !py-0.5 text-xs" onClick={() => setShowHelp(true)} title="how to play">?</button>
       </div>
 
-      {/* phones: plain block flow, sidebar below the board; lg+: two-column grid */}
-      <div className="min-h-0 flex-1 overflow-y-auto lg:grid lg:grid-cols-[1fr_290px] lg:overflow-visible">
+      {/* phones: plain block flow in the page scroll (bars scroll away); lg+: two-column grid */}
+      <div className="min-h-0 flex-1 max-lg:overflow-visible lg:grid lg:grid-cols-[1fr_290px]">
         {/* ── board ── */}
         <div className="flex min-h-0 flex-col p-2">
           {/* their bar */}
@@ -334,6 +337,8 @@ export function GameTable() {
           </div>
         </div>
       </div>
+
+      {showHelp && <HelpPanel onClose={() => setShowHelp(false)} />}
 
       {/* toasts */}
       <div className="pointer-events-none fixed bottom-3 left-3 z-50 flex flex-col gap-2">

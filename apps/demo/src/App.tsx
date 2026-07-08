@@ -7,8 +7,9 @@ export function App() {
   const tab = ({ isActive }: { isActive: boolean }) =>
     `rounded px-3 py-1 text-sm ${isActive ? 'bg-raised text-goldbright' : 'text-dim hover:text-body'}`
   return (
-    <div className="flex h-full flex-col">
-      <header className="flex items-center gap-4 border-b hairline px-4 py-2.5">
+    // phones: the document scrolls and the header scrolls away with it; desktop: fixed shell
+    <div className="flex h-full flex-col max-lg:block max-lg:h-auto max-lg:min-h-full">
+      <header className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b hairline px-4 py-2.5">
         <span className="font-display text-lg font-bold tracking-wide text-parchment">
           ⚔ New Game <span className="ml-1 align-middle text-[10px] font-normal uppercase tracking-widest text-dim">static demo — no server, everything runs in your browser</span>
         </span>
@@ -18,7 +19,7 @@ export function App() {
           <NavLink to="/audit" className={tab}>Design Audit</NavLink>
         </nav>
       </header>
-      <main className="min-h-0 flex-1 overflow-y-auto">
+      <main className="min-h-0 flex-1 overflow-y-auto max-lg:overflow-visible">
         <Routes>
           <Route path="/" element={<Navigate to="/play" replace />} />
           <Route path="/play" element={<Play />} />

@@ -49,9 +49,9 @@ export function App() {
         path="*"
         element={
           <RequireAuth>
-            <div className="flex h-full flex-col">
+            <div className="flex h-full flex-col max-lg:block max-lg:h-auto max-lg:min-h-full">
               <Header />
-              <main className="min-h-0 flex-1 overflow-y-auto">
+              <main className="min-h-0 flex-1 overflow-y-auto max-lg:overflow-visible">
                 <Routes>
                   <Route path="/" element={<Lobby />} />
                   <Route path="/decks" element={<Decks />} />
