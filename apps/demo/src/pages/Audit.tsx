@@ -56,6 +56,22 @@ export function Audit() {
       </Card>
 
       <Card>
+        <b className="font-display text-parchment">Conformance audit — v2.0 verified against the rules + baseline (July 8).</b>
+        <p className="mt-2 text-[14px] leading-relaxed text-body/90">
+          An adversarial pass checked the engine against the written rules clause-by-clause and stress-ran the
+          simulator. <b>The core loop conforms exactly</b> — rounds, initiative, the intercept combat, prison,
+          influence, and win order all match the spec and are covered by tests. Across <b>600 bot games: zero
+          crashes, both win conditions reachable, and first player wins ≈50%</b> — the round structure dissolved
+          the first-mover edge, as intended. Two real gaps were found and fixed: the engine now fires
+          <b> end-of-round triggers</b> (a promised hook that had been silently skipped), and unimplemented
+          rules-parameter values now fail loudly instead of being ignored. <b>Two questions for you:</b> <i>Reach</i>
+          (Blaze Juggernaut) attacks an adjacent zone like Ranged but can still hit bases and takes counter-damage —
+          confirm that's the intent; and <i>Aura of Resolve</i> pays +1 influence every round at start-of-round, which
+          brushes against your "no passive influence" ruling — keep it, or make it event-earned?
+        </p>
+      </Card>
+
+      <Card>
         <b className="font-display text-parchment">Update — designer session #1 (July 8).</b>
         <p className="mt-2 text-[14px] leading-relaxed text-body/90">
           The designer reviewed this audit and ruled: <b>mulligans</b> (unlimited, one fewer card each),

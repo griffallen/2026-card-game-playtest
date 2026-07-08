@@ -19,6 +19,7 @@ export const T: CardSet = {
   crusher: u('crusher', 4, 3, 3, { kw: [{ k: 'breakthrough', n: 2 }] }),
   loner: u('loner', 2, 2, 2, { kw: [{ k: 'overextend', n: 3 }] }),
   hawk: u('hawk', 3, 2, 2, { kw: [{ k: 'flying' }] }),
+  warden: u('warden', 2, 1, 3, { endOfRound: { ops: [{ op: 'influence', n: 1 }] } }),
   bolt: { slug: 'bolt', name: 'bolt', color: 'red', type: 'action', cost: 1, text: '',
     targets: [{ t: 'unitOrBase', side: 'any', baseSide: 'any' }],
     onPlay: [{ op: 'damage', t: 'chosen0', n: 2 }] },

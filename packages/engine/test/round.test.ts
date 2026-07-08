@@ -123,4 +123,15 @@ describe('round structure (decision 40)', () => {
     expect(v.outOfRound).toEqual([false, false])
     expect(v.pendingAttack).toBe(null)
   })
+
+  it('endOfRound triggers fire at end of round (spec §1.4 — decision-audit F1)', () => {
+    let s = toLoop(game())
+    const seat = s.actorSeat
+    put(s, seat, 'warden', 1, { enteredRound: 0 }) // toy unit: endOfRound → gain 1 influence
+    const before = s.influence
+    s = applyAction(s, { type: 'pass' }, s.actorSeat).state
+    s = applyAction(s, { type: 'pass' }, s.actorSeat).state
+    expect(s.round).toBe(2)                                // round ended
+    expect(s.influence - before).toBe(seat === 0 ? 1 : -1) // warden paid out at end of round
+  })
 })

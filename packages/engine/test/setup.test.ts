@@ -137,6 +137,17 @@ describe('createGame', () => {
     expect(inf).toBe(-2)
   })
 
+  it('rejects rules configs with unimplemented param values (fail loudly, not silently — audit F7)', () => {
+    expect(() => createGame({
+      seed: 1, cardSet: CARDS, players: [{ name: 'A', deck: deck() }, { name: 'B', deck: deck() }],
+      rules: { ...DEFAULT_RULES, counterAssignment: 'defender' },
+    })).toThrow(/counterAssignment/)
+    expect(() => createGame({
+      seed: 1, cardSet: CARDS, players: [{ name: 'A', deck: deck() }, { name: 'B', deck: deck() }],
+      rules: { ...DEFAULT_RULES, armorPerAttack: 'perAttacker' },
+    })).toThrow(/armorPerAttack/)
+  })
+
   it('rejects illegal decks', () => {
     expect(() =>
       createGame({

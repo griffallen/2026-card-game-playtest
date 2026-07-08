@@ -88,6 +88,7 @@ export interface CardDef {
   onDefend?: Op[]
   onKill?: Op[]
   startOfRound?: { cond?: Cond; ops: Op[] }
+  endOfRound?: { cond?: Cond; ops: Op[] }
   statics?: Static[]
   designerNote?: string
   artUrl?: string | null

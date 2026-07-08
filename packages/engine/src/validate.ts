@@ -56,6 +56,15 @@ export function validateCardSet(cards: CardSet): string[] {
         errors.push(...validateOp(slug, op, def, 0, 'startOfRound'))
       }
     }
+    if (def.endOfRound) {
+      if (def.type === 'action') err(slug, 'actions cannot have endOfRound')
+      for (const k of Object.keys(def.endOfRound.cond ?? {})) {
+        if (!COND_KEYS.has(k)) err(slug, `unknown condition ${k}`)
+      }
+      for (const op of def.endOfRound.ops) {
+        errors.push(...validateOp(slug, op, def, 0, 'endOfRound'))
+      }
+    }
     for (const st of def.statics ?? []) errors.push(...validateStatic(slug, st))
   }
   return errors

@@ -70,8 +70,24 @@ export function finishBankStep(state: GameState) {
   }
 }
 
-/** End of round: overextend bills, round-mods expire, flags reset, next round begins (spec §1.4). */
+/** End of round: end-of-round triggers → overextend bills → round-mods expire, then next round (spec §1.4). */
 export function endRound(state: GameState, actorSeat: Seat) {
+  // spec §1.4: end-of-round triggers fire FIRST (initiative holder's units first, entry/id order)
+  for (const seat of [state.initiative, other(state.initiative)] as const) {
+    for (const u of unitsOf(state, seat)) {
+      if (state.winner !== null) return
+      if (u.imprisoned) continue
+      const own = defOf(state, u.id).endOfRound
+      if (own && condHolds(state, seat, own.cond)) runOps({ state, controller: seat, sourceUnit: u.id, actorSeat }, own.ops)
+      for (const upId of u.upgrades) {
+        const up = defOf(state, upId).endOfRound
+        if (up && condHolds(state, seat, up.cond)) runOps({ state, controller: seat, sourceUnit: u.id, actorSeat }, up.ops)
+      }
+    }
+  }
+  stateBasedCleanup(state, actorSeat)
+  if (state.winner !== null) return
+
   // decision 35: units that overextended take their self-damage now
   for (const u of unitsOf(state)) {
     if (u.overextendedBy > 0) {

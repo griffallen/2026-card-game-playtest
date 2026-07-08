@@ -68,7 +68,7 @@ A **round** = one **start step per player** (initiative holder first), then the 
 
 1. **Declare:** choose one or more friendly ready, non-imprisoned units **in one zone** (up to `maxAttackers`, 0 = unlimited); **exhaust them all**. Choose one target, legal for the whole group:
    - an enemy unit in the **same zone**, or
-   - an enemy unit in an **adjacent zone** only if **every attacker has Ranged** (Ranged never targets bases), or
+   - an enemy unit in an **adjacent zone** only if **every attacker has Ranged or Reach** (Ranged never targets bases and takes no counter cross-zone; Reach *may* assault bases and *does* take counter — §3.1), or
    - the **enemy base**, only if the group stands in that enemy's Home zone.
    - **Overextend is declared per attacking unit** (decision 35: +N power now, N self-damage at end of round).
 2. **Intercept window (the defender prompt):** the defender may redirect the *whole* attack to one **ready, non-imprisoned** unit they control **in the target's zone**, other than the declared target. Intercepting **exhausts** the interceptor (`interceptExhausts`) — unless it has **Guard**, which intercepts without exhausting. Declining leaves the declared target. If no legal interceptor exists, the window auto-passes (consistent with all named response windows). Guard **no longer forces targeting** — protection is the defender's choice, made here.
@@ -76,7 +76,7 @@ A **round** = one **start step per player** (initiative holder first), then the 
    - The attackers' **combined power** (+Overextend bonuses) is **one hit**; the final target's Armor reduces it **once** (`armorPerAttack: once` — massing attackers is the designed answer to armor).
    - The final target, if a non-imprisoned **unit**, deals its full `power` back to the **highest-power attacker** (ties → earliest entry order; `counterAssignment: auto`), reduced by that attacker's Armor. A **base** deals nothing back.
    - **Breakthrough N:** if the final target is a unit and is destroyed, excess damage beyond lethal — capped at the **sum** of the attackers' Breakthrough values — hits its controller's Life.
-4. **Triggers:** `onAttack` fires per attacking unit at declaration. `onDefend` fires when a unit **is the final target or intercepts** (Yellow's guards get paid for stepping in — decision 34's intent). `onAttackBase` fires at resolution only if the *final* target is the base (an intercepted base-attack never "hit the base"). `onKill` fires for **every** attacking unit if the final target dies (all participants get credit).
+4. **Triggers:** `onAttack` fires per attacking unit at declaration. `onDefend` fires when a unit **is the final target or intercepts** (Yellow's guards get paid for stepping in — decision 34's intent). `onAttackBase` fires at resolution only if the *final* target is the base (an intercepted base-attack never "hit the base"). `onKill` fires for **every** attacking unit if the final target dies (all participants get credit). (⚑ Implementation: `onDefend` resolves *before* damage lands and references the first attacker — fine for the shipped influence-only onDefend cards; revisit the timing/target if a strike-back onDefend is ever printed.)
 5. Destroyed units (damage ≥ health) go to their owner's discard with their upgrades. Damage persists between rounds otherwise.
 
 **Engine shape:** the game's first mid-action prompt — paired actions `attackDeclared` → `interceptResponse` in the event log, exactly like the existing named response windows.
@@ -87,7 +87,7 @@ Move one friendly ready unit to an **adjacent zone**; the unit **exhausts** (`mo
 
 ### 1.9 Activated abilities
 
-Printed as "Exhaust: effect" — exhaust the ready unit, resolve the effect. (Only a handful of cards use this.)
+Printed as "Exhaust: effect" — exhaust the ready unit, resolve the effect. **⚑ Deferred — not implemented:** no card in the current pool uses an activated ability, so the `activate` action and the ability field are unbuilt. Add when a card needs one.
 
 ### 1.10 Influence
 
@@ -157,7 +157,7 @@ Cards carry structured effects — never free text — so the engine can validat
 
 ### 3.1 Keywords (static, on units)
 
-`guard` (intercepts without exhausting — §1.7; forced targeting is gone), `armor N`, `rush` (the round it enters play, its move doesn't exhaust it — decision 41; `rushCoversAttack` extends to attacks; meaningful on veterans when granted mid-round), `ranged`, `reach`, `flying` (⚑), `breakthrough N`, `overextend N` (optional attack gamble: +N power now, N self-damage at end of round — decision 35), `cantAttack`, `untargetable` (can't be targeted by enemy actions — Chain of Law).
+`guard` (intercepts without exhausting — §1.7; forced targeting is gone), `armor N`, `rush` (the round it enters play, its move doesn't exhaust it — decision 41; `rushCoversAttack` extends to attacks; meaningful on veterans when granted mid-round), `ranged` (may shoot an adjacent zone; never bases; no counter-damage cross-zone), `reach` (may attack an adjacent zone like Ranged, but unlike Ranged it *can* still assault bases and *does* take counter-damage — Blaze Juggernaut), `flying` (⚑), `breakthrough N`, `overextend N` (optional attack gamble: +N power now, N self-damage at end of round — decision 35), `cantAttack`, `untargetable` (can't be targeted by enemy actions — Chain of Law).
 
 ### 3.2 Effect ops (one-shot, run in order)
 
@@ -167,18 +167,21 @@ Cards carry structured effects — never free text — so the engine can validat
 | `damageAll` | scope (zone/all/enemy), amount | e.g. Scorching Howl |
 | `heal` | target, amount | unit damage or base life (capped) |
 | `draw` | count | |
-| `influence` | amount (±, from controller's view) | always event-attached (decision 34): onDefend / onKill / onPlay |
+| `influence` | amount (±, from controller's view) | event-attached (decision 34): onDefend / onKill / onPlay / startOfRound / endOfRound — ⚑ Aura of Resolve's per-round startOfRound gain reads like the passive income decision 34 rejected; designer to confirm |
 | `imprison` | target(s) or filter (e.g. power ≤ N, all-in-zone) | source recorded |
-| `release` | target | |
+| `release` | target | ⚑ reserved — no current card; standalone release not implemented (auto-release on source-death / negative influence is built into cleanup) |
 | `buff` | target, power/health delta, duration (`round`/`permanent`) | "this round" expires at end of round |
 | `grantKeyword` | target, keyword, duration | e.g. "target unit gains Rush" |
 | `destroy` | target, constraint (e.g. damaged, upgrade) | |
-| `readyUnits` | scope or single target | "second wind" cards |
+| `double` | target | doubles the target's Power for the round (Unchained Rage) |
+| `readyUnits` | scope or single target | "second wind" cards; with a single chosen target = ready one unit (Final Onslaught) |
 | `extraAction` | — | after this action resolves, the same player immediately takes another action (opponent's window skipped once). Final Onslaught = `readyUnits(one target)` + `extraAction` (decision 43; replaces `extraTurn`) |
-| `moveUnit` | target, zone | |
+| `moveUnit` | target, zone | ⚑ reserved — no current card; not implemented as an op (movement is a player action, §1.8) |
 | `preventBaseDamage` | amount, duration round | Devout Intervention |
 | `removeNegative` | target | clears imprisonment + negative modifiers (Absolution) |
 | `thresholdMod` | side, delta, while-in-play | Radiant Citadel ⚑ |
+
+**Spec ↔ code names:** the engine implements a few ops/triggers under different identifiers — `damageAll`=`damageFilter`, `grantKeyword`=`grant`, `readyUnits`=`ready`, `preventBaseDamage`=`preventBase`, `thresholdMod`=`oppThreshold` (a static), `onEnter`=`onEnterZone`/`onPlay`. All are guarded by `validateCardSet`.
 
 ### 3.3 Triggers (on units/upgrades)
 
@@ -203,3 +206,11 @@ A card may reference a named custom routine implemented in the engine (`custom: 
 ## 5. Undo (playtest affordance, ⚑)
 
 Either player may rewind the last action (event-sourced replay of `actions[0..n-1]`). Logged in the game log as "X undid Y". Hidden-information leaks (an undone draw) are accepted — this is a trust-based tool for two collaborators.
+
+## 6. Conformance audit (2026-07-08)
+
+An adversarial spec↔engine audit verified §1.5–1.12 conform exactly — all seven surfaced judgment calls are present and tested (breakthrough-sum, all-attackers-onKill, interceptor-in-target-zone, claim-to-lock, overextend-before-expiry, `summoningSickness` legacy param, all-Ranged/Reach adjacent gate). Reconciled from that pass:
+
+- **Fixed in code:** `endOfRound` triggers now fire (§1.4 — they were silently ignored, a GENESYS-style hole); rules configs with unimplemented values (`counterAssignment`≠`auto`, `armorPerAttack`≠`once`) now **fail loudly** at game creation instead of being silently ignored.
+- **Clarified above:** `reach` (§1.7/§3.1), the `double` op, deferred §1.9 activated abilities, reserved `release`/`moveUnit` ops, `onDefend` timing.
+- **Open / low-severity:** `simultaneousLifeTiebreak` — only `actor` (the spec default = acting player, §1.12) is meaningfully implemented; `active` maps to the initiative holder; `draw` has no game-state outcome yet and falls back to `actor`. Setup draws hands *before* the coin flip (§1.3 lists the flip first) — harmless, determinism preserved (draws consume no RNG).

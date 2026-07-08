@@ -24,7 +24,7 @@
 | B2 | Life changes don't call attention | High | ✅ Life numeral flashes on damage (red) / heal (green) |
 | B3 | No animation of attacks/movement (which unit did it) | Medium | 💤 real animation pass later; the ticker names actor and target for now |
 | B4 | Influence changes move the marker but aren't narrated in place | Medium | ✅ covered by ticker (engine already logs every shift) |
-| B5 | Turn changes on mobile can be missed | Medium | ✅ ticker shows "— Turn N —" lines |
+| B5 | Turn changes on mobile can be missed | Medium | ✅ ticker/chronicle shows "— Round N · <player> has the initiative —" lines (v2.0) |
 
 ## C. "What can I do?" — affordances
 
