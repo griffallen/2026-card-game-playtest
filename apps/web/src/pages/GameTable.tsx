@@ -18,7 +18,7 @@ type Inspect =
 
 type Selection =
   | { kind: 'hand'; id: string }
-  | { kind: 'unit'; id: string }
+  | { kind: 'units'; ids: string[] }   // one or more ready friendly attackers in one zone
   | { kind: 'targeting'; card: string; collected: TargetRef[] }
   | null
 
@@ -50,9 +50,9 @@ export function GameTable() {
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight
   }, [view?.log])
-  useEffect(() => { setSelection(null) }, [view?.actorSeat, view?.turn, view?.phase])
+  useEffect(() => { setSelection(null) }, [view?.actorSeat, view?.round, view?.phase])
   useEffect(() => { setSetupPicks([]) }, [view?.actorSeat, view?.phase])
-  useEffect(() => { setArmOverextend(false) }, [selection?.kind === 'unit' ? selection.id : null])
+  useEffect(() => { setArmOverextend(false) }, [selection?.kind === 'units' ? selection.ids.join(',') : null])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setSelection(null); setConfirming(null); setInspect(null) } }
     window.addEventListener('keydown', onKey)
@@ -71,6 +71,9 @@ export function GameTable() {
     (a): a is Extract<GameAction, { type: 'play' }> => a.type === 'play' && a.card === cardId,
   )
   const resourceActionFor = (cardId: string) => actions.find(a => a.type === 'resource' && a.card === cardId)
+  /** Of the given attackers, which carry Overextend (so the arm-OE toggle applies to them). */
+  const overextendersIn = (ids: string[]) =>
+    ids.filter(id => view?.zones.flatMap(z => z.units).find(u => u.id === id)?.keywords.some(k => k.startsWith('overextend')))
 
   /** Highlighted refs for the current selection state. */
   const highlights: TargetRef[] = useMemo(() => {
@@ -88,11 +91,17 @@ export function GameTable() {
       }
       return refs
     }
-    if (selection.kind === 'unit') {
+    if (selection.kind === 'units') {
+      const sel = selection.ids
       const refs: TargetRef[] = []
+      // a lone unit may also move; a group cannot (one action moves one unit)
+      if (sel.length === 1) {
+        for (const a of actions) if (a.type === 'move' && a.unit === sel[0]) refs.push({ kind: 'zone', zone: a.to })
+      }
+      // highlight a target if some legal attack whose attacker group ⊇ our selection hits it
       for (const a of actions) {
-        if (a.type === 'move' && a.unit === selection.id) refs.push({ kind: 'zone', zone: a.to })
-        if (a.type === 'attack' && a.attacker === selection.id) refs.push(a.target)
+        if (a.type !== 'attack') continue
+        if (sel.every(id => a.attackers.includes(id)) && !refs.some(r => sameRef(r, a.target))) refs.push(a.target)
       }
       return refs
     }
@@ -117,14 +126,18 @@ export function GameTable() {
   const isHighlighted = (ref: TargetRef) => highlights.some(h => sameRef(h, ref))
   const glowFor = (ref: TargetRef): 'target' | 'attack' | 'none' => {
     if (!isHighlighted(ref)) return 'none'
-    return selection?.kind === 'unit' && ref.kind !== 'zone' ? 'attack' : 'target'
+    return selection?.kind === 'units' && ref.kind !== 'zone' ? 'attack' : 'target'
   }
 
   function clickTarget(ref: TargetRef) {
     if (!isHighlighted(ref) || !selection) return
-    if (selection.kind === 'unit') {
-      if (ref.kind === 'zone') sendAction({ type: 'move', unit: selection.id, to: ref.zone })
-      else sendAction({ type: 'attack', attacker: selection.id, target: ref, ...(armOverextend ? { overextend: true } : {}) })
+    if (selection.kind === 'units') {
+      if (ref.kind === 'zone') {
+        sendAction({ type: 'move', unit: selection.ids[0], to: ref.zone })
+      } else {
+        const overextend = armOverextend ? overextendersIn(selection.ids) : []
+        sendAction({ type: 'attack', attackers: selection.ids, target: ref, ...(overextend.length ? { overextend } : {}) })
+      }
       setArmOverextend(false)
       setSelection(null)
       return
@@ -154,7 +167,7 @@ export function GameTable() {
       setSetupPicks(p => p.includes(card.id) ? p.filter(id => id !== card.id) : p.length < setupN ? [...p, card.id] : p)
       return
     }
-    if (view!.phase === 'resource') {
+    if (view!.phase === 'bank') {
       setSelection(selection?.kind === 'hand' && selection.id === card.id ? null : { kind: 'hand', id: card.id })
       return
     }
@@ -176,19 +189,50 @@ export function GameTable() {
   }
 
   const unitActionable = (unitId: string) =>
-    actions.some(a => (a.type === 'move' && a.unit === unitId) || (a.type === 'attack' && a.attacker === unitId))
+    actions.some(a => (a.type === 'move' && a.unit === unitId) || (a.type === 'attack' && a.attackers.includes(unitId)))
+
+  /** Can `add` join the current attacker group? True iff a legal attack covers the whole group. */
+  const attackerCanJoin = (ids: string[], add: string) => {
+    const want = [...ids, add]
+    return actions.some(a => a.type === 'attack' && want.every(id => a.attackers.includes(id)))
+  }
 
   function clickMyUnit(unitId: string) {
     if (!myWindow || !unitActionable(unitId)) { setInspect({ kind: 'unit', id: unitId }); return }
-    setSelection(selection?.kind === 'unit' && selection.id === unitId ? null : { kind: 'unit', id: unitId })
+    setSelection(prev => {
+      if (prev?.kind === 'units') {
+        if (prev.ids.includes(unitId)) {                       // tap again to drop it from the group
+          const ids = prev.ids.filter(id => id !== unitId)
+          return ids.length ? { kind: 'units', ids } : null
+        }
+        if (attackerCanJoin(prev.ids, unitId)) return { kind: 'units', ids: [...prev.ids, unitId] }
+        return { kind: 'units', ids: [unitId] }                // can't group with the current pick — start fresh
+      }
+      return { kind: 'units', ids: [unitId] }
+    })
   }
 
   const selectedHand = selection?.kind === 'hand' ? selection.id : null
   const targetingCard = selection?.kind === 'targeting'
     ? cardIndex[view.hand.find(h => h.id === selection.card)?.slug ?? ''] : null
 
-  const phaseLabel = view.phase === 'resource' ? 'Resource step' : 'Main phase'
-  const offTurn = myWindow && view.activeSeat !== seat
+  const phaseLabel = view.phase === 'setup' ? 'Setup'
+    : view.phase === 'bank' ? 'Start of round'
+    : view.phase === 'intercept' ? 'Intercept'
+    : 'Actions'
+
+  // intercept window: the declared attack the defender must answer (public info — shown to everyone)
+  const pendingAttack = view.phase === 'intercept' ? view.pendingAttack : null
+  const interceptMode = myWindow && view.phase === 'intercept'
+  const interceptorIds = interceptMode ? actions.flatMap(a => (a.type === 'intercept' ? [a.unit] : [])) : []
+  const unitName = (uid: string) => view.zones.flatMap(z => z.units).find(u => u.id === uid)?.name ?? 'a unit'
+  const pendingText = pendingAttack ? {
+    attackers: pendingAttack.attackers.map(unitName).join(', '),
+    target: pendingAttack.target.kind === 'base'
+      ? `${names[pendingAttack.target.seat]}'s base`
+      : pendingAttack.target.kind === 'unit' ? unitName(pendingAttack.target.id) : 'the field',
+  } : null
+
   const statusLine = view.winner !== null
     ? 'The battle is decided.'
     : spectating
@@ -196,10 +240,14 @@ export function GameTable() {
       : myWindow
         ? view.phase === 'setup'
           ? `Opening hand — pick ${setupN} cards to bank as your starting resources (${setupPicks.length}/${setupN}).`
-          : offTurn
-            ? 'Response window — you may play a card into their turn.'
-            : view.phase === 'resource' ? 'Bank a card as a resource, or keep your hand.' : 'Your action.'
-        : `Waiting for ${names[view.actorSeat]}…`
+          : view.phase === 'bank'
+            ? 'Start of round — bank a card as a resource, or keep your hand.'
+            : view.phase === 'intercept'
+              ? 'Under attack — intercept with a ready defender, or let it through.'
+              : 'Your action.'
+        : view.outOfRound[seat]
+          ? 'You claimed the initiative — resting until next round.'
+          : `Waiting for ${names[view.actorSeat]}…`
 
   return (
     <div className="flex h-full flex-col max-lg:block max-lg:h-auto">
@@ -207,7 +255,8 @@ export function GameTable() {
       <div className="flex flex-wrap items-center gap-3 border-b hairline px-3 py-1.5 text-sm">
         <Link to="/" className="text-dim hover:text-body">← Lobby</Link>
         <span className="font-display text-parchment">{meta?.gameName}</span>
-        <span className="text-xs text-dim">Turn {view.turn} · {phaseLabel}</span>
+        <span className="text-xs text-dim">Round {view.round} · {phaseLabel}</span>
+        <span className="text-xs text-goldbright/80" title="holds the initiative — acts first each round">⚑ {names[view.initiative]}</span>
         {spectators > 0 && <span className="text-xs text-dim">👁 {spectators}</span>}
         <span className={`ml-auto text-xs ${connected ? 'text-dim' : 'text-[#e5a99f]'}`}>{connected ? '' : 'reconnecting…'}</span>
         {spectating && <span className="rounded bg-raised px-2 py-0.5 text-xs text-dim">spectating</span>}
@@ -224,7 +273,7 @@ export function GameTable() {
             discardCount={their.discard.length} resources={their.resources.filter(r => !r.exhausted).length}
             resourceTotal={their.resources.length}
             online={online[foe]} enemy
-            baseGlow={isHighlighted({ kind: 'base', seat: foe })}
+            baseGlow={isHighlighted({ kind: 'base', seat: foe }) || (view.phase === 'intercept' && pendingAttack?.target.kind === 'base' && pendingAttack.target.seat === foe)}
             onClick={() => clickTarget({ kind: 'base', seat: foe })}
             onPile={pile => setInspect({ kind: 'pile', seat: foe, pile })}
             onBase={() => setInspect({ kind: 'base', seat: foe })}
@@ -249,13 +298,21 @@ export function GameTable() {
                     {units.map(u => {
                       const ref: TargetRef = { kind: 'unit', id: u.id }
                       const mine = u.owner === seat
-                      const glow = selection?.kind === 'unit' && selection.id === u.id ? 'selected' : glowFor(ref)
+                      const canIntercept = interceptMode && interceptorIds.includes(u.id)
+                      const glow: 'none' | 'selected' | 'target' | 'attack' = view.phase === 'intercept'
+                        ? canIntercept ? 'selected'
+                          : pendingAttack?.target.kind === 'unit' && pendingAttack.target.id === u.id ? 'target'
+                          : pendingAttack?.attackers.includes(u.id) ? 'attack'
+                          : 'none'
+                        : selection?.kind === 'units' && selection.ids.includes(u.id) ? 'selected' : glowFor(ref)
                       return (
                         <UnitChip
                           key={u.id} unit={u} mine={mine} glow={glow}
-                          actionable={mine && myWindow && unitActionable(u.id)}
+                          actionable={mine && myWindow && view.phase === 'loop' && unitActionable(u.id)}
                           onLongPress={() => setInspect({ kind: 'unit', id: u.id })}
                           onClick={() => {
+                            if (canIntercept) { sendAction({ type: 'intercept', unit: u.id }); return }
+                            if (interceptMode) { setInspect({ kind: 'unit', id: u.id }); return }
                             if (isHighlighted(ref)) clickTarget(ref)
                             else if (mine) clickMyUnit(u.id)
                             else setInspect({ kind: 'unit', id: u.id })
@@ -276,7 +333,7 @@ export function GameTable() {
               name={names[seat]} life={my.life} handCount={my.handCount} deckCount={my.deckCount}
               discardCount={my.discard.length} resources={my.resources.filter(r => !r.exhausted).length}
               resourceTotal={my.resources.length}
-              online baseGlow={isHighlighted({ kind: 'base', seat })}
+              online baseGlow={isHighlighted({ kind: 'base', seat }) || (view.phase === 'intercept' && pendingAttack?.target.kind === 'base' && pendingAttack.target.seat === seat)}
               onClick={() => clickTarget({ kind: 'base', seat })}
               onPile={pile => setInspect({ kind: 'pile', seat, pile })}
               onBase={() => setInspect({ kind: 'base', seat })}
@@ -312,14 +369,18 @@ export function GameTable() {
         {/* ── sidebar ── */}
         <div className="flex min-h-0 flex-col gap-2 border-t hairline p-2 lg:border-l lg:border-t-0">
           <div className="panel p-3">
-            <div className="text-[10px] uppercase tracking-widest text-dim">Turn {view.turn} — {names[view.activeSeat]}</div>
+            <div className="text-[10px] uppercase tracking-widest text-dim">Round {view.round} — {names[view.actorSeat]}&rsquo;s window{view.outOfRound[seat] ? ' · you rest' : ''}</div>
             <div className={`mt-1 font-display text-parchment ${myWindow ? 'pulse-soft text-goldbright' : ''}`}>{statusLine}</div>
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {myWindow && view.phase === 'resource' && (
+              {myWindow && view.phase === 'bank' && (
                 <button className="btn !py-1 text-xs" onClick={() => sendAction({ type: 'skipResource' })}>Keep hand →</button>
               )}
-              {myWindow && view.phase === 'main' && (
+              {myWindow && view.phase === 'loop' && (
                 <button className="btn !py-1 text-xs" onClick={() => sendAction({ type: 'pass' })}>Pass</button>
+              )}
+              {myWindow && view.phase === 'loop' && actions.some(a => a.type === 'claimInitiative') && (
+                <button className="btn !py-1 text-xs" title="take the initiative and rest — you act first next round"
+                  onClick={() => sendAction({ type: 'claimInitiative' })}>Claim initiative ⚑</button>
               )}
               {!spectating && view.winner === null && (
                 confirming === 'undo'
@@ -351,26 +412,36 @@ export function GameTable() {
                 <span className="text-[11px] text-dim">tap cards to choose ({setupPicks.length}/{setupN})</span>
               </div>
             )}
-            {selection?.kind === 'unit' && myWindow && (() => {
-              const u = view.zones.flatMap(z => z.units).find(x => x.id === selection.id)
-              const oe = u?.keywords.find(k => k.startsWith('overextend'))
-              if (!oe) return null
-              const n = Number(oe.split(' ')[1] ?? 0)
+            {interceptMode && pendingText && (
+              <div className="mt-2 flex flex-col gap-1.5 border-t hairline pt-2">
+                <p className="text-xs text-[#e5a99f]">
+                  <b className="text-parchment">{pendingText.attackers}</b> attack <b className="text-parchment">{pendingText.target}</b>.
+                </p>
+                <p className="text-[11px] text-dim">Tap a glowing defender to throw it in the way, or let the blow land.</p>
+                <button className="btn btn-primary !py-1 self-start text-xs" onClick={() => sendAction({ type: 'declineIntercept' })}>Let it through →</button>
+              </div>
+            )}
+            {selection?.kind === 'units' && myWindow && (() => {
+              const oeUnits = selection.ids
+                .map(id => view.zones.flatMap(z => z.units).find(x => x.id === id))
+                .filter((u): u is NonNullable<typeof u> => !!u && u.keywords.some(k => k.startsWith('overextend')))
+              if (!oeUnits.length) return null
+              const total = oeUnits.reduce((n, u) => n + Number((u.keywords.find(k => k.startsWith('overextend')) ?? '').split(' ')[1] ?? 0), 0)
               return (
                 <label className={`mt-2 flex cursor-pointer items-center gap-1.5 rounded border px-2 py-1 text-xs ${armOverextend ? 'border-[#e2583e] text-[#ff9a5e]' : 'hairline text-dim'}`}>
                   <input type="checkbox" className="h-3.5 w-3.5 accent-[#e2583e]" checked={armOverextend} onChange={e => setArmOverextend(e.target.checked)} />
-                  Overextend: +{n} power now, {n} self-damage at end of turn
+                  Overextend{oeUnits.length > 1 ? ` ${oeUnits.length} units` : ''}: +{total} power now, {total} self-damage at end of round
                 </label>
               )
             })()}
             {selection?.kind === 'hand' && myWindow && (
               <div className="mt-2 flex flex-wrap gap-1.5 border-t hairline pt-2">
-                {view.phase === 'main' && playActionsFor(selection.id).length > 0 && (
+                {view.phase === 'loop' && playActionsFor(selection.id).length > 0 && (
                   <button className="btn btn-primary !py-1 text-xs" onClick={() => beginPlay(selection.id)}>
                     Play ({cardIndex[view.hand.find(h => h.id === selection.id)?.slug ?? '']?.cost ?? '?'})
                   </button>
                 )}
-                {view.phase === 'resource' && resourceActionFor(selection.id) && (
+                {view.phase === 'bank' && resourceActionFor(selection.id) && (
                   <button className="btn btn-primary !py-1 text-xs" onClick={() => { sendAction({ type: 'resource', card: selection.id }); setSelection(null) }}>
                     Bank as resource
                   </button>
@@ -448,7 +519,7 @@ export function GameTable() {
         <PileSheet
           title={`${names[inspect.seat]} — ${inspect.pile === 'resources' ? 'banked resources' : 'discard pile'}`}
           note={inspect.pile === 'resources'
-            ? 'Resources are banked face-up: public to both players. Exhausted ones refresh at the start of their owner\'s turn.'
+            ? 'Resources are banked face-up: public to both players. Exhausted ones refresh at the start of their owner\'s next round.'
             : 'Everything destroyed, spent, or discarded — public to both players.'}
           cards={(inspect.pile === 'resources'
             ? view.sides[inspect.seat].resources.map(r => cardIndex[r.slug])

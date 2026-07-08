@@ -8,16 +8,19 @@ const LABELS: Record<string, string> = {
   influenceWinThreshold: 'Influence needed to win',
   startingHandSize: 'Opening hand size',
   startingResources: 'Resources banked at setup',
-  drawPerTurn: 'Cards drawn per turn',
-  firstTurnDraw: "First player's first-turn draw",
-  resourcesPerTurn: 'Cards banked per turn (max)',
+  drawPerRound: 'Cards drawn per round',
+  firstRoundDraw: 'Cards drawn on round 1',
+  resourcesPerRound: 'Cards banked per round (max)',
   deckMinSize: 'Deck minimum size',
   maxCopies: 'Max copies of one card',
   upgradePressureInfluence: 'Influence to opponent per extra upgrade',
   prisonDecayPerUnit: 'Influence upkeep per prisoner',
   prisonReleaseThreshold: 'Prisons break below this influence',
-  summoningSickness: 'Units wait a turn before acting',
+  summoningSickness: 'Units wait a round before acting',
   moveExhausts: 'Moving exhausts the unit',
+  rushCoversAttack: 'Rush also waives the entry-round attack exhaust',
+  interceptExhausts: 'Intercepting exhausts the blocker (Guard exempt)',
+  maxAttackers: 'Max attackers per attack (0 = unlimited)',
   simultaneousLifeTiebreak: 'Both die at once — who wins',
 }
 
@@ -92,7 +95,7 @@ export function AdminRules() {
                 <input type="number" className="input !w-20 !py-1 text-right" value={v} onChange={e => setKey(k, Number(e.target.value))} />
               ) : (
                 <select className="input !w-28 !py-1" value={v} onChange={e => setKey(k, e.target.value)}>
-                  <option value="actor">the actor</option><option value="active">active player</option><option value="draw">draw</option>
+                  <option value="actor">the actor</option><option value="active">initiative holder</option><option value="draw">draw</option>
                 </select>
               )}
             </label>

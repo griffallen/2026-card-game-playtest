@@ -106,7 +106,7 @@ export function adminRoutes(app: FastifyInstance) {
     const slugs = cards.flatMap(c => Array.from({ length: Math.max(0, Math.floor(c.count)) }, () => c.slug))
     const rows = await prisma.card.findMany({ where: { slug: { in: cards.map(c => c.slug) } } })
     const cardSet = Object.fromEntries(rows.map(r => [r.slug, cardDefFromRow(r)]))
-    const errors = validateDeck(slugs, cardSet, normalizeRules(DEFAULT_RULES))
+    const errors = validateDeck(slugs, cardSet, DEFAULT_RULES) // DEFAULT_RULES is already a complete, normalized config
     return errors.length ? errors : { slugs }
   }
 

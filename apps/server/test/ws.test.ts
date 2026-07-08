@@ -152,11 +152,16 @@ describe('websocket play', () => {
       const view = actorSeat === 0 ? hostView : guestView
       if (view.winner !== null) break
       expect(view.actions.length).toBeGreaterThan(0)
-      // deterministic-ish policy: prefer non-pass to make the game do things
+      // deterministic-ish v2 policy: clear setup, then act (play/attack), answer intercept windows,
+      // bank/move to keep the game moving, else fall through to skipResource/declineIntercept/pass.
+      // Every option is taken straight from the server's legal-action list, so nothing can be illegal.
       const action: GameAction =
-        view.actions.find(a => a.type === 'play')
+        view.actions.find(a => a.type === 'setupBank')
+        ?? view.actions.find(a => a.type === 'play')
         ?? view.actions.find(a => a.type === 'attack')
+        ?? view.actions.find(a => a.type === 'intercept')
         ?? view.actions.find(a => a.type === 'resource')
+        ?? view.actions.find(a => a.type === 'move')
         ?? view.actions[0]
       actor.send({ t: 'action', action })
       hostView = (await host.nextOfType('state')).view as PlayerView
@@ -169,7 +174,7 @@ describe('websocket play', () => {
     await prisma.game.update({ where: { id: gameId }, data: { stateCache: null as unknown as object } })
     const { loadState } = await import('../src/gameStore.ts')
     const replayed = await loadState(gameId)
-    expect(replayed.turn).toBe(hostView.turn) // replay reproduces the live state
+    expect(replayed.round).toBe(hostView.round) // replay reproduces the live state
 
     host.close(); guest.close()
   })

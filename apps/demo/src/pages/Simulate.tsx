@@ -63,7 +63,7 @@ export function Simulate() {
   const redWins = rows.filter(r => (r.firstDeck === 'red' ? r.winner === 0 : r.winner === 1)).length
   const seat0Wins = rows.filter(r => r.winner === 0).length
   const byReason = rows.reduce((m, r) => m.set(r.winReason, (m.get(r.winReason) ?? 0) + 1), new Map<string, number>())
-  const turns = rows.map(r => r.turns).sort((a, b) => a - b)
+  const rounds = rows.map(r => r.rounds).sort((a, b) => a - b)
   const pct = (n: number) => rows.length ? `${Math.round((n / rows.length) * 100)}%` : '—'
 
   return (
@@ -115,7 +115,7 @@ export function Simulate() {
             <div className="flex justify-between"><span className="text-dim">Radiant Order (yellow) wins</span><b className="text-parchment">{rows.length - redWins}/{rows.length} ({pct(rows.length - redWins)})</b></div>
             <div className="flex justify-between"><span className="text-dim">First player wins</span><b className="text-parchment">{seat0Wins}/{rows.length} ({pct(seat0Wins)})</b></div>
             <div className="flex justify-between"><span className="text-dim">Win by</span><b className="text-parchment">{[...byReason.entries()].map(([k, v]) => `${k} ${v}`).join(' · ') || '—'}</b></div>
-            <div className="flex justify-between"><span className="text-dim">Turns (median / min / max)</span><b className="text-parchment">{turns.length ? `${turns[Math.floor(turns.length / 2)]} / ${turns[0]} / ${turns[turns.length - 1]}` : '—'}</b></div>
+            <div className="flex justify-between"><span className="text-dim">Rounds (median / min / max)</span><b className="text-parchment">{rounds.length ? `${rounds[Math.floor(rounds.length / 2)]} / ${rounds[0]} / ${rounds[rounds.length - 1]}` : '—'}</b></div>
             <div className="flex justify-between"><span className="text-dim">Mean actions per game</span><b className="text-parchment">{Math.round(rows.reduce((s, r) => s + r.actions, 0) / rows.length)}</b></div>
           </div>
 
@@ -124,7 +124,7 @@ export function Simulate() {
               <thead className="sticky top-0 bg-surface">
                 <tr className="text-left uppercase tracking-wider text-dim">
                   <th className="px-3 py-1.5">Seed</th><th className="px-3 py-1.5">First</th><th className="px-3 py-1.5">Winner</th>
-                  <th className="px-3 py-1.5">By</th><th className="px-3 py-1.5">Turns</th><th className="px-3 py-1.5">Influence range</th>
+                  <th className="px-3 py-1.5">By</th><th className="px-3 py-1.5">Rounds</th><th className="px-3 py-1.5">Influence range</th>
                   <th className="px-3 py-1.5"></th>
                 </tr>
               </thead>
@@ -135,7 +135,7 @@ export function Simulate() {
                     <td className="px-3 py-1">{r.firstDeck}</td>
                     <td className="px-3 py-1">{(r.firstDeck === 'red') === (r.winner === 0) ? '🔴 red' : '🟡 yellow'}</td>
                     <td className="px-3 py-1">{r.winReason}</td>
-                    <td className="px-3 py-1">{r.turns}</td>
+                    <td className="px-3 py-1">{r.rounds}</td>
                     <td className="px-3 py-1 text-dim">{r.minInfluence}…{r.maxInfluence > 0 ? `+${r.maxInfluence}` : r.maxInfluence}</td>
                     <td className="px-3 py-1">
                       <Link

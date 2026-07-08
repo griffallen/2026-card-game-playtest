@@ -50,9 +50,8 @@ export function Audit() {
           power combined against armor once, and the defender gets an <b>intercept window</b> — redirect the
           whole attack onto a ready unit (Guard units intercept without exhausting; forced targeting is gone —
           protecting the base is now a choice). Final Onslaught's "extra turn" becomes "ready one unit, then
-          take an extra action." The spec (game-rules v2.0-proto) is written and the implementation is planned;
-          the demo you're using still runs v1.2 rules until that lands, so the Play tab does not yet reflect
-          these changes.
+          take an extra action." The spec (game-rules v2.0-proto) is written and now implemented — the Play tab
+          and Simulator on this site run these v2.0 rules.
         </p>
       </Card>
 
@@ -62,7 +61,7 @@ export function Audit() {
           The designer reviewed this audit and ruled: <b>mulligans</b> (unlimited, one fewer card each),
           <b> empty-deck penalties</b> (−1 life & −1 influence per missing card), <b>influence is now earned by
           events only</b> (guards pay when they defend — no passive income), and <b>Overextend is his original
-          gamble</b>: optionally +N power on an attack, N self-damage at end of turn — red no longer cedes
+          gamble</b>: optionally +N power on an attack, N self-damage at end of round — red no longer cedes
           influence at all. Movement was ratified as intentional; prison is "on notice"; a multi-unit combat
           redesign is drafted and paused for the turn rework. Fresh sims after the changes: the game flipped
           from influence-dominated to <b>combat-dominated</b> (bot mirrors: red ~30%, influence wins nearly

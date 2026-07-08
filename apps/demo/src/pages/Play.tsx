@@ -97,9 +97,9 @@ export function Play() {
       <button className="btn btn-primary mt-4 px-6" onClick={start}>Begin ⚔</button>
 
       <p className="mt-6 text-xs text-dim">
-        Quick how-to: in the resource step, click a card → <i>Bank as resource</i> (or <i>Keep hand</i>). In the main phase, click a hand
-        card → <i>Play</i>, then click a glowing target if it needs one. Click your units to move (dashed zones) or attack (red glow).
-        Yellow ⚑ flags on cards mark prototype rulings — hover to read them.
+        Quick how-to: at the start of each round, click a card → <i>Bank as resource</i> (or <i>Skip banking</i>). In your action
+        windows, click a hand card → <i>Play</i>, then click a glowing target if it needs one. Click your units to move (dashed zones)
+        or attack (red glow) — tap several ready units in one zone to attack together. Yellow ⚑ flags on cards mark prototype rulings — hover to read them.
       </p>
     </div>
   )

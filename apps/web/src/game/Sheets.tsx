@@ -46,8 +46,8 @@ export function UnitInspector({ unit, card, upgradeCards, onClose }: {
           <div className="mt-2 flex flex-col gap-1">
             {unit.imprisoned && <p className="text-[#e5a99f]">{STATUS_GLOSS.imprisoned}</p>}
             {unit.exhausted && !unit.imprisoned && <p className="text-dim">{STATUS_GLOSS.exhausted}</p>}
-            {unit.sick && <p className="text-dim">{STATUS_GLOSS.sick}</p>}
-            {unit.overextendedBy > 0 && <p className="text-[#ff9a5e]">🔥 Overextended — will take {unit.overextendedBy} damage at end of turn.</p>}
+            {unit.rushFreeMove && <p className="text-dim">{STATUS_GLOSS.rushFreeMove}</p>}
+            {unit.overextendedBy > 0 && <p className="text-[#ff9a5e]">🔥 Overextended — will take {unit.overextendedBy} damage at end of round.</p>}
           </div>
           {unit.keywords.length > 0 && (
             <div className="mt-2 border-t hairline pt-2">
@@ -96,12 +96,12 @@ export function BaseSheet({ name, life, mine, handCount, deckCount, discardCount
         {stat('Cards left in deck', `≣ ${deckCount}`)}
         {stat('Discard pile', `✕ ${discardCount}`)}
         {stat('Influence position', influence > 0 ? `+${influence}` : influence, influence < 0)}
-        {stat('Guards protecting this base', `🛡 ${guards}`)}
+        {stat('Guards that can intercept', `🛡 ${guards}`)}
         {stat('Enemy units at the gates', `⚔ ${invaders}`, invaders > 0)}
       </div>
       <p className="mt-3 text-[11px] leading-relaxed text-dim">
         The base is the player — 0 life ends the game. Only enemy units standing in {mine ? 'your' : 'their'} Home can assault it
-        (no counter-damage); ready Guards there must be attacked first. Healing never exceeds the starting value.
+        (no counter-damage); ready Guards there can intercept the assault, for free. Healing never exceeds the starting value.
       </p>
     </Sheet>
   )
