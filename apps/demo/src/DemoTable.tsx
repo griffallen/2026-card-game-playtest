@@ -344,9 +344,11 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       ? `${names[view.actorSeat]} (AI) is thinking…`
       : skipToMyTurn && offTurn
         ? 'Passing through to your turn…'
-        : config.mode === 'hotseat'
-          ? `${names[seat]} — your window (screen follows the active seat)`
-          : view.phase === 'resource' ? 'Bank a card as a resource, or keep your hand.' : 'Your action.'
+        : offTurn
+          ? 'Response window — you may play a card into their turn.'
+          : config.mode === 'hotseat'
+            ? `${names[seat]} — your window (screen follows the active seat)`
+            : view.phase === 'resource' ? 'Bank a card as a resource, or keep your hand.' : 'Your action.'
 
   // Contextual guidance: say WHAT you can do right now, and why passes get forced.
   const hints: string[] = []

@@ -177,12 +177,15 @@ export function GameTable() {
     ? cardIndex[view.hand.find(h => h.id === selection.card)?.slug ?? ''] : null
 
   const phaseLabel = view.phase === 'resource' ? 'Resource step' : 'Main phase'
+  const offTurn = myWindow && view.activeSeat !== seat
   const statusLine = view.winner !== null
     ? 'The battle is decided.'
     : spectating
       ? `${names[view.actorSeat]} is thinking…`
       : myWindow
-        ? view.phase === 'resource' ? 'Bank a card as a resource, or keep your hand.' : 'Your action.'
+        ? offTurn
+          ? 'Response window — you may play a card into their turn.'
+          : view.phase === 'resource' ? 'Bank a card as a resource, or keep your hand.' : 'Your action.'
         : `Waiting for ${names[view.actorSeat]}…`
 
   return (
