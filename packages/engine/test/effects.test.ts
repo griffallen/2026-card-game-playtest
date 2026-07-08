@@ -282,6 +282,22 @@ describe('start-of-turn engines', () => {
   })
 })
 
+describe('base-assault splash (Crimson Behemoth, re-ruled playtest 004)', () => {
+  it('splashes 2 onto every other unit in the defended home zone, both sides', () => {
+    let { s, p1, p2 } = arena()
+    const behemoth = put(s, p1, 'crimson-behemoth', homeZone(p2))
+    const friendly = put(s, p1, 'cinder-initiate', homeZone(p2))     // 1/1 — collateral
+    const defender = put(s, p2, 'hierophant', homeZone(p2))          // 2/6
+    const bystander = put(s, p2, 'bulwark-protector', 1)             // neutral — untouched now
+    s = act(s, p1, { type: 'attack', attacker: behemoth, target: { kind: 'base', seat: p2 } })
+    expect(s.sides[p2].life).toBe(20 - 6)
+    expect(s.units[defender].damage).toBe(2)
+    expect(s.units[friendly]).toBeUndefined()                        // own 1/1 died to the splash
+    expect(s.units[bystander].damage).toBe(0)
+    expect(s.units[behemoth].damage).toBe(0)                         // never splashes itself
+  })
+})
+
 describe('zone-entry triggers on movement', () => {
   it('Containment Priest imprisons again when it marches into a new zone', () => {
     let { s, p1, p2 } = arena()

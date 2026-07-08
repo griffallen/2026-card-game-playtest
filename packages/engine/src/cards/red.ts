@@ -136,8 +136,8 @@ export const RED_CARDS: CardDef[] = [
   }),
   unit(5, 'Crimson Behemoth', 6, 6, {
     text: 'When this attacks a base, it deals 2 damage to all adjacent zones.',
-    onAttackBase: [{ op: 'damageFilter', f: { side: 'all', zone: 'adjacentToSelf' }, n: 2 }],
-    designerNote: '⚑ Hits ALL units in zones adjacent to the Behemoth, both sides — as printed.',
+    onAttackBase: [{ op: 'damageFilter', f: { side: 'all', zone: 'sameAsSelf', other: true }, n: 2 }],
+    designerNote: '⚑ Re-ruled after playtest 004: the assault splashes 2 damage onto every OTHER unit in the defended Home zone, both sides (the original "zones adjacent to the Behemoth" reading only ever hit Neutral — dead text during a siege).',
   }),
   upgrade(5, 'Bloodfrenzy', {
     text: 'At the start of your turn, attached unit gets +1 Power if you have 5 or less life.',
