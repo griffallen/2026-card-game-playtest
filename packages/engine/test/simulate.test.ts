@@ -17,6 +17,7 @@ describe('random-playout simulation (GENESYS harness v0)', () => {
 
     expect(results.length).toBe(SEEDS * 2)
     for (const r of results) expect(r.winner === 0 || r.winner === 1).toBe(true)
+    for (const r of results) expect(r.rounds).toBeGreaterThan(0) // SimResult.rounds (v2 rename of turns)
 
     const byReason = new Map<string, number>()
     for (const r of results) byReason.set(r.winReason, (byReason.get(r.winReason) ?? 0) + 1)
