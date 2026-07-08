@@ -6,7 +6,13 @@ import { UnitChip } from '../game/UnitChip.tsx'
 import { InfluenceTrack } from '../game/InfluenceTrack.tsx'
 import { CardFrame, type CardLike } from '../components/CardFrame.tsx'
 import { HelpPanel } from '../components/HelpPanel.tsx'
+import { EventTicker, PileSheet, UnitInspector, useValueFlash } from '../game/Sheets.tsx'
 import { get } from '../api.ts'
+
+type Inspect =
+  | { kind: 'unit'; id: string }
+  | { kind: 'pile'; seat: Seat; pile: 'resources' | 'discard' }
+  | null
 
 type Selection =
   | { kind: 'hand'; id: string }
@@ -29,6 +35,7 @@ export function GameTable() {
   const [confirming, setConfirming] = useState<'concede' | 'undo' | null>(null)
   const [overlayDismissed, setOverlayDismissed] = useState(false)
   const [showHelp, setShowHelp] = useState(false)
+  const [inspect, setInspect] = useState<Inspect>(null)
   const logRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -41,7 +48,7 @@ export function GameTable() {
   }, [view?.log])
   useEffect(() => { setSelection(null) }, [view?.actorSeat, view?.turn, view?.phase])
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setSelection(null); setConfirming(null) } }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setSelection(null); setConfirming(null); setInspect(null) } }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
@@ -155,10 +162,11 @@ export function GameTable() {
     }
   }
 
+  const unitActionable = (unitId: string) =>
+    actions.some(a => (a.type === 'move' && a.unit === unitId) || (a.type === 'attack' && a.attacker === unitId))
+
   function clickMyUnit(unitId: string) {
-    if (!myWindow) { setSelection(null); return }
-    const hasMoves = actions.some(a => (a.type === 'move' && a.unit === unitId) || (a.type === 'attack' && a.attacker === unitId))
-    if (!hasMoves) return
+    if (!myWindow || !unitActionable(unitId)) { setInspect({ kind: 'unit', id: unitId }); return }
     setSelection(selection?.kind === 'unit' && selection.id === unitId ? null : { kind: 'unit', id: unitId })
   }
 
@@ -200,10 +208,12 @@ export function GameTable() {
             online={online[foe]} enemy
             baseGlow={isHighlighted({ kind: 'base', seat: foe })}
             onClick={() => clickTarget({ kind: 'base', seat: foe })}
+            onPile={pile => setInspect({ kind: 'pile', seat: foe, pile })}
           />
 
           {/* zones */}
-          <div className="my-1.5 grid gap-1.5 lg:min-h-0 lg:flex-1 lg:grid-rows-3">
+          <div className="relative my-1.5 grid gap-1.5 lg:min-h-0 lg:flex-1 lg:grid-rows-3">
+            <EventTicker log={view.log} />
             {zonesTopToBottom.map(z => {
               const zoneRef: TargetRef = { kind: 'zone', zone: z }
               const zoneGlow = isHighlighted(zoneRef)
@@ -224,9 +234,11 @@ export function GameTable() {
                       return (
                         <UnitChip
                           key={u.id} unit={u} mine={mine} glow={glow}
+                          actionable={mine && myWindow && unitActionable(u.id)}
                           onClick={() => {
                             if (isHighlighted(ref)) clickTarget(ref)
                             else if (mine) clickMyUnit(u.id)
+                            else setInspect({ kind: 'unit', id: u.id })
                           }}
                         />
                       )
@@ -246,6 +258,7 @@ export function GameTable() {
               resourceTotal={my.resources.length}
               online baseGlow={isHighlighted({ kind: 'base', seat })}
               onClick={() => clickTarget({ kind: 'base', seat })}
+              onPile={pile => setInspect({ kind: 'pile', seat, pile })}
             />
           )}
 
@@ -338,6 +351,32 @@ export function GameTable() {
         </div>
       </div>
 
+      {inspect?.kind === 'unit' && (() => {
+        const uv = view.zones.flatMap(z => z.units).find(x => x.id === inspect.id)
+        if (!uv) return null
+        return (
+          <UnitInspector
+            unit={uv}
+            card={cardIndex[uv.slug]}
+            upgradeCards={uv.upgrades.map(up => cardIndex[up.slug]).filter(Boolean)}
+            onClose={() => setInspect(null)}
+          />
+        )
+      })()}
+      {inspect?.kind === 'pile' && (
+        <PileSheet
+          title={`${names[inspect.seat]} — ${inspect.pile === 'resources' ? 'banked resources' : 'discard pile'}`}
+          note={inspect.pile === 'resources'
+            ? 'Resources are banked face-up: public to both players. Exhausted ones refresh at the start of their owner\'s turn.'
+            : 'Everything destroyed, spent, or discarded — public to both players.'}
+          cards={(inspect.pile === 'resources'
+            ? view.sides[inspect.seat].resources.map(r => cardIndex[r.slug])
+            : view.sides[inspect.seat].discard.map(d => cardIndex[d.slug])
+          ).filter(Boolean)}
+          onClose={() => setInspect(null)}
+        />
+      )}
+
       {showHelp && <HelpPanel onClose={() => setShowHelp(false)} />}
 
       {/* toasts */}
@@ -369,26 +408,35 @@ export function GameTable() {
   )
 }
 
-function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, resourceTotal, online, enemy, baseGlow, onClick }: {
+function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, resourceTotal, online, enemy, baseGlow, onClick, onPile }: {
   name: string; life: number; handCount: number; deckCount: number; discardCount: number
   resources: number; resourceTotal?: number; online: boolean; enemy?: boolean; baseGlow: boolean
   onClick: () => void
+  onPile: (pile: 'resources' | 'discard') => void
 }) {
+  const lifeFlash = useValueFlash(life)
+  const pileBtn = 'rounded px-1 py-0.5 text-xs text-dim hover:bg-raised hover:text-body cursor-pointer'
   return (
     <div
       onClick={baseGlow ? onClick : undefined}
-      className={`panel flex items-center gap-4 px-3 py-1.5 ${baseGlow ? 'glow-attack cursor-pointer' : ''}`}
+      className={`panel flex items-center gap-3 px-3 py-1.5 ${baseGlow ? 'glow-attack cursor-pointer' : ''}`}
     >
       <span className={`h-2 w-2 rounded-full ${online ? 'bg-emerald-400' : 'bg-dim/40'}`} title={online ? 'connected' : 'away'} />
       <span className="min-w-0 truncate font-display font-semibold text-parchment">{name}</span>
-      <span className={`font-display text-xl font-bold ${life <= 5 ? 'text-[#e5735f]' : 'text-parchment'}`} title="Life">
+      <span className={`font-display text-xl font-bold ${lifeFlash || (life <= 5 ? 'text-[#e5735f]' : 'text-parchment')}`} title="Life">
         ♥ {life}
       </span>
-      <span className="text-xs text-dim" title="Ready resources">⬢ {resources}{resourceTotal !== undefined ? `/${resourceTotal}` : ''}</span>
-      <span className="ml-auto flex items-center gap-3 text-xs text-dim">
-        <span title="Hand">🂠 {handCount}</span>
-        <span title="Deck">≣ {deckCount}</span>
-        <span title="Discard">✕ {discardCount}</span>
+      <button className={pileBtn} title="Banked resources — face-up, public. Tap to view."
+        onClick={e => { e.stopPropagation(); onPile('resources') }}>
+        ⬢ {resources}{resourceTotal !== undefined ? `/${resourceTotal}` : ''}
+      </button>
+      <span className="ml-auto flex items-center gap-2 text-xs text-dim">
+        <span title="Cards in hand (hidden)">🂠 {handCount}</span>
+        <span title="Cards left in deck">≣ {deckCount}</span>
+        <button className={pileBtn} title="Discard pile — public. Tap to view."
+          onClick={e => { e.stopPropagation(); onPile('discard') }}>
+          ✕ {discardCount}
+        </button>
         {enemy && baseGlow && <span className="text-[10px] uppercase tracking-widest text-[#e5735f]">strike the base!</span>}
       </span>
     </div>

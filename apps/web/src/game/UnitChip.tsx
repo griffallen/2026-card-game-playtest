@@ -2,11 +2,13 @@ import { useState } from 'react'
 import type { UnitView } from '@newgame/engine'
 import { ProceduralArt } from '../components/ProceduralArt.tsx'
 
-export function UnitChip({ unit, mine, glow, onClick }: {
+export function UnitChip({ unit, mine, glow, onClick, actionable }: {
   unit: UnitView
   mine: boolean
   glow: 'none' | 'selected' | 'target' | 'attack'
   onClick?: () => void
+  /** this unit has a legal move/attack right now — show the gold ready-dot */
+  actionable?: boolean
 }) {
   const [artBroken, setArtBroken] = useState(false)
   const hurt = unit.damage > 0
@@ -29,6 +31,9 @@ export function UnitChip({ unit, mine, glow, onClick }: {
         unit.imprisoned ? 'saturate-[0.25] opacity-80' : unit.exhausted ? 'opacity-60' : '',
       ].join(' ')}
     >
+      {actionable && glow === 'none' && (
+        <span className="pulse-soft absolute -right-1 -top-1 z-10 h-2.5 w-2.5 rounded-full bg-goldbright shadow-[0_0_6px_rgba(232,193,74,0.9)]" title="can act" />
+      )}
       <div className="relative h-[50px] overflow-hidden rounded-sm bg-black/40">
         {!artBroken
           ? <img src={`${import.meta.env.BASE_URL}cards/${unit.slug}.jpg`} alt="" draggable={false} onError={() => setArtBroken(true)} className="h-full w-full object-cover" />

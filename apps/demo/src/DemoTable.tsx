@@ -7,7 +7,13 @@ import { CardFrame } from '@ui/components/CardFrame.tsx'
 import { HelpPanel } from '@ui/components/HelpPanel.tsx'
 import { UnitChip } from '@ui/game/UnitChip.tsx'
 import { InfluenceTrack } from '@ui/game/InfluenceTrack.tsx'
+import { EventTicker, PileSheet, UnitInspector, useValueFlash } from '@ui/game/Sheets.tsx'
 import { DEMO_CARDS, aiControls, newLocalGame, type DemoConfig } from './local.ts'
+
+type Inspect =
+  | { kind: 'unit'; id: string }
+  | { kind: 'pile'; seat: Seat; pile: 'resources' | 'discard' }
+  | null
 
 type Selection =
   | { kind: 'hand'; id: string }
@@ -39,6 +45,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const [showHelp, setShowHelp] = useState(false)
   const [lethalPlay, setLethalPlay] = useState<{ card: string; cede: number } | null>(null)
   const [skipToMyTurn, setSkipToMyTurn] = useState(false)
+  const [inspect, setInspect] = useState<Inspect>(null)
   const logRef = useRef<HTMLDivElement>(null)
 
   // Policy rng travels WITH the history (snapshot after every action), so stepping
@@ -103,7 +110,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight }, [view.log])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { setSelection(null); setConfirming(null) }
+      if (e.key === 'Escape') { setSelection(null); setConfirming(null); setInspect(null); setLethalPlay(null) }
       if (config.mode === 'watch') {
         if (e.key === ' ') { e.preventDefault(); setPaused(p => !p) }
         if (e.key === 'ArrowRight' && paused) { e.preventDefault(); aiStep() }
@@ -232,10 +239,12 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     else setSelection({ kind: 'targeting', card: cardId, collected: [] })
   }
 
+  const unitActionable = (unitId: string) =>
+    actions.some(a => (a.type === 'move' && a.unit === unitId) || (a.type === 'attack' && a.attacker === unitId))
+
   function clickMyUnit(unitId: string) {
-    if (!myWindow) return
-    const usable = actions.some(a => (a.type === 'move' && a.unit === unitId) || (a.type === 'attack' && a.attacker === unitId))
-    if (!usable) return
+    // no actions available (off-turn, exhausted, imprisoned…) → inspect instead of dead tap
+    if (!myWindow || !unitActionable(unitId)) { setInspect({ kind: 'unit', id: unitId }); return }
     setSelection(selection?.kind === 'unit' && selection.id === unitId ? null : { kind: 'unit', id: unitId })
   }
 
@@ -246,6 +255,54 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const influenceMine = seat === 0 ? view.influence : -view.influence
   const selectedHand = selection?.kind === 'hand' ? selection.id : null
   const targetingCard = selection?.kind === 'targeting' ? DEMO_CARDS[state.cardOf[selection.card]] : null
+
+  // Selection controls render twice: in the sidebar (desktop) and a floating dock (phones,
+  // where the sidebar sits below the fold and taps would otherwise appear to do nothing).
+  const selectionControls = (selection || lethalPlay) && myWindow ? (
+    <>
+      {lethalPlay && (
+        <div className="rounded-md border border-[#b23a2c] bg-[#b23a2c]/10 p-2 text-xs">
+          <p className="text-[#e5a99f]">
+            ⚠ <b>{DEMO_CARDS[state.cardOf[lethalPlay.card]]?.name}</b> cedes {lethalPlay.cede} influence — that
+            puts {names[foe]} at their winning threshold. <b>This play loses you the game.</b>
+          </p>
+          <div className="mt-1.5 flex gap-1.5">
+            <button className="btn btn-danger !py-0.5 text-xs" onClick={() => beginPlay(lethalPlay.card, true)}>Play it anyway</button>
+            <button className="btn !py-0.5 text-xs" onClick={() => setLethalPlay(null)}>Never mind</button>
+          </div>
+        </div>
+      )}
+      {selection?.kind === 'hand' && !lethalPlay && (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="max-w-40 truncate text-xs text-dim">{DEMO_CARDS[state.cardOf[selection.id]]?.name}</span>
+          {view.phase === 'main' && playActionsFor(selection.id).length > 0 && (
+            <button className="btn btn-primary !py-1 text-xs" onClick={() => beginPlay(selection.id)}>
+              Play ({DEMO_CARDS[state.cardOf[selection.id]]?.cost})
+            </button>
+          )}
+          {view.phase === 'resource' && resourceActionFor(selection.id) && (
+            <button className="btn btn-primary !py-1 text-xs" onClick={() => apply({ type: 'resource', card: selection.id }, seat)}>
+              Bank as resource
+            </button>
+          )}
+          <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel</button>
+        </div>
+      )}
+      {selection?.kind === 'unit' && (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-xs text-goldbright">Tap a glowing target: dashed zone = move · red glow = attack.</span>
+          <button className="btn !py-1 text-xs" onClick={() => setInspect({ kind: 'unit', id: selection.id })}>ⓘ details</button>
+          <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel</button>
+        </div>
+      )}
+      {selection?.kind === 'targeting' && targetingCard && (
+        <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
+          <span>Choose {selection.collected.length > 0 ? 'the next' : 'a'} target for <b>{targetingCard.name}</b>…</span>
+          <button className="btn !px-2 !py-0.5 text-[10px]" onClick={() => setSelection(null)}>cancel</button>
+        </div>
+      )}
+    </>
+  ) : null
 
   const statusLine = view.winner !== null
     ? 'The battle is decided.'
@@ -303,9 +360,11 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             resources={their.resources.filter(r => !r.exhausted).length} resourceTotal={their.resources.length}
             baseGlow={isHighlighted({ kind: 'base', seat: foe })}
             onClick={() => clickTarget({ kind: 'base', seat: foe })}
+            onPile={pile => setInspect({ kind: 'pile', seat: foe, pile })}
           />
 
-          <div className="my-1.5 grid gap-1.5 lg:min-h-0 lg:flex-1 lg:grid-rows-3">
+          <div className="relative my-1.5 grid gap-1.5 lg:min-h-0 lg:flex-1 lg:grid-rows-3">
+            <EventTicker log={view.log} />
             {zonesTopToBottom.map(z => {
               const zoneRef: TargetRef = { kind: 'zone', zone: z }
               const zoneGlow = isHighlighted(zoneRef)
@@ -322,7 +381,12 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                       const glow = selection?.kind === 'unit' && selection.id === u.id ? 'selected' : glowFor(ref)
                       return (
                         <UnitChip key={u.id} unit={u} mine={mine} glow={glow}
-                          onClick={() => { if (isHighlighted(ref)) clickTarget(ref); else if (mine) clickMyUnit(u.id) }} />
+                          actionable={mine && myWindow && unitActionable(u.id)}
+                          onClick={() => {
+                            if (isHighlighted(ref)) clickTarget(ref)
+                            else if (mine) clickMyUnit(u.id)
+                            else setInspect({ kind: 'unit', id: u.id })
+                          }} />
                       )
                     })}
                     {!units.length && <span className="text-xs text-dim/50">—</span>}
@@ -338,6 +402,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             resources={my.resources.filter(r => !r.exhausted).length} resourceTotal={my.resources.length}
             baseGlow={isHighlighted({ kind: 'base', seat })}
             onClick={() => clickTarget({ kind: 'base', seat })}
+            onPile={pile => setInspect({ kind: 'pile', seat, pile })}
           />
 
           <div className="mt-1.5 flex gap-2 overflow-x-auto pb-1">
@@ -360,18 +425,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             <div className="text-[10px] uppercase tracking-widest text-dim">Turn {view.turn} — {names[view.activeSeat]}</div>
             <div className={`mt-1 font-display text-parchment ${myWindow && !skipToMyTurn ? 'pulse-soft text-goldbright' : ''}`}>{statusLine}</div>
             {hints.map((h, i) => <p key={i} className="mt-1.5 text-[11px] leading-relaxed text-dim">{h}</p>)}
-            {lethalPlay && (
-              <div className="mt-2 rounded-md border border-[#b23a2c] bg-[#b23a2c]/10 p-2 text-xs">
-                <p className="text-[#e5a99f]">
-                  ⚠ <b>{DEMO_CARDS[state.cardOf[lethalPlay.card]]?.name}</b> cedes {lethalPlay.cede} influence — that
-                  puts {names[foe]} at their winning threshold. <b>This play loses you the game.</b>
-                </p>
-                <div className="mt-1.5 flex gap-1.5">
-                  <button className="btn btn-danger !py-0.5 text-xs" onClick={() => beginPlay(lethalPlay.card, true)}>Play it anyway</button>
-                  <button className="btn !py-0.5 text-xs" onClick={() => setLethalPlay(null)}>Never mind</button>
-                </div>
-              </div>
-            )}
+            {selectionControls && <div className="mt-2 border-t hairline pt-2 max-lg:hidden">{selectionControls}</div>}
             <div className="mt-2 flex flex-wrap gap-1.5">
               {offTurn && !onlyPass && config.mode === 'vs-ai' && !skipToMyTurn && (
                 <button className="btn !py-1 text-xs" onClick={() => setSkipToMyTurn(true)} title="auto-pass every response window until your turn starts">
@@ -411,27 +465,6 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                 <p className="mt-1.5 text-[10px] text-dim">space = pause · ←/→ = step while paused</p>
               </div>
             )}
-            {selection?.kind === 'hand' && myWindow && (
-              <div className="mt-2 flex flex-wrap gap-1.5 border-t hairline pt-2">
-                {view.phase === 'main' && playActionsFor(selection.id).length > 0 && (
-                  <button className="btn btn-primary !py-1 text-xs" onClick={() => beginPlay(selection.id)}>
-                    Play ({DEMO_CARDS[state.cardOf[selection.id]]?.cost})
-                  </button>
-                )}
-                {view.phase === 'resource' && resourceActionFor(selection.id) && (
-                  <button className="btn btn-primary !py-1 text-xs" onClick={() => apply({ type: 'resource', card: selection.id }, seat)}>
-                    Bank as resource
-                  </button>
-                )}
-                <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel</button>
-              </div>
-            )}
-            {selection?.kind === 'targeting' && targetingCard && (
-              <div className="mt-2 border-t hairline pt-2 text-xs text-goldbright">
-                Choose {selection.collected.length > 0 ? 'the next' : 'a'} target for <b>{targetingCard.name}</b>…
-                <button className="btn ml-2 !px-2 !py-0.5 text-[10px]" onClick={() => setSelection(null)}>cancel</button>
-              </div>
-            )}
           </div>
 
           <InfluenceTrack
@@ -459,6 +492,39 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         </div>
       )}
 
+      {/* phones: selection controls float above the thumb instead of below the fold */}
+      {selectionControls && (
+        <div className="fixed inset-x-2 bottom-2 z-40 lg:hidden">
+          <div className="panel p-2.5 shadow-2xl shadow-black/60">{selectionControls}</div>
+        </div>
+      )}
+
+      {inspect?.kind === 'unit' && (() => {
+        const uv = view.zones.flatMap(z => z.units).find(x => x.id === inspect.id)
+        if (!uv) return null
+        return (
+          <UnitInspector
+            unit={uv}
+            card={DEMO_CARDS[uv.slug]}
+            upgradeCards={uv.upgrades.map(up => DEMO_CARDS[up.slug]).filter(Boolean)}
+            onClose={() => setInspect(null)}
+          />
+        )
+      })()}
+      {inspect?.kind === 'pile' && (
+        <PileSheet
+          title={`${names[inspect.seat]} — ${inspect.pile === 'resources' ? 'banked resources' : 'discard pile'}`}
+          note={inspect.pile === 'resources'
+            ? 'Resources are banked face-up: public to both players. Exhausted ones refresh at the start of their owner\'s turn.'
+            : 'Everything destroyed, spent, or discarded — public to both players.'}
+          cards={(inspect.pile === 'resources'
+            ? view.sides[inspect.seat].resources.map(r => DEMO_CARDS[r.slug])
+            : view.sides[inspect.seat].discard.map(d => DEMO_CARDS[d.slug])
+          ).filter(Boolean)}
+          onClose={() => setInspect(null)}
+        />
+      )}
+
       {showHelp && <HelpPanel onClose={() => setShowHelp(false)} />}
 
       {view.winner !== null && !overlayDismissed && (
@@ -479,20 +545,29 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   )
 }
 
-function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, resourceTotal, baseGlow, onClick }: {
+function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, resourceTotal, baseGlow, onClick, onPile }: {
   name: string; life: number; handCount: number; deckCount: number; discardCount: number
   resources: number; resourceTotal: number; baseGlow: boolean; onClick: () => void
+  onPile: (pile: 'resources' | 'discard') => void
 }) {
+  const lifeFlash = useValueFlash(life)
+  const pileBtn = 'rounded px-1 py-0.5 text-xs text-dim hover:bg-raised hover:text-body cursor-pointer'
   return (
     <div onClick={baseGlow ? onClick : undefined}
-      className={`panel flex items-center gap-4 px-3 py-1.5 ${baseGlow ? 'glow-attack cursor-pointer' : ''}`}>
+      className={`panel flex items-center gap-3 px-3 py-1.5 ${baseGlow ? 'glow-attack cursor-pointer' : ''}`}>
       <span className="min-w-0 truncate font-display font-semibold text-parchment">{name}</span>
-      <span className={`font-display text-xl font-bold ${life <= 5 ? 'text-[#e5735f]' : 'text-parchment'}`}>♥ {life}</span>
-      <span className="text-xs text-dim">⬢ {resources}/{resourceTotal}</span>
-      <span className="ml-auto flex items-center gap-3 text-xs text-dim">
-        <span title="Hand">🂠 {handCount}</span>
-        <span title="Deck">≣ {deckCount}</span>
-        <span title="Discard">✕ {discardCount}</span>
+      <span className={`font-display text-xl font-bold ${lifeFlash || (life <= 5 ? 'text-[#e5735f]' : 'text-parchment')}`}>♥ {life}</span>
+      <button className={pileBtn} title="Banked resources — face-up, public to both players. Tap to view."
+        onClick={e => { e.stopPropagation(); onPile('resources') }}>
+        ⬢ {resources}/{resourceTotal}
+      </button>
+      <span className="ml-auto flex items-center gap-2 text-xs text-dim">
+        <span title="Cards in hand (hidden)">🂠 {handCount}</span>
+        <span title="Cards left in deck">≣ {deckCount}</span>
+        <button className={pileBtn} title="Discard pile — public. Tap to view."
+          onClick={e => { e.stopPropagation(); onPile('discard') }}>
+          ✕ {discardCount}
+        </button>
         {baseGlow && <span className="text-[10px] uppercase tracking-widest text-[#e5735f]">strike the base!</span>}
       </span>
     </div>
