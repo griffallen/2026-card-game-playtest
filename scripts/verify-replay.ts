@@ -19,8 +19,8 @@ async function main() {
 
   const row = page.locator('table tbody tr').first()
   const cells = await row.locator('td').allTextContents()
-  const [seed, first, winner, by, turns] = cells
-  console.log(`sim row: seed=${seed} first=${first} winner=${winner.trim()} by=${by} turns=${turns}`)
+  const [seed, first, winner, by, rounds] = cells
+  console.log(`sim row: seed=${seed} first=${first} winner=${winner.trim()} by=${by} rounds=${rounds}`)
 
   // replay it
   await row.getByText('Watch ▶').click()
@@ -44,18 +44,18 @@ async function main() {
   await page.getByRole('button', { name: /Play/ }).click()
   await page.waitForSelector('text=is victorious', { timeout: 180_000 })
   const verdict = await page.locator('text=is victorious').textContent()
-  const detail = await page.locator('text=/Turn \\d+ · \\w+ · seed/').textContent()
+  const detail = await page.locator('text=/Round \\d+ · \\w+ · seed/').textContent()
   console.log(`replay result: ${verdict} | ${detail}`)
   await page.screenshot({ path: `${SHOTS}/demo-replay-end.png` })
 
   // faithfulness: winner color + turn count + reason must match the sim row
   const replayWinnerColor = verdict?.includes('Crimson') ? 'red' : 'yellow'
   const simWinnerColor = winner.includes('red') ? 'red' : 'yellow'
-  const turnsMatch = detail?.includes(`Turn ${turns} `)
+  const roundsMatch = detail?.includes(`Round ${rounds} `)
   const reasonMatch = detail?.includes(by)
-  console.log(`faithful: winner ${replayWinnerColor === simWinnerColor}, turns ${turnsMatch}, reason ${reasonMatch}`)
+  console.log(`faithful: winner ${replayWinnerColor === simWinnerColor}, rounds ${roundsMatch}, reason ${reasonMatch}`)
   console.log('page errors:', errors.length ? errors : 'none')
-  const ok = replayWinnerColor === simWinnerColor && turnsMatch && reasonMatch && afterStep === before + 1 && afterBack === before
+  const ok = replayWinnerColor === simWinnerColor && roundsMatch && reasonMatch && afterStep === before + 1 && afterBack === before
   console.log(ok ? 'REPLAY VERIFY: PASS' : 'REPLAY VERIFY: FAIL')
   await browser.close()
   process.exit(ok ? 0 : 1)

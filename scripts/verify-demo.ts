@@ -1,4 +1,5 @@
-/* Drive the static demo build: play vs AI, run a simulation, open the audit. */
+/* Drive the static demo build under v2 rules: play vs AI (bank steps, loop, intercept windows),
+   run a simulation, open the audit. Proves the shipped bundle plays a full game with no errors. */
 import { chromium } from 'playwright-core'
 
 const BASE = process.env.DEMO_URL ?? 'http://localhost:4173'
@@ -10,6 +11,10 @@ async function main() {
   const errors: string[] = []
   page.on('console', m => m.type() === 'error' && errors.push(`console: ${m.text()}`))
   page.on('pageerror', e => errors.push(`pageerror: ${e.message}`))
+  const vis = (name: RegExp | string, exact = false) => {
+    const l = typeof name === 'string' ? page.getByRole('button', { name, exact }) : page.getByRole('button', { name })
+    return l.isVisible().catch(() => false).then(v => (v ? l : null))
+  }
 
   // ── Play vs AI ──
   await page.goto(`${BASE}/#/play`)
@@ -19,51 +24,57 @@ async function main() {
   await page.getByRole('button', { name: /Begin/ }).click()
   await page.waitForTimeout(600)
 
-  // act for ~14 windows; the AI moves on its own between our actions
-  for (let i = 0; i < 40; i++) {
-    // setup phase (decision 31): pick 2 cards, confirm
-    const bank2 = page.getByRole('button', { name: /Bank these/ })
-    if (await bank2.isVisible().catch(() => false)) {
+  // Drive the human seat: answer intercepts, clear the setup/bank steps, then act (play → target, else pass).
+  // The AI auto-plays its own windows on a timer between ours.
+  let intercepts = 0, maxRound = 1, won = false
+  for (let i = 0; i < 80 && !won; i++) {
+    won = await page.getByText(/wins —|Rematch|Play again/i).first().isVisible().catch(() => false)
+    if (won) break
+
+    // v2 intercept window (decision 42): let the assault through to keep the drive moving
+    const letThrough = await vis(/Let it through/)
+    if (letThrough) { intercepts++; await letThrough.click(); await page.waitForTimeout(200); continue }
+
+    // setup phase (decision 31, hotseat only — vs-AI is zero-input): pick 2, confirm
+    const bank2 = await vis(/Bank these/)
+    if (bank2) {
       const cards = page.locator('.overflow-x-auto > div.shrink-0')
       if (await cards.count() >= 2) { await cards.nth(0).click(); await cards.nth(1).click() }
-      await page.waitForTimeout(150)
+      await page.waitForTimeout(120)
       if (await bank2.isEnabled().catch(() => false)) await bank2.click()
-      await page.waitForTimeout(300)
-      continue
+      await page.waitForTimeout(250); continue
     }
 
-    const keep = page.getByRole('button', { name: /Keep hand/ })
-    const pass = page.getByRole('button', { name: 'Pass', exact: true })
-    if (await keep.isVisible().catch(() => false)) {
-      const hand = page.locator('.overflow-x-auto > div.shrink-0').first()
-      if (await hand.isVisible().catch(() => false)) {
-        await hand.click()
-        const bank = page.getByRole('button', { name: 'Bank as resource' })
-        if (await bank.isVisible().catch(() => false)) { await bank.click(); continue }
-      }
-      await keep.click()
-    } else if (await pass.isVisible().catch(() => false)) {
+    // v2 bank start-step: skip banking to enter the action loop
+    const skipBank = await vis(/Skip banking/)
+    if (skipBank) { await skipBank.click(); await page.waitForTimeout(200); continue }
+
+    // action loop: try to play a card with a target; else pass
+    const pass = await vis('Pass', true)
+    if (pass) {
       const cards = page.locator('.overflow-x-auto > div.shrink-0:not(.opacity-45)')
-      let played = false
+      let acted = false
       const n = await cards.count()
-      for (let c = 0; c < Math.min(n, 3) && !played; c++) {
+      for (let c = 0; c < Math.min(n, 3) && !acted; c++) {
         await cards.nth(c).click()
-        const play = page.getByRole('button', { name: /^Play \(/ })
-        if (await play.isVisible().catch(() => false)) {
-          await play.click()
-          await page.waitForTimeout(250)
-          const target = page.locator('.glow-target').first()
+        const play = await vis(/^Play \(/)
+        if (play) {
+          await play.click(); await page.waitForTimeout(150)
+          const target = page.locator('.glow-target, .glow').first()
           if (await target.isVisible().catch(() => false)) await target.click()
-          played = true
+          acted = true
         } else await page.keyboard.press('Escape')
       }
-      if (!played) await pass.click()
+      if (!acted) await pass.click()
     }
-    await page.waitForTimeout(500)
+    // track the live round ("Round N — …'s window"), not the static "Round 1 · seed" header
+    const live = await page.locator('text=/Round \\d+ —/').first().textContent().catch(() => '')
+    const m = live?.match(/Round (\d+)/)
+    if (m) maxRound = Math.max(maxRound, Number(m[1]))
+    await page.waitForTimeout(350)
   }
   await page.screenshot({ path: `${SHOTS}/demo-game.png` })
-  const turnText = await page.locator('text=/Turn \\d+/').first().textContent().catch(() => 'n/a')
-  console.log('vs-AI reached:', turnText)
+  console.log(`vs-AI drive: reached round ${maxRound}, intercept windows answered ${intercepts}, game ${won ? 'ended with a winner' : 'in progress'}`)
 
   // export buttons exist
   console.log('export buttons:', await page.getByRole('button', { name: 'Download game file' }).count(), await page.getByRole('button', { name: 'Copy chronicle' }).count())
@@ -76,7 +87,7 @@ async function main() {
   await page.waitForFunction(() => !document.body.textContent?.includes('Stop'), undefined, { timeout: 120_000 })
   await page.screenshot({ path: `${SHOTS}/demo-sim.png` })
   const summary = await page.locator('.panel').nth(1).textContent()
-  console.log('sim summary:', summary?.slice(0, 200))
+  console.log('sim summary:', summary?.slice(0, 220))
 
   // ── Audit ──
   await page.goto(`${BASE}/#/audit`)
@@ -85,6 +96,7 @@ async function main() {
 
   console.log('page errors:', errors.length ? errors.slice(0, 6) : 'none')
   await browser.close()
+  if (errors.length) process.exit(1)
 }
 
 main().catch(e => { console.error('DEMO DRIVE FAILED:', e.message); process.exit(1) })

@@ -15,10 +15,21 @@ async function registerAndEnter(page: Page, name: string) {
 }
 
 async function tryAct(page: Page): Promise<string> {
-  // resource step
+  // v2 intercept window (decision 42): let the assault through to keep the drive moving
+  const letThrough = page.getByRole('button', { name: /Let it through/ })
+  if (await letThrough.isVisible().catch(() => false)) { await letThrough.click(); return 'declined intercept' }
+  // setup phase (decision 31): pick 2 starting banks, confirm
+  const bank2 = page.getByRole('button', { name: /Bank these/ })
+  if (await bank2.isVisible().catch(() => false)) {
+    const cards = page.locator('.overflow-x-auto > div.shrink-0')
+    if (await cards.count() >= 2) { await cards.nth(0).click(); await cards.nth(1).click() }
+    await page.waitForTimeout(120)
+    if (await bank2.isEnabled().catch(() => false)) await bank2.click()
+    return 'setup banked'
+  }
+  // bank start-step (v2): bank the first hand card if possible, else keep hand (skip)
   const keep = page.getByRole('button', { name: /Keep hand/ })
   if (await keep.isVisible().catch(() => false)) {
-    // bank the first hand card instead of skipping, when possible
     const hand = page.locator('.overflow-x-auto > div.shrink-0').first()
     if (await hand.isVisible().catch(() => false)) {
       await hand.click()
@@ -28,7 +39,7 @@ async function tryAct(page: Page): Promise<string> {
     await keep.click()
     return 'kept hand'
   }
-  // main phase: try to play a card, else pass
+  // action loop: try to play a card, else pass
   const pass = page.getByRole('button', { name: 'Pass', exact: true })
   if (!(await pass.isVisible().catch(() => false))) return 'not my window'
   const cards = page.locator('.overflow-x-auto > div.shrink-0:not(.opacity-45)')
@@ -40,11 +51,11 @@ async function tryAct(page: Page): Promise<string> {
       await play.click()
       await page.waitForTimeout(250)
       // targeting? click the first glowing target if one appeared
-      const target = page.locator('.glow-target').first()
+      const target = page.locator('.glow-target, .glow').first()
       if (await target.isVisible().catch(() => false)) {
         await target.click()
         await page.waitForTimeout(250)
-        const second = page.locator('.glow-target').first()
+        const second = page.locator('.glow-target, .glow').first()
         if (await second.isVisible().catch(() => false)) await second.click()
       }
       return `played card ${i}`
@@ -94,26 +105,15 @@ async function main() {
   await a.waitForTimeout(800)
   await a.screenshot({ path: `${SHOTS}/shot-table-start.png` })
 
-  // play a while: whoever's window it is acts
+  // play a while: whoever's window it is acts (setup/bank/intercept all handled inside tryAct, per page)
   let acts = 0
-  for (let i = 0; i < 60 && acts < 26; i++) {
-    // setup phase (decision 31): pick 2 cards, confirm
-    const bank2 = page.getByRole('button', { name: /Bank these/ })
-    if (await bank2.isVisible().catch(() => false)) {
-      const cards = page.locator('.overflow-x-auto > div.shrink-0')
-      if (await cards.count() >= 2) { await cards.nth(0).click(); await cards.nth(1).click() }
-      await page.waitForTimeout(150)
-      if (await bank2.isEnabled().catch(() => false)) await bank2.click()
-      await page.waitForTimeout(300)
-      continue
-    }
-
+  for (let i = 0; i < 80 && acts < 30; i++) {
     for (const p of [a, b]) {
       const what = await tryAct(p)
       if (what !== 'not my window') {
         acts++
         console.log(`act ${acts}: ${what}`)
-        await p.waitForTimeout(350)
+        await p.waitForTimeout(300)
       }
     }
   }
