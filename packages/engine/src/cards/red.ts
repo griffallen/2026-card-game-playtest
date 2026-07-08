@@ -15,7 +15,7 @@ export const RED_CARDS: CardDef[] = [
   unit(1, 'Spark Hound', 2, 1, {
     text: 'Rush. When this attacks, it gets +1 Power this turn.',
     kw: [{ k: 'rush' }],
-    onAttack: [{ op: 'buff', t: 'self', p: 1, dur: 'turn' }],
+    onAttack: [{ op: 'buff', t: 'self', p: 1, dur: 'round' }],
   }),
   action(1, 'Reckless Charge', {
     text: 'Target unit gains Rush. Overextend 1.',
@@ -41,8 +41,8 @@ export const RED_CARDS: CardDef[] = [
     text: 'Target unit gets +2 Power and Rush this turn. Overextend 1.',
     targets: [{ t: 'unit', side: 'friendly' }],
     onPlay: [
-      { op: 'buff', t: 'chosen0', p: 2, dur: 'turn' },
-      { op: 'grant', t: 'chosen0', kw: { k: 'rush' }, dur: 'turn' },
+      { op: 'buff', t: 'chosen0', p: 2, dur: 'round' },
+      { op: 'grant', t: 'chosen0', kw: { k: 'rush' }, dur: 'round' },
     ],
     designerNote: OE_NOTE,
   }),
@@ -59,7 +59,7 @@ export const RED_CARDS: CardDef[] = [
   action(2, 'Smash Through', {
     text: 'Target unit with Rush gains Breakthrough 2 this turn. Overextend 1.',
     targets: [{ t: 'unit', side: 'friendly', withKw: 'rush' }],
-    onPlay: [{ op: 'grant', t: 'chosen0', kw: { k: 'breakthrough', n: 2 }, dur: 'turn' }],
+    onPlay: [{ op: 'grant', t: 'chosen0', kw: { k: 'breakthrough', n: 2 }, dur: 'round' }],
     designerNote: OE_NOTE,
   }),
   unit(3, 'Rageforged Brute', 4, 3, {
@@ -138,7 +138,7 @@ export const RED_CARDS: CardDef[] = [
   }),
   upgrade(5, 'Bloodfrenzy', {
     text: 'At the start of your turn, attached unit gets +1 Power if you have 5 or less life.',
-    startOfTurn: { cond: { selfLifeAtMost: 5 }, ops: [{ op: 'buff', t: 'attached', p: 1, dur: 'perm' }] },
+    startOfRound: { cond: { selfLifeAtMost: 5 }, ops: [{ op: 'buff', t: 'attached', p: 1, dur: 'perm' }] },
   }),
   unit(6, 'Earthshaker', 6, 5, {
     text: 'Breakthrough 3. Overextend 3.',
@@ -148,8 +148,8 @@ export const RED_CARDS: CardDef[] = [
     text: 'Target unit gains Rush and +3 Power this turn. Overextend 4.',
     targets: [{ t: 'unit', side: 'friendly' }],
     onPlay: [
-      { op: 'grant', t: 'chosen0', kw: { k: 'rush' }, dur: 'turn' },
-      { op: 'buff', t: 'chosen0', p: 3, dur: 'turn' },
+      { op: 'grant', t: 'chosen0', kw: { k: 'rush' }, dur: 'round' },
+      { op: 'buff', t: 'chosen0', p: 3, dur: 'round' },
     ],
     designerNote: OE_NOTE,
   }),
@@ -189,7 +189,7 @@ export const RED_CARDS: CardDef[] = [
   action(7, 'Last Stand', {
     text: 'Your units gain +2 Power this turn. You lose 2 life.',
     onPlay: [
-      { op: 'buff', t: { side: 'friendly' }, p: 2, dur: 'turn' },
+      { op: 'buff', t: { side: 'friendly' }, p: 2, dur: 'round' },
       { op: 'damage', t: 'selfBase', n: 2 },
     ],
   }),
@@ -199,7 +199,7 @@ export const RED_CARDS: CardDef[] = [
   }),
   action(8, 'Final Onslaught', {
     text: 'You get an extra turn after this one. Overextend 5.',
-    onPlay: [{ op: 'extraTurn' }],
+    onPlay: [{ op: 'extraAction' }],
     designerNote: OE_NOTE,
   }),
 ]

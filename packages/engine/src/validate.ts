@@ -1,7 +1,7 @@
 import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 
 const KEYWORDS = new Set(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable'])
-const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraTurn', 'preventBase', 'removeNegative'])
+const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'removeNegative'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
 const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
@@ -46,14 +46,14 @@ export function validateCardSet(cards: CardSet): string[] {
       if (def.type === 'action' && key !== 'onPlay') err(slug, `actions cannot have ${key}`)
       for (const op of ops) errors.push(...validateOp(slug, op, def, chosenSlots, key))
     }
-    if (def.startOfTurn) {
-      if (def.type === 'action') err(slug, 'actions cannot have startOfTurn')
-      for (const k of Object.keys(def.startOfTurn.cond ?? {})) {
+    if (def.startOfRound) {
+      if (def.type === 'action') err(slug, 'actions cannot have startOfRound')
+      for (const k of Object.keys(def.startOfRound.cond ?? {})) {
         if (!COND_KEYS.has(k)) err(slug, `unknown condition ${k}`)
       }
-      // startOfTurn ops cannot use chosen targets — there is no action payload at turn start
-      for (const op of def.startOfTurn.ops) {
-        errors.push(...validateOp(slug, op, def, 0, 'startOfTurn'))
+      // startOfRound ops cannot use chosen targets — there is no action payload at round start
+      for (const op of def.startOfRound.ops) {
+        errors.push(...validateOp(slug, op, def, 0, 'startOfRound'))
       }
     }
     for (const st of def.statics ?? []) errors.push(...validateStatic(slug, st))
@@ -110,7 +110,7 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       checkTargetRef(op.t)
       if (op.p === undefined && op.h === undefined && op.armor === undefined) err('buff changes nothing')
       for (const v of [op.p, op.h, op.armor]) if (v !== undefined && !isInt(v)) err('bad buff value')
-      if (!['turn', 'perm'].includes(op.dur)) err('buff needs dur turn|perm')
+      if (!['round', 'perm'].includes(op.dur)) err('buff needs dur round|perm')
       for (const k of Object.keys(op.cond ?? {})) if (!COND_KEYS.has(k)) err(`unknown condition ${k}`)
       break
     }
@@ -118,14 +118,18 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
     case 'grant':
       checkTargetRef(op.t)
       if (!KEYWORDS.has(op.kw?.k)) err(`unknown granted keyword ${op.kw?.k}`)
-      if (!['turn', 'perm'].includes(op.dur)) err('grant needs dur turn|perm')
+      if (!['round', 'perm'].includes(op.dur)) err('grant needs dur round|perm')
       break
     case 'destroy': checkTargetRef(op.t); break
     case 'destroyUpgrade':
       if (!(def.targets ?? []).some(t => t.t === 'upgrade')) err('destroyUpgrade without an upgrade target')
       break
-    case 'ready': if (op.side !== 'friendly') err('ready supports side friendly'); break
-    case 'extraTurn': break
+    case 'ready':
+      if (op.side !== 'friendly') err('ready supports side friendly')
+      if (op.t !== undefined && op.t !== 'chosen0') err('ready target must be chosen0')
+      if (op.t === 'chosen0' && chosenSlots < 1) err('ready chosen0 but the card declares no targets')
+      break
+    case 'extraAction': break
     case 'preventBase': if (!isInt(op.n, 1, 30)) err('bad preventBase'); break
     case 'removeNegative': checkTargetRef(op.t); break
   }

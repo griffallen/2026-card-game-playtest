@@ -32,8 +32,8 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     return out
   }
 
-  if (state.phase === 'resource') {
-    if (state.resourcedThisTurn < state.rules.resourcesPerTurn) {
+  if (state.phase === 'bank') {
+    if (state.bankedThisStep < state.rules.resourcesPerRound) {
       for (const card of state.sides[seat].hand) out.push({ type: 'resource', card })
     }
     out.push({ type: 'skipResource' })
@@ -41,7 +41,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   }
 
   out.push({ type: 'pass' })
-  const isActive = seat === state.activeSeat
+  if (!state.claimedThisRound) out.push({ type: 'claimInitiative' })
   const ready = state.sides[seat].resources.filter(r => !r.exhausted).length
 
   // plays (both windows)
@@ -53,20 +53,19 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     }
   }
 
-  if (isActive) {
-    for (const unit of unitsOf(state, seat)) {
-      if (unit.exhausted || unit.imprisoned || isSick(state, unit)) continue
-      // moves
-      const zones = hasKw(state, unit, 'flying') ? ZONES.filter(z => z !== unit.zone)
-        : ZONES.filter(z => adjacent(z, unit.zone))
-      for (const to of zones) out.push({ type: 'move', unit: unit.id, to })
-      // attacks (with the overextend variant when the unit can gamble — decision 35)
-      if (!hasKw(state, unit, 'cantAttack')) {
-        const canOE = typeof kwOf(state, unit, 'overextend') === 'number'
-        for (const target of attackTargets(state, unit)) {
-          out.push({ type: 'attack', attacker: unit.id, target })
-          if (canOE) out.push({ type: 'attack', attacker: unit.id, target, overextend: true })
-        }
+  // moves + attacks — both players act in their own windows now (decision 40; no active-player gate)
+  for (const unit of unitsOf(state, seat)) {
+    if (unit.exhausted || unit.imprisoned || isSick(state, unit)) continue
+    // moves
+    const zones = hasKw(state, unit, 'flying') ? ZONES.filter(z => z !== unit.zone)
+      : ZONES.filter(z => adjacent(z, unit.zone))
+    for (const to of zones) out.push({ type: 'move', unit: unit.id, to })
+    // attacks (single-attacker this task; Task 3 adds multi-unit groups). Overextend variant per decision 35.
+    if (!hasKw(state, unit, 'cantAttack')) {
+      const canOE = typeof kwOf(state, unit, 'overextend') === 'number'
+      for (const target of attackTargets(state, unit)) {
+        out.push({ type: 'attack', attackers: [unit.id], target })
+        if (canOE) out.push({ type: 'attack', attackers: [unit.id], target, overextend: [unit.id] })
       }
     }
   }

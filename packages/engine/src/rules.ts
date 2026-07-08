@@ -10,20 +10,30 @@ export const DEFAULT_RULES: RulesConfig = {
   mulliganPenalty: 1,
   emptyDrawLifeLoss: 1,
   emptyDrawInfluenceLoss: 1,
-  drawPerTurn: 2,
-  firstTurnDraw: 1,
-  resourcesPerTurn: 1,
+  drawPerRound: 2,
+  firstRoundDraw: 2,          // decision 44: no round-1 asymmetry
+  resourcesPerRound: 1,
   deckMinSize: 48,
   maxCopies: 4,
   upgradePressureInfluence: 1,
   prisonDecayPerUnit: 1,
   prisonReleaseThreshold: 0,
-  summoningSickness: true,
+  summoningSickness: false,   // decision 41: units enter ready
   moveExhausts: true,
+  rushCoversAttack: false,
+  interceptExhausts: true,
+  counterAssignment: 'auto',
+  armorPerAttack: 'once',
+  maxAttackers: 0,
   simultaneousLifeTiebreak: 'actor',
 }
 
-/** Merge a stored (possibly partial/older) config over current defaults. */
-export function normalizeRules(partial: Partial<RulesConfig> | null | undefined): RulesConfig {
-  return { ...DEFAULT_RULES, ...(partial ?? {}) }
+/** Merge a stored (possibly partial/older) config over current defaults, mapping legacy v1 keys. */
+export function normalizeRules(partial: (Partial<RulesConfig> & Record<string, unknown>) | null | undefined): RulesConfig {
+  const p: Record<string, unknown> = { ...(partial ?? {}) }
+  for (const [old, nu] of [['drawPerTurn', 'drawPerRound'], ['firstTurnDraw', 'firstRoundDraw'], ['resourcesPerTurn', 'resourcesPerRound']] as const) {
+    if (old in p && !(nu in p)) p[nu] = p[old]
+    delete p[old]
+  }
+  return { ...DEFAULT_RULES, ...(p as Partial<RulesConfig>) }
 }

@@ -7,11 +7,11 @@ import { PREBUILT_DECKS, deckSlugs } from '../src/decks.ts'
 import { effPower, effArmor, influenceFor, hasKw } from '../src/helpers.ts'
 import { homeZone } from '../src/types.ts'
 import type { GameState, Seat } from '../src/types.ts'
-import { fuel, put, toHand } from './util.ts'
+import { fuel, put, toHand, toLoop } from './util.ts'
 
 const act = (s: GameState, seat: Seat, a: Parameters<typeof applyAction>[1]) => applyAction(s, a, seat).state
 
-/** Real-cards game advanced into p1's main phase, with plenty of fuel. */
+/** Real-cards game advanced into the action loop, p1 = initiative holder, both fuelled. */
 function arena(seed = 11) {
   let s = createGame({
     seed,
@@ -22,12 +22,23 @@ function arena(seed = 11) {
       { name: 'Bo', deck: deckSlugs(PREBUILT_DECKS[1]) },
     ],
   })
-  const p1 = s.activeSeat
+  s = toLoop(s)
+  const p1 = s.actorSeat
   const p2 = (1 - p1) as Seat
   fuel(s, p1, 20)
   fuel(s, p2, 20)
-  s = act(s, p1, { type: 'skipResource' })
   return { s, p1, p2 }
+}
+
+/** End the current round and advance start steps until `seat`'s start step has run (spec §1.4). */
+function toStartStepOf(s: GameState, seat: Seat): GameState {
+  s = toLoop(s)                                   // finish any pending bank steps into the loop
+  s = act(s, s.actorSeat, { type: 'pass' })       // two consecutive passes end the round…
+  s = act(s, s.actorSeat, { type: 'pass' })       // …startRound runs the initiative holder's step
+  while (s.phase === 'bank' && s.startStep !== seat) {
+    s = act(s, s.actorSeat, { type: 'skipResource' })
+  }
+  return s
 }
 
 describe('influence effects', () => {
@@ -46,11 +57,11 @@ describe('influence effects', () => {
     // but being ATTACKED triggers the guard's influence
     const raider = put(s, p1, 'berserker', 2)
     s = act(s, p2, { type: 'pass' })
-    s = act(s, p1, { type: 'attack', attacker: raider, target: { kind: 'unit', id: victim } })
+    s = act(s, p1, { type: 'attack', attackers: [raider], target: { kind: 'unit', id: victim } })
     expect(influenceFor(s, p2)).toBe(1)                    // Sunguard defended → +1
   })
 
-  it('influence win threshold ends the game — and Radiant Citadel raises the bar to 17', () => {
+  it('influence win threshold ends the game', () => {
     let { s, p1, p2 } = arena()
     s.influence = p2 === 0 ? 13 : -13
     const detain = toHand(s, p2, 'detain')
@@ -82,7 +93,7 @@ describe('influence effects', () => {
 })
 
 describe('prison', () => {
-  it('imprisoned units release when the jailer dips below the threshold; decay charges each turn', () => {
+  it('imprisoned units release when the jailer dips below the threshold; decay charges each round', () => {
     let { s, p1, p2 } = arena()
     const jailerHand = toHand(s, p2, 'prison-warrant')
     const captive = put(s, p1, 'doombringer', 1)
@@ -90,18 +101,12 @@ describe('prison', () => {
     s = act(s, p2, { type: 'play', card: jailerHand, targets: [{ kind: 'unit', id: captive }] })
     expect(s.units[captive].imprisoned?.by).toBe(p2)
     expect(influenceFor(s, p2)).toBe(1)
-    // pass to p2's turn start → decay −1 → back to 0 (≥ threshold 0, prison holds)
-    s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'pass' })       // turn ends → p2's turn starts, decay fires
+    // p2's next start step → decay −1 → back to 0 (≥ threshold 0, prison holds)
+    s = toStartStepOf(s, p2)
     expect(influenceFor(s, p2)).toBe(0)
     expect(s.units[captive].imprisoned).toBeTruthy()
-    // another full round without influence income → second decay drops p2 to −1 → release
-    s = act(s, p2, { type: 'skipResource' })
-    s = act(s, p2, { type: 'pass' })
-    s = act(s, p1, { type: 'pass' })       // → p1's turn (no decay for p1)
-    s = act(s, p1, { type: 'skipResource' })
-    s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'pass' })       // → p2's turn again, decay fires below threshold
+    // another round without income → second decay drops p2 to −1 → release
+    s = toStartStepOf(s, p2)
     expect(influenceFor(s, p2)).toBe(-1)
     expect(s.units[captive].imprisoned).toBeNull()
   })
@@ -138,13 +143,12 @@ describe('prison', () => {
     expect(influenceFor(s, p2)).toBe(2)
   })
 
-  it('start-of-turn auto-imprisons: High Justiciar picks from another zone', () => {
+  it('start-of-round auto-imprisons: High Justiciar picks from another zone', () => {
     let { s, p1, p2 } = arena()
     put(s, p2, 'high-justiciar', homeZone(p2))
     const nearby = put(s, p1, 'berserker', homeZone(p2))   // same zone as justiciar — NOT eligible
     const afar = put(s, p1, 'doombringer', 1)              // other zone — eligible
-    s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'pass' })                       // turn passes to p2 → SOT fires
+    s = toStartStepOf(s, p2)                               // p2's start step → SOR fires
     expect(s.units[afar].imprisoned?.by).toBe(p2)
     expect(s.units[nearby].imprisoned).toBeNull()
   })
@@ -205,14 +209,14 @@ describe('auras and upgrades', () => {
 })
 
 describe('tempo and timing', () => {
-  it('this-turn buffs expire at end of turn (Blood Rush)', () => {
+  it('this-round buffs expire at end of round (Blood Rush)', () => {
     let { s, p1 } = arena()
     const zerk = put(s, p1, 'berserker', 1)
     const rush = toHand(s, p1, 'blood-rush')
     s = act(s, p1, { type: 'play', card: rush, targets: [{ kind: 'unit', id: zerk }] })
     expect(effPower(s, s.units[zerk])).toBe(5)
     s = act(s, (1 - p1) as Seat, { type: 'pass' })
-    s = act(s, p1, { type: 'pass' })                 // double pass → turn ends, buffs expire
+    s = act(s, p1, { type: 'pass' })                 // double pass → round ends, buffs expire
     expect(effPower(s, s.units[zerk])).toBe(3)
   })
 
@@ -224,7 +228,7 @@ describe('tempo and timing', () => {
     expect(effPower(s, s.units[engine])).toBe(14)
   })
 
-  it('Relentless Assault readies for a second wave; Final Onslaught grants an extra turn', () => {
+  it('Relentless Assault readies for a second wave; Final Onslaught grants an extra action', () => {
     let { s, p1, p2 } = arena()
     const zerk = put(s, p1, 'berserker', 1, { exhausted: true })
     const assault = toHand(s, p1, 'relentless-assault')
@@ -233,19 +237,17 @@ describe('tempo and timing', () => {
     const onslaught = toHand(s, p1, 'final-onslaught')
     s = act(s, p2, { type: 'pass' })
     s = act(s, p1, { type: 'play', card: onslaught })
-    s = act(s, p2, { type: 'pass' })
-    s = act(s, p1, { type: 'pass' })          // turn ends…
-    expect(s.activeSeat).toBe(p1)             // …but p1 goes again
-    expect(s.turn).toBe(2)
+    expect(s.actorSeat).toBe(p1)              // extra action: window stays with p1
+    expect(s.pendingExtraAction).toBeNull()
   })
 
-  it('Devout Intervention absorbs base damage this turn only', () => {
+  it('Devout Intervention absorbs base damage this round only', () => {
     let { s, p1, p2 } = arena()
     const ward = toHand(s, p2, 'devout-intervention')
     const sieger = put(s, p1, 'doombringer', homeZone(p2))
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: ward })
-    s = act(s, p1, { type: 'attack', attacker: sieger, target: { kind: 'base', seat: p2 } })
+    s = act(s, p1, { type: 'attack', attackers: [sieger], target: { kind: 'base', seat: p2 } })
     expect(s.sides[p2].life).toBe(20 - (5 - 3))
   })
 
@@ -259,7 +261,7 @@ describe('tempo and timing', () => {
   })
 })
 
-describe('start-of-turn engines', () => {
+describe('start-of-round engines', () => {
   it('Bloodfrenzy pumps only at ≤5 life; Censer trades influence for healing; Aura of Resolve pays out', () => {
     let { s, p1, p2 } = arena()
     const carrier = put(s, p1, 'berserker', 1)
@@ -272,17 +274,14 @@ describe('start-of-turn engines', () => {
     const resolve = toHand(s, p2, 'aura-of-resolve')
     // p2 attaches off-turn (frenzy play flipped the window to p2)
     s = act(s, p2, { type: 'play', card: resolve, targets: [{ kind: 'unit', id: resolveCarrier }] })
-    s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'pass' })
-    // p2's turn started: censer −1, aura +1 (net 0 vs 3), heal +2
+    // reach p2's start step: censer −1, aura +1 (net 0 vs 3), heal +2
+    s = toStartStepOf(s, p2)
     expect(influenceFor(s, p2)).toBe(3)
     expect(s.sides[p2].life).toBe(17)
-    // p1 at 20 life: frenzy silent. Drop p1 to 4 and cycle to p1's turn.
+    // p1 at 20 life: frenzy silent. Drop p1 to 4 and reach p1's start step → frenzy fires
     s.sides[p1].life = 4
     const before = effPower(s, s.units[carrier])
-    s = act(s, p2, { type: 'skipResource' })
-    s = act(s, p2, { type: 'pass' })
-    s = act(s, p1, { type: 'pass' })          // p1's turn starts → frenzy fires
+    s = toStartStepOf(s, p1)
     expect(effPower(s, s.units[carrier])).toBe(before + 1)
   })
 })
@@ -294,7 +293,7 @@ describe('base-assault splash (Crimson Behemoth, re-ruled playtest 004)', () => 
     const friendly = put(s, p1, 'cinder-initiate', homeZone(p2))     // 1/1 — collateral
     const defender = put(s, p2, 'hierophant', homeZone(p2))          // 2/6
     const bystander = put(s, p2, 'bulwark-protector', 1)             // neutral — untouched now
-    s = act(s, p1, { type: 'attack', attacker: behemoth, target: { kind: 'base', seat: p2 } })
+    s = act(s, p1, { type: 'attack', attackers: [behemoth], target: { kind: 'base', seat: p2 } })
     expect(s.sides[p2].life).toBe(20 - 6)
     expect(s.units[defender].damage).toBe(2)
     expect(s.units[friendly]).toBeUndefined()                        // own 1/1 died to the splash
@@ -306,13 +305,10 @@ describe('base-assault splash (Crimson Behemoth, re-ruled playtest 004)', () => 
 describe('zone-entry triggers on movement', () => {
   it('Containment Priest imprisons again when it marches into a new zone', () => {
     let { s, p1, p2 } = arena()
-    const priest = put(s, p2, 'containment-priest', 1, { enteredTurn: 0 })
+    const priest = put(s, p2, 'containment-priest', 1, { enteredRound: 0 })
     const victim = put(s, p1, 'berserker', 1)
-    // p2 isn't active; hand the turn over first
-    s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'pass' })          // now p2's turn
-    s = act(s, p2, { type: 'skipResource' })
     const target2 = put(s, p1, 'doombringer', homeZone(p1))
+    s = act(s, p1, { type: 'pass' })          // hand the window to p2
     s = act(s, p2, { type: 'move', unit: priest, to: homeZone(p1) })
     // priest left neutral (victim there stays free) and imprisoned the strongest in p1 home
     expect(s.units[victim].imprisoned).toBeNull()

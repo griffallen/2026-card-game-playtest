@@ -14,7 +14,7 @@ export function defOf(state: GameState, instanceId: string): CardDef {
 }
 
 export function log(state: GameState, seat: Seat | null, msg: string) {
-  state.log.push({ t: state.turn, seat, msg })
+  state.log.push({ t: state.round, seat, msg })
   if (state.log.length > 300) state.log.splice(0, state.log.length - 300)
 }
 
@@ -154,7 +154,7 @@ export function thresholds(state: GameState): [number, number] {
 
 export function isSick(state: GameState, unit: UnitInstance): boolean {
   if (!state.rules.summoningSickness) return false
-  return unit.enteredTurn === state.turn && !hasKw(state, unit, 'rush')
+  return unit.enteredRound === state.round && !hasKw(state, unit, 'rush')
 }
 
 export function draw(state: GameState, seat: Seat, n: number) {
@@ -181,7 +181,7 @@ export function checkWin(state: GameState, actorSeat: Seat) {
     let w: Seat
     if (dead0 && dead1) {
       const tb = state.rules.simultaneousLifeTiebreak
-      w = tb === 'active' ? state.activeSeat : actorSeat
+      w = tb === 'active' ? state.initiative : actorSeat
     } else w = dead0 ? 1 : 0
     state.winner = w
     state.winReason = 'life'

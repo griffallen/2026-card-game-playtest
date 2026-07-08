@@ -28,7 +28,7 @@ describe('random-playout simulation (GENESYS harness v0)', () => {
     const pct = (n: number) => `${n}/${results.length} (${Math.round((n / results.length) * 100)}%)`
     const redWins = results.filter(r => (r.firstDeck === 'red' ? r.winner === 0 : r.winner === 1)).length
     const seat0Wins = results.filter(r => r.winner === 0).length
-    const turns = results.map(r => r.turns).sort((a, b) => a - b)
+    const turns = results.map(r => r.rounds).sort((a, b) => a - b)
     const lines = [
       `games: ${results.length}`,
       `win reasons: ${[...byReason.entries()].map(([k, v]) => `${k} ${v}`).join(', ')}`,

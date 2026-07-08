@@ -35,19 +35,19 @@ describe('createGame', () => {
     expect(JSON.stringify(a)).not.toBe(JSON.stringify(b))
   })
 
-  it('deals per the spec: hand 5 after auto-resourcing 2 of 7; first player has drawn firstTurnDraw', () => {
+  it('deals per the spec: hand 5 after auto-banking 2 of 7; initiative drew firstRoundDraw at its start step', () => {
     const s = make(3)
-    const first = s.activeSeat
+    const first = s.initiative
     const second = (1 - first) as 0 | 1
-    // setup: draw 7, resource last 2 → 5 in hand. Then turn 1 auto-runs: first player draws 1 (firstTurnDraw).
-    expect(s.sides[first].hand.length).toBe(6)
-    expect(s.sides[second].hand.length).toBe(5)
+    // setup: draw 7, auto-bank last 2 → 5 in hand. Then round 1: initiative's start step draws firstRoundDraw (2) → 7.
+    expect(s.sides[first].hand.length).toBe(7)
+    expect(s.sides[second].hand.length).toBe(5)      // second's start step hasn't run yet
     expect(s.sides[0].resources.length).toBe(2)
     expect(s.sides[1].resources.length).toBe(2)
-    expect(s.sides[first].deck.length).toBe(48 - 7 - 1)
+    expect(s.sides[first].deck.length).toBe(48 - 7 - 2)
     expect(s.sides[second].deck.length).toBe(48 - 7)
-    expect(s.turn).toBe(1)
-    expect(s.phase).toBe('resource')
+    expect(s.round).toBe(1)
+    expect(s.phase).toBe('bank')
     expect(s.actorSeat).toBe(first)
     expect(s.influence).toBe(0)
     expect(s.sides[0].life).toBe(20)
@@ -72,7 +72,7 @@ describe('createGame', () => {
 
   it('setup phase (decision 31): players choose their banks, first player first', () => {
     let s = make(4, true)
-    const first = s.activeSeat
+    const first = s.initiative
     const second = (1 - first) as 0 | 1
     expect(s.phase).toBe('setup')
     expect(s.actorSeat).toBe(first)
@@ -94,17 +94,17 @@ describe('createGame', () => {
 
     const pickB = s.sides[second].hand.slice(3, 5)
     s = applyAction(s, { type: 'setupBank', cards: pickB }, second).state
-    // both banked → turn 1 ran: first player drew firstTurnDraw
-    expect(s.phase).toBe('resource')
+    // both banked → round 1 ran: initiative's start step drew firstRoundDraw (2)
+    expect(s.phase).toBe('bank')
     expect(s.actorSeat).toBe(first)
-    expect(s.turn).toBe(1)
-    expect(s.sides[first].hand.length).toBe(5 + 1)
+    expect(s.round).toBe(1)
+    expect(s.sides[first].hand.length).toBe(5 + 2)
     expect(s.sides[second].resources.length).toBe(2)
   })
 
   it('mulligans redraw one fewer each time and floor at the bank size (decision 32)', () => {
     let s = make(6, true)
-    const first = s.activeSeat
+    const first = s.initiative
     expect(s.sides[first].hand.length).toBe(7)
     s = applyAction(s, { type: 'mulligan' }, first).state
     expect(s.sides[first].hand.length).toBe(6)
@@ -124,15 +124,14 @@ describe('createGame', () => {
 
   it('drawing from an empty deck costs 1 life and 1 influence per missing card (decision 33)', () => {
     let s = make(8, false)
-    const active = s.activeSeat
-    const other = (1 - active) as 0 | 1
-    // drain the NEXT player's deck so their turn-start double draw whiffs twice
+    const first = s.initiative
+    const other = (1 - first) as 0 | 1
+    // drain the OTHER player's deck so their start-step double draw whiffs twice
     const side = s.sides[other]
     side.discard.push(...side.deck)
     side.deck = []
-    s = applyAction(s, { type: 'skipResource' }, active).state
-    s = applyAction(s, { type: 'pass' }, active).state
-    s = applyAction(s, { type: 'pass' }, other).state       // turn flips → other draws 2 from nothing
+    // initiative ends its start step → the other player's start step draws 2 from an empty deck
+    s = applyAction(s, { type: 'skipResource' }, first).state
     expect(s.sides[other].life).toBe(20 - 2)
     const inf = other === 0 ? s.influence : -s.influence
     expect(inf).toBe(-2)

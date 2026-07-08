@@ -1,5 +1,6 @@
 import type { CardDef, CardSet, GameState, Seat, ZoneId } from '../src/types.ts'
 import { createGame } from '../src/setup.ts'
+import { applyAction } from '../src/engine.ts'
 import { DEFAULT_RULES } from '../src/rules.ts'
 
 const u = (slug: string, cost: number, power: number, health: number, extra: Partial<CardDef> = {}): CardDef =>
@@ -11,7 +12,7 @@ export const T: CardSet = {
   soldier: u('soldier', 2, 2, 2),
   brute: u('brute', 3, 4, 3),
   wall: u('wall', 2, 0, 5, { kw: [{ k: 'cantAttack' }] }),
-  guardian: u('guardian', 2, 1, 3, { kw: [{ k: 'guard' }] }),
+  guardian: u('guardian', 2, 1, 3, { kw: [{ k: 'guard' }], onDefend: [{ op: 'influence', n: 1 }] }),
   plated: u('plated', 3, 2, 3, { kw: [{ k: 'armor', n: 2 }] }),
   runner: u('runner', 1, 1, 1, { kw: [{ k: 'rush' }] }),
   archer: u('archer', 2, 2, 2, { kw: [{ k: 'ranged' }] }),
@@ -21,6 +22,9 @@ export const T: CardSet = {
   bolt: { slug: 'bolt', name: 'bolt', color: 'red', type: 'action', cost: 1, text: '',
     targets: [{ t: 'unitOrBase', side: 'any', baseSide: 'any' }],
     onPlay: [{ op: 'damage', t: 'chosen0', n: 2 }] },
+  onslaught: { slug: 'onslaught', name: 'onslaught', color: 'red', type: 'action', cost: 8, text: '',
+    targets: [{ t: 'unit', side: 'friendly' }],
+    onPlay: [{ op: 'ready', side: 'friendly', t: 'chosen0' }, { op: 'extraAction' }] },
 }
 export const toyDeck = () => Object.keys(T).flatMap(slug => [slug, slug, slug, slug])
 
@@ -34,10 +38,17 @@ export function game(seed = 5): GameState {
   })
 }
 
+/** Drive both bank steps with skips: returns state at loop start, initiative acts first. */
+export function toLoop(state: GameState): GameState {
+  let s = state
+  while (s.phase === 'bank') s = applyAction(s, { type: 'skipResource' }, s.actorSeat).state
+  return s
+}
+
 let n = 1000
 /** Force a unit into play for combat fixtures (bypasses costs; tests own the setup). */
 export function put(state: GameState, seat: Seat, slug: string, zone: ZoneId, opts: Partial<{
-  exhausted: boolean; damage: number; enteredTurn: number; imprisonedBy: Seat
+  exhausted: boolean; damage: number; enteredRound: number; imprisonedBy: Seat
 }> = {}): string {
   const id = `t${n++}`
   state.cardOf[id] = slug
@@ -45,7 +56,7 @@ export function put(state: GameState, seat: Seat, slug: string, zone: ZoneId, op
     id, slug, owner: seat, zone,
     damage: opts.damage ?? 0,
     exhausted: opts.exhausted ?? false,
-    enteredTurn: opts.enteredTurn ?? 0,
+    enteredRound: opts.enteredRound ?? 0,
     imprisoned: opts.imprisonedBy !== undefined ? { by: opts.imprisonedBy, source: null } : null,
     upgrades: [],
     mods: [],

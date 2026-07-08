@@ -27,7 +27,8 @@ function attackScore(state: GameState, attackerId: string, target: GameAction & 
   const attacker = state.units[attackerId]
   if (!attacker) return 0
   const oe = kwOf(state, attacker, 'overextend')
-  const oeN = target.overextend && typeof oe === 'number' ? oe : 0
+  const overextending = target.overextend?.includes(attackerId) ?? false
+  const oeN = overextending && typeof oe === 'number' ? oe : 0
   const power = effPower(state, attacker) + oeN
   const atkRemaining = effHealth(state, attacker) - attacker.damage
   const surviveGamble = atkRemaining > oeN // will the end-of-turn bill kill it?
@@ -102,7 +103,7 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
         break
       }
       case 'mulligan': score = 2; break // baseline bot keeps what it's dealt
-      case 'attack': score = attackScore(state, action.attacker, action); break
+      case 'attack': score = attackScore(state, action.attackers[0], action); break
       case 'play': score = playScore(state, seat, action); break
       case 'move': score = moveScore(state, seat, action); break
       case 'resource': {

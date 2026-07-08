@@ -7,7 +7,7 @@ import {
   defOf, effArmor, effPower, hasKw, isSick, kwOf, log, other, unitsInZone, unitsOf,
 } from './helpers.ts'
 import { damageBase, damageUnit, fireTrigger, runOps, stateBasedCleanup } from './effects.ts'
-import { endTurn, startTurn } from './turn.ts'
+import { startRound, endRound, finishBankStep } from './round.ts'
 
 export interface ApplyResult { state: GameState; events: LogLine[] }
 
@@ -33,10 +33,12 @@ export function applyAction(prev: GameState, action: GameAction, actorSeat: Seat
 
   if (state.phase === 'setup') {
     applySetupPhase(state, action, actorSeat)
-  } else if (state.phase === 'resource') {
-    applyResourcePhase(state, action, actorSeat)
+  } else if (state.phase === 'bank') {
+    applyBankPhase(state, action, actorSeat)
+  } else if (state.phase === 'intercept') {
+    fail('bad-phase', 'no intercept window is open')
   } else {
-    applyMainPhase(state, action, actorSeat)
+    applyLoopPhase(state, action, actorSeat)
   }
 
   stateBasedCleanup(state, actorSeat)
@@ -80,54 +82,73 @@ function applySetupPhase(state: GameState, action: GameAction, seat: Seat) {
   if (!state.setupBanked[other_]) {
     state.actorSeat = other_
   } else {
-    startTurn(state) // both banked — turn 1 begins
+    startRound(state) // both banked — round 1 begins
   }
 }
 
-function applyResourcePhase(state: GameState, action: GameAction, seat: Seat) {
+/** After seat S completes a non-pass action, decide the next window (spec §1.5). */
+function advanceWindow(state: GameState, seat: Seat) {
+  state.passStreak = 0
+  if (state.pendingExtraAction === seat) {
+    state.pendingExtraAction = null
+    log(state, seat, `${state.sides[seat].name} seizes an extra action`)
+    state.actorSeat = seat
+    return
+  }
+  state.pendingExtraAction = null // an opponent-granted flag can't survive their window
+  const opp = other(seat)
+  state.actorSeat = state.outOfRound[opp] ? seat : opp
+}
+
+function applyBankPhase(state: GameState, action: GameAction, seat: Seat) {
   if (action.type === 'resource') {
-    if (state.resourcedThisTurn >= state.rules.resourcesPerTurn) fail('resource-cap', 'already resourced this turn')
+    if (state.bankedThisStep >= state.rules.resourcesPerRound) fail('resource-cap', 'already banked this step')
     const side = state.sides[seat]
     const idx = side.hand.indexOf(action.card)
     if (idx < 0) fail('not-in-hand', 'card is not in your hand')
     side.hand.splice(idx, 1)
     side.resources.push({ id: action.card, exhausted: false })
-    state.resourcedThisTurn += 1
+    state.bankedThisStep += 1
     log(state, seat, `${side.name} banks ${defOf(state, action.card).name} as a resource (${side.resources.length})`)
   } else if (action.type !== 'skipResource') {
-    fail('bad-phase', 'resource phase: resource a card or skip')
+    fail('bad-phase', 'start step: bank a card or skip')
   }
-  if (state.resourcedThisTurn >= state.rules.resourcesPerTurn || action.type === 'skipResource') {
-    state.phase = 'main'
-    state.actorSeat = state.activeSeat
-    state.passStreak = 0
+  if (state.bankedThisStep >= state.rules.resourcesPerRound || action.type === 'skipResource') {
+    finishBankStep(state)
   }
 }
 
-function applyMainPhase(state: GameState, action: GameAction, seat: Seat) {
-  const isActive = seat === state.activeSeat
+function applyLoopPhase(state: GameState, action: GameAction, seat: Seat) {
   switch (action.type) {
     case 'pass': {
+      const opp = other(seat)
       state.passStreak += 1
-      if (state.passStreak >= 2) { endTurn(state, seat); return }
-      state.actorSeat = other(seat)
+      if (state.outOfRound[opp] || state.passStreak >= 2) { endRound(state, seat); return }
+      state.actorSeat = opp
+      return
+    }
+    case 'claimInitiative': {
+      if (state.claimedThisRound) fail('claimed', 'initiative was already claimed this round')
+      state.initiative = seat
+      state.claimedThisRound = true
+      state.outOfRound[seat] = true
+      log(state, seat, `${state.sides[seat].name} claims the initiative`)
+      const opp = other(seat)
+      if (state.outOfRound[opp]) { endRound(state, seat); return }
+      state.actorSeat = opp
+      state.passStreak = 0
       return
     }
     case 'play': playCard(state, action, seat); break
-    case 'move': {
-      if (!isActive) fail('off-turn', 'you can only move on your turn')
-      moveUnit(state, action.unit, action.to, seat)
-      break
-    }
+    case 'move': moveUnit(state, action.unit, action.to, seat); break
     case 'attack': {
-      if (!isActive) fail('off-turn', 'you can only attack on your turn')
-      attack(state, action.attacker, action.target, seat, action.overextend ?? false)
+      attackDeclare(state, action, seat)
+      if (state.phase === 'intercept') return // defender's window is open; resolve completes the action
       break
     }
-    default: fail('bad-phase', `${(action as GameAction).type} is not a main-phase action`)
+    default: fail('bad-phase', `${(action as GameAction).type} is not a loop action`)
   }
-  state.passStreak = 0
-  state.actorSeat = other(seat)
+  advanceWindow(state, seat)
 }
 
 // ─── Playing cards ───────────────────────────────────────────────────────────
@@ -212,7 +233,7 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     const zone = homeZone(seat)
     state.units[action.card] = {
       id: action.card, slug: def.slug, owner: seat, zone,
-      damage: 0, exhausted: false, enteredTurn: state.turn,
+      damage: 0, exhausted: false, enteredRound: state.round,
       imprisoned: null, upgrades: [], mods: [], overextendedBy: 0,
     }
     log(state, seat, `${side.name} deploys ${def.name}`)
@@ -236,7 +257,7 @@ function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat) {
   if (unit.owner !== seat) fail('not-yours', 'not your unit')
   if (unit.imprisoned) fail('imprisoned', 'imprisoned units cannot move')
   if (unit.exhausted) fail('exhausted', 'exhausted units cannot move')
-  if (isSick(state, unit)) fail('sick', 'this unit just arrived this turn')
+  if (isSick(state, unit)) fail('sick', 'this unit just arrived this round')
   if (to === unit.zone) fail('bad-move', 'already there')
   if (!hasKw(state, unit, 'flying') && !adjacent(unit.zone, to)) fail('bad-move', 'can only move to an adjacent zone')
   unit.zone = to
@@ -254,12 +275,15 @@ function guardsFor(state: GameState, defender: Seat, zone: ZoneId): UnitInstance
   return unitsInZone(state, zone, defender).filter(u => !u.imprisoned && hasKw(state, u, 'guard'))
 }
 
-function attack(state: GameState, attackerId: string, target: TargetRef, seat: Seat, overextend: boolean) {
+function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'attack' }>, seat: Seat) {
+  const attackerId = action.attackers[0]
+  const target = action.target
+  const overextend = action.overextend?.includes(attackerId) ?? false
   const attacker = state.units[attackerId] ?? fail('no-unit', 'no such attacker')
   if (attacker.owner !== seat) fail('not-yours', 'not your unit')
   if (attacker.imprisoned) fail('imprisoned', 'imprisoned units cannot attack')
   if (attacker.exhausted) fail('exhausted', 'exhausted units cannot attack')
-  if (isSick(state, attacker)) fail('sick', 'this unit just arrived this turn')
+  if (isSick(state, attacker)) fail('sick', 'this unit just arrived this round')
   if (hasKw(state, attacker, 'cantAttack')) fail('cant-attack', 'this unit cannot attack')
 
   // decision 35: overextending is an optional gamble — +N power now, N self-damage at end of turn

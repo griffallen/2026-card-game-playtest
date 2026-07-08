@@ -1,0 +1,93 @@
+import type { GameState, Seat } from './types.ts'
+import { addInfluence, condHolds, defOf, draw, log, other, unitsOf } from './helpers.ts'
+import { runOps, stateBasedCleanup } from './effects.ts'
+// (draw handles decision-33 penalties internally; endRound settles decision-35 overextension)
+
+/** One seat's automatic start-step: decay → startOfRound triggers → ready → draw (spec §1.4). */
+function runStartStepAuto(state: GameState, seat: Seat) {
+  // Prison decay FIRST: upkeep for prisoners already held. Running it after start-of-round
+  // triggers would instantly break a prison taken this very step (imprison → decay → below
+  // threshold → release), which guts every start-of-round jailer card.
+  const held = unitsOf(state).filter(u => u.imprisoned?.by === seat).length
+  if (held > 0 && state.rules.prisonDecayPerUnit > 0) {
+    addInfluence(state, seat, -held * state.rules.prisonDecayPerUnit)
+    log(state, seat, `${state.sides[seat].name} pays ${held * state.rules.prisonDecayPerUnit} influence to hold ${held} prisoner${held > 1 ? 's' : ''}`)
+    stateBasedCleanup(state, seat)
+  }
+  if (state.winner !== null) return
+
+  for (const u of unitsOf(state, seat)) {
+    if (state.winner !== null) return
+    if (u.imprisoned) continue
+    const own = defOf(state, u.id).startOfRound
+    if (own && condHolds(state, seat, own.cond)) {
+      runOps({ state, controller: seat, sourceUnit: u.id, actorSeat: seat }, own.ops)
+    }
+    for (const upId of u.upgrades) {
+      const up = defOf(state, upId).startOfRound
+      if (up && condHolds(state, seat, up.cond)) {
+        runOps({ state, controller: seat, sourceUnit: u.id, actorSeat: seat }, up.ops)
+      }
+    }
+  }
+
+  for (const u of unitsOf(state, seat)) u.exhausted = false
+  for (const r of state.sides[seat].resources) r.exhausted = false
+
+  const n = state.round === 1 ? state.rules.firstRoundDraw : state.rules.drawPerRound
+  draw(state, seat, n)
+  log(state, seat, `${state.sides[seat].name} draws ${n} card${n === 1 ? '' : 's'}`)
+  stateBasedCleanup(state, seat)
+}
+
+/** Begin a round: initiative's start step runs, then pauses at their bank choice. */
+export function startRound(state: GameState) {
+  log(state, null, `— Round ${state.round} · ${state.sides[state.initiative].name} has the initiative —`)
+  runStartStepAuto(state, state.initiative)
+  if (state.winner !== null) return
+  state.phase = 'bank'
+  state.startStep = state.initiative
+  state.actorSeat = state.initiative
+  state.bankedThisStep = 0
+}
+
+/** A seat finished banking: run the other start step, or open the action loop. */
+export function finishBankStep(state: GameState) {
+  const seat = state.startStep
+  if (seat === null) return
+  if (seat === state.initiative) {
+    const next = other(seat)
+    runStartStepAuto(state, next)
+    if (state.winner !== null) return
+    state.startStep = next
+    state.actorSeat = next
+    state.bankedThisStep = 0
+  } else {
+    state.startStep = null
+    state.phase = 'loop'
+    state.actorSeat = state.initiative
+    state.passStreak = 0
+  }
+}
+
+/** End of round: overextend bills, round-mods expire, flags reset, next round begins (spec §1.4). */
+export function endRound(state: GameState, actorSeat: Seat) {
+  // decision 35: units that overextended take their self-damage now
+  for (const u of unitsOf(state)) {
+    if (u.overextendedBy > 0) {
+      u.damage += u.overextendedBy // self-inflicted strain ignores armor
+      log(state, u.owner, `${defOf(state, u.id).name} suffers ${u.overextendedBy} from overextending`)
+      u.overextendedBy = 0
+    }
+  }
+  for (const u of unitsOf(state)) u.mods = u.mods.filter(m => !m.round)
+  state.preventBase = [0, 0]
+  stateBasedCleanup(state, actorSeat)
+  if (state.winner !== null) return
+
+  state.outOfRound = [false, false]
+  state.claimedThisRound = false
+  state.pendingExtraAction = null
+  state.round += 1
+  startRound(state)
+}

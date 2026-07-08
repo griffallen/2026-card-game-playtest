@@ -43,13 +43,13 @@ export type Op =
   | { op: 'draw'; n: number }
   | { op: 'influence'; n: number }                                // + toward controller
   | { op: 'imprison'; t: OpTarget | 'auto'; f?: UnitFilter; auto?: AutoPick }
-  | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'turn' | 'perm'; cond?: Cond }
+  | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'round' | 'perm'; cond?: Cond }
   | { op: 'double'; t: OpTarget }
-  | { op: 'grant'; t: OpTarget | UnitFilter; kw: KeywordSpec; dur: 'turn' | 'perm' }
+  | { op: 'grant'; t: OpTarget | UnitFilter; kw: KeywordSpec; dur: 'round' | 'perm' }
   | { op: 'destroy'; t: OpTarget; mustBeDamaged?: boolean }
   | { op: 'destroyUpgrade' }                                      // target: chosen upgrade
-  | { op: 'ready'; side: 'friendly' }
-  | { op: 'extraTurn' }
+  | { op: 'ready'; side: 'friendly'; t?: 'chosen0' }             // with t: readies only that chosen unit (Final Onslaught)
+  | { op: 'extraAction' }                                         // the same player immediately takes another action (decision 43)
   | { op: 'preventBase'; n: number }
   | { op: 'removeNegative'; t: OpTarget }
 
@@ -87,7 +87,7 @@ export interface CardDef {
   onAttackBase?: Op[]
   onDefend?: Op[]
   onKill?: Op[]
-  startOfTurn?: { cond?: Cond; ops: Op[] }
+  startOfRound?: { cond?: Cond; ops: Op[] }
   statics?: Static[]
   designerNote?: string
   artUrl?: string | null
@@ -107,16 +107,27 @@ export interface RulesConfig {
   /** decision 33: failing to draw from an empty deck costs life and influence per missing card */
   emptyDrawLifeLoss: number
   emptyDrawInfluenceLoss: number
-  drawPerTurn: number
-  firstTurnDraw: number
-  resourcesPerTurn: number
+  drawPerRound: number
+  firstRoundDraw: number
+  resourcesPerRound: number
   deckMinSize: number
   maxCopies: number
   upgradePressureInfluence: number
   prisonDecayPerUnit: number
   prisonReleaseThreshold: number
+  /** decision 41: units enter ready — false by default; true restores can't-act-on-entry */
   summoningSickness: boolean
   moveExhausts: boolean
+  /** decision 41: Rush's exhaust waiver also covers the entry-round attack */
+  rushCoversAttack: boolean
+  /** decision 42: intercepting exhausts the interceptor (Guard always exempt) */
+  interceptExhausts: boolean
+  /** counter-damage target in a multi-unit attack: 'auto' = highest power (only mode implemented) */
+  counterAssignment: 'auto' | 'defender'
+  /** armor vs a combined multi-unit hit: 'once' on the total (only mode implemented) */
+  armorPerAttack: 'once' | 'perAttacker'
+  /** cap on attackers per attack action (0 = unlimited) */
+  maxAttackers: number
   simultaneousLifeTiebreak: 'actor' | 'active' | 'draw'
 }
 
@@ -127,7 +138,7 @@ export interface Mod {
   armor?: number
   kw?: KeywordSpec
   double?: boolean
-  turn?: boolean             // expires at end of turn
+  round?: boolean            // expires at end of round
   cond?: Cond                // active only while condition holds (checked against owner)
 }
 
@@ -138,11 +149,11 @@ export interface UnitInstance {
   zone: ZoneId
   damage: number
   exhausted: boolean
-  enteredTurn: number
+  enteredRound: number
   imprisoned: { by: Seat; source: string | null } | null
   upgrades: string[]         // upgrade instance ids
   mods: Mod[]
-  /** decision 35: damage owed at end of turn from overextending this turn */
+  /** decision 35: damage owed at end of round from overextending this round */
   overextendedBy: number
 }
 
@@ -169,21 +180,26 @@ export interface GameState {
   rules: RulesConfig
   cardSet: CardSet
   cardOf: Record<string, string>      // instance id → slug
-  turn: number                        // global, increments every turn change
-  activeSeat: Seat
-  phase: 'setup' | 'resource' | 'main'
+  round: number                       // global, increments once per full round
+  initiative: Seat                    // holder acts first each round; carries over unless claimed
+  phase: 'setup' | 'bank' | 'loop' | 'intercept'
   actorSeat: Seat                     // whose action window it is
+  startStep: Seat | null              // phase 'bank': whose start step is paused at its bank choice
+  bankedThisStep: number              // resources banked in the current start step
+  outOfRound: [boolean, boolean]      // true = claimed initiative, done acting this round
+  claimedThisRound: boolean           // at most one claim per round
   setupBanked: [boolean, boolean]     // per-seat: starting resources chosen (setup phase)
   mulligans: [number, number]         // per-seat mulligan count (setup phase, decision 32)
   passStreak: number
-  resourcedThisTurn: number
-  firstPlayer: Seat
-  pendingExtraTurn: Seat | null
+  pendingExtraAction: Seat | null     // decision 43: this seat takes another action after the current resolves
+  pendingAttack: {                    // phase 'intercept': the declared attack awaiting the defender
+    seat: Seat; attackers: string[]; target: TargetRef; overextend: string[]
+  } | null
   influence: number                   // + toward seat 0
   sides: [SideState, SideState]
   units: Record<string, UnitInstance>
   upgrades: Record<string, UpgradeInstance>
-  preventBase: [number, number]       // remaining base-damage prevention this turn
+  preventBase: [number, number]       // remaining base-damage prevention this round
   winner: Seat | null
   winReason: 'life' | 'influence' | 'concede' | null
   log: LogLine[]
@@ -200,11 +216,14 @@ export type TargetRef =
 export type GameAction =
   | { type: 'mulligan' }                     // setup phase: shuffle back, redraw one fewer (decision 32)
   | { type: 'setupBank'; cards: string[] }   // setup phase: choose starting resources
-  | { type: 'resource'; card: string }
-  | { type: 'skipResource' }
+  | { type: 'resource'; card: string }       // bank phase: resource a card
+  | { type: 'skipResource' }                 // bank phase: end your start step
   | { type: 'play'; card: string; targets?: TargetRef[] }
-  | { type: 'attack'; attacker: string; target: TargetRef; overextend?: boolean } // decision 35: optional gamble
+  | { type: 'attack'; attackers: string[]; target: TargetRef; overextend?: string[] } // decision 42: 1+ attackers, one zone; overextend: subset taking the gamble
   | { type: 'move'; unit: string; to: ZoneId }
+  | { type: 'claimInitiative' }              // decision 40: take the token, leave the round
+  | { type: 'intercept'; unit: string }      // decision 42: redirect the attack to a ready unit
+  | { type: 'declineIntercept' }             // decision 42: let the attack hit its declared target
   | { type: 'pass' }
   | { type: 'concede' }
 
@@ -217,7 +236,7 @@ export interface UnitView {
   id: string; slug: string; name: string; owner: Seat; zone: ZoneId
   power: number; health: number; damage: number
   basePower: number; baseHealth: number; armor: number
-  exhausted: boolean; sick: boolean; imprisoned: boolean
+  exhausted: boolean; rushFreeMove: boolean; imprisoned: boolean
   overextendedBy: number
   keywords: string[]
   upgrades: { id: string; slug: string; name: string }[]
@@ -230,8 +249,13 @@ export interface SideView {
 }
 export interface PlayerView {
   viewerSeat: Seat | null
-  turn: number; phase: 'setup' | 'resource' | 'main'
-  activeSeat: Seat; actorSeat: Seat
+  round: number
+  phase: 'setup' | 'bank' | 'loop' | 'intercept'
+  initiative: Seat
+  actorSeat: Seat
+  outOfRound: [boolean, boolean]
+  claimedThisRound: boolean
+  pendingAttack: { attackers: string[]; target: TargetRef } | null
   influence: number                    // + toward seat 0 (client flips for display)
   thresholds: [number, number]         // win threshold per seat (statics applied)
   sides: [SideView, SideView]
@@ -246,7 +270,7 @@ export interface PlayerView {
 export interface SimResult {
   winner: Seat
   winReason: string
-  turns: number
+  rounds: number
   actions: number
   minInfluence: number
   maxInfluence: number

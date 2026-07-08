@@ -38,7 +38,7 @@ export function simulateGame(seed: number, deckA: string[], deckB: string[], opt
 
   while (state.winner === null) {
     if (++actions > MAX_ACTIONS) {
-      throw new EngineError('livelock', `seed ${seed}: no winner after ${MAX_ACTIONS} actions (turn ${state.turn})`)
+      throw new EngineError('livelock', `seed ${seed}: no winner after ${MAX_ACTIONS} actions (round ${state.round})`)
     }
     if (!getLegalActions(state, state.actorSeat).length) {
       throw new EngineError('stuck', `seed ${seed}: no legal actions and no winner`)
@@ -54,7 +54,7 @@ export function simulateGame(seed: number, deckA: string[], deckB: string[], opt
   return {
     winner: state.winner,
     winReason: state.winReason ?? 'unknown',
-    turns: state.turn,
+    rounds: state.round,
     actions,
     minInfluence: minInfluence === 0 ? 0 : minInfluence,
     maxInfluence: maxInfluence === 0 ? 0 : maxInfluence,

@@ -209,22 +209,22 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         const targets = typeof op.t === 'string' ? [resolveUnitTarget(ctx, op.t)].filter(Boolean) as UnitInstance[] : filterUnits(ctx, op.t)
         for (const u of targets) {
           if (!condHolds(state, controller, op.cond)) continue
-          u.mods.push({ p: op.p, h: op.h, armor: op.armor, turn: op.dur === 'turn' })
+          u.mods.push({ p: op.p, h: op.h, armor: op.armor, round: op.dur === 'round' })
           const bits = [op.p ? `${op.p > 0 ? '+' : ''}${op.p} power` : '', op.armor ? `+${op.armor} armor` : ''].filter(Boolean).join(', ')
-          log(state, u.owner, `${name(state, u.id)} gets ${bits}${op.dur === 'turn' ? ' this turn' : ''}`)
+          log(state, u.owner, `${name(state, u.id)} gets ${bits}${op.dur === 'round' ? ' this round' : ''}`)
         }
         break
       }
       case 'double': {
         const u = resolveUnitTarget(ctx, op.t)
-        if (u) { u.mods.push({ double: true, turn: true }); log(state, u.owner, `${name(state, u.id)}'s power is doubled this turn`) }
+        if (u) { u.mods.push({ double: true, round: true }); log(state, u.owner, `${name(state, u.id)}'s power is doubled this round`) }
         break
       }
       case 'grant': {
         const targets = typeof op.t === 'string' ? [resolveUnitTarget(ctx, op.t)].filter(Boolean) as UnitInstance[] : filterUnits(ctx, op.t)
         for (const u of targets) {
-          u.mods.push({ kw: op.kw, turn: op.dur === 'turn' })
-          log(state, u.owner, `${name(state, u.id)} gains ${op.kw.k}${op.kw.n !== undefined ? ` ${op.kw.n}` : ''}${op.dur === 'turn' ? ' this turn' : ''}`)
+          u.mods.push({ kw: op.kw, round: op.dur === 'round' })
+          log(state, u.owner, `${name(state, u.id)} gains ${op.kw.k}${op.kw.n !== undefined ? ` ${op.kw.n}` : ''}${op.dur === 'round' ? ' this round' : ''}`)
         }
         break
       }
@@ -250,14 +250,14 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         log(state, controller, `${state.sides[controller].name}'s units ready for another assault`)
         break
       }
-      case 'extraTurn': {
-        state.pendingExtraTurn = controller
-        log(state, controller, `${state.sides[controller].name} will take an extra turn`)
+      case 'extraAction': {
+        state.pendingExtraAction = controller
+        log(state, controller, `${state.sides[controller].name} lines up an extra action`)
         break
       }
       case 'preventBase': {
         state.preventBase[controller] += op.n
-        log(state, controller, `${state.sides[controller].name} wards ${op.n} base damage this turn`)
+        log(state, controller, `${state.sides[controller].name} wards ${op.n} base damage this round`)
         break
       }
       case 'removeNegative': {

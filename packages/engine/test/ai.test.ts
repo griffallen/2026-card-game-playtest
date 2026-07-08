@@ -21,7 +21,7 @@ describe('baseline heuristic AI', () => {
   })
 
   it('heuristic mirror: 60 games terminate; report the competent-play balance picture', { timeout: 240_000 }, () => {
-    const rows: { winner: number; winReason: string; turns: number; firstDeck: string }[] = []
+    const rows: { winner: number; winReason: string; rounds: number; firstDeck: string }[] = []
     for (let seed = 1; seed <= 30; seed++) {
       rows.push({ ...simulateGame(seed, red, yellow, { policyA: 'heuristic', policyB: 'heuristic' }), firstDeck: 'red' })
       rows.push({ ...simulateGame(seed + 900, yellow, red, { policyA: 'heuristic', policyB: 'heuristic' }), firstDeck: 'yellow' })
@@ -29,7 +29,7 @@ describe('baseline heuristic AI', () => {
     const redWins = rows.filter(r => (r.firstDeck === 'red' ? r.winner === 0 : r.winner === 1)).length
     const byReason = new Map<string, number>()
     for (const r of rows) byReason.set(r.winReason, (byReason.get(r.winReason) ?? 0) + 1)
-    const turns = rows.map(r => r.turns).sort((a, b) => a - b)
+    const turns = rows.map(r => r.rounds).sort((a, b) => a - b)
     console.log(`\n── heuristic-mirror report ──`)
     console.log(`red deck wins: ${redWins}/60 (${Math.round((redWins / 60) * 100)}%)`)
     console.log(`win reasons: ${[...byReason.entries()].map(([k, v]) => `${k} ${v}`).join(', ')}`)

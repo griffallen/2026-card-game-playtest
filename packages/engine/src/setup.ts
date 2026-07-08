@@ -2,7 +2,7 @@ import type { CardSet, GameState, RulesConfig, Seat } from './types.ts'
 import { EngineError } from './types.ts'
 import { rngInt, shuffle } from './rng.ts'
 import { log } from './helpers.ts'
-import { startTurn } from './turn.ts'
+import { startRound } from './round.ts'
 
 export interface CreateGameOpts {
   seed: number
@@ -73,16 +73,19 @@ export function createGame(opts: CreateGameOpts): GameState {
     rules,
     cardSet,
     cardOf,
-    turn: 1,
-    activeSeat: first as Seat,
-    phase: rules.chooseStartingResources ? 'setup' : 'resource',
+    round: 1,
+    initiative: first as Seat,
+    phase: rules.chooseStartingResources ? 'setup' : 'bank',
     actorSeat: first as Seat,
+    startStep: null,
+    bankedThisStep: 0,
+    outOfRound: [false, false],
+    claimedThisRound: false,
     setupBanked: [!rules.chooseStartingResources, !rules.chooseStartingResources],
     mulligans: [0, 0],
     passStreak: 0,
-    resourcedThisTurn: 0,
-    firstPlayer: first as Seat,
-    pendingExtraTurn: null,
+    pendingExtraAction: null,
+    pendingAttack: null,
     influence: 0,
     sides,
     units: {},
@@ -93,11 +96,11 @@ export function createGame(opts: CreateGameOpts): GameState {
     log: [],
     nextId,
   }
-  log(state, null, `${sides[0].name} vs ${sides[1].name} — ${sides[first as Seat].name} goes first`)
+  log(state, null, `${sides[0].name} vs ${sides[1].name} — ${sides[first as Seat].name} takes the initiative`)
   if (rules.chooseStartingResources) {
     log(state, null, `Setup: each player banks ${rules.startingResources} starting resources, ${sides[first as Seat].name} first`)
   } else {
-    startTurn(state)
+    startRound(state)
   }
   return state
 }
