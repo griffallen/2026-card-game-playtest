@@ -91,7 +91,7 @@ export function Audit() {
 
       <H2 id="architecture">2 · Engine architecture, in designer's terms</H2>
       <ul className="ml-5 mt-3 list-disc">
-        <LI><b>Rules are split into mechanics and parameters.</b> Turn structure, combat, prison — code. Every number (starting life, win thresholds, draws per turn, prison upkeep…) — a named, versioned parameter set you can edit in the online admin. "Try v1.3 with 25 life" is a form, not a programming task.</LI>
+        <LI><b>Rules are split into mechanics and parameters.</b> Turn structure, combat, prison — code. Every number (starting life, win thresholds, draws per round, prison upkeep…) — a named, versioned parameter set you can edit in the online admin. "Try v1.3 with 25 life" is a form, not a programming task.</LI>
         <LI><b>Cards are structured data, not free text.</b> Each card is built from a fixed vocabulary of effects (damage, imprison, buff, grant keyword, gain influence…). The engine validates every card against that vocabulary — including cards you edit or create later — so a new card idea either works or is rejected on save. It cannot silently break a game.</LI>
         <LI><b>Games are replayable histories.</b> A game is its seed plus its action list. That's why undo exists, why disconnecting loses nothing, and why any bug report that includes a game file is perfectly reproducible.</LI>
         <LI><b>The same engine runs everywhere</b> — the multiplayer server, this browser demo, and the simulator are one codebase. What you playtest here is exactly what deploys.</LI>
@@ -102,6 +102,13 @@ export function Audit() {
         Rules v1.2 is the authority, but it describes intentions more than procedures, and the card sheets use ideas
         the rules never define. Every gap got a ruling — flagged <Flag /> here, in the decisions log, and on the
         affected cards themselves (hover any flagged card). Grouped by weight:
+      </P>
+      <P>
+        <b>⚠ Read this section as reconciliation history.</b> The v2.0 update above revised several of these v1.2-era
+        rulings: influence on units is now <i>event-earned</i> (not once-on-enter), Overextend is a <i>unit combat
+        gamble</i> (action-Overextend is inert, not an Influence shift), combat is <i>multi-unit with a defender
+        intercept</i> (not one-attacker, and both players act in their windows), prison decay and card draws are
+        <i>per round</i>, and there is <i>no</i> first-player draw penalty.
       </P>
 
       <H3>Structural (the game literally needed these)</H3>

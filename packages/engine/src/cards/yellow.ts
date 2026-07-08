@@ -5,7 +5,7 @@ const { unit, action, upgrade } = makeBuilders('yellow')
 
 const INF_NOTE = 'Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).'
 const AUTO_NOTE = '⚑ Imprison target is auto-picked: strongest eligible enemy unit (deterministic; DECISIONS/spec §3.3).'
-const DECAY_NOTE = '⚑ The printed "at the start of your turn, lose 1 Influence" is the global Prison Decay rule (v1.2) — not charged twice.'
+const DECAY_NOTE = '⚑ The printed "at the start of your round, lose 1 Influence" is the global Prison Decay rule (v1.2) — not charged twice.'
 
 /** Yellow — order and containment: Guard, Armor, Imprison, Influence. 48 cards from the July 5 sheet. */
 export const YELLOW_CARDS: CardDef[] = [
@@ -103,12 +103,12 @@ export const YELLOW_CARDS: CardDef[] = [
     onPlay: [influence(1)],
   }),
   unit(4, 'High Justiciar', 3, 5, {
-    text: 'At the start of your turn, imprison target enemy unit in another zone.',
+    text: 'At the start of your round, imprison target enemy unit in another zone.',
     startOfRound: { ops: [{ op: 'imprison', t: 'auto', auto: { scope: 'otherZone' } }] },
     designerNote: AUTO_NOTE + ' "Another zone" = any zone other than the Justiciar\'s.',
   }),
   unit(4, 'Exemplar Knight', 4, 4, {
-    text: 'When this attacks, give it +2 Power this turn. When it defeats a unit, gain 1 Influence.',
+    text: 'When this attacks, give it +2 Power this round. When it defeats a unit, gain 1 Influence.',
     onAttack: [{ op: 'buff', t: 'self', p: 2, dur: 'round' }],
     onKill: [influence(1)],
     designerNote: INF_NOTE,
@@ -153,7 +153,7 @@ export const YELLOW_CARDS: CardDef[] = [
     designerNote: '⚑ The "may" auto-applies (DECISIONS 24).',
   }),
   action(5, 'Disarming Order', {
-    text: "Target unit can't attack this turn. Draw a card.",
+    text: "Target unit can't attack this round. Draw a card.",
     targets: [{ t: 'unit', side: 'enemy' }],
     onPlay: [{ op: 'grant', t: 'chosen0', kw: { k: 'cantAttack' }, dur: 'round' }, { op: 'draw', n: 1 }],
   }),
@@ -162,11 +162,11 @@ export const YELLOW_CARDS: CardDef[] = [
     onPlay: [{ op: 'imprison', t: 'auto', f: { side: 'enemy', maxPower: 3 } }, influence(2)],
   }),
   unit(5, 'Censer of Purity', 3, 6, {
-    text: 'At the start of your turn, lose 1 Influence. If you do, heal 2 damage from your base.',
+    text: 'At the start of your round, lose 1 Influence. If you do, heal 2 damage from your base.',
     startOfRound: { ops: [{ op: 'influence', n: -1 }, { op: 'heal', t: 'selfBase', n: 2 }] },
   }),
   upgrade(5, 'Aura of Resolve', {
-    text: 'Attach to unit. At the start of your turn, gain 1 Influence.',
+    text: 'Attach to unit. At the start of your round, gain 1 Influence.',
     startOfRound: { ops: [{ op: 'influence', n: 1 }] },
   }),
   unit(5, 'Custodian of Law', 4, 6, {
@@ -176,7 +176,7 @@ export const YELLOW_CARDS: CardDef[] = [
     designerNote: INF_NOTE,
   }),
   action(5, 'Imprisonment Chamber', {
-    text: 'Imprison target unit. At the start of your turn, lose 1 Influence.',
+    text: 'Imprison target unit. At the start of your round, lose 1 Influence.',
     targets: [{ t: 'unit', side: 'enemy' }],
     onPlay: [{ op: 'imprison', t: 'chosen0' }],
     designerNote: DECAY_NOTE,
@@ -198,7 +198,7 @@ export const YELLOW_CARDS: CardDef[] = [
     onPlay: [{ op: 'imprison', t: 'chosen0' }, influence(1)],
   }),
   action(6, 'Light of Authority', {
-    text: 'Give target unit +3 Power until end of turn. Influence: +1.',
+    text: 'Give target unit +3 Power until end of round. Influence: +1.',
     targets: [{ t: 'unit', side: 'friendly' }],
     onPlay: [{ op: 'buff', t: 'chosen0', p: 3, dur: 'round' }, influence(1)],
   }),
@@ -222,16 +222,16 @@ export const YELLOW_CARDS: CardDef[] = [
     designerNote: '⚑ Buffs friendly units sharing the carrier\'s zone, excluding the carrier.',
   }),
   action(6, 'Devout Intervention', {
-    text: 'Reduce damage to your base by 3 this turn. Gain 1 Influence.',
+    text: 'Reduce damage to your base by 3 this round. Gain 1 Influence.',
     onPlay: [{ op: 'preventBase', n: 3 }, influence(1)],
   }),
   unit(7, 'Archon of Order', 7, 7, {
-    text: 'At the start of your turn, imprison up to one unit in each enemy zone.',
+    text: 'At the start of your round, imprison up to one unit in each enemy zone.',
     startOfRound: { ops: [{ op: 'imprison', t: 'auto', auto: { scope: 'eachZone' } }] },
     designerNote: AUTO_NOTE + ' "Each enemy zone" = each zone holding enemy units.',
   }),
   action(7, 'Command Edict', {
-    text: 'Give all friendly units +2 Armor this turn. Influence: +2.',
+    text: 'Give all friendly units +2 Armor this round. Influence: +2.',
     onPlay: [{ op: 'buff', t: { side: 'friendly' }, armor: 2, dur: 'round' }, influence(2)],
   }),
   action(7, 'Supreme Sentence', {
@@ -257,7 +257,7 @@ export const YELLOW_CARDS: CardDef[] = [
     onPlay: [{ op: 'removeNegative', t: 'chosen0' }, influence(2)],
   }),
   action(7, 'Prison of Light', {
-    text: 'Imprison target unit. At the start of your turn, lose 1 Influence.',
+    text: 'Imprison target unit. At the start of your round, lose 1 Influence.',
     targets: [{ t: 'unit', side: 'enemy' }],
     onPlay: [{ op: 'imprison', t: 'chosen0' }],
     designerNote: DECAY_NOTE,

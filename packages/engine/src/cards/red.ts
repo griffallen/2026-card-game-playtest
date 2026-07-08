@@ -10,10 +10,10 @@ export const RED_CARDS: CardDef[] = [
   unit(1, 'Cinder Initiate', 1, 1, {
     text: 'Rush. Overextend 1.',
     kw: [{ k: 'rush' }, { k: 'overextend', n: 1 }],
-    designerNote: 'Decision 35: when attacking you MAY overextend for +N power; the unit takes N damage at end of turn. A gamble, not a given.',
+    designerNote: 'Decision 35: when attacking you MAY overextend for +N power; the unit takes N damage at end of round. A gamble, not a given.',
   }),
   unit(1, 'Spark Hound', 2, 1, {
-    text: 'Rush. When this attacks, it gets +1 Power this turn.',
+    text: 'Rush. When this attacks, it gets +1 Power this round.',
     kw: [{ k: 'rush' }],
     onAttack: [{ op: 'buff', t: 'self', p: 1, dur: 'round' }],
   }),
@@ -38,7 +38,7 @@ export const RED_CARDS: CardDef[] = [
     statics: [{ s: 'aura', scope: 'otherFriendly', kw: { k: 'rush' } }],
   }),
   action(2, 'Blood Rush', {
-    text: 'Target unit gets +2 Power and Rush this turn. Overextend 1.',
+    text: 'Target unit gets +2 Power and Rush this round. Overextend 1.',
     targets: [{ t: 'unit', side: 'friendly' }],
     onPlay: [
       { op: 'buff', t: 'chosen0', p: 2, dur: 'round' },
@@ -57,7 +57,7 @@ export const RED_CARDS: CardDef[] = [
     kw: [{ k: 'rush' }, { k: 'overextend', n: 2 }],
   }),
   action(2, 'Smash Through', {
-    text: 'Target unit with Rush gains Breakthrough 2 this turn. Overextend 1.',
+    text: 'Target unit with Rush gains Breakthrough 2 this round. Overextend 1.',
     targets: [{ t: 'unit', side: 'friendly', withKw: 'rush' }],
     onPlay: [{ op: 'grant', t: 'chosen0', kw: { k: 'breakthrough', n: 2 }, dur: 'round' }],
     designerNote: OE_NOTE,
@@ -137,7 +137,7 @@ export const RED_CARDS: CardDef[] = [
     designerNote: '⚑ Re-ruled after playtest 004: the assault splashes 2 damage onto every OTHER unit in the defended Home zone, both sides (the original "zones adjacent to the Behemoth" reading only ever hit Neutral — dead text during a siege).',
   }),
   upgrade(5, 'Bloodfrenzy', {
-    text: 'At the start of your turn, attached unit gets +1 Power if you have 5 or less life.',
+    text: 'At the start of your round, attached unit gets +1 Power if you have 5 or less life.',
     startOfRound: { cond: { selfLifeAtMost: 5 }, ops: [{ op: 'buff', t: 'attached', p: 1, dur: 'perm' }] },
   }),
   unit(6, 'Earthshaker', 6, 5, {
@@ -145,7 +145,7 @@ export const RED_CARDS: CardDef[] = [
     kw: [{ k: 'breakthrough', n: 3 }, { k: 'overextend', n: 3 }],
   }),
   action(6, 'Cataclysmic Charge', {
-    text: 'Target unit gains Rush and +3 Power this turn. Overextend 4.',
+    text: 'Target unit gains Rush and +3 Power this round. Overextend 4.',
     targets: [{ t: 'unit', side: 'friendly' }],
     onPlay: [
       { op: 'grant', t: 'chosen0', kw: { k: 'rush' }, dur: 'round' },
@@ -175,7 +175,7 @@ export const RED_CARDS: CardDef[] = [
     kw: [{ k: 'breakthrough', n: 4 }, { k: 'overextend', n: 4 }],
   }),
   action(7, 'Unchained Rage', {
-    text: "Double a unit's Power this turn. Overextend 4.",
+    text: "Double a unit's Power this round. Overextend 4.",
     targets: [{ t: 'unit', side: 'any' }],
     onPlay: [{ op: 'double', t: 'chosen0' }],
     designerNote: OE_NOTE,
@@ -187,7 +187,7 @@ export const RED_CARDS: CardDef[] = [
     designerNote: OE_NOTE,
   }),
   action(7, 'Last Stand', {
-    text: 'Your units gain +2 Power this turn. You lose 2 life.',
+    text: 'Your units gain +2 Power this round. You lose 2 life.',
     onPlay: [
       { op: 'buff', t: { side: 'friendly' }, p: 2, dur: 'round' },
       { op: 'damage', t: 'selfBase', n: 2 },
