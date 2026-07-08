@@ -54,4 +54,16 @@
 | E3 | Some buttons under 44px touch guideline | Low | 🔜 padding pass |
 | E4 | Undo/concede confirm states could be misread | Low | ✅ two-step confirms exist |
 
+## F. Round 2 (playtest 003 feedback, 2026-07-08)
+
+| # | Finding | Severity | Status |
+|---|---|---|---|
+| F1 | Auto-pass fired on the player's **own turn** — the turn "moved on" without an explicit done | High | ✅ auto-pass now applies to off-turn response windows only; your turn always ends by your Pass |
+| F2 | Cards with **no legal target** dim exactly like unaffordable ones, with no explanation ("I have 7/7, why can't I play this?") | Critical | ✅ selecting an unplayable card states why: cost vs ready, needs-a-target-with-X, needs a unit to attach to, already banked |
+| F3 | Nothing connects "the base" to the ♥ life numeral | High | ✅ life is tappable → base sheet (what it is, how it's attacked, Guard, healing cap) |
+| F4 | Imprisoned state (⛓ overlay) too subtle | Medium | ✅ explicit IMPRISONED ribbon on the chip |
+| F5 | Tap-to-inspect exists but is undiscoverable | High | ✅ persistent tip line in the turn panel |
+| F6 | Banking requires traveling to a button | Medium | ✅ tap the selected card again to confirm (bank/play) |
+| F7 | Multiplayer table still lacks the mobile action dock and tap-again flow (demo has both) | High | 🔜 port when the fly deployment gets its first mobile games |
+
 **Deliberately not now:** animations/transitions system, sound, spectator chat, replays scrubber on multiplayer table (demo has it), localization, colorblind themes. Each is listed so it isn't forgotten — none block playtesting.

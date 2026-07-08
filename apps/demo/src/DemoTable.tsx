@@ -7,12 +7,13 @@ import { CardFrame } from '@ui/components/CardFrame.tsx'
 import { HelpPanel } from '@ui/components/HelpPanel.tsx'
 import { UnitChip } from '@ui/game/UnitChip.tsx'
 import { InfluenceTrack } from '@ui/game/InfluenceTrack.tsx'
-import { EventTicker, PileSheet, UnitInspector, useValueFlash } from '@ui/game/Sheets.tsx'
+import { BaseSheet, EventTicker, PileSheet, UnitInspector, useValueFlash } from '@ui/game/Sheets.tsx'
 import { DEMO_CARDS, aiControls, newLocalGame, type DemoConfig } from './local.ts'
 
 type Inspect =
   | { kind: 'unit'; id: string }
   | { kind: 'pile'; seat: Seat; pile: 'resources' | 'discard' }
+  | { kind: 'base'; seat: Seat }
   | null
 
 type Selection =
@@ -90,22 +91,21 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, aiWindow, paused, speed, config.mode])
 
-  // Quality of life: when Pass is literally your only legal action (common during the
-  // opponent's turn), take it automatically — there's no decision being removed.
-  // "Skip to my turn" passes every off-turn window until the turn comes back.
+  // Quality of life: auto-pass applies ONLY to response windows on the opponent's turn
+  // (playtest feedback: your own turn must end by your explicit Pass — you say when you're done).
   const onlyPass = myWindow && view.actions.length === 1 && view.actions[0].type === 'pass'
   const offTurn = myWindow && state.activeSeat !== seat
   useEffect(() => {
     if (state.activeSeat === seat) setSkipToMyTurn(false)
   }, [state.activeSeat, seat])
   useEffect(() => {
-    if (!myWindow || config.mode === 'hotseat') return
-    if (onlyPass || (skipToMyTurn && offTurn)) {
+    if (!offTurn || config.mode === 'hotseat') return
+    if (onlyPass || skipToMyTurn) {
       const t = setTimeout(() => apply({ type: 'pass' }, seat), 450)
       return () => clearTimeout(t)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, myWindow, onlyPass, skipToMyTurn, offTurn, config.mode])
+  }, [state, onlyPass, skipToMyTurn, offTurn, config.mode])
 
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight }, [view.log])
   useEffect(() => {
@@ -217,10 +217,37 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     }
   }
 
+  /** Why can't this hand card be played right now? null = it can. */
+  function whyUnplayable(cardId: string): string | null {
+    if (playActionsFor(cardId).length > 0 || resourceActionFor(cardId)) return null
+    const def = DEMO_CARDS[state.cardOf[cardId]]
+    if (!def) return null
+    if (view.phase === 'resource') return 'already banked this turn — one per turn'
+    const ready = my.resources.filter(r => !r.exhausted).length
+    if (def.cost > ready) return `costs ${def.cost}, you have ${ready} ready resource${ready === 1 ? '' : 's'}`
+    if (def.type === 'upgrade') return 'needs one of your units in play to attach to'
+    if (def.targets?.length) {
+      const t = def.targets[0]
+      const side = t.side === 'friendly' ? 'a friendly' : t.side === 'enemy' ? 'an enemy' : 'a'
+      const what = t.t === 'upgrade' ? 'upgrade' : t.t === 'zone' ? 'zone' : 'unit'
+      const extras = [t.withKw && `with ${t.withKw}`, t.mustBeDamaged && 'that is damaged', t.maxPower !== undefined && `with power ≤ ${t.maxPower}`]
+        .filter(Boolean).join(', ')
+      return `no legal target right now — needs ${side} ${what}${extras ? ` ${extras}` : ''}`
+    }
+    return 'not playable in this window'
+  }
+
   function clickHandCard(card: HandCardView) {
-    if (!myWindow) return
+    if (!myWindow) { setInspect(null); setSelection(null); return }
     setConfirming(null)
-    setSelection(selection?.kind === 'hand' && selection.id === card.id ? null : { kind: 'hand', id: card.id })
+    // tap-again-to-confirm: second tap on the selected card takes its primary action
+    if (selection?.kind === 'hand' && selection.id === card.id) {
+      if (view.phase === 'resource' && resourceActionFor(card.id)) { apply({ type: 'resource', card: card.id }, seat); return }
+      if (view.phase === 'main' && playActionsFor(card.id).length > 0) { beginPlay(card.id); return }
+      setSelection(null)
+      return
+    }
+    setSelection({ kind: 'hand', id: card.id })
   }
 
   function beginPlay(cardId: string, confirmedLethal = false) {
@@ -284,6 +311,12 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             <button className="btn btn-primary !py-1 text-xs" onClick={() => apply({ type: 'resource', card: selection.id }, seat)}>
               Bank as resource
             </button>
+          )}
+          {whyUnplayable(selection.id) && (
+            <span className="w-full text-[11px] text-[#e5a99f]">Can't play: {whyUnplayable(selection.id)}.</span>
+          )}
+          {!whyUnplayable(selection.id) && (
+            <span className="w-full text-[10px] text-dim">tip: tap the card again to confirm</span>
           )}
           <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel</button>
         </div>
@@ -361,6 +394,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             baseGlow={isHighlighted({ kind: 'base', seat: foe })}
             onClick={() => clickTarget({ kind: 'base', seat: foe })}
             onPile={pile => setInspect({ kind: 'pile', seat: foe, pile })}
+            onBase={() => setInspect({ kind: 'base', seat: foe })}
           />
 
           <div className="relative my-1.5 grid gap-1.5 lg:min-h-0 lg:flex-1 lg:grid-rows-3">
@@ -403,6 +437,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             baseGlow={isHighlighted({ kind: 'base', seat })}
             onClick={() => clickTarget({ kind: 'base', seat })}
             onPile={pile => setInspect({ kind: 'pile', seat, pile })}
+            onBase={() => setInspect({ kind: 'base', seat })}
           />
 
           <div className="mt-1.5 flex gap-2 overflow-x-auto pb-1">
@@ -465,6 +500,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                 <p className="mt-1.5 text-[10px] text-dim">space = pause · ←/→ = step while paused</p>
               </div>
             )}
+            <p className="mt-2 border-t hairline pt-1.5 text-[10px] text-dim">tip: tap any unit, card, ♥ life, ⬢ resources, or ✕ discard to inspect it</p>
           </div>
 
           <InfluenceTrack
@@ -511,6 +547,14 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           />
         )
       })()}
+      {inspect?.kind === 'base' && (
+        <BaseSheet
+          name={names[inspect.seat]}
+          life={view.sides[inspect.seat].life}
+          mine={inspect.seat === seat}
+          onClose={() => setInspect(null)}
+        />
+      )}
       {inspect?.kind === 'pile' && (
         <PileSheet
           title={`${names[inspect.seat]} — ${inspect.pile === 'resources' ? 'banked resources' : 'discard pile'}`}
@@ -549,6 +593,7 @@ function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, 
   name: string; life: number; handCount: number; deckCount: number; discardCount: number
   resources: number; resourceTotal: number; baseGlow: boolean; onClick: () => void
   onPile: (pile: 'resources' | 'discard') => void
+  onBase: () => void
 }) {
   const lifeFlash = useValueFlash(life)
   const pileBtn = 'rounded px-1 py-0.5 text-xs text-dim hover:bg-raised hover:text-body cursor-pointer'
@@ -556,7 +601,11 @@ function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, 
     <div onClick={baseGlow ? onClick : undefined}
       className={`panel flex items-center gap-3 px-3 py-1.5 ${baseGlow ? 'glow-attack cursor-pointer' : ''}`}>
       <span className="min-w-0 truncate font-display font-semibold text-parchment">{name}</span>
-      <span className={`font-display text-xl font-bold ${lifeFlash || (life <= 5 ? 'text-[#e5735f]' : 'text-parchment')}`}>♥ {life}</span>
+      <button
+        className={`rounded px-1 font-display text-xl font-bold hover:bg-raised ${lifeFlash || (life <= 5 ? 'text-[#e5735f]' : 'text-parchment')}`}
+        title="This is the base — tap for details"
+        onClick={e => { e.stopPropagation(); onBase() }}
+      >♥ {life}</button>
       <button className={pileBtn} title="Banked resources — face-up, public to both players. Tap to view."
         onClick={e => { e.stopPropagation(); onPile('resources') }}>
         ⬢ {resources}/{resourceTotal}

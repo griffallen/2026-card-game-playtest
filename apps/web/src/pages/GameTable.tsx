@@ -6,12 +6,13 @@ import { UnitChip } from '../game/UnitChip.tsx'
 import { InfluenceTrack } from '../game/InfluenceTrack.tsx'
 import { CardFrame, type CardLike } from '../components/CardFrame.tsx'
 import { HelpPanel } from '../components/HelpPanel.tsx'
-import { EventTicker, PileSheet, UnitInspector, useValueFlash } from '../game/Sheets.tsx'
+import { BaseSheet, EventTicker, PileSheet, UnitInspector, useValueFlash } from '../game/Sheets.tsx'
 import { get } from '../api.ts'
 
 type Inspect =
   | { kind: 'unit'; id: string }
   | { kind: 'pile'; seat: Seat; pile: 'resources' | 'discard' }
+  | { kind: 'base'; seat: Seat }
   | null
 
 type Selection =
@@ -209,6 +210,7 @@ export function GameTable() {
             baseGlow={isHighlighted({ kind: 'base', seat: foe })}
             onClick={() => clickTarget({ kind: 'base', seat: foe })}
             onPile={pile => setInspect({ kind: 'pile', seat: foe, pile })}
+            onBase={() => setInspect({ kind: 'base', seat: foe })}
           />
 
           {/* zones */}
@@ -259,6 +261,7 @@ export function GameTable() {
               online baseGlow={isHighlighted({ kind: 'base', seat })}
               onClick={() => clickTarget({ kind: 'base', seat })}
               onPile={pile => setInspect({ kind: 'pile', seat, pile })}
+              onBase={() => setInspect({ kind: 'base', seat })}
             />
           )}
 
@@ -328,6 +331,7 @@ export function GameTable() {
                 <button className="btn ml-2 !px-2 !py-0.5 text-[10px]" onClick={() => setSelection(null)}>cancel</button>
               </div>
             )}
+            <p className="mt-2 border-t hairline pt-1.5 text-[10px] text-dim">tip: tap any unit, card, ♥ life, ⬢ resources, or ✕ discard to inspect it</p>
           </div>
 
           <InfluenceTrack
@@ -363,6 +367,14 @@ export function GameTable() {
           />
         )
       })()}
+      {inspect?.kind === 'base' && (
+        <BaseSheet
+          name={names[inspect.seat]}
+          life={view.sides[inspect.seat].life}
+          mine={inspect.seat === seat}
+          onClose={() => setInspect(null)}
+        />
+      )}
       {inspect?.kind === 'pile' && (
         <PileSheet
           title={`${names[inspect.seat]} — ${inspect.pile === 'resources' ? 'banked resources' : 'discard pile'}`}
@@ -413,6 +425,7 @@ function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, 
   resources: number; resourceTotal?: number; online: boolean; enemy?: boolean; baseGlow: boolean
   onClick: () => void
   onPile: (pile: 'resources' | 'discard') => void
+  onBase: () => void
 }) {
   const lifeFlash = useValueFlash(life)
   const pileBtn = 'rounded px-1 py-0.5 text-xs text-dim hover:bg-raised hover:text-body cursor-pointer'
@@ -423,9 +436,11 @@ function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, 
     >
       <span className={`h-2 w-2 rounded-full ${online ? 'bg-emerald-400' : 'bg-dim/40'}`} title={online ? 'connected' : 'away'} />
       <span className="min-w-0 truncate font-display font-semibold text-parchment">{name}</span>
-      <span className={`font-display text-xl font-bold ${lifeFlash || (life <= 5 ? 'text-[#e5735f]' : 'text-parchment')}`} title="Life">
-        ♥ {life}
-      </span>
+      <button
+        className={`rounded px-1 font-display text-xl font-bold hover:bg-raised ${lifeFlash || (life <= 5 ? 'text-[#e5735f]' : 'text-parchment')}`}
+        title="This is the base — tap for details"
+        onClick={e => { e.stopPropagation(); onBase() }}
+      >♥ {life}</button>
       <button className={pileBtn} title="Banked resources — face-up, public. Tap to view."
         onClick={e => { e.stopPropagation(); onPile('resources') }}>
         ⬢ {resources}{resourceTotal !== undefined ? `/${resourceTotal}` : ''}

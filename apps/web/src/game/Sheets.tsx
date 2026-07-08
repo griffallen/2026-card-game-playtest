@@ -72,6 +72,21 @@ export function UnitInspector({ unit, card, upgradeCards, onClose }: {
   )
 }
 
+/** What "the base" actually is — opened by tapping the life numeral. */
+export function BaseSheet({ name, life, mine, onClose }: { name: string; life: number; mine: boolean; onClose: () => void }) {
+  return (
+    <Sheet title={`${name} — the base`} onClose={onClose}>
+      <p className="font-display text-3xl font-bold text-parchment">♥ {life} <span className="text-base font-normal text-dim">life (starts at 20)</span></p>
+      <div className="mt-3 flex flex-col gap-2 text-[13px] leading-relaxed text-body/90">
+        <p><b className="text-parchment">The base is the player.</b> When it reaches 0 life, the game is over — one of the two ways to win.</p>
+        <p>⚔ It can only be assaulted by an enemy unit <b>standing in {mine ? 'your' : 'their'} Home zone</b> — attackers must march there first. Assaults draw no counter-damage.</p>
+        <p>🛡 A ready <b>Guard</b> unit in the Home zone protects it: attackers must target the Guard instead.</p>
+        <p>✚ Healing restores base life, but never above its starting value.</p>
+      </div>
+    </Sheet>
+  )
+}
+
 /** Public pile browser — banked resources and discards are open information. */
 export function PileSheet({ title, cards, note, onClose }: {
   title: string
