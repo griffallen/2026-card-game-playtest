@@ -1,6 +1,6 @@
-# Game Rules Spec — v1.2-proto
+# Game Rules Spec — v2.0-proto
 
-**Derived from:** `docs/REFERENCES/extracted/rules-v1.2.md` (authoritative) + the July 5 card sheets, reconciled per `docs/DESIGN/DECISIONS.md` (all ⚑ decisions).
+**Derived from:** `docs/REFERENCES/extracted/rules-v1.2.md` + the July 5 card sheets, reconciled per `docs/DESIGN/DECISIONS.md`. **v2.0:** round-based turn structure with claimable initiative, no summoning sickness, multi-unit attack + intercept (decisions 40–44, 2026-07-08) — supersedes v1.2-proto's phase ladder and per-player turns.
 **Consumed by:** `packages/engine` — this document *is* the engine's contract. When they diverge, stop and fix one.
 **Designer-facing summary:** `docs/GAME-FLOW.md` tells the same story without implementation detail.
 
@@ -29,63 +29,61 @@ Every card: `slug`, `name`, `color` (red|yellow), `type` (unit|action|upgrade), 
 
 1. Inputs: two players, each with a legal deck (≥ `deckMinSize` cards, ≤ `maxCopies` per slug), a `rulesConfig`, and a 32-bit `seed`.
 2. Shuffle both decks with the seeded RNG (Fisher–Yates; player A's deck first, then B's).
-3. First player = seeded coin flip.
-4. Each player draws `startingHandSize` (7). Then the **Setup phase** (first player first): the acting player may **mulligan any number of times — shuffle the hand back, redraw `mulliganPenalty` (1) fewer cards each time** (decision 32; floor = `startingResources`) — then **chooses `startingResources` (2) cards to bank face-up** (`setupBank`, decision 31). When both have banked, turn 1 begins. (`chooseStartingResources: false` restores zero-input setup.)
-5. Influence 0, Life 20/20, turn 1, active = first player, phase = Reset.
+3. Initial **initiative holder** = seeded coin flip.
+4. Each player draws `startingHandSize` (7). Then the **Setup phase** (initiative holder first): the acting player may **mulligan any number of times — shuffle the hand back, redraw `mulliganPenalty` (1) fewer cards each time** (decision 32; floor = `startingResources`) — then **chooses `startingResources` (2) cards to bank face-up** (`setupBank`, decision 31). When both have banked, round 1 begins. (`chooseStartingResources: false` restores zero-input setup.)
+5. Influence 0, Life 20/20, round 1, initiative = coin-flip winner.
 
-### 1.4 Turn structure
+### 1.4 Round structure (decision 40 — supersedes per-player turns)
 
-Phases run in order; only Resource and Main take input.
+A **round** = one **start step per player** (initiative holder first), then the **action loop** (§1.5), then **end of round**.
 
-| Phase | What happens |
-|---|---|
-| **Reset** | Apply **prison decay** first (−1 Influence to the jailer per unit they held imprisoned coming into the turn — decay-before-triggers, else a start-of-turn imprison would instantly self-break at 0 influence), then resolve start-of-turn triggers (active player's units in entry order), then ready all of the active player's cards (units + resources). |
-| **Draw** | Active player draws `drawPerTurn` (2). Game turn 1 draws `firstTurnDraw` (1) instead. **Decision 33:** each card that fails to appear from an empty deck costs its owner `emptyDrawLifeLoss` (1) life and `emptyDrawInfluenceLoss` (1) influence. |
-| **Resource** | Active player may resource up to `resourcesPerTurn` (1) card from hand, face up, or skip. |
-| **Main** | Action alternation — see §1.5. |
-| **End** | Resolve end-of-turn triggers (same ordering rule), expire "this turn" modifiers, then pass the turn. |
+**Start step** (per player, in initiative order; the only input is the bank choice):
 
-### 1.5 Main phase — action alternation
+1. **Prison decay** (−1 Influence to this player per unit they hold imprisoned coming into the round — decay-before-triggers, else a start-of-round imprison would instantly self-break at 0 influence).
+2. Resolve this player's **start-of-round triggers** (their units, entry order).
+3. **Ready** all of this player's cards (units + resources).
+4. **Draw** `drawPerRound` (2); round 1 draws `firstRoundDraw` (default = `drawPerRound` — decision 44: no first-round asymmetry). **Decision 33:** each card that fails to appear from an empty deck costs its owner `emptyDrawLifeLoss` (1) life and `emptyDrawInfluenceLoss` (1) influence.
+5. **Bank:** may resource up to `resourcesPerRound` (1) card from hand, face up, or skip.
 
-- The **active player acts first**; players then alternate single actions.
-- Passing is an action. **Two consecutive passes end the phase.**
+**End of round** (after the action loop closes): resolve end-of-round triggers (initiative holder's units first, entry order within a player), then **Overextend self-damage** lands (decision 35; armor doesn't reduce it), then "this round" modifiers expire. Win checks run after every atomic change as always (§1.12). The next round begins; **initiative carries over unless it was claimed** (§1.5).
+
+### 1.5 Action loop — alternation, passing, claiming initiative
+
+- The **initiative holder acts first**; players then alternate single actions. There is no "active player" — both players have the full action menu in their own windows.
+- **Actions:** play a card (§1.6), attack (§1.7), move a unit (§1.8), activate an ability (§1.9), **claim initiative**, pass. Concede is legal at any time. Unlimited actions per round — the constraint is resources and ready units, not a count.
+- **Claim initiative:** take the initiative token **and leave the action loop for the rest of the round**. Either player may claim — including the current holder, to lock it in. At most one claim per round (the token, once claimed, is held). After a claim, the remaining player takes actions solo until they pass (or claim-and-lock is moot — they just pass).
+- **Pass is soft:** if your opponent acts after your pass, you may act again. **Two consecutive passes end the loop.** After a claim, the remaining player's single pass ends it.
 - If a player has no legal action, their only action is pass.
-
-| Action | Active player | Non-active player |
-|---|---|---|
-| Play a card (§1.6) | ✓ | ✓ |
-| Attack (§1.7) | ✓ | — |
-| Move a unit (§1.8) | ✓ | — |
-| Activate an ability (§1.9) | ✓ | ✓ |
-| Pass | ✓ | ✓ |
-| Concede | any time | any time |
+- **State:** `initiative: Seat` plus a per-seat `outOfRound` flag (set by claiming, cleared each round) are part of game state and the replay contract.
 
 ### 1.6 Playing a card
 
 1. Pay cost: exhaust exactly `cost` ready resources (all resources are worth 1 — colored costs are not yet in the rules).
-2. **Unit** → enters the owner's Home zone, ready, but cannot attack or move this turn (**summoning sickness**) unless it has **Rush**. On-play (`onEnter`) triggers fire with targets already declared in the submitted action.
+2. **Unit** → enters the owner's Home zone, **ready and unrestricted** (decision 41 — no summoning sickness): later actions this same round may move or attack with it as normal. **Rush** = its *move* doesn't exhaust it the round it enters (§3.1). On-play (`onEnter`) triggers fire with targets already declared in the submitted action.
 3. **Action** → resolve effects, then discard.
 4. **Upgrade** → attach to a target friendly unit in any zone. **Upgrade pressure (v1.2):** if the unit already has ≥1 upgrade, the opponent gains `upgradePressureInfluence` (1) Influence.
 5. Targets are validated at submission; if any target became illegal, the action is rejected (client re-prompts).
 
-### 1.7 Attacking (one action = one attacker, one target)
+### 1.7 Attacking (decision 42 — one action = N attackers, one target, one intercept window)
 
-1. Choose a friendly ready unit that isn't summoning-sick or imprisoned; **exhaust it**.
-2. Choose a target:
+1. **Declare:** choose one or more friendly ready, non-imprisoned units **in one zone** (up to `maxAttackers`, 0 = unlimited); **exhaust them all**. Choose one target, legal for the whole group:
    - an enemy unit in the **same zone**, or
-   - an enemy unit in an **adjacent zone** if the attacker has **Ranged** (Ranged never targets bases), or
-   - the **enemy base**, only if the attacker stands in that enemy's Home zone.
-   - **Guard:** if the defender owns a non-imprisoned Guard unit in the contested zone, the target must be such a Guard unit (base included in the protection).
-3. Resolve simultaneously:
-   - Attacker deals `power` (+Overextend bonus if the attacker took the gamble — decision 35: `attack.overextend`; the unit suffers N self-damage at end of turn), reduced by target's Armor.
-   - A defending **unit** deals its `power` back (reduced by attacker's Armor) — unless imprisoned (deals 0). A **base** deals nothing back.
-   - **Breakthrough N:** if the defending unit is destroyed, excess damage beyond lethal — capped at N — hits the defender's controller's Life.
-4. `onAttack` triggers fire when the attack is declared; `onDefend` triggers (Yellow's "when this unit defends, gain 1 Influence") fire when a unit is chosen as the target.
-5. Destroyed units (damage ≥ health) go to their owner's discard with their upgrades. Damage persists between turns otherwise.
+   - an enemy unit in an **adjacent zone** only if **every attacker has Ranged** (Ranged never targets bases), or
+   - the **enemy base**, only if the group stands in that enemy's Home zone.
+   - **Overextend is declared per attacking unit** (decision 35: +N power now, N self-damage at end of round).
+2. **Intercept window (the defender prompt):** the defender may redirect the *whole* attack to one **ready, non-imprisoned** unit they control **in the target's zone**, other than the declared target. Intercepting **exhausts** the interceptor (`interceptExhausts`) — unless it has **Guard**, which intercepts without exhausting. Declining leaves the declared target. If no legal interceptor exists, the window auto-passes (consistent with all named response windows). Guard **no longer forces targeting** — protection is the defender's choice, made here.
+3. **Resolve simultaneously:**
+   - The attackers' **combined power** (+Overextend bonuses) is **one hit**; the final target's Armor reduces it **once** (`armorPerAttack: once` — massing attackers is the designed answer to armor).
+   - The final target, if a non-imprisoned **unit**, deals its full `power` back to the **highest-power attacker** (ties → earliest entry order; `counterAssignment: auto`), reduced by that attacker's Armor. A **base** deals nothing back.
+   - **Breakthrough N:** if the final target is a unit and is destroyed, excess damage beyond lethal — capped at the **sum** of the attackers' Breakthrough values — hits its controller's Life.
+4. **Triggers:** `onAttack` fires per attacking unit at declaration. `onDefend` fires when a unit **is the final target or intercepts** (Yellow's guards get paid for stepping in — decision 34's intent). `onAttackBase` fires at resolution only if the *final* target is the base (an intercepted base-attack never "hit the base"). `onKill` fires for **every** attacking unit if the final target dies (all participants get credit).
+5. Destroyed units (damage ≥ health) go to their owner's discard with their upgrades. Damage persists between rounds otherwise.
 
-### 1.8 Moving (⚑ new rule — v1.2 has none)
+**Engine shape:** the game's first mid-action prompt — paired actions `attackDeclared` → `interceptResponse` in the event log, exactly like the existing named response windows.
 
-Move one friendly ready, non-summoning-sick unit to an **adjacent zone**; the unit **exhausts**. **Flying** may move to *any* zone. Imprisoned units cannot move.
+### 1.8 Moving
+
+Move one friendly ready unit to an **adjacent zone**; the unit **exhausts** (`moveExhausts`). **Rush:** the round a unit entered play, its move does **not** exhaust it (decision 41; `rushCoversAttack` extends the waiver to its attack, default off). **Flying** may move to *any* zone. Imprisoned units cannot move.
 
 ### 1.9 Activated abilities
 
@@ -102,7 +100,7 @@ Printed as "Exhaust: effect" — exhaust the ready unit, resolve the effect. (On
 
 - **Imprison:** target unit becomes imprisoned (stays in its zone, keeps upgrades/damage). It cannot attack, move, defend (deals no counter-damage), or use abilities; its Guard is inert; it still counts as a unit for zone effects.
 - **Sources:** unit-sourced prisons (from a unit's trigger) end when that unit leaves play. Action-sourced prisons have no in-play source and persist until another condition ends them.
-- **Decay (v1.2):** at the start of the jailer's turn, jailer loses 1 Influence per unit they hold imprisoned. Cards restating this are reminder text — no double charge.
+- **Decay (v1.2):** at the jailer's **start step**, jailer loses 1 Influence per unit they hold imprisoned. Cards restating this are reminder text — no double charge.
 - **Release threshold (⚑ default 0):** the moment a jailer's Influence is negative (track on their opponent's side), **all their prisons release**.
 - Released or source-dead prisons end immediately; the unit stays exhausted/ready as it was.
 
@@ -118,7 +116,7 @@ First check that fires ends the game; later checks don't run.
 
 ### 1.13 Determinism
 
-Same `(rulesConfig, decks, seed, action list)` ⇒ identical states and events, always. All randomness (shuffles, coin flip) flows through the seeded RNG. No wall-clock, no I/O, no hidden nondeterminism. Trigger resolution order is defined (active player first, then by unit entry order). This contract enables replay, undo, reconnection, and simulation.
+Same `(rulesConfig, decks, seed, action list)` ⇒ identical states and events, always. All randomness (shuffles, coin flip) flows through the seeded RNG. No wall-clock, no I/O, no hidden nondeterminism. Trigger resolution order is defined (initiative holder's units first, then by unit entry order; a player's own start step resolves only their own triggers). This contract enables replay, undo, reconnection, and simulation.
 
 ---
 
@@ -130,20 +128,25 @@ Same `(rulesConfig, decks, seed, action list)` ⇒ identical states and events, 
 | `influenceWinThreshold` | 15 | Track value that wins (per side; static effects may raise a side's) |
 | `startingHandSize` | 7 | Cards drawn at setup |
 | `startingResources` | 2 | Auto-resourced at setup |
-| `drawPerTurn` | 2 | Draw phase count |
-| `firstTurnDraw` | 1 | Draw count for the game's very first turn |
-| `resourcesPerTurn` | 1 | Max cards resourced per Resource phase |
+| `drawPerRound` | 2 | Cards drawn in each start step |
+| `firstRoundDraw` | 2 | Round-1 draw count (= `drawPerRound`, decision 44; lower it to nerf initiative) |
+| `resourcesPerRound` | 1 | Max cards banked per start step |
 | `deckMinSize` | 48 | Deck legality floor |
 | `maxCopies` | 4 | Per-slug copy ceiling |
 | `upgradePressureInfluence` | 1 | Influence the opponent gains per beyond-first upgrade |
-| `prisonDecayPerUnit` | 1 | Influence lost per imprisoned unit at jailer's turn start |
+| `prisonDecayPerUnit` | 1 | Influence lost per imprisoned unit at the jailer's start step |
 | `prisonReleaseThreshold` | 0 | Jailer influence below this ⇒ prisons release |
 | `chooseStartingResources` | true | Setup: players pick their starting banks (false = auto-bank last drawn) |
 | `mulliganPenalty` | 1 | Cards lost per mulligan (decision 32) |
 | `emptyDrawLifeLoss` | 1 | Life lost per failed draw (decision 33) |
 | `emptyDrawInfluenceLoss` | 1 | Influence lost per failed draw (decision 33) |
-| `summoningSickness` | true | Units can't attack/move the turn they enter |
+| `summoningSickness` | **false** | Legacy A/B lever (decision 41: units enter ready); true restores can't-act-on-entry |
 | `moveExhausts` | true | Moving exhausts the unit |
+| `rushCoversAttack` | false | Rush's exhaust waiver also covers the entry-round attack (decision 41 toggle) |
+| `interceptExhausts` | true | Intercepting exhausts the interceptor (Guard always exempt) |
+| `counterAssignment` | `"auto"` | Counter-damage target in multi-unit attacks: `auto` (highest power) \| `defender` (future) |
+| `armorPerAttack` | `"once"` | Armor vs a multi-unit hit: `once` on the total \| `perAttacker` (future) |
+| `maxAttackers` | 0 | Cap on units per attack action (0 = unlimited) |
 | `simultaneousLifeTiebreak` | `"actor"` | Who wins a both-dead tie: `actor` \| `active` \| `draw` |
 
 ---
@@ -154,7 +157,7 @@ Cards carry structured effects — never free text — so the engine can validat
 
 ### 3.1 Keywords (static, on units)
 
-`guard`, `armor N`, `rush`, `ranged`, `reach`, `flying` (⚑), `breakthrough N`, `overextend N` (optional attack gamble: +N power now, N self-damage at end of turn — decision 35), `cantAttack`, `untargetable` (can't be targeted by enemy actions — Chain of Law).
+`guard` (intercepts without exhausting — §1.7; forced targeting is gone), `armor N`, `rush` (the round it enters play, its move doesn't exhaust it — decision 41; `rushCoversAttack` extends to attacks; meaningful on veterans when granted mid-round), `ranged`, `reach`, `flying` (⚑), `breakthrough N`, `overextend N` (optional attack gamble: +N power now, N self-damage at end of round — decision 35), `cantAttack`, `untargetable` (can't be targeted by enemy actions — Chain of Law).
 
 ### 3.2 Effect ops (one-shot, run in order)
 
@@ -167,21 +170,21 @@ Cards carry structured effects — never free text — so the engine can validat
 | `influence` | amount (±, from controller's view) | always event-attached (decision 34): onDefend / onKill / onPlay |
 | `imprison` | target(s) or filter (e.g. power ≤ N, all-in-zone) | source recorded |
 | `release` | target | |
-| `buff` | target, power/health delta, duration (`turn`/`permanent`) | |
+| `buff` | target, power/health delta, duration (`round`/`permanent`) | "this round" expires at end of round |
 | `grantKeyword` | target, keyword, duration | e.g. "target unit gains Rush" |
 | `destroy` | target, constraint (e.g. damaged, upgrade) | |
-| `readyUnits` | scope | "extra combat phase" cards |
-| `extraTurn` | — | Final Onslaught |
+| `readyUnits` | scope or single target | "second wind" cards |
+| `extraAction` | — | after this action resolves, the same player immediately takes another action (opponent's window skipped once). Final Onslaught = `readyUnits(one target)` + `extraAction` (decision 43; replaces `extraTurn`) |
 | `moveUnit` | target, zone | |
-| `preventBaseDamage` | amount, duration turn | Devout Intervention |
+| `preventBaseDamage` | amount, duration round | Devout Intervention |
 | `removeNegative` | target | clears imprisonment + negative modifiers (Absolution) |
 | `thresholdMod` | side, delta, while-in-play | Radiant Citadel ⚑ |
 
 ### 3.3 Triggers (on units/upgrades)
 
-`onEnter` (play or zone entry), `onAttack`, `onDefend`, `onAttackBase`, `onKill`, `startOfTurn` (controller's), `endOfTurn`, `onAnyImprisoned` (Gateward Colossus), `onDestroyed`.
+`onEnter` (play or zone entry), `onAttack`, `onDefend` (final target of an attack **or** intercepts — §1.7), `onAttackBase` (final target is the base), `onKill`, `startOfRound` (controller's start step), `endOfRound`, `onAnyImprisoned` (Gateward Colossus), `onDestroyed`.
 
-Each trigger holds effect ops. Targets a trigger needs are declared in the submitted action (`onEnter` imprisons, etc.); start-of-turn triggers that need targets use a deterministic default (⚑ e.g. High Justiciar imprisons the highest-power eligible enemy unit; flagged on the card).
+Each trigger holds effect ops. Targets a trigger needs are declared in the submitted action (`onEnter` imprisons, etc.); start-of-round triggers that need targets use a deterministic default (⚑ e.g. High Justiciar imprisons the highest-power eligible enemy unit; flagged on the card).
 
 ### 3.4 Statics (continuous while in play)
 

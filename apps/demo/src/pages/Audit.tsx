@@ -39,6 +39,24 @@ export function Audit() {
       </P>
 
       <Card>
+        <b className="font-display text-parchment">Update — turn structure v2.0 designed (July 8, builder session).</b>
+        <p className="mt-2 text-[14px] leading-relaxed text-body/90">
+          The turn system has been redesigned around <b>shared rounds with claimable initiative</b> (decisions
+          40–44): each round both players ready, draw 2, and may bank a card (initiative holder first), then
+          alternate single actions until both pass. <b>Claiming the initiative</b> spends your action and ends
+          your round — but you go first next round. <b>Summoning sickness is gone</b> — units enter ready, and
+          Rush now means "moves without exhausting the round it arrives." Combat becomes the multi-unit system
+          the designer asked for: <b>any number of units in one zone attack together as one action</b>, their
+          power combined against armor once, and the defender gets an <b>intercept window</b> — redirect the
+          whole attack onto a ready unit (Guard units intercept without exhausting; forced targeting is gone —
+          protecting the base is now a choice). Final Onslaught's "extra turn" becomes "ready one unit, then
+          take an extra action." The spec (game-rules v2.0-proto) is written and the implementation is planned;
+          the demo you're using still runs v1.2 rules until that lands, so the Play tab does not yet reflect
+          these changes.
+        </p>
+      </Card>
+
+      <Card>
         <b className="font-display text-parchment">Update — designer session #1 (July 8).</b>
         <p className="mt-2 text-[14px] leading-relaxed text-body/90">
           The designer reviewed this audit and ruled: <b>mulligans</b> (unlimited, one fewer card each),

@@ -18,7 +18,7 @@ Across seeds 1..150 (Red-prebuilt vs Yellow-prebuilt, both orderings):
 3. No state invariant violations (cards conserved across zones; life within bounds; influence within thresholds; exhausted ⊆ in-play) — checked by a validator after every action in sim mode.
 
 ## v0 measurements (reported, not asserted)
-Printed as a table after the batch: win rate per deck and per seat (first-player advantage), win-reason split, mean/median turns, mean actions, influence range visited. **Interpretation caveat printed with it:** random policies ≠ human play — these numbers smoke-test reachability and stability, not balance. (Early signal to watch per DECISIONS ⚑14: Red's Overextend actions feed Yellow's influence win.)
+Printed as a table after the batch: win rate per deck and per seat (initiative advantage), win-reason split, mean/median rounds, mean actions, influence range visited. **Interpretation caveat printed with it:** random policies ≠ human play — these numbers smoke-test reachability and stability, not balance. (Early signal to watch per DECISIONS ⚑14: Red's Overextend actions feed Yellow's influence win.)
 
 ## Where it grows later
 The policy is a function `(state, legalActions, rng) → action`. A heuristic AI, a MCTS bot, or a scripted line all plug into the same slot — the harness, invariants, and reporting don't change. Monte-carlo balance sweeps = this harness × parameter grid over `RulesConfig`.
