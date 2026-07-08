@@ -7,11 +7,12 @@ import { CardFrame } from '@ui/components/CardFrame.tsx'
 import { HelpPanel } from '@ui/components/HelpPanel.tsx'
 import { UnitChip } from '@ui/game/UnitChip.tsx'
 import { InfluenceTrack } from '@ui/game/InfluenceTrack.tsx'
-import { BaseSheet, EventTicker, PileSheet, UnitInspector, useValueFlash } from '@ui/game/Sheets.tsx'
+import { BaseSheet, CardSheet, EventTicker, PileSheet, UnitInspector, useValueFlash } from '@ui/game/Sheets.tsx'
 import { DEMO_CARDS, aiControls, newLocalGame, type DemoConfig } from './local.ts'
 
 type Inspect =
   | { kind: 'unit'; id: string }
+  | { kind: 'card'; slug: string }
   | { kind: 'pile'; seat: Seat; pile: 'resources' | 'discard' }
   | { kind: 'base'; seat: Seat }
   | null
@@ -416,6 +417,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                       return (
                         <UnitChip key={u.id} unit={u} mine={mine} glow={glow}
                           actionable={mine && myWindow && unitActionable(u.id)}
+                          onLongPress={() => setInspect({ kind: 'unit', id: u.id })}
                           onClick={() => {
                             if (isHighlighted(ref)) clickTarget(ref)
                             else if (mine) clickMyUnit(u.id)
@@ -451,6 +453,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                 <CardFrame key={h.id} card={def} size="sm"
                   selected={selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id)}
                   dimmed={myWindow && !canAct}
+                  onLongPress={() => setInspect({ kind: 'card', slug: h.slug })}
                   onClick={() => clickHandCard(h)} />
               )
             })}
@@ -550,13 +553,29 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           />
         )
       })()}
-      {inspect?.kind === 'base' && (
-        <BaseSheet
-          name={names[inspect.seat]}
-          life={view.sides[inspect.seat].life}
-          mine={inspect.seat === seat}
-          onClose={() => setInspect(null)}
-        />
+      {inspect?.kind === 'base' && (() => {
+        const s = inspect.seat
+        const side = view.sides[s]
+        const home = view.zones[s === 0 ? 0 : 2].units
+        return (
+          <BaseSheet
+            name={names[s]}
+            life={side.life}
+            mine={s === seat}
+            handCount={side.handCount}
+            deckCount={side.deckCount}
+            discardCount={side.discard.length}
+            resourcesReady={side.resources.filter(r => !r.exhausted).length}
+            resourcesTotal={side.resources.length}
+            guards={home.filter(u => u.owner === s && !u.imprisoned && u.keywords.some(k => k.startsWith('guard'))).length}
+            invaders={home.filter(u => u.owner !== s).length}
+            influence={s === 0 ? view.influence : -view.influence}
+            onClose={() => setInspect(null)}
+          />
+        )
+      })()}
+      {inspect?.kind === 'card' && DEMO_CARDS[inspect.slug] && (
+        <CardSheet card={DEMO_CARDS[inspect.slug]} onClose={() => setInspect(null)} />
       )}
       {inspect?.kind === 'pile' && (
         <PileSheet

@@ -72,16 +72,61 @@ export function UnitInspector({ unit, card, upgradeCards, onClose }: {
   )
 }
 
-/** What "the base" actually is — opened by tapping the life numeral. */
-export function BaseSheet({ name, life, mine, onClose }: { name: string; life: number; mine: boolean; onClose: () => void }) {
+/** The base as a simple stat block — opened by tapping the life numeral. */
+export function BaseSheet({ name, life, mine, handCount, deckCount, discardCount, resourcesReady, resourcesTotal, guards, invaders, influence, onClose }: {
+  name: string; life: number; mine: boolean
+  handCount: number; deckCount: number; discardCount: number
+  resourcesReady: number; resourcesTotal: number
+  guards: number; invaders: number; influence: number
+  onClose: () => void
+}) {
+  const stat = (label: string, value: ReactNode, warn = false) => (
+    <div className="flex items-baseline justify-between border-b hairline py-1.5 last:border-0">
+      <span className="text-[12px] uppercase tracking-wider text-dim">{label}</span>
+      <span className={`font-display text-lg font-bold ${warn ? 'text-[#e5735f]' : 'text-parchment'}`}>{value}</span>
+    </div>
+  )
   return (
-    <Sheet title={`${name} — the base`} onClose={onClose}>
-      <p className="font-display text-3xl font-bold text-parchment">♥ {life} <span className="text-base font-normal text-dim">life (starts at 20)</span></p>
-      <div className="mt-3 flex flex-col gap-2 text-[13px] leading-relaxed text-body/90">
-        <p><b className="text-parchment">The base is the player.</b> When it reaches 0 life, the game is over — one of the two ways to win.</p>
-        <p>⚔ It can only be assaulted by an enemy unit <b>standing in {mine ? 'your' : 'their'} Home zone</b> — attackers must march there first. Assaults draw no counter-damage.</p>
-        <p>🛡 A ready <b>Guard</b> unit in the Home zone protects it: attackers must target the Guard instead.</p>
-        <p>✚ Healing restores base life, but never above its starting value.</p>
+    <Sheet title={`${name} — base`} onClose={onClose}>
+      <div className="flex flex-col">
+        {stat('Life (starts at 20)', `♥ ${life}`, life <= 5)}
+        {stat('Resources ready', `⬢ ${resourcesReady} / ${resourcesTotal}`)}
+        {stat('Cards in hand', `🂠 ${handCount}`)}
+        {stat('Cards left in deck', `≣ ${deckCount}`)}
+        {stat('Discard pile', `✕ ${discardCount}`)}
+        {stat('Influence position', influence > 0 ? `+${influence}` : influence, influence < 0)}
+        {stat('Guards protecting this base', `🛡 ${guards}`)}
+        {stat('Enemy units at the gates', `⚔ ${invaders}`, invaders > 0)}
+      </div>
+      <p className="mt-3 text-[11px] leading-relaxed text-dim">
+        The base is the player — 0 life ends the game. Only enemy units standing in {mine ? 'your' : 'their'} Home can assault it
+        (no counter-damage); ready Guards there must be attacked first. Healing never exceeds the starting value.
+      </p>
+    </Sheet>
+  )
+}
+
+/** A card on its own — for hand long-press and pile items. */
+export function CardSheet({ card, onClose }: { card: CardLike; onClose: () => void }) {
+  const kws = (card as CardLike & { kw?: { k: string; n?: number }[] }).kw ?? []
+  return (
+    <Sheet title={card.name} onClose={onClose}>
+      <div className="flex flex-wrap gap-4">
+        <CardFrame card={card} />
+        <div className="min-w-0 flex-1 text-[13px] leading-relaxed">
+          <p className="text-dim">cost {card.cost} · {card.type}{card.type === 'unit' ? ` · ${card.power}/${card.health}` : ''}</p>
+          <p className="mt-2 text-body/90">{card.text}</p>
+          {kws.length > 0 && (
+            <div className="mt-2 border-t hairline pt-2">
+              {kws.map(k => (
+                <p key={k.k} className="mt-0.5"><b className="capitalize text-goldbright">{k.k}{k.n !== undefined ? ` ${k.n}` : ''}</b> <span className="text-body/80">— {glossFor(k.k)}</span></p>
+              ))}
+            </div>
+          )}
+          {card.designerNote && (
+            <p className="mt-2 border-t hairline pt-2 text-xs text-goldbright">⚑ Prototype ruling: <span className="text-body/80">{card.designerNote}</span></p>
+          )}
+        </div>
       </div>
     </Sheet>
   )

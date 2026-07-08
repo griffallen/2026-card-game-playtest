@@ -1,5 +1,31 @@
-import { useState } from 'react'
+import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { ProceduralArt } from './ProceduralArt.tsx'
+
+/** Long-press (450ms, cancels on drag) that also swallows the click it would otherwise trigger. */
+export function useLongPress(onLongPress?: () => void) {
+  const timer = useRef<number | null>(null)
+  const origin = useRef<{ x: number; y: number } | null>(null)
+  const fired = useRef(false)
+  const clear = () => { if (timer.current) { clearTimeout(timer.current); timer.current = null } }
+  const handlers = {
+    onPointerDown: (e: ReactPointerEvent) => {
+      if (!onLongPress) return
+      fired.current = false
+      origin.current = { x: e.clientX, y: e.clientY }
+      clear()
+      timer.current = window.setTimeout(() => { fired.current = true; onLongPress() }, 450)
+    },
+    onPointerMove: (e: ReactPointerEvent) => {
+      if (!origin.current) return
+      if (Math.hypot(e.clientX - origin.current.x, e.clientY - origin.current.y) > 12) clear()
+    },
+    onPointerUp: clear,
+    onPointerLeave: clear,
+    onPointerCancel: clear,
+    onContextMenu: (e: React.MouseEvent) => { if (onLongPress) e.preventDefault() },
+  }
+  return { fired, handlers }
+}
 
 export interface CardLike {
   slug: string
@@ -28,15 +54,18 @@ const typeMeta: Record<string, { icon: string; chip: string }> = {
 }
 
 /** One component renders any card at any size — hand, browser, admin preview. */
-export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge }: {
+export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge, onLongPress }: {
   card: CardLike
   size?: 'sm' | 'md'
   onClick?: () => void
   selected?: boolean
   dimmed?: boolean
   badge?: string
+  /** long-press (mobile) opens details without disturbing the tap flow */
+  onLongPress?: () => void
 }) {
   const [artBroken, setArtBroken] = useState(false)
+  const lp = useLongPress(onLongPress)
   const tint = frameTint[card.color] ?? frameTint.neutral
   const w = size === 'sm' ? 'w-[124px]' : 'w-[176px]'
   const artH = size === 'sm' ? 'h-[64px]' : 'h-[96px]'
@@ -44,7 +73,9 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge 
 
   return (
     <div
-      onClick={onClick}
+      {...lp.handlers}
+      style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
+      onClick={() => { if (lp.fired.current) { lp.fired.current = false; return } onClick?.() }}
       title={card.designerNote ? `⚑ ${card.designerNote}` : undefined}
       className={[
         w, 'shrink-0 select-none rounded-lg border bg-gradient-to-b p-1 text-parchment shadow-md shadow-black/40',

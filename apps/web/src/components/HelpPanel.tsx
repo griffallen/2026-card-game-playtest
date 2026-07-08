@@ -28,6 +28,7 @@ export function HelpPanel({ onClose }: { onClose: () => void }) {
 
         <h3 className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-goldbright">Your turn</h3>
         <div className="mt-2 flex flex-col gap-2">
+          <Row icon="🃏" title="Setup">Each player draws 7; <b>the last 2 drawn are auto-banked</b> as starting resources (⚑ prototype ruling — the printed rules don't say who chooses; making it a player choice is an open design question).</Row>
           <Row icon="⬢" title="Bank (resource step)">Tuck one card from hand face-up into your resource row — <i>permanently</i>. Each resource pays 1 toward card costs and refreshes every turn, so banking is +1 spending power per turn, forever. The card itself never comes back. Most turns, bank.</Row>
           <Row icon="↔" title="Then actions alternate">You act, they get a window, you act again… <b>Two passes in a row ends the turn.</b> On your turn you may play cards, move, and attack. <b>On their turn you only get card plays</b> — no attacks or moves — so with nothing affordable, Pass is your only option. That's normal, not a bug in you.</Row>
           <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it, so a unit marches <i>or</i> fights each turn. Freshly played units wait a turn unless they have <b>Rush</b>.</Row>

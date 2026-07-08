@@ -1,16 +1,20 @@
 import { useState } from 'react'
 import type { UnitView } from '@newgame/engine'
 import { ProceduralArt } from '../components/ProceduralArt.tsx'
+import { useLongPress } from '../components/CardFrame.tsx'
 
-export function UnitChip({ unit, mine, glow, onClick, actionable }: {
+export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }: {
   unit: UnitView
   mine: boolean
   glow: 'none' | 'selected' | 'target' | 'attack'
   onClick?: () => void
   /** this unit has a legal move/attack right now — show the gold ready-dot */
   actionable?: boolean
+  /** long-press opens the inspector regardless of tap semantics */
+  onLongPress?: () => void
 }) {
   const [artBroken, setArtBroken] = useState(false)
+  const lp = useLongPress(onLongPress)
   const hurt = unit.damage > 0
   const chips: string[] = []
   if (unit.keywords.some(k => k.startsWith('guard'))) chips.push('🛡')
@@ -21,7 +25,9 @@ export function UnitChip({ unit, mine, glow, onClick, actionable }: {
 
   return (
     <div
-      onClick={onClick}
+      {...lp.handlers}
+      style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
+      onClick={() => { if (lp.fired.current) { lp.fired.current = false; return } onClick?.() }}
       title={tooltip}
       className={[
         'relative w-[84px] shrink-0 select-none rounded-md border bg-raised p-0.5 transition-transform',
