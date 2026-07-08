@@ -1,5 +1,9 @@
 # Playtest Log
 
+## Game 004 — 2026-07-08 · Blaine (red) vs AI · seed 1425326367
+
+7. **Crimson Behemoth's splash was dead text — re-ruled live.** "Deals 2 damage to all adjacent zones" anchored on the Behemoth only ever hit Neutral (a base assault means standing in the enemy Home), which is empty by siege time. Player expectation — splash the defenders around the base — is the reading that makes the card function. New ruling: every *other* unit in the defended Home zone takes 2, both sides (own units included; red collateral). First card re-ruled from live play; the ⚑ note on the card records the change.
+
 Human games and what they taught us. Full chronicles export from the demo ("Download game file"); design-relevant findings graduate to GAME-FLOW.md's open questions / DECISIONS.md.
 
 ## Game 002 — 2026-07-08 · Blaine (red, human) vs baseline AI (yellow) · loss by influence, t14
