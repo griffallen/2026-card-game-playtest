@@ -56,8 +56,8 @@ Redeploys are just `fly deploy`. Migrations + seed run on every boot and are saf
 
 ## Notes
 
-- **One machine.** Game rooms live in process memory (the DB event log is the source of truth, so restarts/reconnects are safe — clients just reopen). Don't scale to 2+ machines without adding a pub/sub layer.
-- `fly.toml` keeps `auto_stop_machines = "off"` so websockets don't die mid-game; a single shared-cpu-1x/512MB machine runs this comfortably (~$3-4/mo, or free-ish with fly's allowances).
+- **One machine.** Game rooms live in process memory (the DB event log is the source of truth, so restarts/reconnects are safe — clients just reopen). Don't scale to 2+ machines without adding a pub/sub layer. The CI workflow passes `--ha=false` for exactly this reason (fly defaults to two machines).
+- **Free-tier posture:** single shared-cpu-1x / 256MB (+512MB swap), `auto_stop_machines = "suspend"`, `min_machines_running = 0`. Fly never suspends a machine with open connections (websockets count), so live games are safe; an idle app suspends and costs pennies. Fly waives invoices under ~$5/mo, so this runs effectively free. First request after a long idle takes a few seconds while the machine wakes. If 256MB ever OOMs under load: `fly scale memory 512 -a new-game-proto` (~$3.19/mo, still under the waiver).
 - Any other Docker host works the same: supply `DATABASE_URL` (+ optional `DIRECT_URL`, `ADMIN_PASSWORD`, `PORT`) and run the image.
 - Health check: `GET /healthz` → `{"ok":true,"db":true}`.
 
