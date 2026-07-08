@@ -50,6 +50,22 @@ export function HelpPanel({ onClose }: { onClose: () => void }) {
           <b> Ranged</b> shoots adjacent zones, never bases · <b>Reach</b> attacks adjacent zones normally.
         </p>
 
+        <h3 className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-goldbright">Strategy starters</h3>
+        <div className="mt-2 flex flex-col gap-2">
+          <Row icon="🔴" title="Playing Crimson (red)">
+            Go <i>wide</i> — cheap Rush bodies escort your big threats so enemy imprisons and removal hit the escorts.
+            <b> Breakthrough is base damage from any zone</b>: killing their units in Neutral spills onto their life, no march required.
+            Spells must kill their target or hit the base — a burn that leaves a survivor traded influence for nothing. Budget ~8 total ceded influence per game; unit attacks are free.
+          </Row>
+          <Row icon="🟡" title="Playing Radiant (yellow)">
+            Walls at home, prisons on their best attacker, and let the shared track drift your way. But mind the upkeep:
+            <b> every prisoner costs you 1 influence per turn</b> — hoarding jail cells cancels your own income. Heal, stall, and win the argument.
+          </Row>
+          <Row icon="⛓" title="The prison economy cuts both ways">
+            Imprisoned units draw no counter-damage — but a flooded jail taxes the jailer every turn. If you're red and they love prisons: feed them cheap bodies and bleed the track.
+          </Row>
+        </div>
+
         <button className="btn btn-primary mt-5 w-full" onClick={onClose}>Back to the table</button>
       </div>
     </div>
