@@ -4,7 +4,7 @@ import type {
 import { EngineError, adjacent, homeZone } from './types.ts'
 import { shuffle } from './rng.ts'
 import {
-  defOf, effArmor, effPower, hasKw, isSick, kwOf, log, other, unitsInZone, unitsOf,
+  defOf, effArmor, effHealth, effPower, hasKw, idNum, isSick, kwOf, log, other, unitsInZone,
 } from './helpers.ts'
 import { damageBase, damageUnit, fireTrigger, runOps, stateBasedCleanup } from './effects.ts'
 import { startRound, endRound, finishBankStep } from './round.ts'
@@ -36,7 +36,7 @@ export function applyAction(prev: GameState, action: GameAction, actorSeat: Seat
   } else if (state.phase === 'bank') {
     applyBankPhase(state, action, actorSeat)
   } else if (state.phase === 'intercept') {
-    fail('bad-phase', 'no intercept window is open')
+    applyInterceptPhase(state, action, actorSeat)
   } else {
     applyLoopPhase(state, action, actorSeat)
   }
@@ -141,11 +141,7 @@ function applyLoopPhase(state: GameState, action: GameAction, seat: Seat) {
     }
     case 'play': playCard(state, action, seat); break
     case 'move': moveUnit(state, action.unit, action.to, seat); break
-    case 'attack': {
-      attackDeclare(state, action, seat)
-      if (state.phase === 'intercept') return // defender's window is open; resolve completes the action
-      break
-    }
+    case 'attack': attackDeclare(state, action, seat); return // declare→intercept/resolve advances the window itself
     default: fail('bad-phase', `${(action as GameAction).type} is not a loop action`)
   }
   advanceWindow(state, seat)
@@ -273,106 +269,159 @@ const zoneName = (state: GameState, z: ZoneId) =>
 
 // ─── Combat ──────────────────────────────────────────────────────────────────
 
-function guardsFor(state: GameState, defender: Seat, zone: ZoneId): UnitInstance[] {
-  return unitsInZone(state, zone, defender).filter(u => !u.imprisoned && hasKw(state, u, 'guard'))
+/** Ready, non-imprisoned defender units in the target's zone that could step in (never the target itself). */
+export function interceptCandidates(state: GameState, pa: NonNullable<GameState['pendingAttack']>): UnitInstance[] {
+  const defender = other(pa.seat)
+  const zone = pa.target.kind === 'unit'
+    ? state.units[pa.target.id]?.zone
+    : pa.target.kind === 'base' ? homeZone(pa.target.seat) : undefined
+  if (zone === undefined) return []
+  return unitsInZone(state, zone, defender).filter(u =>
+    !u.imprisoned && !u.exhausted && !(pa.target.kind === 'unit' && u.id === pa.target.id))
 }
 
+/** Declare a multi-unit attack (decision 42): validate the group, exhaust, fire onAttack, open the intercept window. */
 function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'attack' }>, seat: Seat) {
-  const attackerId = action.attackers[0]
-  const target = action.target
-  const overextend = action.overextend?.includes(attackerId) ?? false
-  const attacker = state.units[attackerId] ?? fail('no-unit', 'no such attacker')
-  if (attacker.owner !== seat) fail('not-yours', 'not your unit')
-  if (attacker.imprisoned) fail('imprisoned', 'imprisoned units cannot attack')
-  if (attacker.exhausted) fail('exhausted', 'exhausted units cannot attack')
-  if (isSick(state, attacker)) fail('sick', 'this unit just arrived this round')
-  if (hasKw(state, attacker, 'cantAttack')) fail('cant-attack', 'this unit cannot attack')
+  const ids = action.attackers
+  if (!ids.length) fail('bad-attack', 'declare at least one attacker')
+  if (new Set(ids).size !== ids.length) fail('bad-attack', 'attackers must be distinct')
+  if (state.rules.maxAttackers > 0 && ids.length > state.rules.maxAttackers)
+    fail('bad-attack', `at most ${state.rules.maxAttackers} attackers`)
+  const units = ids.map(id => state.units[id] ?? fail('no-unit', 'no such attacker'))
+  for (const u of units) {
+    if (u.owner !== seat) fail('not-yours', 'not your unit')
+    if (u.imprisoned) fail('imprisoned', 'imprisoned units cannot attack')
+    if (u.exhausted) fail('exhausted', 'exhausted units cannot attack')
+    if (isSick(state, u)) fail('sick', 'this unit just arrived this round')
+    if (hasKw(state, u, 'cantAttack')) fail('cant-attack', 'this unit cannot attack')
+  }
+  const zone = units[0].zone
+  if (units.some(u => u.zone !== zone)) fail('bad-attack', 'attackers must share a zone')
 
-  // decision 35: overextending is an optional gamble — +N power now, N self-damage at end of turn
-  const oe = kwOf(state, attacker, 'overextend')
-  if (overextend && typeof oe !== 'number') fail('cant-overextend', 'this unit has no Overextend value')
-  if (overextend && typeof oe === 'number') {
-    attacker.overextendedBy += oe
-    log(state, seat, `${defOf(state, attackerId).name} overextends (+${oe} power — it will suffer ${oe} at end of turn)`)
+  const oeIds = action.overextend ?? []
+  for (const id of oeIds) {
+    if (!ids.includes(id)) fail('bad-attack', 'overextend lists a non-attacker')
+    if (typeof kwOf(state, state.units[id], 'overextend') !== 'number') fail('cant-overextend', `${defOf(state, id).name} has no Overextend value`)
   }
 
-  const ranged = hasKw(state, attacker, 'ranged')
-  const reach = hasKw(state, attacker, 'reach')
+  const allRangedOrReach = units.every(u => hasKw(state, u, 'ranged') || hasKw(state, u, 'reach'))
+  if (action.target.kind === 'base') {
+    if (action.target.seat === seat) fail('bad-target', 'cannot attack your own base')
+    if (units.some(u => hasKw(state, u, 'ranged'))) fail('bad-target', 'ranged units cannot target bases')
+    if (zone !== homeZone(action.target.seat)) fail('bad-target', "you must stand in the enemy's home zone to strike their base")
+  } else if (action.target.kind === 'unit') {
+    const defender = state.units[action.target.id] ?? fail('no-unit', 'no such defender')
+    if (defender.owner === seat) fail('bad-target', 'cannot attack your own unit')
+    const sameZone = defender.zone === zone
+    if (!sameZone && !(allRangedOrReach && adjacent(defender.zone, zone)))
+      fail('bad-zone', allRangedOrReach ? 'target is out of range' : 'combat happens within one zone')
+  } else fail('bad-target', 'attack a unit or a base')
 
-  if (target.kind === 'base') {
-    if (target.seat === seat) fail('bad-target', 'cannot attack your own base')
-    if (ranged) fail('bad-target', 'ranged units cannot target bases')
-    if (attacker.zone !== homeZone(target.seat)) fail('bad-target', "you must stand in the enemy's home zone to strike their base")
-    if (guardsFor(state, target.seat, attacker.zone).length) fail('guard', 'a Guard unit protects the base')
-    attacker.exhausted = true
-    log(state, seat, `${defOf(state, attackerId).name} assaults ${state.sides[target.seat].name}'s base`)
-    fireTrigger({ state, attackTarget: target, actorSeat: seat }, attacker, 'onAttack')
-    fireTrigger({ state, attackTarget: target, actorSeat: seat }, attacker, 'onAttackBase')
-    if (!state.units[attackerId]) return // trigger may have killed the attacker
-    const power = attackPower(state, attacker, overextend)
-    damageBase(state, target.seat, power, defOf(state, attackerId).name)
+  // commit: overextend bonuses, exhaust, declaration triggers
+  for (const id of oeIds) {
+    const oe = kwOf(state, state.units[id], 'overextend') as number
+    state.units[id].overextendedBy += oe
+    log(state, seat, `${defOf(state, id).name} overextends (+${oe} power — it will suffer ${oe} at end of round)`)
+  }
+  for (const u of units) {
+    const rushFreeAtk = state.rules.rushCoversAttack && u.enteredRound === state.round && hasKw(state, u, 'rush')
+    if (!rushFreeAtk) u.exhausted = true
+  }
+  const targetName = action.target.kind === 'base'
+    ? `${state.sides[action.target.seat].name}'s base`
+    : defOf(state, action.target.id).name
+  log(state, seat, `${ids.map(id => defOf(state, id).name).join(', ')} attack${ids.length === 1 ? 's' : ''} ${targetName}`)
+  for (const u of units) {
+    if (!state.units[u.id]) continue
+    fireTrigger({ state, attackTarget: action.target, actorSeat: seat }, u, 'onAttack')
+  }
+
+  state.pendingAttack = { seat, attackers: ids.filter(id => state.units[id]), target: action.target, overextend: oeIds }
+  if (interceptCandidates(state, state.pendingAttack).length) {
+    state.phase = 'intercept'
+    state.actorSeat = other(seat)
+    log(state, other(seat), `${state.sides[other(seat)].name} may intercept`)
     return
   }
+  resolveAttack(state, null)
+}
 
-  if (target.kind !== 'unit') fail('bad-target', 'attack a unit or a base')
-  const defender = state.units[target.id] ?? fail('no-unit', 'no such defender')
-  if (defender.owner === seat) fail('bad-target', 'cannot attack your own unit')
+/** The defender answers the intercept window: redirect to a ready unit, or let it through. */
+function applyInterceptPhase(state: GameState, action: GameAction, seat: Seat) {
+  const pa = state.pendingAttack ?? fail('bad-phase', 'no attack to answer')
+  if (seat !== other(pa.seat)) fail('not-your-window', 'not your intercept window')
+  if (action.type === 'intercept') {
+    const u = state.units[action.unit] ?? fail('no-unit', 'no such unit')
+    if (!interceptCandidates(state, pa).some(c => c.id === u.id)) fail('bad-intercept', 'that unit cannot intercept this attack')
+    if (state.rules.interceptExhausts && !hasKw(state, u, 'guard')) u.exhausted = true
+    log(state, seat, `${defOf(state, u.id).name} intercepts${hasKw(state, u, 'guard') ? ' (guard — stays ready)' : ''}`)
+    resolveAttack(state, u.id)
+  } else if (action.type === 'declineIntercept') {
+    resolveAttack(state, null)
+  } else fail('bad-phase', 'answer the intercept window: intercept or declineIntercept')
+}
 
-  const sameZone = defender.zone === attacker.zone
-  const adjacentZone = adjacent(defender.zone, attacker.zone)
-  if (!sameZone && !((ranged || reach) && adjacentZone)) fail('bad-zone', ranged || reach ? 'target is out of range' : 'combat happens within one zone')
+/** Resolve the pending attack against the final target: combined power, armor once, one counter, breakthrough (spec §1.7). */
+function resolveAttack(state: GameState, interceptorId: string | null) {
+  const pa = state.pendingAttack!
+  state.pendingAttack = null
+  state.phase = 'loop'
+  const seat = pa.seat
+  const attackers = pa.attackers.map(id => state.units[id]).filter(Boolean) as UnitInstance[]
+  const finalRef: TargetRef = interceptorId ? { kind: 'unit', id: interceptorId } : pa.target
 
-  const guards = guardsFor(state, defender.owner, defender.zone)
-  if (guards.length && !guards.some(g => g.id === defender.id)) fail('guard', 'a Guard unit must be attacked first')
-
-  attacker.exhausted = true
-  log(state, seat, `${defOf(state, attackerId).name} attacks ${defOf(state, defender.id).name}`)
-  fireTrigger({ state, attackTarget: target, actorSeat: seat }, attacker, 'onAttack')
-  fireTrigger({ state, attackTarget: { kind: 'unit', id: attackerId }, actorSeat: seat }, defender, 'onDefend')
-  if (!state.units[attackerId] || !state.units[target.id]) return // triggers resolved the fight already
-
-  const atkPower = attackPower(state, attacker, overextend)
-  const defPower = defender.imprisoned ? 0 : effPower(state, defender)
-  const counter = sameZone || !ranged // cross-zone ranged shots draw no counter-damage
-
-  const defHpBefore = Math.max(0, (defOf(state, defender.id).health ?? 0) + 0) // base health guard for logs
-  void defHpBefore
-  const dealt = Math.max(0, atkPower - effArmor(state, defender))
-  const taken = counter ? Math.max(0, defPower - effArmor(state, attacker)) : 0
-  const defRemaining = remainingHealth(state, defender)
-  defender.damage += dealt
-  if (taken > 0) attacker.damage += taken
-  log(state, seat, combatLine(state, attackerId, defender.id, dealt, taken))
-
-  // Breakthrough: excess beyond lethal, capped at N, hits the defender's controller
-  const bt = kwOf(state, attacker, 'breakthrough')
-  if (bt !== false && dealt > defRemaining) {
-    const excess = Math.min(typeof bt === 'number' ? bt : dealt - defRemaining, dealt - defRemaining)
-    if (excess > 0) damageBase(state, defender.owner, excess, `${defOf(state, attackerId).name} (breakthrough)`)
+  const power = (u: UnitInstance) => {
+    let p = effPower(state, u)
+    if (pa.overextend.includes(u.id)) {
+      const oe = kwOf(state, u, 'overextend')
+      if (typeof oe === 'number') p += oe
+    }
+    return p
   }
 
-  const died = defender.damage >= remainingHealthBase(state, defender)
-  if (died) fireTrigger({ state, attackTarget: target, actorSeat: seat }, attacker, 'onKill')
-}
+  const finalUnitId = finalRef.kind === 'unit' ? finalRef.id : null
+  // onDefend fires for whoever ends up the final target (the interceptor, or the declared unit)
+  if (attackers.length && finalUnitId && state.units[finalUnitId]) {
+    fireTrigger({ state, attackTarget: { kind: 'unit', id: attackers[0].id }, actorSeat: seat }, state.units[finalUnitId], 'onDefend')
+  }
 
-/** Attacker's power; the Overextend bonus applies only when the gamble is taken (decision 35). */
-function attackPower(state: GameState, attacker: UnitInstance, overextend: boolean): number {
-  let p = effPower(state, attacker)
-  const oe = kwOf(state, attacker, 'overextend')
-  if (overextend && typeof oe === 'number') p += oe
-  return p
-}
+  const alive = attackers.filter(u => state.units[u.id])
+  const combined = alive.reduce((s2, u) => s2 + power(u), 0)
 
-const remainingHealth = (state: GameState, u: UnitInstance) => {
-  const total = (defOf(state, u.id).health ?? 0) + u.mods.reduce((s, m) => s + (m.h ?? 0), 0)
-  return Math.max(0, total - u.damage)
-}
-const remainingHealthBase = remainingHealth
+  if (finalRef.kind === 'base') {
+    if (alive.length) {
+      damageBase(state, finalRef.seat, combined, alive.map(u => defOf(state, u.id).name).join(', '))
+      for (const u of alive) if (state.units[u.id]) fireTrigger({ state, attackTarget: finalRef, actorSeat: seat }, u, 'onAttackBase')
+    }
+  } else if (finalUnitId && state.units[finalUnitId]) {
+    const defender = state.units[finalUnitId]
+    const dealt = Math.max(0, combined - effArmor(state, defender)) // armor once (armorPerAttack: 'once')
+    const defPower = defender.imprisoned ? 0 : effPower(state, defender)
+    const counterTarget = alive.slice().sort((a, b) => power(b) - power(a) || idNum(a.id) - idNum(b.id))[0]
+    const crossZone = !!counterTarget && defender.zone !== counterTarget.zone
+    const noCounter = !counterTarget || (crossZone && hasKw(state, counterTarget, 'ranged'))
+    const taken = noCounter ? 0 : Math.max(0, defPower - effArmor(state, counterTarget))
+    const defRemaining = Math.max(0, effHealth(state, defender) - defender.damage)
+    defender.damage += dealt
+    if (taken > 0) counterTarget.damage += taken
+    log(state, seat, taken > 0
+      ? `the assault deals ${dealt}; ${defOf(state, defender.id).name} strikes ${defOf(state, counterTarget.id).name} back for ${taken}`
+      : `the assault deals ${dealt} to ${defOf(state, defender.id).name}`)
 
-function combatLine(state: GameState, a: string, d: string, dealt: number, taken: number): string {
-  const an = defOf(state, a).name
-  const dn = defOf(state, d).name
-  return taken > 0
-    ? `${an} and ${dn} clash — ${dealt} dealt, ${taken} taken`
-    : `${an} strikes ${dn} for ${dealt}`
+    const btSum = alive.reduce((s2, u) => {
+      const bt = kwOf(state, u, 'breakthrough')
+      return s2 + (typeof bt === 'number' ? bt : 0)
+    }, 0)
+    if (btSum > 0 && dealt > defRemaining) {
+      const excess = Math.min(btSum, dealt - defRemaining)
+      if (excess > 0) damageBase(state, defender.owner, excess, 'breakthrough')
+    }
+
+    const died = defender.damage >= Math.max(0, effHealth(state, defender))
+    if (died) for (const u of alive) if (state.units[u.id]) fireTrigger({ state, attackTarget: finalRef, actorSeat: seat }, u, 'onKill')
+  }
+
+  stateBasedCleanup(state, seat)
+  if (state.winner !== null) return
+  advanceWindow(state, seat)
 }

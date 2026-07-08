@@ -1,6 +1,7 @@
 import type { GameAction, GameState, Seat, TargetRef, TargetSpec, UnitInstance, ZoneId } from './types.ts'
 import { ZONES, adjacent, homeZone } from './types.ts'
 import { defOf, effPower, hasKw, idNum, isSick, kwOf, other, unitsInZone, unitsOf } from './helpers.ts'
+import { interceptCandidates } from './engine.ts'
 
 /**
  * Every action `seat` may legally take right now. Mirrors applyAction's validation exactly —
@@ -40,6 +41,14 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     return out
   }
 
+  if (state.phase === 'intercept') {
+    const pa = state.pendingAttack
+    if (!pa || seat !== other(pa.seat)) return []
+    const out2: GameAction[] = [{ type: 'declineIntercept' }]
+    for (const u of interceptCandidates(state, pa)) out2.push({ type: 'intercept', unit: u.id })
+    return out2
+  }
+
   out.push({ type: 'pass' })
   if (!state.claimedThisRound) out.push({ type: 'claimInitiative' })
   const ready = state.sides[seat].resources.filter(r => !r.exhausted).length
@@ -53,19 +62,33 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     }
   }
 
-  // moves + attacks — both players act in their own windows now (decision 40; no active-player gate)
+  // moves — both players act in their own windows now (decision 40; no active-player gate)
   for (const unit of unitsOf(state, seat)) {
     if (unit.exhausted || unit.imprisoned || isSick(state, unit)) continue
-    // moves
     const zones = hasKw(state, unit, 'flying') ? ZONES.filter(z => z !== unit.zone)
       : ZONES.filter(z => adjacent(z, unit.zone))
     for (const to of zones) out.push({ type: 'move', unit: unit.id, to })
-    // attacks (single-attacker this task; Task 3 adds multi-unit groups). Overextend variant per decision 35.
-    if (!hasKw(state, unit, 'cantAttack')) {
-      const canOE = typeof kwOf(state, unit, 'overextend') === 'number'
-      for (const target of attackTargets(state, unit)) {
-        out.push({ type: 'attack', attackers: [unit.id], target })
-        if (canOE) out.push({ type: 'attack', attackers: [unit.id], target, overextend: [unit.id] })
+  }
+
+  // attacks (decision 42): each ready unit alone, plus one full-group per (zone, shared target). No guard-forcing.
+  const attackers = unitsOf(state, seat).filter(u => !u.exhausted && !u.imprisoned && !isSick(state, u) && !hasKw(state, u, 'cantAttack'))
+  const byZone = new Map<ZoneId, UnitInstance[]>()
+  for (const u of attackers) byZone.set(u.zone, [...(byZone.get(u.zone) ?? []), u])
+  for (const [, group] of byZone) {
+    const targetsHere = new Map<string, TargetRef>()
+    for (const u of group) for (const t of attackTargets(state, u)) targetsHere.set(JSON.stringify(t), t)
+    for (const t of targetsHere.values()) {
+      const able = group.filter(u => attackTargets(state, u).some(x => JSON.stringify(x) === JSON.stringify(t)))
+      for (const u of able) {
+        out.push({ type: 'attack', attackers: [u.id], target: t })
+        if (typeof kwOf(state, u, 'overextend') === 'number')
+          out.push({ type: 'attack', attackers: [u.id], target: t, overextend: [u.id] })
+      }
+      if (able.length > 1) {
+        const ids = able.map(u => u.id)
+        out.push({ type: 'attack', attackers: ids, target: t })
+        const oe = able.filter(u => typeof kwOf(state, u, 'overextend') === 'number').map(u => u.id)
+        if (oe.length) out.push({ type: 'attack', attackers: ids, target: t, overextend: oe })
       }
     }
   }
@@ -83,17 +106,12 @@ function attackTargets(state: GameState, attacker: UnitInstance): TargetRef[] {
   if (ranged || reach) for (const z of ZONES) if (adjacent(z, attacker.zone)) zonesInReach.push(z)
 
   for (const zone of zonesInReach) {
-    const defenders = unitsInZone(state, zone, enemy)
-    if (!defenders.length) continue
-    const guards = defenders.filter(u => !u.imprisoned && hasKw(state, u, 'guard'))
-    const eligible = guards.length ? guards : defenders
-    for (const d of eligible) out.push({ kind: 'unit', id: d.id })
+    for (const d of unitsInZone(state, zone, enemy)) out.push({ kind: 'unit', id: d.id })
   }
 
-  // base: melee/reach only, standing in the enemy home zone, no ready guards there
+  // base: melee/reach only, standing in the enemy home zone (protection is now the intercept window, decision 42)
   if (!ranged && attacker.zone === homeZone(enemy)) {
-    const guards = unitsInZone(state, attacker.zone, enemy).filter(u => !u.imprisoned && hasKw(state, u, 'guard'))
-    if (!guards.length) out.push({ kind: 'base', seat: enemy })
+    out.push({ kind: 'base', seat: enemy })
   }
   return out
 }

@@ -294,6 +294,8 @@ describe('base-assault splash (Crimson Behemoth, re-ruled playtest 004)', () => 
     const defender = put(s, p2, 'hierophant', homeZone(p2))          // 2/6
     const bystander = put(s, p2, 'bulwark-protector', 1)             // neutral — untouched now
     s = act(s, p1, { type: 'attack', attackers: [behemoth], target: { kind: 'base', seat: p2 } })
+    // hierophant is a ready defender in the home zone → decline the intercept so the base takes the hit
+    if (s.phase === 'intercept') s = act(s, p2, { type: 'declineIntercept' })
     expect(s.sides[p2].life).toBe(20 - 6)
     expect(s.units[defender].damage).toBe(2)
     expect(s.units[friendly]).toBeUndefined()                        // own 1/1 died to the splash

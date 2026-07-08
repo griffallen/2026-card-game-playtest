@@ -39,11 +39,10 @@ describe('attacks', () => {
     let { s, p1, p2 } = arena()
     const melee = put(s, p1, 'soldier', homeZone(p1))
     const bow = put(s, p1, 'archer', 1)
-    const far = put(s, p2, 'pawn', homeZone(p2))
-    const near = put(s, p2, 'pawn', homeZone(p2))
-    expect(() => act(s, p1, { type: 'attack', attackers: [melee], target: { kind: 'unit', id: far } })).toThrow(/zone/i)
-    s = act(s, p1, { type: 'attack', attackers: [bow], target: { kind: 'unit', id: near } })  // adjacent: neutral → p2 home
-    expect(s.units[near]).toBeUndefined()
+    const target = put(s, p2, 'pawn', homeZone(p2))   // lone enemy in p2 home
+    expect(() => act(s, p1, { type: 'attack', attackers: [melee], target: { kind: 'unit', id: target } })).toThrow(/zone/i)
+    s = act(s, p1, { type: 'attack', attackers: [bow], target: { kind: 'unit', id: target } })  // adjacent: neutral → p2 home
+    expect(s.units[target]).toBeUndefined()
     expect(s.units[bow].damage).toBe(0)     // cross-zone ranged draws no counter-damage
   })
 
@@ -77,25 +76,6 @@ describe('attacks', () => {
     s = act(s, p2, { type: 'pass' })
     s = act(s, p1, { type: 'attack', attackers: [atk2], target: { kind: 'unit', id: jailedGuard } })
     expect(s.units[atk2].damage).toBe(0)
-  })
-})
-
-describe('guard (single-attacker forced targeting — superseded by intercept in Task 3)', () => {
-  it('forces attacks onto guard units while any stands ready', () => {
-    let { s, p1, p2 } = arena()
-    const atk = put(s, p1, 'brute', 1)
-    const shield = put(s, p2, 'guardian', 1)  // 1/3 guard
-    const juicy = put(s, p2, 'pawn', 1)
-    expect(() => act(s, p1, { type: 'attack', attackers: [atk], target: { kind: 'unit', id: juicy } })).toThrow(/guard/i)
-    s = act(s, p1, { type: 'attack', attackers: [atk], target: { kind: 'unit', id: shield } })
-    expect(s.units[shield]).toBeUndefined()
-  })
-
-  it('protects the base too', () => {
-    let { s, p1, p2 } = arena()
-    const atk = put(s, p1, 'brute', homeZone(p2))
-    put(s, p2, 'guardian', homeZone(p2))
-    expect(() => act(s, p1, { type: 'attack', attackers: [atk], target: { kind: 'base', seat: p2 } })).toThrow(/guard/i)
   })
 })
 
