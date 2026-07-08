@@ -24,6 +24,16 @@ async function main() {
     await page.getByRole('button', { name: /Begin/ }).click()
     await page.waitForTimeout(2500) // let the AI take its early window if it goes first
 
+    // setup phase (decision 31): pick 2 starting banks if it's our pick
+    const bank2 = page.getByRole('button', { name: /Bank these/ })
+    if (await bank2.isVisible().catch(() => false)) {
+      const cards = page.locator('.overflow-x-auto > div.shrink-0')
+      if (await cards.count() >= 2) { await cards.nth(0).click(); await cards.nth(1).click() }
+      await page.waitForTimeout(150)
+      if (await bank2.isEnabled().catch(() => false)) await bank2.click()
+      await page.waitForTimeout(600)
+    }
+
     // try one interaction: bank a card if it's our resource step
     const hand = page.locator('.overflow-x-auto > div.shrink-0').first()
     if (await hand.isVisible().catch(() => false)) {

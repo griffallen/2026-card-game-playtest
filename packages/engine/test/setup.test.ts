@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { createGame } from '../src/setup.ts'
+import { applyAction } from '../src/engine.ts'
 import { DEFAULT_RULES } from '../src/rules.ts'
 import type { CardSet } from '../src/types.ts'
 
@@ -12,10 +13,10 @@ const CARDS: CardSet = Object.fromEntries(
 ) as CardSet
 const deck = (n = 48) => Array.from({ length: n }, (_, i) => `grunt${Math.floor(i / 4) % 12}`)
 
-const make = (seed = 1) =>
+const make = (seed = 1, choose = false) =>
   createGame({
     seed,
-    rules: DEFAULT_RULES,
+    rules: { ...DEFAULT_RULES, chooseStartingResources: choose },
     cardSet: CARDS,
     players: [
       { name: 'Ada', deck: deck() },
@@ -67,6 +68,38 @@ describe('createGame', () => {
     ]
     expect(new Set(allIds).size).toBe(96)
     for (const id of allIds) expect(s.cardOf[id]).toBeDefined()
+  })
+
+  it('setup phase (decision 31): players choose their banks, first player first', () => {
+    let s = make(4, true)
+    const first = s.activeSeat
+    const second = (1 - first) as 0 | 1
+    expect(s.phase).toBe('setup')
+    expect(s.actorSeat).toBe(first)
+    expect(s.sides[first].hand.length).toBe(7)     // nothing auto-banked
+    expect(s.sides[first].resources.length).toBe(0)
+
+    const pickA = s.sides[first].hand.slice(0, 2)
+    // illegal shapes first
+    expect(() => applyAction(s, { type: 'setupBank', cards: [pickA[0]] }, first)).toThrow(/exactly 2/)
+    expect(() => applyAction(s, { type: 'setupBank', cards: [pickA[0], pickA[0]] }, first)).toThrow(/distinct/)
+    expect(() => applyAction(s, { type: 'setupBank', cards: pickA }, second)).toThrow(/window/)
+    expect(() => applyAction(s, { type: 'skipResource' }, first)).toThrow(/setup/)
+
+    s = applyAction(s, { type: 'setupBank', cards: pickA }, first).state
+    expect(s.sides[first].resources.map(r => r.id)).toEqual(pickA)
+    expect(s.sides[first].hand.length).toBe(5)
+    expect(s.phase).toBe('setup')
+    expect(s.actorSeat).toBe(second)
+
+    const pickB = s.sides[second].hand.slice(3, 5)
+    s = applyAction(s, { type: 'setupBank', cards: pickB }, second).state
+    // both banked → turn 1 ran: first player drew firstTurnDraw
+    expect(s.phase).toBe('resource')
+    expect(s.actorSeat).toBe(first)
+    expect(s.turn).toBe(1)
+    expect(s.sides[first].hand.length).toBe(5 + 1)
+    expect(s.sides[second].resources.length).toBe(2)
   })
 
   it('rejects illegal decks', () => {

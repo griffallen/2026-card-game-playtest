@@ -21,6 +21,17 @@ async function main() {
 
   // act for ~14 windows; the AI moves on its own between our actions
   for (let i = 0; i < 40; i++) {
+    // setup phase (decision 31): pick 2 cards, confirm
+    const bank2 = page.getByRole('button', { name: /Bank these/ })
+    if (await bank2.isVisible().catch(() => false)) {
+      const cards = page.locator('.overflow-x-auto > div.shrink-0')
+      if (await cards.count() >= 2) { await cards.nth(0).click(); await cards.nth(1).click() }
+      await page.waitForTimeout(150)
+      if (await bank2.isEnabled().catch(() => false)) await bank2.click()
+      await page.waitForTimeout(300)
+      continue
+    }
+
     const keep = page.getByRole('button', { name: /Keep hand/ })
     const pass = page.getByRole('button', { name: 'Pass', exact: true })
     if (await keep.isVisible().catch(() => false)) {

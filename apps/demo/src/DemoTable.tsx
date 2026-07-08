@@ -48,6 +48,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const [lethalPlay, setLethalPlay] = useState<{ card: string; cede: number } | null>(null)
   const [skipToMyTurn, setSkipToMyTurn] = useState(false)
   const [inspect, setInspect] = useState<Inspect>(null)
+  const [setupPicks, setSetupPicks] = useState<string[]>([])
   const logRef = useRef<HTMLDivElement>(null)
 
   // Policy rng travels WITH the history (snapshot after every action), so stepping
@@ -109,6 +110,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   }, [state, onlyPass, skipToMyTurn, offTurn, config.mode])
 
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight }, [view.log])
+  useEffect(() => { setSetupPicks([]) }, [view.actorSeat, view.phase])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') { setSelection(null); setConfirming(null); setInspect(null); setLethalPlay(null) }
@@ -238,9 +240,15 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     return 'not playable in this window'
   }
 
+  const setupN = state.rules.startingResources
+
   function clickHandCard(card: HandCardView) {
     if (!myWindow) { setInspect(null); setSelection(null); return }
     setConfirming(null)
+    if (view.phase === 'setup') {
+      setSetupPicks(p => p.includes(card.id) ? p.filter(id => id !== card.id) : p.length < setupN ? [...p, card.id] : p)
+      return
+    }
     // tap-again-to-confirm: second tap on the selected card takes its primary action
     if (selection?.kind === 'hand' && selection.id === card.id) {
       if (view.phase === 'resource' && resourceActionFor(card.id)) { apply({ type: 'resource', card: card.id }, seat); return }
@@ -286,7 +294,21 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
 
   // Selection controls render twice: in the sidebar (desktop) and a floating dock (phones,
   // where the sidebar sits below the fold and taps would otherwise appear to do nothing).
-  const selectionControls = (selection || lethalPlay) && myWindow ? (
+  const selectionControls = view.phase === 'setup' && myWindow ? (
+    <div className="flex flex-wrap items-center gap-1.5">
+      <button
+        className="btn btn-primary !py-1 text-xs"
+        disabled={setupPicks.length !== setupN}
+        onClick={() => { apply({ type: 'setupBank', cards: setupPicks }, seat); setSetupPicks([]) }}
+      >
+        Bank these {setupN} ⬢
+      </button>
+      {setupPicks.length > 0 && (
+        <button className="btn !py-1 text-xs" onClick={() => setSetupPicks([])}>Clear</button>
+      )}
+      <span className="text-[11px] text-dim">tap cards to choose ({setupPicks.length}/{setupN})</span>
+    </div>
+  ) : (selection || lethalPlay) && myWindow ? (
     <>
       {lethalPlay && (
         <div className="rounded-md border border-[#b23a2c] bg-[#b23a2c]/10 p-2 text-xs">
@@ -344,17 +366,21 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       ? `${names[view.actorSeat]} (AI) is thinking…`
       : skipToMyTurn && offTurn
         ? 'Passing through to your turn…'
-        : offTurn
-          ? 'Response window — you may play a card into their turn.'
-          : config.mode === 'hotseat'
-            ? `${names[seat]} — your window (screen follows the active seat)`
-            : view.phase === 'resource' ? 'Bank a card as a resource, or keep your hand.' : 'Your action.'
+        : view.phase === 'setup'
+          ? `Opening hand — pick ${setupN} cards to bank as your starting resources (${setupPicks.length}/${setupN}).`
+          : offTurn
+            ? 'Response window — you may play a card into their turn.'
+            : config.mode === 'hotseat'
+              ? `${names[seat]} — your window (screen follows the active seat)`
+              : view.phase === 'resource' ? 'Bank a card as a resource, or keep your hand.' : 'Your action.'
 
   // Contextual guidance: say WHAT you can do right now, and why passes get forced.
   const hints: string[] = []
   if (myWindow) {
     const ready = my.resources.filter(r => !r.exhausted).length
-    if (view.phase === 'resource') {
+    if (view.phase === 'setup') {
+      hints.push('Banked cards become permanent resources (+1 to spend every turn, forever) — but the cards themselves never come back. Most players bank what they least want to draw into.')
+    } else if (view.phase === 'resource') {
       hints.push(`Banking tucks a card away forever and pays +1 toward costs every turn — you'd have ${ready + 1} each turn after this. Most turns, bank.`)
     } else if (onlyPass) {
       hints.push(offTurn
@@ -453,8 +479,8 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
               const canAct = playActionsFor(h.id).length > 0 || !!resourceActionFor(h.id)
               return (
                 <CardFrame key={h.id} card={def} size="sm"
-                  selected={selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id)}
-                  dimmed={myWindow && !canAct}
+                  selected={view.phase === 'setup' ? setupPicks.includes(h.id) : (selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id))}
+                  dimmed={view.phase !== 'setup' && myWindow && !canAct}
                   onLongPress={() => setInspect({ kind: 'card', slug: h.slug })}
                   onClick={() => clickHandCard(h)} />
               )

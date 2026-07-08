@@ -6,6 +6,7 @@ export const DEFAULT_RULES: RulesConfig = {
   influenceWinThreshold: 15,
   startingHandSize: 7,
   startingResources: 2,
+  chooseStartingResources: true,
   drawPerTurn: 2,
   firstTurnDraw: 1,
   resourcesPerTurn: 1,

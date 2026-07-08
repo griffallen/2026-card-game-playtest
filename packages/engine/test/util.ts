@@ -25,9 +25,10 @@ export const T: CardSet = {
 export const toyDeck = () => Object.keys(T).flatMap(slug => [slug, slug, slug, slug])
 
 export function game(seed = 5): GameState {
+  // legacy fixtures pin the zero-input setup; the setup-phase flow has its own tests
   return createGame({
     seed,
-    rules: DEFAULT_RULES,
+    rules: { ...DEFAULT_RULES, chooseStartingResources: false },
     cardSet: T,
     players: [{ name: 'Ada', deck: toyDeck() }, { name: 'Bo', deck: toyDeck() }],
   })

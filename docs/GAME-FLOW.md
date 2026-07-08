@@ -21,7 +21,7 @@ Influence is one number the two of you fight over — when you "gain 1 Influence
 
 ## Setting up
 
-Each player shuffles, draws 7, and banks the last 2 drawn as face-up **resources** (⚑ auto-banked for now so setup needs no decisions — if you'd rather choose which 2, that's a small change). A coin flip picks who goes first; **the first player draws only 1 card on their first turn** as compensation (⚑ tunable parameter).
+Each player shuffles and draws 7, then **chooses 2 of them to bank** as face-up **resources**, first player choosing first (decision 31, 2026-07-08 — the first rules change made from live playtesting; the old zero-input auto-bank survives as a rules parameter for A/B tests). A coin flip picks who goes first; **the first player draws only 1 card on their first turn** as compensation (⚑ tunable parameter).
 
 ## A turn
 

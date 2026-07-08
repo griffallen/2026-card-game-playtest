@@ -100,6 +100,8 @@ export interface RulesConfig {
   influenceWinThreshold: number
   startingHandSize: number
   startingResources: number
+  /** true: players choose their starting banks in a Setup phase (decision 31); false: auto-bank last drawn */
+  chooseStartingResources: boolean
   drawPerTurn: number
   firstTurnDraw: number
   resourcesPerTurn: number
@@ -162,8 +164,9 @@ export interface GameState {
   cardOf: Record<string, string>      // instance id → slug
   turn: number                        // global, increments every turn change
   activeSeat: Seat
-  phase: 'resource' | 'main'
+  phase: 'setup' | 'resource' | 'main'
   actorSeat: Seat                     // whose action window it is
+  setupBanked: [boolean, boolean]     // per-seat: starting resources chosen (setup phase)
   passStreak: number
   resourcedThisTurn: number
   firstPlayer: Seat
@@ -187,6 +190,7 @@ export type TargetRef =
   | { kind: 'upgrade'; id: string }
 
 export type GameAction =
+  | { type: 'setupBank'; cards: string[] }   // setup phase: choose starting resources
   | { type: 'resource'; card: string }
   | { type: 'skipResource' }
   | { type: 'play'; card: string; targets?: TargetRef[] }
@@ -216,7 +220,7 @@ export interface SideView {
 }
 export interface PlayerView {
   viewerSeat: Seat | null
-  turn: number; phase: 'resource' | 'main'
+  turn: number; phase: 'setup' | 'resource' | 'main'
   activeSeat: Seat; actorSeat: Seat
   influence: number                    // + toward seat 0 (client flips for display)
   thresholds: [number, number]         // win threshold per seat (statics applied)

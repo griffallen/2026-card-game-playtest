@@ -35,6 +35,8 @@ Numbered, in the order they were made. Format: decision — reason.
 24. ⚑ **All targets are chosen when an action is submitted; the engine never pauses mid-resolution for input. Strictly-beneficial "may" effects auto-apply.** — Keeps the engine a pure deterministic reducer (same inputs → same game), which is what makes replay, undo, and simulation work.
 25. ⚑ **Deck lists:** Yellow = all 48 uniques ×1. Red = 36 uniques + a second copy of each of the twelve cost-1/cost-2 cards = 48. — Meets the 48-card minimum deterministically; Red's curve wants cheap duplicates.
 
+31. ✅ **Setup resources are a player choice** (decided by the builder from playtest experience, 2026-07-08, superseding the ⚑ auto-bank simplification in game-rules §1.3): after drawing 7, each player picks which `startingResources` (2) cards to bank, first player choosing first. A `chooseStartingResources` rules parameter (default **true**) preserves the auto-bank mode for A/B testing. — The choice is real strategy (bank your two dead cards vs. keep options) and the zero-input setup was only ever a shortcut.
+
 ## Product / engineering
 
 26. ⚑ **Card definitions are engine data (structured effect JSON, not free text).** The DB seeds from the engine's card set; the admin UI edits numbers (cost, stats, keyword values, influence amounts) and cosmetic text; effect *structure* changes stay in code. A game snapshots its cards and rules at creation, so mid-game edits can't corrupt running games. — Exactly the GENESYS tension: free-text effects can't be validated; structured effects keep new cards from silently breaking games.

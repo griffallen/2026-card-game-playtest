@@ -12,6 +12,23 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   if (seat !== state.actorSeat) return []
   const out: GameAction[] = []
 
+  if (state.phase === 'setup') {
+    // every combination of startingResources cards from hand
+    const hand = state.sides[seat].hand
+    const n = state.rules.startingResources
+    const combo: string[] = []
+    const emit = (start: number) => {
+      if (combo.length === n) { out.push({ type: 'setupBank', cards: [...combo] }); return }
+      for (let i = start; i < hand.length; i++) {
+        combo.push(hand[i])
+        emit(i + 1)
+        combo.pop()
+      }
+    }
+    emit(0)
+    return out
+  }
+
   if (state.phase === 'resource') {
     if (state.resourcedThisTurn < state.rules.resourcesPerTurn) {
       for (const card of state.sides[seat].hand) out.push({ type: 'resource', card })

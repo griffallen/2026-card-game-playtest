@@ -87,6 +87,11 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
   for (const action of legal) {
     let score = 0
     switch (action.type) {
+      case 'setupBank': {
+        // bank the expensive top of the curve — keep cheap early plays in hand
+        score = 30 + action.cards.reduce((s, id) => s + defOf(state, id).cost, 0)
+        break
+      }
       case 'attack': score = attackScore(state, action.attacker, action); break
       case 'play': score = playScore(state, seat, action); break
       case 'move': score = moveScore(state, seat, action); break

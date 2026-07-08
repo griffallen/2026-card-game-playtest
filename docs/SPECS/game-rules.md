@@ -30,8 +30,7 @@ Every card: `slug`, `name`, `color` (red|yellow), `type` (unit|action|upgrade), 
 1. Inputs: two players, each with a legal deck (≥ `deckMinSize` cards, ≤ `maxCopies` per slug), a `rulesConfig`, and a 32-bit `seed`.
 2. Shuffle both decks with the seeded RNG (Fisher–Yates; player A's deck first, then B's).
 3. First player = seeded coin flip.
-4. Each player draws `startingHandSize` (7), then **auto-resources the last `startingResources` (2) cards drawn** face up.
-   ⚑ *Simplification:* v1.2 says "resource 2 cards" without saying who chooses. Auto-resourcing the last two drawn keeps setup zero-input; revisit if the designer wants a choice here.
+4. Each player draws `startingHandSize` (7). Then — **decision 31 (2026-07-08)** — the game opens in a **Setup phase**: each player, first player first, **chooses `startingResources` (2) cards from hand to bank face-up** (action `setupBank`). When both have banked, turn 1 begins. (`chooseStartingResources: false` restores the old zero-input mode: the last cards drawn are banked automatically.)
 5. Influence 0, Life 20/20, turn 1, active = first player, phase = Reset.
 
 ### 1.4 Turn structure
@@ -139,6 +138,7 @@ Same `(rulesConfig, decks, seed, action list)` ⇒ identical states and events, 
 | `upgradePressureInfluence` | 1 | Influence the opponent gains per beyond-first upgrade |
 | `prisonDecayPerUnit` | 1 | Influence lost per imprisoned unit at jailer's turn start |
 | `prisonReleaseThreshold` | 0 | Jailer influence below this ⇒ prisons release |
+| `chooseStartingResources` | true | Setup: players pick their starting banks (false = auto-bank last drawn) |
 | `summoningSickness` | true | Units can't attack/move the turn they enter |
 | `moveExhausts` | true | Moving exhausts the unit |
 | `simultaneousLifeTiebreak` | `"actor"` | Who wins a both-dead tie: `actor` \| `active` \| `draw` |

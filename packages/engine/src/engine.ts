@@ -6,7 +6,7 @@ import {
   defOf, effArmor, effPower, hasKw, isSick, kwOf, log, other, unitsInZone, unitsOf,
 } from './helpers.ts'
 import { damageBase, damageUnit, fireTrigger, runOps, stateBasedCleanup } from './effects.ts'
-import { endTurn } from './turn.ts'
+import { endTurn, startTurn } from './turn.ts'
 
 export interface ApplyResult { state: GameState; events: LogLine[] }
 
@@ -30,7 +30,9 @@ export function applyAction(prev: GameState, action: GameAction, actorSeat: Seat
 
   if (actorSeat !== state.actorSeat) fail('not-your-window', 'not your action window')
 
-  if (state.phase === 'resource') {
+  if (state.phase === 'setup') {
+    applySetupPhase(state, action, actorSeat)
+  } else if (state.phase === 'resource') {
     applyResourcePhase(state, action, actorSeat)
   } else {
     applyMainPhase(state, action, actorSeat)
@@ -38,6 +40,30 @@ export function applyAction(prev: GameState, action: GameAction, actorSeat: Seat
 
   stateBasedCleanup(state, actorSeat)
   return { state, events: state.log.slice(logStart) }
+}
+
+/** Setup phase (decision 31): each player chooses their starting banks, first player first. */
+function applySetupPhase(state: GameState, action: GameAction, seat: Seat) {
+  if (action.type !== 'setupBank') fail('bad-phase', `setup: choose ${state.rules.startingResources} cards to bank`)
+  const n = state.rules.startingResources
+  if (action.cards.length !== n) fail('bad-setup', `choose exactly ${n} cards to bank`)
+  if (new Set(action.cards).size !== n) fail('bad-setup', 'banked cards must be distinct')
+  const side = state.sides[seat]
+  for (const id of action.cards) {
+    if (!side.hand.includes(id)) fail('not-in-hand', 'card is not in your hand')
+  }
+  for (const id of action.cards) {
+    side.hand.splice(side.hand.indexOf(id), 1)
+    side.resources.push({ id, exhausted: false })
+  }
+  state.setupBanked[seat] = true
+  log(state, seat, `${side.name} banks ${action.cards.map(id => defOf(state, id).name).join(' and ')} as starting resources`)
+  const other_ = other(seat)
+  if (!state.setupBanked[other_]) {
+    state.actorSeat = other_
+  } else {
+    startTurn(state) // both banked — turn 1 begins
+  }
 }
 
 function applyResourcePhase(state: GameState, action: GameAction, seat: Seat) {

@@ -1,5 +1,6 @@
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { Play } from './pages/Play.tsx'
+import { Cards } from './pages/Cards.tsx'
 import { Simulate } from './pages/Simulate.tsx'
 import { Audit } from './pages/Audit.tsx'
 
@@ -15,6 +16,7 @@ export function App() {
         </span>
         <nav className="ml-auto flex items-center gap-1">
           <NavLink to="/play" className={tab}>Play</NavLink>
+          <NavLink to="/cards" className={tab}>Cards</NavLink>
           <NavLink to="/simulate" className={tab}>Simulate</NavLink>
           <NavLink to="/audit" className={tab}>Design Audit</NavLink>
         </nav>
@@ -23,6 +25,7 @@ export function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/play" replace />} />
           <Route path="/play" element={<Play />} />
+          <Route path="/cards" element={<Cards />} />
           <Route path="/simulate" element={<Simulate />} />
           <Route path="/audit" element={<Audit />} />
           <Route path="*" element={<Navigate to="/play" replace />} />

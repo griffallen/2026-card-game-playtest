@@ -15,7 +15,7 @@ const act = (s: GameState, seat: Seat, a: Parameters<typeof applyAction>[1]) => 
 function arena(seed = 11) {
   let s = createGame({
     seed,
-    rules: DEFAULT_RULES,
+    rules: { ...DEFAULT_RULES, chooseStartingResources: false },
     cardSet: CARD_SET,
     players: [
       { name: 'Ada', deck: deckSlugs(PREBUILT_DECKS[0]) },

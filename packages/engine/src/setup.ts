@@ -50,9 +50,11 @@ export function createGame(opts: CreateGameOpts): GameState {
       const id = deck.pop()
       if (id) hand.push(id)
     }
-    // auto-resource the last N drawn, face up (game-rules §1.3 ⚑)
-    const resources = hand.splice(hand.length - rules.startingResources, rules.startingResources)
-      .map(id => ({ id, exhausted: false }))
+    // decision 31: players choose their banks in the Setup phase; the auto mode
+    // (bank the last N drawn) survives behind chooseStartingResources=false
+    const resources = rules.chooseStartingResources
+      ? []
+      : hand.splice(hand.length - rules.startingResources, rules.startingResources).map(id => ({ id, exhausted: false }))
     return {
       name: p.name || `Player ${seat + 1}`,
       life: rules.startingLife,
@@ -73,8 +75,9 @@ export function createGame(opts: CreateGameOpts): GameState {
     cardOf,
     turn: 1,
     activeSeat: first as Seat,
-    phase: 'resource',
+    phase: rules.chooseStartingResources ? 'setup' : 'resource',
     actorSeat: first as Seat,
+    setupBanked: [!rules.chooseStartingResources, !rules.chooseStartingResources],
     passStreak: 0,
     resourcedThisTurn: 0,
     firstPlayer: first as Seat,
@@ -90,6 +93,10 @@ export function createGame(opts: CreateGameOpts): GameState {
     nextId,
   }
   log(state, null, `${sides[0].name} vs ${sides[1].name} — ${sides[first as Seat].name} goes first`)
-  startTurn(state)
+  if (rules.chooseStartingResources) {
+    log(state, null, `Setup: each player banks ${rules.startingResources} starting resources, ${sides[first as Seat].name} first`)
+  } else {
+    startTurn(state)
+  }
   return state
 }

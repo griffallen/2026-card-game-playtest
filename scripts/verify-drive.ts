@@ -97,6 +97,17 @@ async function main() {
   // play a while: whoever's window it is acts
   let acts = 0
   for (let i = 0; i < 60 && acts < 26; i++) {
+    // setup phase (decision 31): pick 2 cards, confirm
+    const bank2 = page.getByRole('button', { name: /Bank these/ })
+    if (await bank2.isVisible().catch(() => false)) {
+      const cards = page.locator('.overflow-x-auto > div.shrink-0')
+      if (await cards.count() >= 2) { await cards.nth(0).click(); await cards.nth(1).click() }
+      await page.waitForTimeout(150)
+      if (await bank2.isEnabled().catch(() => false)) await bank2.click()
+      await page.waitForTimeout(300)
+      continue
+    }
+
     for (const p of [a, b]) {
       const what = await tryAct(p)
       if (what !== 'not my window') {

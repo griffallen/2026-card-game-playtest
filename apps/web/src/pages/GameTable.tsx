@@ -38,6 +38,7 @@ export function GameTable() {
   const [overlayDismissed, setOverlayDismissed] = useState(false)
   const [showHelp, setShowHelp] = useState(false)
   const [inspect, setInspect] = useState<Inspect>(null)
+  const [setupPicks, setSetupPicks] = useState<string[]>([])
   const logRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export function GameTable() {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight
   }, [view?.log])
   useEffect(() => { setSelection(null) }, [view?.actorSeat, view?.turn, view?.phase])
+  useEffect(() => { setSetupPicks([]) }, [view?.actorSeat, view?.phase])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setSelection(null); setConfirming(null); setInspect(null) } }
     window.addEventListener('keydown', onKey)
@@ -140,9 +142,15 @@ export function GameTable() {
     }
   }
 
+  const setupN = (view?.actions.find(a => a.type === 'setupBank') as { cards?: string[] } | undefined)?.cards?.length ?? 2
+
   function clickHandCard(card: HandCardView) {
     if (!myWindow) return
     setConfirming(null)
+    if (view!.phase === 'setup') {
+      setSetupPicks(p => p.includes(card.id) ? p.filter(id => id !== card.id) : p.length < setupN ? [...p, card.id] : p)
+      return
+    }
     if (view!.phase === 'resource') {
       setSelection(selection?.kind === 'hand' && selection.id === card.id ? null : { kind: 'hand', id: card.id })
       return
@@ -183,9 +191,11 @@ export function GameTable() {
     : spectating
       ? `${names[view.actorSeat]} is thinking…`
       : myWindow
-        ? offTurn
-          ? 'Response window — you may play a card into their turn.'
-          : view.phase === 'resource' ? 'Bank a card as a resource, or keep your hand.' : 'Your action.'
+        ? view.phase === 'setup'
+          ? `Opening hand — pick ${setupN} cards to bank as your starting resources (${setupPicks.length}/${setupN}).`
+          : offTurn
+            ? 'Response window — you may play a card into their turn.'
+            : view.phase === 'resource' ? 'Bank a card as a resource, or keep your hand.' : 'Your action.'
         : `Waiting for ${names[view.actorSeat]}…`
 
   return (
@@ -284,8 +294,8 @@ export function GameTable() {
                 return (
                   <CardFrame
                     key={h.id} card={def} size="sm"
-                    selected={selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id)}
-                    dimmed={myWindow && !canPlay && !canResource}
+                    selected={view.phase === 'setup' ? setupPicks.includes(h.id) : (selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id))}
+                    dimmed={view.phase !== 'setup' && myWindow && !canPlay && !canResource}
                     onLongPress={() => setInspect({ kind: 'card', slug: h.slug })}
                     onClick={() => clickHandCard(h)}
                   />
@@ -319,6 +329,19 @@ export function GameTable() {
                   : <button className="btn !py-1 text-xs" onClick={() => setConfirming('concede')}>Concede</button>
               )}
             </div>
+            {view.phase === 'setup' && myWindow && (
+              <div className="mt-2 flex flex-wrap items-center gap-1.5 border-t hairline pt-2">
+                <button
+                  className="btn btn-primary !py-1 text-xs"
+                  disabled={setupPicks.length !== setupN}
+                  onClick={() => { sendAction({ type: 'setupBank', cards: setupPicks }); setSetupPicks([]) }}
+                >
+                  Bank these {setupN} ⬢
+                </button>
+                {setupPicks.length > 0 && <button className="btn !py-1 text-xs" onClick={() => setSetupPicks([])}>Clear</button>}
+                <span className="text-[11px] text-dim">tap cards to choose ({setupPicks.length}/{setupN})</span>
+              </div>
+            )}
             {selection?.kind === 'hand' && myWindow && (
               <div className="mt-2 flex flex-wrap gap-1.5 border-t hairline pt-2">
                 {view.phase === 'main' && playActionsFor(selection.id).length > 0 && (
