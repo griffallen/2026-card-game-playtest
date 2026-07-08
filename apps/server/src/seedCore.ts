@@ -13,7 +13,7 @@ export async function seedCore(adminPassword: string): Promise<void> {
 
   await prisma.rulesVersion.upsert({
     where: { name: 'v1.2-proto' },
-    create: { name: 'v1.2-proto', config: DEFAULT_RULES, isDefault: true },
+    create: { name: 'v1.2-proto', config: DEFAULT_RULES as unknown as object, isDefault: true },
     update: {},
   })
 

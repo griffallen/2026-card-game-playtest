@@ -185,7 +185,8 @@ export function GameTable() {
         {spectating && <span className="rounded bg-raised px-2 py-0.5 text-xs text-dim">spectating</span>}
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-[1fr_290px]">
+      {/* phones: plain block flow, sidebar below the board; lg+: two-column grid */}
+      <div className="min-h-0 flex-1 overflow-y-auto lg:grid lg:grid-cols-[1fr_290px] lg:overflow-visible">
         {/* ── board ── */}
         <div className="flex min-h-0 flex-col p-2">
           {/* their bar */}
@@ -199,7 +200,7 @@ export function GameTable() {
           />
 
           {/* zones */}
-          <div className="my-1.5 grid min-h-0 flex-1 grid-rows-3 gap-1.5">
+          <div className="my-1.5 grid gap-1.5 lg:min-h-0 lg:flex-1 lg:grid-rows-3">
             {zonesTopToBottom.map(z => {
               const zoneRef: TargetRef = { kind: 'zone', zone: z }
               const zoneGlow = isHighlighted(zoneRef)
@@ -209,7 +210,7 @@ export function GameTable() {
                 <div
                   key={z}
                   onClick={() => zoneGlow && clickTarget(zoneRef)}
-                  className={`panel relative flex items-center gap-1.5 overflow-x-auto px-2 py-1 ${zoneGlow ? 'zone-target cursor-pointer' : ''}`}
+                  className={`panel relative flex min-h-[96px] items-center gap-1.5 overflow-x-auto px-2 py-1 ${zoneGlow ? 'zone-target cursor-pointer' : ''}`}
                 >
                   <span className="pointer-events-none absolute left-2 top-1 text-[9px] uppercase tracking-widest text-dim/70">{label}</span>
                   <div className="mt-3 flex items-center gap-1.5">
@@ -268,7 +269,7 @@ export function GameTable() {
         </div>
 
         {/* ── sidebar ── */}
-        <div className="flex min-h-0 flex-col gap-2 border-l hairline p-2">
+        <div className="flex min-h-0 flex-col gap-2 border-t hairline p-2 lg:border-l lg:border-t-0">
           <div className="panel p-3">
             <div className="text-[10px] uppercase tracking-widest text-dim">Turn {view.turn} — {names[view.activeSeat]}</div>
             <div className={`mt-1 font-display text-parchment ${myWindow ? 'pulse-soft text-goldbright' : ''}`}>{statusLine}</div>
@@ -321,9 +322,9 @@ export function GameTable() {
             theirName={spectating ? names[1] : names[foe]}
           />
 
-          <div className="panel flex min-h-0 flex-1 flex-col p-0">
+          <div className="panel flex min-h-0 flex-1 flex-col p-0 max-lg:min-h-[200px]">
             <div className="border-b hairline px-3 py-1.5 text-[10px] uppercase tracking-widest text-dim">Chronicle</div>
-            <div ref={logRef} className="min-h-0 flex-1 overflow-y-auto px-3 py-2 text-[11.5px] leading-relaxed">
+            <div ref={logRef} className="min-h-0 flex-1 overflow-y-auto px-3 py-2 text-[11.5px] leading-relaxed max-lg:max-h-[240px]">
               {view.log.map((l, i) => (
                 <div key={i} className={l.msg.startsWith('—') ? 'mt-1.5 font-display text-goldbright/90' : 'text-body/85'}>
                   {l.msg}

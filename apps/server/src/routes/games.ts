@@ -103,8 +103,8 @@ export function gameRoutes(app: FastifyInstance) {
         name: (req.body?.name ?? '').trim() || `${req.user.username}'s table`,
         status: 'waiting',
         seed: randomInt(1, 2 ** 31),
-        rulesConfig: config,
-        cardSet: cardSet as object,
+        rulesConfig: config as unknown as object,
+        cardSet: cardSet as unknown as object,
         hostId: req.user.id,
         hostDeck: { ...deck, player: req.user.username },
       },
@@ -126,7 +126,7 @@ export function gameRoutes(app: FastifyInstance) {
     const cardSet = { ...(game.cardSet as object), ...guestCards }
     const updated = await prisma.game.update({
       where: { id: game.id },
-      data: { guestId: req.user.id, guestDeck: { ...deck, player: req.user.username }, cardSet, status: 'active' },
+      data: { guestId: req.user.id, guestDeck: { ...deck, player: req.user.username }, cardSet: cardSet as unknown as object, status: 'active' },
       include: { host: true, guest: true },
     })
     return { game: gameSummary(updated) }

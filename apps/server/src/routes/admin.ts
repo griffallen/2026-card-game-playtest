@@ -173,7 +173,7 @@ export function adminRoutes(app: FastifyInstance) {
       const config = normalizeRules(req.body?.config)
       const version = await prisma.$transaction(async tx => {
         if (req.body?.makeDefault) await tx.rulesVersion.updateMany({ data: { isDefault: false } })
-        return tx.rulesVersion.create({ data: { name, config, isDefault: !!req.body?.makeDefault } })
+        return tx.rulesVersion.create({ data: { name, config: config as unknown as object, isDefault: !!req.body?.makeDefault } })
       })
       return { version }
     })
@@ -187,7 +187,7 @@ export function adminRoutes(app: FastifyInstance) {
         return tx.rulesVersion.update({
           where: { id: row.id },
           data: {
-            ...(req.body?.config ? { config: normalizeRules({ ...(row.config as object), ...req.body.config }) } : {}),
+            ...(req.body?.config ? { config: normalizeRules({ ...(row.config as object), ...req.body.config }) as unknown as object } : {}),
             ...(req.body?.makeDefault !== undefined ? { isDefault: req.body.makeDefault } : {}),
           },
         })
