@@ -261,7 +261,9 @@ function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat) {
   if (to === unit.zone) fail('bad-move', 'already there')
   if (!hasKw(state, unit, 'flying') && !adjacent(unit.zone, to)) fail('bad-move', 'can only move to an adjacent zone')
   unit.zone = to
-  if (state.rules.moveExhausts) unit.exhausted = true
+  // decision 41: Rush waives the move exhaust the round the unit entered play
+  const rushFree = unit.enteredRound === state.round && hasKw(state, unit, 'rush')
+  if (state.rules.moveExhausts && !rushFree) unit.exhausted = true
   log(state, seat, `${defOf(state, unitId).name} advances to ${zoneName(state, to)}`)
   fireTrigger({ state, enteredZone: to, actorSeat: seat }, unit, 'onEnterZone')
 }
