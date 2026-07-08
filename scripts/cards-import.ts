@@ -48,7 +48,7 @@ function parseKw(s: string, slug: string, errors: string[]) {
 function retarget(def: CardDef, trigger: string, slug: string, errors: string[]): CardDef {
   const keys = ['onPlay', 'onDefend', 'onKill', 'onAttack'] as const
   const current = keys.find(k => def[k]?.some(o => o.op === 'influence'))
-    ?? (def.startOfTurn?.ops.some(o => o.op === 'influence') ? 'startOfTurn' : undefined)
+    ?? (def.startOfRound?.ops.some(o => o.op === 'influence') ? 'startOfRound' : undefined)
   if (!trigger || trigger === current) return def
   if (!['onPlay', 'onDefend', 'onKill', 'onAttack'].includes(trigger)) {
     errors.push(`${slug}: influenceTrigger "${trigger}" is not one of onPlay/onDefend/onKill/onAttack`)

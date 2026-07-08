@@ -21,7 +21,7 @@ const influenceTrigger = (def: CardDef): string => {
   if (has(def.onKill)) return 'onKill'
   if (has(def.onAttack)) return 'onAttack'
   if (has(def.onPlay)) return 'onPlay'
-  if (def.startOfTurn && has(def.startOfTurn.ops)) return 'startOfTurn'
+  if (def.startOfRound && has(def.startOfRound.ops)) return 'startOfRound'
   return ''
 }
 

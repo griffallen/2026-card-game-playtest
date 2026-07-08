@@ -198,8 +198,9 @@ export const RED_CARDS: CardDef[] = [
     kw: [{ k: 'breakthrough', n: 5 }, { k: 'overextend', n: 5 }],
   }),
   action(8, 'Final Onslaught', {
-    text: 'You get an extra turn after this one. Overextend 5.',
-    onPlay: [{ op: 'extraAction' }],
-    designerNote: OE_NOTE,
+    text: 'Ready one of your units, then immediately take an extra action. Overextend 5.',
+    targets: [{ t: 'unit', side: 'friendly' }],
+    onPlay: [{ op: 'ready', side: 'friendly', t: 'chosen0' }, { op: 'extraAction' }],
+    designerNote: 'Decision 43: rounds have no extra turns — "extra turn" became ready one of your units + an extra action. Unplayable with no friendly unit to ready, by design. ' + OE_NOTE,
   }),
 ]

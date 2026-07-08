@@ -246,6 +246,11 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'ready': {
+        if (op.t) {
+          const u = resolveUnitTarget(ctx, op.t)
+          if (u && u.owner === controller) { u.exhausted = false; log(state, u.owner, `${name(state, u.id)} readies`) }
+          break
+        }
         for (const u of unitsOf(state, controller)) u.exhausted = false
         log(state, controller, `${state.sides[controller].name}'s units ready for another assault`)
         break

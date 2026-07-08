@@ -228,16 +228,19 @@ describe('tempo and timing', () => {
     expect(effPower(s, s.units[engine])).toBe(14)
   })
 
-  it('Relentless Assault readies for a second wave; Final Onslaught grants an extra action', () => {
+  it('Relentless Assault readies all; Final Onslaught readies one unit + extra action (decision 43)', () => {
     let { s, p1, p2 } = arena()
     const zerk = put(s, p1, 'berserker', 1, { exhausted: true })
     const assault = toHand(s, p1, 'relentless-assault')
     s = act(s, p1, { type: 'play', card: assault })
-    expect(s.units[zerk].exhausted).toBe(false)
+    expect(s.units[zerk].exhausted).toBe(false)          // ready ALL friendly units
+    // Final Onslaught: ready ONE chosen unit, then take an extra action
+    const vet = put(s, p1, 'doombringer', 1, { exhausted: true })
     const onslaught = toHand(s, p1, 'final-onslaught')
     s = act(s, p2, { type: 'pass' })
-    s = act(s, p1, { type: 'play', card: onslaught })
-    expect(s.actorSeat).toBe(p1)              // extra action: window stays with p1
+    s = act(s, p1, { type: 'play', card: onslaught, targets: [{ kind: 'unit', id: vet }] })
+    expect(s.units[vet].exhausted).toBe(false)           // the chosen unit readied
+    expect(s.actorSeat).toBe(p1)                         // extra action: window stays with p1
     expect(s.pendingExtraAction).toBeNull()
   })
 
