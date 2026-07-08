@@ -1,6 +1,6 @@
 import {
   CARD_SET, DEFAULT_RULES, PREBUILT_DECKS, createGame, deckSlugs,
-  type CardSet, type GameState, type Seat,
+  type CardSet, type GameState, type PolicyName, type Seat,
 } from '@newgame/engine'
 
 /** Engine card set with art urls resolved against the deployed base path. */
@@ -21,6 +21,9 @@ export interface DemoConfig {
   seed: number
   nameA: string
   nameB: string
+  /** bot brains per seat (watch mode; seat 1 in vs-ai) — must match the simulator for faithful replays */
+  policyA: PolicyName
+  policyB: PolicyName
 }
 
 export function newLocalGame(cfg: DemoConfig): GameState {

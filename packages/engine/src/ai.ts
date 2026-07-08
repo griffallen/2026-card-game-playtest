@@ -121,3 +121,7 @@ export const POLICIES: Record<PolicyName, Policy> = {
   random: randomPolicy,
   heuristic: heuristicPolicy,
 }
+
+/** One shared derivation for the policy rng stream — the simulator and any visual
+ *  replayer must use this same function so a seed reproduces the identical game. */
+export const policyRngInit = (seed: number): number => (seed ^ 0x9e3779b9) | 0

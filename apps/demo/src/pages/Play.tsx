@@ -1,12 +1,19 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import type { PolicyName } from '@newgame/engine'
 import { DECKS, type DemoConfig, type Mode } from '../local.ts'
 import { DemoTable } from '../DemoTable.tsx'
 
 const MODES: { id: Mode; title: string; blurb: string }[] = [
   { id: 'hotseat', title: '🪑 Hotseat', blurb: 'Two humans, one screen — or one designer playing both sides. The view follows whoever acts.' },
   { id: 'vs-ai', title: '🤖 You vs the AI', blurb: 'You take seat 1 with your chosen deck; a baseline greedy AI pilots the other side.' },
-  { id: 'watch', title: '👁 Watch AI vs AI', blurb: 'Lean back and watch two bots play a full game — great for feeling the pace of the rules.' },
+  { id: 'watch', title: '👁 Watch AI vs AI', blurb: 'Watch two bots play with full playback controls — pause, step forward/back one action at a time, change speed. Simulator rows replay here too.' },
 ]
+
+const botName = (deckSlug: string, policy: PolicyName) => {
+  const deck = DECKS.find(d => d.slug === deckSlug)
+  return `Bot ${deck?.name.split(' ')[0] ?? 'Unknown'}${policy === 'random' ? ' (random)' : ''}`
+}
 
 export function Play() {
   const [config, setConfig] = useState<DemoConfig | null>(null)
@@ -14,6 +21,27 @@ export function Play() {
   const [deckA, setDeckA] = useState(DECKS[0].slug)
   const [deckB, setDeckB] = useState(DECKS[1].slug)
   const [seedText, setSeedText] = useState('')
+  const [params, setParams] = useSearchParams()
+
+  // Replay links from the Simulator: #/play?watch=1&seed=…&first=red|yellow&pa=…&pb=…
+  useEffect(() => {
+    if (params.get('watch') !== '1') return
+    const seed = Number(params.get('seed'))
+    if (!Number.isInteger(seed)) return
+    const redFirst = params.get('first') !== 'yellow'
+    const red = DECKS.find(d => d.color === 'red')?.slug ?? DECKS[0].slug
+    const yellow = DECKS.find(d => d.color === 'yellow')?.slug ?? DECKS[1].slug
+    const [a, b] = redFirst ? [red, yellow] : [yellow, red]
+    const pa = (params.get('pa') ?? 'heuristic') as PolicyName
+    const pb = (params.get('pb') ?? 'heuristic') as PolicyName
+    setConfig({
+      mode: 'watch', deckA: a, deckB: b, seed,
+      nameA: botName(a, pa), nameB: botName(b, pb),
+      policyA: pa, policyB: pb,
+    })
+    setParams({}, { replace: true }) // consume the link so Setup works after exit
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (config) return <DemoTable key={`${config.seed}-${config.mode}`} config={config} onExit={() => setConfig(null)} />
 
@@ -24,8 +52,10 @@ export function Play() {
       deckA,
       deckB,
       seed,
-      nameA: mode === 'watch' ? 'Bot Crimson' : mode === 'vs-ai' ? DECKS.find(d => d.slug === deckA)?.name ?? 'Player 1' : 'Player 1',
-      nameB: mode === 'watch' ? 'Bot Radiant' : mode === 'vs-ai' ? 'The Machine' : 'Player 2',
+      nameA: mode === 'watch' ? botName(deckA, 'heuristic') : mode === 'vs-ai' ? DECKS.find(d => d.slug === deckA)?.name ?? 'Player 1' : 'Player 1',
+      nameB: mode === 'watch' ? botName(deckB, 'heuristic') : mode === 'vs-ai' ? 'The Machine' : 'Player 2',
+      policyA: 'heuristic',
+      policyB: 'heuristic',
     })
   }
 

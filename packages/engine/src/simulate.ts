@@ -6,7 +6,7 @@ import { applyAction } from './engine.ts'
 import { getLegalActions } from './legal.ts'
 import { DEFAULT_RULES } from './rules.ts'
 import { CARD_SET } from './cards/index.ts'
-import { POLICIES, type PolicyName } from './ai.ts'
+import { POLICIES, policyRngInit, type PolicyName } from './ai.ts'
 
 const MAX_ACTIONS = 4000
 
@@ -31,7 +31,7 @@ export function simulateGame(seed: number, deckA: string[], deckB: string[], opt
     seed, rules, cardSet,
     players: [{ name: 'SimA', deck: deckA }, { name: 'SimB', deck: deckB }],
   })
-  let policyRng = (seed ^ 0x9e3779b9) | 0
+  let policyRng = policyRngInit(seed)
   let actions = 0
   let minInfluence = 0
   let maxInfluence = 0

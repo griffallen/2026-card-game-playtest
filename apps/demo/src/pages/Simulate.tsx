@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { DECKS } from '../local.ts'
 import { deckSlugs, simulateGame, type PolicyName, type SimResult } from '@newgame/engine'
 
@@ -124,6 +125,7 @@ export function Simulate() {
                 <tr className="text-left uppercase tracking-wider text-dim">
                   <th className="px-3 py-1.5">Seed</th><th className="px-3 py-1.5">First</th><th className="px-3 py-1.5">Winner</th>
                   <th className="px-3 py-1.5">By</th><th className="px-3 py-1.5">Turns</th><th className="px-3 py-1.5">Influence range</th>
+                  <th className="px-3 py-1.5"></th>
                 </tr>
               </thead>
               <tbody>
@@ -135,6 +137,15 @@ export function Simulate() {
                     <td className="px-3 py-1">{r.winReason}</td>
                     <td className="px-3 py-1">{r.turns}</td>
                     <td className="px-3 py-1 text-dim">{r.minInfluence}…{r.maxInfluence > 0 ? `+${r.maxInfluence}` : r.maxInfluence}</td>
+                    <td className="px-3 py-1">
+                      <Link
+                        className="text-goldbright hover:underline"
+                        title="Replay this exact game move-for-move (deterministic from the seed)"
+                        to={`/play?watch=1&seed=${r.seed}&first=${r.firstDeck}&pa=${policyA}&pb=${policyB}`}
+                      >
+                        Watch ▶
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>

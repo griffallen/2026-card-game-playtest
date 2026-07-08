@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  EngineError, applyAction, heuristicPolicy, viewFor,
+  EngineError, POLICIES, applyAction, policyRngInit, viewFor,
   type GameAction, type GameState, type HandCardView, type Seat, type TargetRef, type ZoneId,
 } from '@newgame/engine'
 import { CardFrame } from '@ui/components/CardFrame.tsx'
@@ -21,7 +21,10 @@ const sameRef = (a: TargetRef, b: TargetRef) =>
   && (a.kind !== 'zone' || (b.kind === 'zone' && a.zone === b.zone))
   && (a.kind !== 'upgrade' || (b.kind === 'upgrade' && a.id === b.id))
 
-interface HistoryEntry { seat: Seat; action: GameAction }
+interface HistoryEntry { seat: Seat; action: GameAction; rngAfter: number }
+
+type Speed = 'slow' | 'normal' | 'fast'
+const SPEED_MS: Record<Speed, number> = { slow: 1400, normal: 500, fast: 140 }
 
 export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () => void }) {
   const [state, setState] = useState<GameState>(() => newLocalGame(config))
@@ -30,8 +33,14 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const [confirming, setConfirming] = useState<'concede' | null>(null)
   const [overlayDismissed, setOverlayDismissed] = useState(false)
   const [toast, setToast] = useState('')
-  const aiRng = useRef((config.seed ^ 0x51ed2701) | 0)
+  const [paused, setPaused] = useState(false)
+  const [speed, setSpeed] = useState<Speed>(config.mode === 'watch' ? 'normal' : 'fast')
   const logRef = useRef<HTMLDivElement>(null)
+
+  // Policy rng travels WITH the history (snapshot after every action), so stepping
+  // backward and forward replays the exact same game — and matches the Simulator's
+  // stream (shared policyRngInit), so a sim seed replays move-for-move here.
+  const currentRng = history.length ? history[history.length - 1].rngAfter : policyRngInit(config.seed)
 
   // whose eyes: hotseat + watch follow the action window; vs-ai pins you to seat 0
   const viewerSeat: Seat = config.mode === 'vs-ai' ? 0 : state.actorSeat
@@ -45,7 +54,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     try {
       const { state: next } = applyAction(state, action, actor)
       setState(next)
-      setHistory(h => [...h, { seat: actor, action }])
+      setHistory(h => [...h, { seat: actor, action, rngAfter: currentRng }])
       setSelection(null)
     } catch (e) {
       setToast(e instanceof EngineError ? e.message : 'that was not allowed')
@@ -53,38 +62,54 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     }
   }
 
-  // AI driver
-  useEffect(() => {
+  function aiStep() {
     if (!aiWindow) return
-    const t = setTimeout(() => {
-      const [action, nextRng] = heuristicPolicy(state, state.actorSeat, aiRng.current)
-      aiRng.current = nextRng
-      const { state: next } = applyAction(state, action, state.actorSeat)
-      setState(next)
-      setHistory(h => [...h, { seat: state.actorSeat, action }])
-    }, config.mode === 'watch' ? 450 : 700)
+    const policy = POLICIES[state.actorSeat === 0 ? config.policyA : config.policyB]
+    const [action, nextRng] = policy(state, state.actorSeat, currentRng)
+    const { state: next } = applyAction(state, action, state.actorSeat)
+    setState(next)
+    setHistory(h => [...h, { seat: state.actorSeat, action, rngAfter: nextRng }])
+  }
+
+  // AI driver (auto-play unless paused; Step ▸ drives it manually)
+  useEffect(() => {
+    if (!aiWindow || paused) return
+    const t = setTimeout(aiStep, config.mode === 'watch' ? SPEED_MS[speed] : 700)
     return () => clearTimeout(t)
-  }, [state, aiWindow, config.mode])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, aiWindow, paused, speed, config.mode])
 
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight }, [view.log])
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setSelection(null); setConfirming(null) } }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setSelection(null); setConfirming(null) }
+      if (config.mode === 'watch') {
+        if (e.key === ' ') { e.preventDefault(); setPaused(p => !p) }
+        if (e.key === 'ArrowRight' && paused) { e.preventDefault(); aiStep() }
+        if (e.key === 'ArrowLeft' && paused) { e.preventDefault(); rewind(1) }
+      }
+    }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config.mode, paused, state, history])
 
-  function undo() {
-    // rewind one HUMAN-visible step: drop trailing AI actions plus one more
-    let h = [...history]
-    while (h.length && aiControls(config, h[h.length - 1].seat) && config.mode !== 'watch') h.pop()
-    h.pop()
+  /** Rewind n actions by replaying the prefix — deterministic thanks to per-entry rng snapshots. */
+  function rewind(n: number) {
+    const h = history.slice(0, Math.max(0, history.length - n))
     let s = newLocalGame(config)
     for (const entry of h) s = applyAction(s, entry.action, entry.seat).state
-    aiRng.current = (config.seed ^ 0x51ed2701) | 0 // AI variety after undo is fine; determinism is per-run
     setState(s)
     setHistory(h)
     setSelection(null)
     setOverlayDismissed(false)
+  }
+
+  function undo() {
+    // rewind one HUMAN-visible step: drop trailing AI actions plus one more
+    let n = 0
+    while (n < history.length && aiControls(config, history[history.length - 1 - n].seat)) n++
+    rewind(n + 1)
   }
 
   function exportGame() {
@@ -293,6 +318,24 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                   : <button className="btn !py-1 text-xs" onClick={() => setConfirming('concede')}>Concede</button>
               )}
             </div>
+            {config.mode === 'watch' && (
+              <div className="mt-2 border-t hairline pt-2">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <button className="btn !py-1 text-xs" disabled={!paused || history.length === 0} onClick={() => rewind(1)} title="step back (←)">◂</button>
+                  <button className={`btn !py-1 text-xs ${paused ? 'btn-primary' : ''}`} onClick={() => setPaused(p => !p)} title="space">
+                    {paused ? '▶ Play' : '⏸ Pause'}
+                  </button>
+                  <button className="btn !py-1 text-xs" disabled={!paused || state.winner !== null} onClick={aiStep} title="step forward (→)">▸</button>
+                  <select className="input !w-24 !py-1 text-xs" value={speed} onChange={e => setSpeed(e.target.value as Speed)} aria-label="playback speed">
+                    <option value="slow">slow</option>
+                    <option value="normal">normal</option>
+                    <option value="fast">fast</option>
+                  </select>
+                  <span className="text-[10px] text-dim">action {history.length}</span>
+                </div>
+                <p className="mt-1.5 text-[10px] text-dim">space = pause · ←/→ = step while paused</p>
+              </div>
+            )}
             {selection?.kind === 'hand' && myWindow && (
               <div className="mt-2 flex flex-wrap gap-1.5 border-t hairline pt-2">
                 {view.phase === 'main' && playActionsFor(selection.id).length > 0 && (
