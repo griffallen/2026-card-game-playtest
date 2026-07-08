@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { simulateGame } from '../src/simulate.ts'
+import { applyAction } from '../src/engine.ts'
+import { heuristicPolicy, policyRngInit } from '../src/ai.ts'
 import { PREBUILT_DECKS, deckSlugs } from '../src/decks.ts'
+import type { Seat } from '../src/types.ts'
+import { game, put, toLoop } from './util.ts'
 
 const red = deckSlugs(PREBUILT_DECKS[0])
 const yellow = deckSlugs(PREBUILT_DECKS[1])
@@ -36,5 +40,36 @@ describe('baseline heuristic AI', () => {
     console.log(`turns: median ${turns[Math.floor(turns.length / 2)]}, min ${turns[0]}, max ${turns[turns.length - 1]}`)
     expect(rows.length).toBe(60)
     for (const r of rows) expect(r.winner === 0 || r.winner === 1).toBe(true)
+  })
+})
+
+describe('AI under v2 rules (decisions 40–42)', () => {
+  it('heuristic answers an intercept window without throwing, and saves a valuable target', () => {
+    let s = toLoop(game())
+    const a = s.actorSeat, b = (1 - a) as Seat
+    const atk = put(s, a, 'brute', 1, { enteredRound: 0 })      // p4
+    const jewel = put(s, b, 'soldier', 1, { enteredRound: 0 })  // the declared target (dies to 4)
+    put(s, b, 'guardian', 1, { enteredRound: 0 })               // free interceptor
+    s = applyAction(s, { type: 'attack', attackers: [atk], target: { kind: 'unit', id: jewel } }, a).state
+    expect(s.phase).toBe('intercept')
+    const [action] = heuristicPolicy(s, b, policyRngInit(1))
+    expect(action.type).toBe('intercept') // saving the soldier by throwing the free guard scores higher than letting it through
+  })
+
+  it('heuristic scores multi-unit attacks (prefers the lethal group over a chip single)', () => {
+    let s = toLoop(game())
+    const a = s.actorSeat
+    s.sides[a].hand = [] // isolate the attack decision — no card plays competing
+    put(s, a, 'soldier', 1, { enteredRound: 0 })
+    put(s, a, 'soldier', 1, { enteredRound: 0 })
+    put(s, (1 - a) as Seat, 'brute', 1, { enteredRound: 0 }) // h3: dies only to the 4-power group
+    const [action] = heuristicPolicy(s, a, policyRngInit(1))
+    expect(action.type).toBe('attack')
+    if (action.type === 'attack') expect(action.attackers.length).toBe(2)
+  })
+
+  it('random policy completes games under the new rules (smoke)', () => {
+    const r = simulateGame(77, deckSlugs(PREBUILT_DECKS[0]), deckSlugs(PREBUILT_DECKS[1]), { policyA: 'random', policyB: 'random' })
+    expect(r.winner === 0 || r.winner === 1).toBe(true)
   })
 })

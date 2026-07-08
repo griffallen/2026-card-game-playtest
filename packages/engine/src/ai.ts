@@ -1,6 +1,6 @@
 import type { GameAction, GameState, Seat, UnitInstance } from './types.ts'
 import { homeZone } from './types.ts'
-import { defOf, effArmor, effHealth, effPower, hasKw, influenceFor, kwOf, other, unitsInZone } from './helpers.ts'
+import { defOf, effArmor, effHealth, effPower, hasKw, idNum, influenceFor, kwOf, other, unitsInZone } from './helpers.ts'
 import { getLegalActions } from './legal.ts'
 import { rngNext } from './rng.ts'
 
@@ -23,41 +23,86 @@ export function randomPolicy(state: GameState, seat: Seat, rngState: number): [G
   return [pool[Math.floor(v * pool.length)], s]
 }
 
-function attackScore(state: GameState, attackerId: string, target: GameAction & { type: 'attack' }): number {
-  const attacker = state.units[attackerId]
-  if (!attacker) return 0
-  const oe = kwOf(state, attacker, 'overextend')
-  const overextending = target.overextend?.includes(attackerId) ?? false
-  const oeN = overextending && typeof oe === 'number' ? oe : 0
-  const power = effPower(state, attacker) + oeN
-  const atkRemaining = effHealth(state, attacker) - attacker.damage
-  const surviveGamble = atkRemaining > oeN // will the end-of-turn bill kill it?
+/** Score a (possibly multi-unit) attack: combined power vs the target, counter on the highest-power member. */
+function attackScore(state: GameState, action: GameAction & { type: 'attack' }): number {
+  const units = action.attackers.map(id => state.units[id]).filter(Boolean) as UnitInstance[]
+  if (!units.length) return 0
+  const n = units.length
+  const oeIds = action.overextend ?? []
+  const pw = (u: UnitInstance) => {
+    let p = effPower(state, u)
+    const oe = kwOf(state, u, 'overextend')
+    if (oeIds.includes(u.id) && typeof oe === 'number') p += oe
+    return p
+  }
+  const combined = units.reduce((sum, u) => sum + pw(u), 0)
+  const oeTotal = oeIds.reduce((sum, id) => {
+    const v = kwOf(state, state.units[id], 'overextend')
+    return sum + (typeof v === 'number' ? v : 0)
+  }, 0)
+  const groupKill = 2 * (n - 1)   // focus-fire that converts a kill is good
+  const groupMiss = -3 * (n - 1)  // over-committing into a wall is bad
 
-  if (target.target.kind === 'base') {
-    let s = 90 + power * 4
-    if (oeN) s = surviveGamble ? s - oeN : 5 // extra face damage is worth strain, not suicide
+  if (action.target.kind === 'base') {
+    let s = 90 + combined * 4 + groupKill
+    if (oeTotal) s -= oeTotal
     return s
   }
-
-  if (target.target.kind !== 'unit') return 0
-  const defender = state.units[target.target.id]
+  if (action.target.kind !== 'unit') return 0
+  const defender = state.units[action.target.id]
   if (!defender) return 0
-  const dealt = Math.max(0, power - effArmor(state, defender))
-  const dealtPlain = Math.max(0, power - oeN - effArmor(state, defender))
+  const dealt = Math.max(0, combined - effArmor(state, defender))
+  const dealtPlain = Math.max(0, combined - oeTotal - effArmor(state, defender))
   const defRemaining = effHealth(state, defender) - defender.damage
-  const counter = defender.imprisoned ? 0 : Math.max(0, effPower(state, defender) - effArmor(state, attacker))
   const kills = dealt >= defRemaining
-  const dies = counter >= atkRemaining || (oeN > 0 && counter + oeN >= atkRemaining)
+  // counter lands on the highest-power attacker (ties → lowest id) — mirror the engine
+  const counterTarget = units.slice().sort((x, y) => pw(y) - pw(x) || idNum(x.id) - idNum(y.id))[0]
+  const ctRemaining = effHealth(state, counterTarget) - counterTarget.damage
+  const ctOE = oeIds.includes(counterTarget.id) && typeof kwOf(state, counterTarget, 'overextend') === 'number'
+    ? kwOf(state, counterTarget, 'overextend') as number : 0
+  const counter = defender.imprisoned ? 0 : Math.max(0, effPower(state, defender) - effArmor(state, counterTarget))
+  const dies = counter >= ctRemaining || (ctOE > 0 && counter + ctOE >= ctRemaining)
   const defValue = defOf(state, defender.id).cost + effPower(state, defender)
-  const atkValue = defOf(state, attacker.id).cost + power
+  const atkValue = defOf(state, counterTarget.id).cost + effPower(state, counterTarget)
 
-  // only gamble when the bonus is what converts the kill
-  if (oeN > 0 && dealtPlain >= defRemaining) return 2
+  // only gamble when the Overextend bonus is what converts the kill
+  if (oeTotal > 0 && dealtPlain >= defRemaining) return 2
 
-  if (kills && !dies) return 70 + defValue * 3 - oeN
-  if (kills && dies) return 40 + (defValue - atkValue) * 3
-  if (dealt > 0 && !dies) return oeN > 0 ? 3 : 15 + dealt // chip damage isn't worth strain
-  return dealt > 0 ? 4 : 0
+  if (kills && !dies) return 70 + defValue * 3 - oeTotal + groupKill
+  if (kills && dies) return 40 + (defValue - atkValue) * 3 + groupKill
+  if (dealt > 0 && !dies) return (oeTotal > 0 ? 3 : 15 + dealt) + groupMiss
+  return (dealt > 0 ? 4 : 0) + groupMiss
+}
+
+/** Answer an intercept window: value the target we'd save minus the interceptor we'd risk (Guard is free). */
+function interceptScore(state: GameState, action: GameAction & { type: 'intercept' | 'declineIntercept' }): number {
+  if (action.type === 'declineIntercept') return 10
+  const pa = state.pendingAttack
+  const interceptor = state.units[action.unit]
+  if (!pa || !interceptor) return 0
+  const combined = pa.attackers.reduce((sum, id) => {
+    const u = state.units[id]
+    if (!u) return sum
+    let p = effPower(state, u)
+    const oe = kwOf(state, u, 'overextend')
+    if (pa.overextend.includes(id) && typeof oe === 'number') p += oe
+    return sum + p
+  }, 0)
+  const guard = hasKw(state, interceptor, 'guard')
+  const intoInterceptor = Math.max(0, combined - effArmor(state, interceptor))
+  const interceptorDies = intoInterceptor >= effHealth(state, interceptor) - interceptor.damage
+  const interceptorValue = defOf(state, interceptor.id).cost + effPower(state, interceptor)
+  let saved = 0
+  if (pa.target.kind === 'unit') {
+    const tgt = state.units[pa.target.id]
+    if (tgt) {
+      const intoTgt = Math.max(0, combined - effArmor(state, tgt))
+      if (intoTgt >= effHealth(state, tgt) - tgt.damage) saved = (defOf(state, tgt.id).cost + effPower(state, tgt)) * 3
+    }
+  } else if (pa.target.kind === 'base') {
+    saved = combined * 3 // preventing base damage is worth stepping in
+  }
+  return saved - (interceptorDies ? interceptorValue * 3 : 0) - (guard ? 0 : 6) + 12
 }
 
 function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'play' }): number {
@@ -103,7 +148,7 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
         break
       }
       case 'mulligan': score = 2; break // baseline bot keeps what it's dealt
-      case 'attack': score = attackScore(state, action.attackers[0], action); break
+      case 'attack': score = attackScore(state, action); break
       case 'play': score = playScore(state, seat, action); break
       case 'move': score = moveScore(state, seat, action); break
       case 'resource': {
@@ -115,6 +160,9 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
       }
       case 'skipResource': score = 8; break
       case 'pass': score = 1; break
+      case 'claimInitiative': score = legal.some(x => x.type === 'attack' || x.type === 'play') ? 2 : 8; break
+      case 'intercept':
+      case 'declineIntercept': score = interceptScore(state, action); break
       case 'concede': score = -Infinity; break
     }
     let jitter: number
