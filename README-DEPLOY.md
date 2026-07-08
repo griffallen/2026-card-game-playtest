@@ -2,6 +2,23 @@
 
 The app is one container: Fastify serves the API, the WebSocket, and the built web UI on one port. On boot it runs `prisma migrate deploy` and an idempotent seed (admin account, 84 cards, prebuilt decks, rules v1.2-proto), so a fresh database becomes a playable install with zero manual steps.
 
+## Already wired (2026-07-07)
+
+CI/CD is armed: the fly app **`new-game-proto`** exists, a scoped deploy token lives in the repo secret `FLY_API_TOKEN`, and `.github/workflows/fly-deploy.yml` deploys **every push to `main`**. It's gated off until the database exists. To go live, do the one human step (Neon needs a browser login) and flip the gate:
+
+```bash
+# 1. create a Neon project (neon.tech, free tier) and copy BOTH connection strings
+# 2. from the repo root:
+fly secrets set -a new-game-proto \
+  DATABASE_URL='postgresql://…-pooler…neon.tech/neondb?sslmode=require' \
+  DIRECT_URL='postgresql://….neon.tech/neondb?sslmode=require' \
+  ADMIN_PASSWORD='pick-something-real'
+gh variable set DEPLOY_ENABLED --body true
+gh workflow run fly-deploy          # first deploy now; every push auto-deploys after
+```
+
+Watch it: `gh run watch` · then `fly open -a new-game-proto`.
+
 ## 0. Rehearse locally first
 
 ```bash

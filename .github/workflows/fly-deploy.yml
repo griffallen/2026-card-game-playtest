@@ -1,0 +1,24 @@
+name: Deploy to fly.io
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: fly-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Gated until the database exists: after creating Neon + setting fly secrets, run
+    #   gh variable set DEPLOY_ENABLED --body true
+    # (see README-DEPLOY.md). Until then this job skips quietly instead of failing red.
+    if: ${{ vars.DEPLOY_ENABLED == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
