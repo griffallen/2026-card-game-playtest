@@ -441,7 +441,10 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           />
 
           <div className="mt-1.5 flex gap-2 overflow-x-auto pb-1">
-            {view.hand.map(h => {
+            {[...view.hand].sort((a, b) => {
+              const da = DEMO_CARDS[a.slug]; const db = DEMO_CARDS[b.slug]
+              return (da?.cost ?? 0) - (db?.cost ?? 0) || (da?.type ?? '').localeCompare(db?.type ?? '') || (da?.name ?? '').localeCompare(db?.name ?? '')
+            }).map(h => {
               const def = DEMO_CARDS[h.slug]
               const canAct = playActionsFor(h.id).length > 0 || !!resourceActionFor(h.id)
               return (
@@ -589,7 +592,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   )
 }
 
-function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, resourceTotal, baseGlow, onClick, onPile }: {
+function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, resourceTotal, baseGlow, onClick, onPile, onBase }: {
   name: string; life: number; handCount: number; deckCount: number; discardCount: number
   resources: number; resourceTotal: number; baseGlow: boolean; onClick: () => void
   onPile: (pile: 'resources' | 'discard') => void

@@ -268,7 +268,10 @@ export function GameTable() {
           {/* hand */}
           {!spectating && (
             <div className="mt-1.5 flex gap-2 overflow-x-auto pb-1">
-              {view.hand.map(h => {
+              {[...view.hand].sort((a, b) => {
+                const da = cardIndex[a.slug]; const db = cardIndex[b.slug]
+                return (da?.cost ?? 0) - (db?.cost ?? 0) || (da?.type ?? '').localeCompare(db?.type ?? '') || (da?.name ?? '').localeCompare(db?.name ?? '')
+              }).map(h => {
                 const def = cardIndex[h.slug]
                 if (!def) return null
                 const canPlay = playActionsFor(h.id).length > 0
@@ -420,7 +423,7 @@ export function GameTable() {
   )
 }
 
-function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, resourceTotal, online, enemy, baseGlow, onClick, onPile }: {
+function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, resourceTotal, online, enemy, baseGlow, onClick, onPile, onBase }: {
   name: string; life: number; handCount: number; deckCount: number; discardCount: number
   resources: number; resourceTotal?: number; online: boolean; enemy?: boolean; baseGlow: boolean
   onClick: () => void

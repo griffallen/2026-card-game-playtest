@@ -20,6 +20,13 @@ const frameTint: Record<string, string> = {
   neutral: 'from-[#2e2e38] to-[#1a1a20] border-[#4a4a5a]',
 }
 
+// type must read at a glance — faction color owns the frame, so type gets an icon chip on the art
+const typeMeta: Record<string, { icon: string; chip: string }> = {
+  unit: { icon: '⚔', chip: 'bg-[#1d3a5f]/90 text-[#bcd6f5]' },
+  action: { icon: '✴', chip: 'bg-[#5f1d4f]/90 text-[#f0bce4]' },
+  upgrade: { icon: '⬥', chip: 'bg-[#2f5f1d]/90 text-[#cdf0bc]' },
+}
+
 /** One component renders any card at any size — hand, browser, admin preview. */
 export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge }: {
   card: CardLike
@@ -57,14 +64,17 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge 
         {card.designerNote && <span className="text-[10px] text-goldbright" aria-label="designer flag">⚑</span>}
       </div>
 
-      <div className={`mt-1 overflow-hidden rounded ${artH} bg-black/40`}>
+      <div className={`relative mt-1 overflow-hidden rounded ${artH} bg-black/40`}>
         {card.artUrl && !artBroken
           ? <img src={card.artUrl} alt="" draggable={false} onError={() => setArtBroken(true)} className="h-full w-full object-cover" />
           : <ProceduralArt slug={card.slug} color={card.color} type={card.type} className="h-full w-full [&>svg]:h-full [&>svg]:w-full" />}
+        <span className={`absolute right-0.5 top-0.5 rounded px-1 py-px text-[8px] font-bold uppercase tracking-wider ${(typeMeta[card.type] ?? typeMeta.unit).chip}`}>
+          {(typeMeta[card.type] ?? typeMeta.unit).icon} {card.type}
+        </span>
       </div>
 
       <div className="mt-1 flex items-center justify-between text-[9px] uppercase tracking-wider text-parchment/60">
-        <span>{card.type}</span>
+        <span>{(typeMeta[card.type] ?? typeMeta.unit).icon} {card.type}</span>
         {badge && <span className="rounded bg-black/40 px-1 text-goldbright normal-case">{badge}</span>}
       </div>
 
