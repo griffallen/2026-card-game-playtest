@@ -13,6 +13,7 @@ Chronicle summary: disciplined influence spending vs game 001 (8 ceded vs 19), b
 3. **Auto-imprison targeting (strongest-in-zone) punishes tall, rewards wide.** Working as implemented; may be a feature — it gives red a real counterplay line (escort swarms) — but the designer should bless it deliberately.
 4. **Confirmed from audit:** yellow's passive self-generation (11 this game: Sunguard +1, Justicar +2, Mobilize +1, Sentence +1, Dawnspear +2, Command Edict +2, Absolution +2) reaches 15 in ~14 turns *without red's help*. Audit balance proposal #1 (trim vanilla "+1"s) remains the first knob to try.
 5. **Prison decay as red tech** (untested): 3+ prisoners = −3/turn on the jailer, cancelling passive income. Red flooding the jail is a real strategy the current rules support — nobody has played it yet.
+6. **Granted Rush is a no-op on veterans** (player question, 2026-07-08). Rush only exempts the arrived-this-turn restriction, so Reckless Charge/Blood Rush/Warpath do nothing for units already in play (while still ceding Overextend influence) — a clickable trap. Designer options: keep (skill-testing), make granted-Rush also *ready* the target (the spreadsheet's sketched "Furious Advance" is exactly this — big power jump), or retemplate to "target unit that entered play this turn." Also note Warpath hits only units on board at cast time — future arrivals don't inherit.
 
 ## Game 001 — 2026-07-07 · Blaine (red) vs baseline AI (yellow) · loss by influence, t15
 
