@@ -2,6 +2,7 @@ import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { Play } from './pages/Play.tsx'
 import { Cards } from './pages/Cards.tsx'
 import { Simulate } from './pages/Simulate.tsx'
+import { Rules } from './pages/Rules.tsx'
 import { Audit } from './pages/Audit.tsx'
 
 export function App() {
@@ -18,6 +19,7 @@ export function App() {
           <NavLink to="/play" className={tab}>Play</NavLink>
           <NavLink to="/cards" className={tab}>Cards</NavLink>
           <NavLink to="/simulate" className={tab}>Simulate</NavLink>
+          <NavLink to="/rules" className={tab}>Rulebook</NavLink>
           <NavLink to="/audit" className={tab}>Design Audit</NavLink>
         </nav>
       </header>
@@ -27,6 +29,7 @@ export function App() {
           <Route path="/play" element={<Play />} />
           <Route path="/cards" element={<Cards />} />
           <Route path="/simulate" element={<Simulate />} />
+          <Route path="/rules" element={<Rules />} />
           <Route path="/audit" element={<Audit />} />
           <Route path="*" element={<Navigate to="/play" replace />} />
         </Routes>

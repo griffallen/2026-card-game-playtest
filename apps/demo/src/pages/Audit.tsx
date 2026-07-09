@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
 const H2 = ({ id, children }: { id: string; children: ReactNode }) => (
@@ -14,6 +14,59 @@ const Card = ({ children }: { children: ReactNode }) => (
   <div className="panel mt-4 p-4">{children}</div>
 )
 
+const QUESTIONS = `New Game — designer questions · v2.0 · 2026-07-08
+Copy this, answer inline (after each →), send it back.
+
+1. Reach (Blaze Juggernaut): attacks one zone away, CAN still hit bases, and DOES take
+   counter-damage (unlike Ranged). Is that the intended behavior?
+   →
+
+2. Aura of Resolve pays +1 Influence every round at start of round — passive income, which the
+   "influence is event-earned only" ruling meant to remove. Keep it as an exception, or make it event-earned?
+   →
+
+3. Claiming the initiative: you end your round early to act first next round. Does that trade feel good in play?
+   →
+
+4. Intercept: the defender may redirect one attack onto one of their ready units, and Guard intercepts
+   for free. Right amount of defender agency? Does free Guard-interception make yellow too sticky?
+   →
+
+5. Naming: keep "base" / "Home", or switch to one of — Banner / Hearth / Seat / Beacon?
+   →
+
+6. Prison is "on notice." Keep it, or cut the prison cards?
+   →
+
+7. Mulligans: unlimited, one fewer card each redraw. Does that feel right?
+   →
+
+8. Influence win at ±15 — upsets land in ~5% of games. Right threshold, and right frequency?
+   →
+
+9. The 84 cards are AI-generated drafts. Which want renaming or retuning first, and are you ready to do a
+   card pass in data/cards.csv?
+   →`
+
+function QuestionsForYou() {
+  const [copied, setCopied] = useState(false)
+  const copy = () => {
+    navigator.clipboard?.writeText(QUESTIONS).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1600) }).catch(() => {})
+  }
+  return (
+    <Card>
+      <div className="flex items-baseline justify-between gap-3">
+        <b className="font-display text-parchment">Questions for you — copy, answer inline, send back.</b>
+        <button
+          onClick={copy}
+          className="shrink-0 rounded border hairline px-2.5 py-1 text-xs text-dim transition-colors hover:text-goldbright"
+        >{copied ? 'Copied ✓' : 'Copy'}</button>
+      </div>
+      <pre className="mt-3 max-h-[440px] overflow-auto whitespace-pre-wrap rounded bg-black/30 p-3 font-mono text-[12.5px] leading-relaxed text-body/90">{QUESTIONS}</pre>
+    </Card>
+  )
+}
+
 function StatRow({ label, a, b, c }: { label: string; a: ReactNode; b: ReactNode; c: ReactNode }) {
   return (
     <tr className="border-t hairline">
@@ -28,7 +81,7 @@ function StatRow({ label, a, b, c }: { label: string; a: ReactNode; b: ReactNode
 export function Audit() {
   return (
     <div className="mx-auto max-w-3xl px-6 pb-24 pt-10 text-[15px]">
-      <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · prototype v0 · 2026-07-07</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · Design Audit · v2.0 · 2026-07-08</p>
       <h1 className="mt-2 font-display text-4xl font-bold text-parchment">Design & Engine Audit</h1>
       <P>
         This is the full account of what was built, every assumption made along the way, what the simulations
@@ -71,6 +124,8 @@ export function Audit() {
         </p>
       </Card>
 
+      <QuestionsForYou />
+
       <Card>
         <b className="font-display text-parchment">Update — designer session #1 (July 8).</b>
         <p className="mt-2 text-[14px] leading-relaxed text-body/90">
@@ -91,7 +146,7 @@ export function Audit() {
         <ul className="ml-5 list-disc">
           <LI>The rules as written (v1.2 + the July 5 card sheets) had gaps that made them unplayable as-is — most critically, <b>no movement rules</b> and a contradiction in the turn structure. The prototype fills every gap with a documented, flagged ruling. Nothing was silently invented: 30 numbered decisions, each reversible.</LI>
           <LI>The engine is <b>provably stable</b>: 67 automated tests, and hundreds of simulated games per test run finish without a single rules crash, lost card, or stuck state.</LI>
-          <LI>Balance headline: <b>Radiant Order (yellow) is favored — about 63/37 under competent bot play</b> — and the win-condition mix flips with skill (random players die to Influence 87% of the time; decent players die to combat 67% of the time). Ranked fixes below, most of them one admin edit.</LI>
+          <LI>Balance headline: <b>Radiant Order (yellow) is favored — about 63/37 under competent bot play</b> — and the win-condition mix flips with skill (random players die to Influence 87% of the time; decent players die to combat 67% of the time). Ranked fixes below, most of them one config change.</LI>
         </ul>
       </Card>
 
@@ -107,10 +162,10 @@ export function Audit() {
 
       <H2 id="architecture">2 · Engine architecture, in designer's terms</H2>
       <ul className="ml-5 mt-3 list-disc">
-        <LI><b>Rules are split into mechanics and parameters.</b> Turn structure, combat, prison — code. Every number (starting life, win thresholds, draws per round, prison upkeep…) — a named, versioned parameter set you can edit in the online admin. "Try v1.3 with 25 life" is a form, not a programming task.</LI>
+        <LI><b>Rules are split into mechanics and parameters.</b> Turn structure, combat, prison — code. Every number (starting life, win thresholds, draws per round, prison upkeep…) — a named, versioned parameter set — "try v1.3 with 25 life" is a config change, not a code change.</LI>
         <LI><b>Cards are structured data, not free text.</b> Each card is built from a fixed vocabulary of effects (damage, imprison, buff, grant keyword, gain influence…). The engine validates every card against that vocabulary — including cards you edit or create later — so a new card idea either works or is rejected on save. It cannot silently break a game.</LI>
         <LI><b>Games are replayable histories.</b> A game is its seed plus its action list. That's why undo exists, why disconnecting loses nothing, and why any bug report that includes a game file is perfectly reproducible.</LI>
-        <LI><b>The same engine runs everywhere</b> — the multiplayer server, this browser demo, and the simulator are one codebase. What you playtest here is exactly what deploys.</LI>
+        <LI><b>One engine, no mock-ups.</b> This browser demo and the simulator share a single rules codebase — what you playtest here is the real thing, not a facsimile.</LI>
       </ul>
 
       <H2 id="rulings">3 · The reconciliation: what the written rules didn't say</H2>
@@ -192,11 +247,11 @@ export function Audit() {
 
       <H2 id="balance">5 · Balance proposals, ranked</H2>
       <P>
-        Ordered by how gently they touch the design. The first three are <b>admin-panel edits</b> — you can try each
+        Ordered by how gently they touch the design. The first three are <b>config edits</b> (card numbers / rules parameters) — you can try each
         tonight and rerun the simulator; no programmer required.
       </P>
       <Card>
-        <b className="font-display text-parchment">1. Trim the free Influence on yellow's vanilla guards.</b> <span className="text-xs text-dim">(admin: Cards)</span>
+        <b className="font-display text-parchment">1. Trim the free Influence on yellow's vanilla guards.</b> <span className="text-xs text-dim">(a card edit)</span>
         <P>
           Five wall units (Vanguard Sentinel, Sunguard Defender, Bulwark Protector, Justicar Enforcer, Custodian of Law)
           gain Influence just for entering play — that's up to +7 across a game for doing what yellow does anyway.
@@ -206,7 +261,7 @@ export function Audit() {
         </P>
       </Card>
       <Card>
-        <b className="font-display text-parchment">2. Pay red back for aggression.</b> <span className="text-xs text-dim">(admin: Cards)</span>
+        <b className="font-display text-parchment">2. Pay red back for aggression.</b> <span className="text-xs text-dim">(a card edit)</span>
         <P>
           Red ships Influence to the opponent with every action but has no way to pull it back. Give its identity a
           matching earn: e.g. Berserker/Doombringer-class units gain 1 Influence on kills, or "Breakthrough damage to a
@@ -215,7 +270,7 @@ export function Audit() {
         </P>
       </Card>
       <Card>
-        <b className="font-display text-parchment">3. Raise the Influence gate.</b> <span className="text-xs text-dim">(admin: Rules — one number)</span>
+        <b className="font-display text-parchment">3. Raise the Influence gate.</b> <span className="text-xs text-dim">(one rules number)</span>
         <P>
           Threshold 15 → 18 or 20. Blunt but instantly testable: it delays yellow's inevitability clock several turns
           without touching a card. Pairs well with #1; check the Simulator's heuristic mirror before/after — you're
@@ -256,7 +311,7 @@ export function Audit() {
         <LI>The AI is a one-move greedy baseline — good enough to playtest against and to power simulations, nowhere near a skilled human. Balance conclusions above carry that asterisk.</LI>
         <LI>Ranged/Reach barely exist in these two decks (one card each) — those keyword rulings are effectively untested by play.</LI>
         <LI>Multi-unit attacks, the June spreadsheet's Stack/modal cards, colored resource costs, mulligans: all consciously out, awaiting design.</LI>
-        <LI>The online version runs on one machine (fine for two friends; a scaling pass is needed before "community gaming").</LI>
+        <LI>This is a standalone, client-side demo. Networked multiplayer is a later build — fine on one machine for two friends, with a scaling pass before anything like "community gaming".</LI>
       </ul>
 
       <H2 id="playtest">8 · How to playtest with this page</H2>

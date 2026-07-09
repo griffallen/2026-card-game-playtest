@@ -71,7 +71,7 @@ export function Play() {
     <div className="mx-auto max-w-3xl p-6">
       <h1 className="font-display text-3xl font-bold text-parchment">Play the prototype</h1>
       <p className="mt-2 text-sm text-dim">
-        The complete rules engine runs in your browser — the same code that powers the online version, no server involved.
+        The complete rules engine runs in your browser — no server, everything is client-side.
         Every game is seeded: note the seed and your game can be replayed move-for-move. Use <b>Download game file</b> /
         <b> Copy chronicle</b> during or after a game and send the file along with your notes.
       </p>
