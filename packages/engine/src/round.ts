@@ -31,7 +31,7 @@ function runStartStepAuto(state: GameState, seat: Seat) {
     }
   }
 
-  for (const u of unitsOf(state, seat)) u.exhausted = false
+  for (const u of unitsOf(state, seat)) { u.exhausted = false; u.movedThisRound = false }
   for (const r of state.sides[seat].resources) r.exhausted = false
 
   const n = state.round === 1 ? state.rules.firstRoundDraw : state.rules.drawPerRound

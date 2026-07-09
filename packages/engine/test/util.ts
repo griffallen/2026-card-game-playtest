@@ -58,6 +58,7 @@ export function put(state: GameState, seat: Seat, slug: string, zone: ZoneId, op
     damage: opts.damage ?? 0,
     exhausted: opts.exhausted ?? false,
     enteredRound: opts.enteredRound ?? 0,
+    movedThisRound: false,
     imprisoned: opts.imprisonedBy !== undefined ? { by: opts.imprisonedBy, source: null } : null,
     upgrades: [],
     mods: [],

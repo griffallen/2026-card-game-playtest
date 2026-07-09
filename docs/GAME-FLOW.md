@@ -72,7 +72,7 @@ The keywords, as implemented:
 |---|---|
 | **Guard** | Can **intercept an attack without exhausting**. No longer forces targeting. |
 | **Armor X** | Every hit on this unit is reduced by X. Against a group, applied once to the combined hit. Multiple sources add up ⚑. |
-| **Rush** | The round it arrives, its **move doesn't exhaust it** — so it can reposition and still fight (decision 41). Units otherwise enter **ready** now: no summoning sickness — a fresh unit can already act (moving/attacking exhausts it as normal). |
+| **Rush** | The round it arrives, its **first move doesn't exhaust it** (one free reposition) — so it can move and still fight; a second move exhausts it like any unit (decision 41). Units otherwise enter **ready** now: no summoning sickness — a fresh unit can already act (moving/attacking exhausts it as normal). |
 | **Breakthrough N** | Kill the target with damage to spare and up to N of the excess hits the owner's Life. In a group, the attackers' Breakthrough values sum. |
 | **Overextend N** | The designer's gamble (decision 35): declared per attacking unit — +N Power now, N self-damage at **end of round**. Inert on actions pending the card pass. |
 | **Ranged** | May shoot into an adjacent zone; never the base; cross-zone shots draw no counter-damage ⚑. |
@@ -87,12 +87,12 @@ Imprisoned units stay on the board but can't attack, move, defend (no counter-da
 
 ## The two decks
 
-- **Crimson Assault (Red):** rush, burn, breakthrough, and the Overextend gamble. *Under v2.0 the economy shifted again:* both players now draw every round and guard walls no longer auto-block, so red's aggression breathes — it wins **~45% of competent bot mirrors** (up from ~30%), almost entirely by Life.
+- **Crimson Assault (Red):** rush, burn, breakthrough, and the Overextend gamble. *Under v2.0 the economy shifted again:* both players now draw every round and guard walls no longer auto-block, so red's aggression breathes — it wins **~36% of competent bot mirrors**, almost entirely by Life. *(v2.1's one-free-move Rush cap pulled this down from ~46% — red leaned on unbounded repositioning; a rebalance candidate now that Rush is tightened.)*
 - **Radiant Order (Yellow):** walls, armor, prisons, and a steady trickle of Influence. Its fortress plan is deliberately weaker now that Guard is optional interception rather than a hard wall — it has to actually contest the board, not just sit.
 
 ## What the simulation says (and doesn't)
 
-Every test run plays **150 full games with random legal moves** — all finish with a winner, no rule crashes, no cards lost or duplicated, both win conditions reachable. The picture is **combat-dominated**: the large majority end on Life (influence upsets run ~5–13% depending on the batch), median ~19 rounds under random play. With the competent (heuristic) bot mirroring itself: **red ~45% / yellow ~55%, ~96% by Life, first-mover 50/50, median 10 rounds.** That proves the machine works and that decision 44 dissolved the first-player edge — it does **not** prove balance. That's what your playtesting is for.
+Every test run plays **150 full games with random legal moves** — all finish with a winner, no rule crashes, no cards lost or duplicated, both win conditions reachable. The picture is **combat-dominated**: the large majority end on Life (influence upsets run ~5–13% depending on the batch), median ~19 rounds under random play. With the competent (heuristic) bot mirroring itself: **red ~36% / yellow ~64%, ~96% by Life, first-mover 50/50, median 11 rounds** (v2.1 — capping Rush at one free move dropped red ~10 points from v2.0's ~46%). That proves the machine works and that decision 44 dissolved the first-player edge — it does **not** prove balance. That's what your playtesting is for.
 
 ## Changing the game (no code required)
 

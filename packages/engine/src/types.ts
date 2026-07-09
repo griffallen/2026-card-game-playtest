@@ -151,6 +151,8 @@ export interface UnitInstance {
   damage: number
   exhausted: boolean
   enteredRound: number
+  /** decision 41: Rush waives the move-exhaust for the FIRST move only — reset when the unit readies */
+  movedThisRound: boolean
   imprisoned: { by: Seat; source: string | null } | null
   upgrades: string[]         // upgrade instance ids
   mods: Mod[]

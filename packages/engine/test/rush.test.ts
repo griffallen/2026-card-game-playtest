@@ -37,6 +37,17 @@ describe('decision 41: no summoning sickness, Rush = free entry-round move', () 
     expect(s.units[id]?.exhausted).toBe(true) // the attack still exhausts (rushCoversAttack=false)
   })
 
+  it('Rush grants ONE free move, not a whole-round pass — a second move the same round exhausts', () => {
+    let s = toLoop(game())
+    const a = s.actorSeat
+    const id = put(s, a, 'runner', a === 0 ? 0 : 2, { enteredRound: s.round })
+    s = applyAction(s, { type: 'move', unit: id, to: 1 }, a).state
+    expect(s.units[id].exhausted).toBe(false) // first move: Rush waiver applies
+    s = applyAction(s, { type: 'pass' }, (1 - a) as 0 | 1).state // opponent's turn (strict alternation)
+    s = applyAction(s, { type: 'move', unit: id, to: a === 0 ? 0 : 2 }, a).state // reposition again
+    expect(s.units[id].exhausted).toBe(true) // waiver spent — a second move exhausts like any unit
+  })
+
   it("Rush's waiver expires after the entry round", () => {
     let s = toLoop(game())
     const a = s.actorSeat

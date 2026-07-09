@@ -14,7 +14,7 @@ const Card = ({ children }: { children: ReactNode }) => (
   <div className="panel mt-4 p-4">{children}</div>
 )
 
-const QUESTIONS = `New Game — designer questions · v2.0 · 2026-07-08
+const QUESTIONS = `New Game — designer questions · v2.1 · 2026-07-09
 Copy this, answer inline (after each →), send it back.
 
 1. Reach (Blaze Juggernaut): attacks one zone away, CAN still hit bases, and DOES take
@@ -81,7 +81,7 @@ function StatRow({ label, a, b, c }: { label: string; a: ReactNode; b: ReactNode
 export function Audit() {
   return (
     <div className="mx-auto max-w-3xl px-6 pb-24 pt-10 text-[15px]">
-      <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · Design Audit · v2.0 · 2026-07-08</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · Design Audit · v2.1 · 2026-07-09</p>
       <h1 className="mt-2 font-display text-4xl font-bold text-parchment">Design & Engine Audit</h1>
       <P>
         This is the full account of what was built, every assumption made along the way, what the simulations
@@ -98,13 +98,16 @@ export function Audit() {
           40–44): each round both players ready, draw 2, and may bank a card (initiative holder first), then
           alternate single actions until both pass. <b>Claiming the initiative</b> spends your action and ends
           your round — but you go first next round. <b>Summoning sickness is gone</b> — units enter ready, and
-          Rush now means "moves without exhausting the round it arrives." Combat becomes the multi-unit system
+          Rush now means "its first move the round it arrives is free — one reposition, not a whole-round pass." Combat becomes the multi-unit system
           the designer asked for: <b>any number of units in one zone attack together as one action</b>, their
           power combined against armor once, and the defender gets an <b>intercept window</b> — redirect the
           whole attack onto a ready unit (Guard units intercept without exhausting; forced targeting is gone —
           protecting the base is now a choice). Final Onslaught's "extra turn" becomes "ready one unit, then
-          take an extra action." The spec (game-rules v2.0-proto) is written and now implemented — the Play tab
-          and Simulator on this site run these v2.0 rules.
+          take an extra action." The spec (game-rules v2.1-proto) is written and now implemented — the Play tab
+          and Simulator on this site run these rules. <b>v2.1 (July 9)</b> tightened Rush to a single free
+          reposition — its first move the round it arrives — fixing a case where a fresh Rush unit could keep
+          moving for free (a playtester's "multiple actions" catch). Side effect worth watching: in bot mirrors
+          this pulled Crimson Assault (red) from ~46% to ~36%, since red leaned on that unbounded repositioning.
         </p>
       </Card>
 

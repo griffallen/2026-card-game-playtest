@@ -1,6 +1,6 @@
-# Game Rules Spec — v2.0-proto
+# Game Rules Spec — v2.1-proto
 
-**Derived from:** `docs/REFERENCES/extracted/rules-v1.2.md` + the July 5 card sheets, reconciled per `docs/DESIGN/DECISIONS.md`. **v2.0:** round-based turn structure with claimable initiative, no summoning sickness, multi-unit attack + intercept (decisions 40–44, 2026-07-08) — supersedes v1.2-proto's phase ladder and per-player turns.
+**Derived from:** `docs/REFERENCES/extracted/rules-v1.2.md` + the July 5 card sheets, reconciled per `docs/DESIGN/DECISIONS.md`. **v2.0:** round-based turn structure with claimable initiative, no summoning sickness, multi-unit attack + intercept (decisions 40–44, 2026-07-08) — supersedes v1.2-proto's phase ladder and per-player turns. **v2.1 (2026-07-09):** Rush's move-exhaust waiver is **one free reposition**, not a whole-round pass (decision 41 clarified) — a fresh Rush unit's first move is free, a second exhausts it.
 **Consumed by:** `packages/engine` — this document *is* the engine's contract. When they diverge, stop and fix one.
 **Designer-facing summary:** `docs/GAME-FLOW.md` tells the same story without implementation detail.
 
@@ -59,7 +59,7 @@ A **round** = one **start step per player** (initiative holder first), then the 
 ### 1.6 Playing a card
 
 1. Pay cost: exhaust exactly `cost` ready resources (all resources are worth 1 — colored costs are not yet in the rules).
-2. **Unit** → enters the owner's Home zone, **ready and unrestricted** (decision 41 — no summoning sickness): later actions this same round may move or attack with it as normal. **Rush** = its *move* doesn't exhaust it the round it enters (§3.1). On-play (`onEnter`) triggers fire with targets already declared in the submitted action.
+2. **Unit** → enters the owner's Home zone, **ready and unrestricted** (decision 41 — no summoning sickness): later actions this same round may move or attack with it as normal. **Rush** = its *first* move doesn't exhaust it the round it enters — one free reposition, not a whole-round waiver (§3.1). On-play (`onEnter`) triggers fire with targets already declared in the submitted action.
 3. **Action** → resolve effects, then discard.
 4. **Upgrade** → attach to a target friendly unit in any zone. **Upgrade pressure (v1.2):** if the unit already has ≥1 upgrade, the opponent gains `upgradePressureInfluence` (1) Influence.
 5. Targets are validated at submission; if any target became illegal, the action is rejected (client re-prompts).
@@ -83,7 +83,7 @@ A **round** = one **start step per player** (initiative holder first), then the 
 
 ### 1.8 Moving
 
-Move one friendly ready unit to an **adjacent zone**; the unit **exhausts** (`moveExhausts`). **Rush:** the round a unit entered play, its move does **not** exhaust it (decision 41; `rushCoversAttack` extends the waiver to its attack, default off). **Flying** may move to *any* zone. Imprisoned units cannot move.
+Move one friendly ready unit to an **adjacent zone**; the unit **exhausts** (`moveExhausts`). **Rush:** the round a unit entered play, its **first** move does **not** exhaust it — a single free reposition, so it can move and still attack; a **second** move exhausts it like any unit (decision 41; `rushCoversAttack` extends the waiver to its attack, default off). **Flying** may move to *any* zone. Imprisoned units cannot move.
 
 ### 1.9 Activated abilities
 
@@ -157,7 +157,7 @@ Cards carry structured effects — never free text — so the engine can validat
 
 ### 3.1 Keywords (static, on units)
 
-`guard` (intercepts without exhausting — §1.7; forced targeting is gone), `armor N`, `rush` (the round it enters play, its move doesn't exhaust it — decision 41; `rushCoversAttack` extends to attacks; meaningful on veterans when granted mid-round), `ranged` (may shoot an adjacent zone; never bases; no counter-damage cross-zone), `reach` (may attack an adjacent zone like Ranged, but unlike Ranged it *can* still assault bases and *does* take counter-damage — Blaze Juggernaut), `flying` (⚑), `breakthrough N`, `overextend N` (optional attack gamble: +N power now, N self-damage at end of round — decision 35), `cantAttack`, `untargetable` (can't be targeted by enemy actions — Chain of Law).
+`guard` (intercepts without exhausting — §1.7; forced targeting is gone), `armor N`, `rush` (the round it enters play, its *first* move doesn't exhaust it — one free reposition, not a whole-round pass — decision 41; `rushCoversAttack` extends to attacks; meaningful on veterans when granted mid-round), `ranged` (may shoot an adjacent zone; never bases; no counter-damage cross-zone), `reach` (may attack an adjacent zone like Ranged, but unlike Ranged it *can* still assault bases and *does* take counter-damage — Blaze Juggernaut), `flying` (⚑), `breakthrough N`, `overextend N` (optional attack gamble: +N power now, N self-damage at end of round — decision 35), `cantAttack`, `untargetable` (can't be targeted by enemy actions — Chain of Law).
 
 ### 3.2 Effect ops (one-shot, run in order)
 

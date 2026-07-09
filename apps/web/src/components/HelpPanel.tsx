@@ -33,14 +33,14 @@ export function HelpPanel({ onClose }: { onClose: () => void }) {
           <Row icon="🔄" title="Start of round">Both players, in turn, ready all their cards, <b>draw 2</b>, and may <b>bank one card</b> face-up as a resource (permanent — each pays 1 toward costs, forever). Then the action loop opens.</Row>
           <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, or attack, one action each. <b>Two passes in a row end the round.</b> Passing is soft: if they take a turn after you passed, you can act again. Leaving resources unspent keeps response plays open on their turns.</Row>
           <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Bail early to seize next round's opening move. Once per round.</Row>
-          <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it, so a unit marches <i>or</i> fights. Units enter play <b>ready</b> (no waiting a round); <b>Rush</b> lets a unit move the round it arrives without exhausting.</Row>
+          <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it, so a unit marches <i>or</i> fights. Units enter play <b>ready</b> (no waiting a round); <b>Rush</b> gives a unit one free move (no exhaust) the round it arrives — reposition and still fight.</Row>
           <Row icon="⚔" title="Attack">Pick <b>one or more ready units in the same zone</b> — they strike together as one combined hit. Then the defender chooses: <b>intercept</b> (throw a ready unit in front — free if it's a Guard) or let it through. You can only strike the enemy <b>base</b> from inside <i>their</i> Home zone. Massing attackers is the answer to armor — armor is subtracted once from the whole hit.</Row>
         </div>
 
         <h3 className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-goldbright">Reading the board</h3>
         <div className="mt-2 flex flex-col gap-2">
           <Row icon="⟳" title="Exhausted">Dimmed with a ⟳ — already acted; readies at the start of its owner's next round.</Row>
-          <Row icon="💨" title="Rush ready">Can move the round it arrived <i>without</i> exhausting — so it can reposition and still fight.</Row>
+          <Row icon="💨" title="Rush ready">Its <b>one free move</b> the round it arrived — move <i>without</i> exhausting, then it can still fight. The 💨 clears once it moves.</Row>
           <Row icon="⛓" title="Imprisoned">Can't attack, move, intercept, or use abilities. Prisons cost the jailer 1 influence at the start of each round and shatter if the jailer's influence goes negative.</Row>
           <Row icon="🛡" title="Guard">Can <b>intercept an attack in its zone without exhausting</b> — step in front of a targeted ally or the base. (It no longer <i>forces</i> attackers onto it — interception is the defender's choice.) ◈ is armor: every hit is reduced by that much.</Row>
           <Row icon="⚑" title="Flagged card">A prototype ruling was needed for this card's printed text — hover/long-press to read it.</Row>
@@ -48,7 +48,7 @@ export function HelpPanel({ onClose }: { onClose: () => void }) {
 
         <h3 className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-goldbright">Keywords in one line</h3>
         <p className="mt-2 text-[13px] leading-relaxed text-body/90">
-          <b>Rush</b> moves free the round it arrives · <b>Breakthrough N</b> spills up to N excess damage onto the owner when it kills ·
+          <b>Rush</b> one free move the round it arrives · <b>Breakthrough N</b> spills up to N excess damage onto the owner when it kills ·
           <b> Overextend N</b>: an optional gamble when attacking — +N power now, N self-damage at end of round ·
           <b> Ranged</b> shoots adjacent zones, never bases · <b>Reach</b> attacks adjacent zones normally · <b>Guard</b> intercepts free.
         </p>

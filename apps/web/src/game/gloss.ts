@@ -2,7 +2,7 @@
 export const KEYWORD_GLOSS: Record<string, string> = {
   guard: 'Can intercept an attack in its zone without exhausting — step in front of a targeted ally (or the base).',
   armor: 'Every hit on this unit is reduced by this much.',
-  rush: 'Moves the round it arrives without exhausting — it can still attack after.',
+  rush: 'Its first move the round it arrives is free — that one move doesn’t exhaust it, so it can reposition and still attack. One free move only; a second exhausts it.',
   ranged: 'May shoot units one zone away; never bases; cross-zone shots draw no counter-damage.',
   reach: 'May attack units one zone away (bases still require standing in their Home).',
   flying: 'May move to any zone, ignoring adjacency. (Prototype ruling — needs design.)',
@@ -19,6 +19,6 @@ export function glossFor(keyword: string): string {
 
 export const STATUS_GLOSS = {
   exhausted: 'Exhausted ⟳ — already acted; readies at the start of its owner\'s next round.',
-  rushFreeMove: 'Rush 💨 — can move this round (the one it arrived) without exhausting; it can still attack after.',
+  rushFreeMove: 'Rush 💨 — its one free move this round (the one it arrived): move without exhausting, and it can still attack after. The 💨 clears once it moves.',
   imprisoned: 'Imprisoned ⛓ — cannot attack, move, or defend; abilities and Guard are switched off. Costs the jailer 1 influence each round; breaks if their influence goes negative.',
 } as const

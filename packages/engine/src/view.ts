@@ -19,7 +19,7 @@ function unitView(state: GameState, id: string): UnitView {
     power: effPower(state, u), health: effHealth(state, u), damage: u.damage,
     basePower: def.power ?? 0, baseHealth: def.health ?? 0, armor: effArmor(state, u),
     exhausted: u.exhausted,
-    rushFreeMove: u.enteredRound === state.round && hasKw(state, u, 'rush') && !u.exhausted,
+    rushFreeMove: u.enteredRound === state.round && !u.movedThisRound && hasKw(state, u, 'rush') && !u.exhausted,
     imprisoned: !!u.imprisoned,
     overextendedBy: u.overextendedBy,
     keywords,

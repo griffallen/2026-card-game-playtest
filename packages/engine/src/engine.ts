@@ -229,7 +229,7 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     const zone = homeZone(seat)
     state.units[action.card] = {
       id: action.card, slug: def.slug, owner: seat, zone,
-      damage: 0, exhausted: false, enteredRound: state.round,
+      damage: 0, exhausted: false, enteredRound: state.round, movedThisRound: false,
       imprisoned: null, upgrades: [], mods: [], overextendedBy: 0,
     }
     log(state, seat, `${side.name} deploys ${def.name}`)
@@ -257,9 +257,11 @@ function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat) {
   if (to === unit.zone) fail('bad-move', 'already there')
   if (!hasKw(state, unit, 'flying') && !adjacent(unit.zone, to)) fail('bad-move', 'can only move to an adjacent zone')
   unit.zone = to
-  // decision 41: Rush waives the move exhaust the round the unit entered play
-  const rushFree = unit.enteredRound === state.round && hasKw(state, unit, 'rush')
+  // decision 41: Rush waives the move-exhaust the round the unit entered play — but for its FIRST
+  // move only (one free reposition), not a whole-round pass. A second move exhausts it like any unit.
+  const rushFree = unit.enteredRound === state.round && !unit.movedThisRound && hasKw(state, unit, 'rush')
   if (state.rules.moveExhausts && !rushFree) unit.exhausted = true
+  unit.movedThisRound = true
   log(state, seat, `${defOf(state, unitId).name} advances to ${zoneName(state, to)}`)
   fireTrigger({ state, enteredZone: to, actorSeat: seat }, unit, 'onEnterZone')
 }

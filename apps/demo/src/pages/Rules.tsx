@@ -12,7 +12,7 @@ const Card = ({ children }: { children: ReactNode }) => <div className="panel mt
 const KEYWORDS: [string, string][] = [
   ['Guard', 'Can step in front of an attack in its zone — for free (it doesn’t exhaust). It no longer forces you to attack it; the defender chooses when to intercept.'],
   ['Armor N', 'Every hit this unit takes is reduced by N. Against a group attack, N is subtracted once from the combined hit.'],
-  ['Rush', 'The round it’s played, it can move without exhausting — so it can reposition and still fight. (Every unit can otherwise act the round it arrives; Rush just frees the move.)'],
+  ['Rush', 'The round it’s played, its first move is free — that one move doesn’t exhaust it, so it can reposition and still fight. Just the one, though: a second move the same round exhausts it like any unit. (Every unit can otherwise act the round it arrives; Rush frees that first move.)'],
   ['Ranged', 'May attack a unit one zone away. Never attacks bases, and takes no counter-damage when it shoots across zones.'],
   ['Reach', 'May attack a unit one zone away like Ranged — but unlike Ranged it can still assault bases and does take counter-damage.'],
   ['Flying', 'May move to any zone, ignoring adjacency.'],
@@ -25,7 +25,7 @@ const KEYWORDS: [string, string][] = [
 export function Rules() {
   return (
     <div className="mx-auto max-w-3xl px-6 pb-24 pt-10 text-[15px]">
-      <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · Rulebook · v2.0 · 2026-07-08</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · Rulebook · v2.1 · 2026-07-09</p>
       <h1 className="mt-2 font-display text-4xl font-bold text-parchment">How to Play</h1>
       <P>
         Everything you need to sit down and play, the game as it stands today. Want to try it while you read? The{' '}
@@ -129,7 +129,7 @@ export function Rules() {
       <H2 id="move">Moving</H2>
       <P>
         Moving a unit sends it <B>one adjacent zone</B> (Home ↔ Neutral ↔ their Home) and <B>exhausts</B> it — so a unit <i>marches or
-        fights</i> in a round, not both. Exception: a unit with <B>Rush</B> moves for free the round it arrives, and <B>Flying</B> can move to any zone.
+        fights</i> in a round, not both. Exception: a unit with <B>Rush</B> gets <i>one</i> free move (no exhaust) the round it arrives — so it can reposition and still fight — and <B>Flying</B> can move to any zone.
       </P>
 
       <H2 id="combat">Combat</H2>
