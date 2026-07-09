@@ -25,23 +25,23 @@ Each player shuffles and draws 7, then **chooses 2 of them to bank** as face-up 
 
 ## A round (decision 40 — this replaces per-player turns)
 
-The game is played in **rounds**, not turns. A round has two parts.
+The game is played in **rounds** — a shift from the old per-player-turn structure. Within a round, players take **turns** (a turn = one action). A round has two parts.
 
 **1. Start steps — each player, initiative-holder first.** Automatic, except the one choice noted:
 - Pay 1 Influence for each enemy unit you hold imprisoned (⚑ this upkeep comes first; see Prison).
 - Your start-of-round card effects fire.
-- **All your cards ready.** *(Both players untap every round now — not just whoever's "turn" it is.)*
+- **All your cards ready.** *(Both players untap every round now — not just the active player, as in the old turn model.)*
 - **Draw 2.**
 - **Bank** — you may put 1 card from hand face-up as a resource, or skip.
 
-**2. The action loop — the interesting part.** The initiative-holder acts first, then you **alternate single actions**. There's no "active player" anymore — on *your* window you have the **full menu**:
+**2. The action loop — the interesting part.** The initiative-holder takes the first turn, then you **alternate turns** (one action each). There's no "active player" anymore — on *your* turn you have the **full menu**:
 - **Play a card** — pay its cost by exhausting that many resources.
 - **Move a unit** — one step along the line (Home ↔ Neutral ↔ their Home); moving exhausts the unit. ⚑ *Movement is a prototype invention — without it armies never meet. March OR fight, not both (unless you have Rush).*
 - **Attack** — one or more of your ready units in a single zone strike together (see Combat).
 - **Claim the initiative** (see below).
 - **Pass.**
 
-**Passing is soft:** if your opponent acts after you pass, your window reopens. **Two passes in a row end the round.** Then the next round's start steps begin — and **the initiative carries over to whoever held it, unless someone claimed it.**
+**Passing is soft:** if your opponent takes a turn after you pass, your turn comes back around. **Two passes in a row end the round.** Then the next round's start steps begin — and **the initiative carries over to whoever held it, unless someone claimed it.**
 
 **Claiming initiative** is its own action: you take the initiative token, and you're **done acting for the rest of this round** (your opponent plays on solo until they pass). In exchange, you act **first next round**. It's a real tempo decision — bail out of a round early to guarantee the opening move of the next one. Either player may claim (including the current holder, to lock it in), but only once per round.
 

@@ -47,9 +47,9 @@ A **round** = one **start step per player** (initiative holder first), then the 
 
 **End of round** (after the action loop closes): resolve end-of-round triggers (initiative holder's units first, entry order within a player), then **Overextend self-damage** lands (decision 35; armor doesn't reduce it), then "this round" modifiers expire. Win checks run after every atomic change as always (§1.12). The next round begins; **initiative carries over unless it was claimed** (§1.5).
 
-### 1.5 Action loop — alternation, passing, claiming initiative
+### 1.5 Action loop — taking turns, passing, claiming initiative
 
-- The **initiative holder acts first**; players then alternate single actions. There is no "active player" — both players have the full action menu in their own windows.
+- The **initiative holder takes the first turn**; players then **alternate turns**, one single action each. **A turn = one action** (play / attack / move / activate / claim / pass); a round is a series of turns. There is no "active player" — both players have the full action menu on their own turns.
 - **Actions:** play a card (§1.6), attack (§1.7), move a unit (§1.8), activate an ability (§1.9), **claim initiative**, pass. Concede is legal at any time. Unlimited actions per round — the constraint is resources and ready units, not a count.
 - **Claim initiative:** take the initiative token **and leave the action loop for the rest of the round**. Either player may claim — including the current holder, to lock it in. At most one claim per round (the token, once claimed, is held). After a claim, the remaining player takes actions solo until they pass (or claim-and-lock is moot — they just pass).
 - **Pass is soft:** if your opponent acts after your pass, you may act again. **Two consecutive passes end the loop.** After a claim, the remaining player's single pass ends it.
@@ -175,7 +175,7 @@ Cards carry structured effects — never free text — so the engine can validat
 | `destroy` | target, constraint (e.g. damaged, upgrade) | |
 | `double` | target | doubles the target's Power for the round (Unchained Rage) |
 | `readyUnits` | scope or single target | "second wind" cards; with a single chosen target = ready one unit (Final Onslaught) |
-| `extraAction` | — | after this action resolves, the same player immediately takes another action (opponent's window skipped once). Final Onslaught = `readyUnits(one target)` + `extraAction` (decision 43; replaces `extraTurn`) |
+| `extraAction` | — | after this action resolves, the same player immediately takes another action (opponent's turn skipped once). Final Onslaught = `readyUnits(one target)` + `extraAction` (decision 43; replaces `extraTurn`) |
 | `moveUnit` | target, zone | ⚑ reserved — no current card; not implemented as an op (movement is a player action, §1.8) |
 | `preventBaseDamage` | amount, duration round | Devout Intervention |
 | `removeNegative` | target | clears imprisonment + negative modifiers (Absolution) |

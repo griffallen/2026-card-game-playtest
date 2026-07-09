@@ -8,7 +8,7 @@ Centered parchment card on the dark table: game title, username/password, error 
 ## / (Lobby)
 - **Open tables** — joinable `waiting` games: host, name, created; Join button → deck picker dialog.
 - **Your games** — `waiting/active` involving you: Resume / Cancel (host, waiting).
-- **Recent battles** — last finished: winner, reason (life ⚔ / influence ☯), turns.
+- **Recent battles** — last finished: winner, reason (life ⚔ / influence ☯), rounds.
 - **New game** button → dialog: name + deck picker (prebuilt + yours, with color swatch and card count).
 - Header (all pages): game title left; nav Decks · Cards · Admin (admins only) · username · logout.
 
@@ -26,14 +26,14 @@ Landscape board, seat-relative (you always sit at the bottom):
 │  THEIR side: hand-count · deck · discard · life │  INFLUENCE   │
 │  ─────────── their HOME zone (units) ─────────  │  tug-track   │
 │  ─────────── NEUTRAL zone (units) ────────────  │  -15 ◄─►+15  │
-│  ─────────── your HOME zone (units) ──────────  │  turn/phase  │
+│  ─────────── your HOME zone (units) ──────────  │  round/turn  │
 │  your resources (ready/exhausted) · life        │  ribbon      │
 │  ─────────── your HAND (cards) ───────────────  │  action LOG  │
 └────────────────────────────────────────────────┴──────────────┘
 ```
 
 - **Interaction = click-to-act** (no drag): click a hand card → popover "Play (N) / Resource / cancel" with cost affordability; click a unit you control → its legal moves glow (move targets = zone outlines, attack targets = red glow on units/base); click target to commit. Esc cancels. Everything driven by `legalHints` from the server — the UI can never propose an illegal action.
-- **Turn ribbon**: whose turn, phase, and **whose action window it is** ("Your action" pulses gold; "Waiting for them…" dim). Pass button prominent during your window; "End resource step" during resource phase.
+- **Round ribbon** (v2.0): the round number, whose **turn** it is — a turn = one action — and any **intercept window** ("Your turn" pulses gold; "Waiting for them…" dim). Pass button prominent during your turn; "Skip banking" during the start-of-round bank step.
 - Units render as mini-cards: art, power/health (damage shown as red current value), status chips: exhausted (rotated 90°? no — dimmed + ⟳ icon; rotation wastes space), Guard shield, imprisoned = chain overlay + desaturation, summoning-sick = zzz chip, armor value.
 - Influence track: vertical tug bar with a marker, your end gold at top of panel bottom +15… their end at top; thresholds marked; flashes on change.
 - Log panel: engine-generated lines ("Riley played Searing Bolt — 2 damage to Cinder Initiate"), newest at bottom, auto-scroll.
@@ -43,7 +43,7 @@ Landscape board, seat-relative (you always sit at the bottom):
 
 ## /admin (tabs; admin only)
 - **Users**: table, toggle admin, reset password, delete.
-- **Games**: all games, status, participants, turn count, delete/abandon.
+- **Games**: all games, status, participants, round count, delete/abandon.
 - **Cards**: table (name/color/type/cost/P/H) → row expands to editor: cost/power/health numeric steppers, name/text inputs, effects JSON textarea (validated against the engine's effect schema on save), designer note, deactivate. "New card" → same editor; art = auto procedural preview (seeded by slug) unless artUrl given.
 - **Decks**: prebuilt deck editor — card picker with counts, live legality meter (48+ cards, ≤4 copies), save.
 - **Rules**: the parameter table from game-rules §2 as a form; save = clone to new version + set default (old games unaffected).

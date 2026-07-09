@@ -38,8 +38,8 @@ export function Rules() {
         <P>
           Two players, two decks. You each start at <B>20 Life</B>. Play units into three zones, march them at your
           opponent, and attack — reduce their Life to <B>0</B> to win. Or win the other way: tug the shared{' '}
-          <B>Influence</B> track to <B>+15 on your side</B>. Play alternates in quick single actions across shared
-          rounds. That’s the whole shape; the rest is detail.
+          <B>Influence</B> track to <B>+15 on your side</B>. Players take turns — single actions —
+          across shared rounds. That’s the whole shape; the rest is detail.
         </P>
       </Card>
 
@@ -78,8 +78,16 @@ export function Rules() {
         <LI>A coin flip decides who holds the <B>initiative</B> first. Then round 1 begins.</LI>
       </ul>
 
-      <H2 id="round">A round</H2>
-      <P>The game is played in <B>rounds</B>, not one-player-at-a-time turns. Each round has two parts.</P>
+      <H2 id="round">A round, and your turns</H2>
+      <P>The game runs in <B>rounds</B>. Each round has two parts — a quick automatic <B>start</B>, then the <B>action loop</B>, where you and your opponent take <B>turns</B>.</P>
+      <Card>
+        <B>Round vs. turn — the one distinction to hold onto.</B>
+        <P>
+          A <B>round</B> is one full cycle of the game: both players ready up, draw, and bank, then trade actions
+          until both pass. A <B>turn</B> is a <i>single action</i> you take during that loop. So a round is made of
+          many turns, and the whole game is a series of rounds.
+        </P>
+      </Card>
 
       <p className="mt-4 font-display text-lg font-semibold text-goldbright">1 · Start of the round</p>
       <P>Each player, initiative holder first, does their upkeep automatically:</P>
@@ -89,24 +97,25 @@ export function Rules() {
         <LI>You may <B>bank one card</B> from hand as a new resource, or skip.</LI>
       </ul>
 
-      <p className="mt-4 font-display text-lg font-semibold text-goldbright">2 · The action loop</p>
+      <p className="mt-4 font-display text-lg font-semibold text-goldbright">2 · The action loop — taking turns</p>
       <P>
-        Now the <B>initiative holder acts first</B>, and you <B>trade single actions back and forth</B>. On <i>your</i> turn to act
-        you may do <B>one</B> of:
+        The <B>initiative holder takes the first turn</B>, then you <B>alternate turns</B>. On your turn you take exactly
+        <B> one</B> action:
       </P>
       <ul className="ml-5 list-disc">
         <LI><B>Play a card</B> · <B>Move a unit</B> · <B>Attack</B> · <B>Claim the initiative</B> · <B>Pass</B>.</LI>
       </ul>
       <P>
-        There’s no cap on how much you do in a round — the limit is your resources and your ready units. <B>Passing is soft:</B> if
-        your opponent acts after you passed, your window reopens. <B>Two passes in a row end the round</B>, and the next round begins.
+        There’s no cap on how many turns you take in a round — the limit is your resources and your ready units.
+        <B> Passing is soft:</B> if your opponent takes a turn after you passed, you’re back in. <B>Two passes in a row
+        end the round</B>, and the next round begins.
       </P>
       <Card>
         <B>The initiative.</B>
         <P>
-          Whoever holds the initiative acts first each round. <B>Claiming the initiative</B> is its own action: you take the token and
-          are <B>done for the rest of this round</B> — but you act <B>first next round</B>. It’s a tempo trade: bow out early to guarantee
-          the opening move next time. Only one claim per round; otherwise the initiative simply carries over to whoever held it.
+          Whoever holds the initiative takes the <B>first turn</B> of each round. <B>Claiming the initiative</B> is itself a turn: you take the token and
+          are <B>done for the rest of this round</B> — but you take the <B>first turn next round</B>. It’s a tempo trade: bow out early to guarantee
+          the opening move next round. Only one claim per round; otherwise the initiative simply carries over to whoever held it.
         </P>
       </Card>
 
@@ -165,11 +174,12 @@ export function Rules() {
       <Card>
         <ul className="ml-5 list-disc">
           <LI><B>Win:</B> enemy to 0 Life, or Influence to +15 your side.</LI>
-          <LI><B>Each round:</B> both players ready up, draw 2, bank 1 — then trade single actions until two passes in a row.</LI>
-          <LI><B>Your action:</B> play a card, move (exhausts), attack, claim initiative, or pass.</LI>
+          <LI><B>Round vs turn:</B> a <B>round</B> is one full cycle; a <B>turn</B> is one action. A round is made of many turns.</LI>
+          <LI><B>Each round:</B> both players ready up, draw 2, bank 1 — then take turns until two passes in a row.</LI>
+          <LI><B>Your turn:</B> play a card, move (exhausts), attack, claim initiative, or pass.</LI>
           <LI><B>Attack:</B> any number of your ready units in one zone hit together; the defender may intercept; combined Power vs Armor-once; the target strikes back your biggest attacker.</LI>
           <LI><B>Base:</B> attack it only from inside the enemy’s Home zone.</LI>
-          <LI><B>Claim initiative:</B> end your round now to act first next round.</LI>
+          <LI><B>Claim initiative:</B> end your round now to take the first turn next round.</LI>
         </ul>
       </Card>
 

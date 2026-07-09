@@ -369,7 +369,7 @@ export function GameTable() {
         {/* ── sidebar ── */}
         <div className="flex min-h-0 flex-col gap-2 border-t hairline p-2 lg:border-l lg:border-t-0">
           <div className="panel p-3">
-            <div className="text-[10px] uppercase tracking-widest text-dim">Round {view.round} — {names[view.actorSeat]}&rsquo;s window{view.outOfRound[seat] ? ' · you rest' : ''}</div>
+            <div className="text-[10px] uppercase tracking-widest text-dim">Round {view.round} — {names[view.actorSeat]}&rsquo;s turn{view.outOfRound[seat] ? ' · you rest' : ''}</div>
             <div className={`mt-1 font-display text-parchment ${myWindow ? 'pulse-soft text-goldbright' : ''}`}>{statusLine}</div>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {myWindow && view.phase === 'bank' && (

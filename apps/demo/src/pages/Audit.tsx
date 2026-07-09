@@ -202,12 +202,12 @@ export function Audit() {
         <LI><b>Radiant Citadel</b> ("your maximum Influence is increased by 2") — meaningless on a shared ±15 track. Ruled as: your opponent's Influence win requires 17 while it stands. Defensive, wall-flavored — but it's a guess.</LI>
         <LI><b>Flying</b> (one card, defined nowhere) — ruled as free movement to any zone. Placeholder.</LI>
         <LI><b>Prison Warrant's "in this zone"</b>, <b>Binding Light / Sentence riders</b> (redundant while imprisoned), <b>Supreme Sentence's "if Influence 15+"</b> (unreachable — 15 wins the game first): each simplified and flagged for real design.</LI>
-        <LI><b>Zone-entry imprisons</b> (Containment Priest, Lawbringer, Inquisitor) auto-pick the strongest eligible enemy in the entered zone — deterministic, no fiddly targeting, fires on every move. <b>Turn-start imprisons</b> (High Justiciar, Archon) auto-pick likewise.</LI>
+        <LI><b>Zone-entry imprisons</b> (Containment Priest, Lawbringer, Inquisitor) auto-pick the strongest eligible enemy in the entered zone — deterministic, no fiddly targeting, fires on every move. <b>Start-of-round imprisons</b> (High Justiciar, Archon) auto-pick likewise.</LI>
         <LI><b>Blaze Juggernaut</b> "can attack adjacent zones" became <i>Reach</i> (unlike Ranged it still takes counter-damage and can assault bases); <b>Ranged</b> itself never hits bases and takes no counter-damage on cross-zone shots.</LI>
       </ul>
       <P>
         Also standardized: no hand limit, no mulligan, drawing from an empty deck simply fails (no mill loss),
-        healing caps at starting Life, armor from multiple sources stacks, the first player draws 1 on turn one,
+        healing caps at starting Life, armor from multiple sources stacks,
         and if both players would die at once the acting player wins. All parameterized where they can be.
       </P>
 

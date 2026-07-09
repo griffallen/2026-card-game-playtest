@@ -281,7 +281,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         .filter(Boolean).join(', ')
       return `no legal target right now — needs ${side} ${what}${extras ? ` ${extras}` : ''}`
     }
-    return 'not playable in this window'
+    return 'not playable right now'
   }
 
   const setupN = state.rules.startingResources
@@ -468,10 +468,10 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           : view.phase === 'bank'
             ? 'Start of round — bank a card as a resource, or skip.'
             : skipToMyWindow
-              ? 'Passing through empty windows…'
+              ? 'Passing through empty turns…'
               : config.mode === 'hotseat'
-                ? `${names[seat]} — your window (screen follows whoever acts)`
-                : 'Your action.'
+                ? `${names[seat]} — your turn (screen follows whoever acts)`
+                : 'Your turn.'
 
   // Contextual guidance: say WHAT you can do right now.
   const hints: string[] = []
@@ -484,7 +484,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     } else if (isIntercept) {
       hints.push('An attack is incoming. Intercepting redirects the whole blow onto one of your ready units (Guards stay ready; others exhaust). Let it through to take it on the declared target instead.')
     } else if (onlyPass) {
-      hints.push('No legal plays left: resources spent and every unit has acted. Pass to hand the window over — two passes in a row end the round.')
+      hints.push('No legal plays left: resources spent and every unit has acted. Pass to hand the turn over — two passes in a row end the round.')
     } else {
       const playable = new Set(view.actions.filter(a => a.type === 'play').map(a => a.card)).size
       const attackers = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'attack' }> => a.type === 'attack').flatMap(a => a.attackers)).size
@@ -597,7 +597,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
 
         <div className="flex min-h-0 flex-col gap-2 border-t hairline p-2 lg:border-l lg:border-t-0">
           <div className="panel p-3">
-            <div className="text-[10px] uppercase tracking-widest text-dim">Round {view.round} — {names[view.actorSeat]}'s window</div>
+            <div className="text-[10px] uppercase tracking-widest text-dim">Round {view.round} — {names[view.actorSeat]}'s turn</div>
             <div className={`mt-1 font-display text-parchment ${myWindow && !skipToMyWindow ? 'pulse-soft text-goldbright' : ''}`}>{statusLine}</div>
             {hints.map((h, i) => <p key={i} className="mt-1.5 text-[11px] leading-relaxed text-dim">{h}</p>)}
             {selectionControls && <div className="mt-2 border-t hairline pt-2 max-lg:hidden">{selectionControls}</div>}
@@ -605,8 +605,8 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
               {config.mode === 'vs-ai' && myWindow && !isIntercept && !view.outOfRound[seat] && (
                 skipToMyWindow
                   ? <button className="btn !py-1 text-xs" onClick={() => setSkipToMyWindow(false)} title="stop auto-passing">⏸ Stop auto-pass</button>
-                  : onlyPass && <button className="btn !py-1 text-xs" onClick={() => setSkipToMyWindow(true)} title="auto-pass windows where you can only pass, until you have a real decision or the round ends">
-                    Auto-pass empty windows ⏭
+                  : onlyPass && <button className="btn !py-1 text-xs" onClick={() => setSkipToMyWindow(true)} title="auto-pass turns where you can only pass, until you have a real decision or the round ends">
+                    Auto-pass empty turns ⏭
                   </button>
               )}
               {myWindow && canBank && (
