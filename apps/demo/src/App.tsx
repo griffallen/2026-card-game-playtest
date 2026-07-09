@@ -4,6 +4,7 @@ import { Cards } from './pages/Cards.tsx'
 import { Simulate } from './pages/Simulate.tsx'
 import { Rules } from './pages/Rules.tsx'
 import { Audit } from './pages/Audit.tsx'
+import { Appendix } from './pages/Appendix.tsx'
 
 export function App() {
   const tab = ({ isActive }: { isActive: boolean }) =>
@@ -21,6 +22,7 @@ export function App() {
           <NavLink to="/simulate" className={tab}>Simulate</NavLink>
           <NavLink to="/rules" className={tab}>Rulebook</NavLink>
           <NavLink to="/audit" className={tab}>Design Audit</NavLink>
+          <NavLink to="/appendix" className={tab}>Appendix</NavLink>
         </nav>
       </header>
       <main className="min-h-0 flex-1 overflow-y-auto max-lg:overflow-visible">
@@ -31,6 +33,7 @@ export function App() {
           <Route path="/simulate" element={<Simulate />} />
           <Route path="/rules" element={<Rules />} />
           <Route path="/audit" element={<Audit />} />
+          <Route path="/appendix" element={<Appendix />} />
           <Route path="*" element={<Navigate to="/play" replace />} />
         </Routes>
       </main>

@@ -12,6 +12,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@ui': fileURLToPath(new URL('../web/src', import.meta.url)),
+      '@docs': fileURLToPath(new URL('../../docs', import.meta.url)),
     },
   },
 })
