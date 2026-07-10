@@ -34,9 +34,14 @@ workflow is live, and a purple third-deck proposal is waiting for the designer.
 
 ## Do next
 
-0. **Griff's inbox is live:** issues #2–#8 (labeled `designer`) are his welcome + the six open
-   design questions; the root README is rewritten around his pick-and-go workflow. Triage
-   `gh issue list` / `gh pr list` every session — he may have answered.
+0. **GRIFF'S RULES PASS ARRIVED — issue #9 is the next session's centerpiece.** His 7/8 feedback
+   (relayed by Blaine): colored resource pips, blocker-pairing combat, prison CUT, Overextend/
+   Flying/Reach/untargetable removed, six new keywords (Hidden, Sneak, Capture, Infiltrate,
+   Shielded, Scar). Parsed + acknowledged on the thread with 9 blocking questions; full analysis
+   in `docs/DESIGN/05-V3-DIRECTION.md`. When answers land: decisions 57+ → game-rules v3.0 spec →
+   build plan → implement → card re-churn → canon-v2.0. Canon-v1.0 stays playable meanwhile.
+1. **Griff's inbox:** issues #2–#8 (labeled `designer`) are his welcome + open questions (#3, #5,
+   #8 already cross-linked to #9's answers). Triage `gh issue list` / `gh pr list` every session.
 1. **Point Griff at it** (the demo is already live, running v2.3): the demo's Audit tab has his copy-paste question list (8 questions);
    `data/cards/README.md` teaches the PR workflow; every session-006 redesign is on its card's
    Design notes, ratify-or-veto.
