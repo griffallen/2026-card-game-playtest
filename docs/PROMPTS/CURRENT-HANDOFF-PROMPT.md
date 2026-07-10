@@ -1,65 +1,52 @@
 # Current Hand-off
 
-**Phase:** Playtest & iterate — **canon-v1.0 is stamped and tagged** (session 006). The rules are
-locked at v2.3, every red/yellow card is reconciled and `canon`, the per-card GitHub editing
-workflow is live, and a purple third-deck proposal is waiting for the designer.
+**Phase:** Design (v3.0 intake) + live designer watch. **Griff is active on GitHub** — a 4-minute
+loop checks the repo; this file is the fresh context's whole briefing.
 
-## State
+## THE WATCH (what the loop iteration does)
 
-- **The canon:** `docs/canon/CANON.md` (index) · game-rules **v2.2** · red + yellow **charters**
-  (the middle layer — identity, invariants, statline grammar) · the **card ledger** at
-  `data/cards/<color>/<slug>.md` — one file per card, the single source of truth (decision 46).
-  `npm run cards` compiles+validates → `generated.json` + `INDEX.md`; `npm run cards:check` is the
-  PR gate; a drift test fails if anyone forgets to rebuild.
-- **Griff's workflow is live:** edit any card file on GitHub → PR (guide: `data/cards/README.md`);
-  bigger ideas → plain-language issues. **Session start: `gh pr list` + `gh issue list`** — triage
-  per CLAUDE.md. The agent reviews every card PR: valid? · text↔effects consistent? · in-charter?
-- **Balance (playtest 001, three addenda):** after a code-review workflow caught three bot-scorer
-  bugs (no AoE case, destroy-own suicide, sign-blind curses), everything was re-measured with the
-  honest bot: **red–yellow 44%, purple–red 50%, purple–yellow 58%, influence upsets 4–10%**,
-  median 11–12 rounds. Decision 55's decay-2 was compensating for bot blindness → **reverted,
-  rules v2.3 (decision 56)**. Twice-proven moral: re-verify sims after any bot change.
-- **Purple (proposal):** the **Veiled Court** — 36 cards, `status: draft`, charter at
-  `docs/canon/decks/purple.md`, veil-motif SVG placeholder art, playable in the demo (third deck
-  in every picker). Soft triangle: 47.5% vs red, 65% vs yellow. Adopt/revise/shelve = CANON.md
-  question 7.
-- **UX:** the double-click-plays trap is dead (second tap deselects; explicit buttons only);
-  right-click/long-press inspects everything. Audit record in `docs/PLAYTESTS/001.md`.
-- **Verified:** 117 tests green, typecheck clean, ledger current, server seeds 120 cards/3 decks
-  against real Postgres (healthz ok), web production build ok. This machine now has a working
-  local env (`apps/server/.env`, Homebrew Postgres 14 via `brew services run`).
-- **Git:** everything on `main`, tagged `canon-v1.0`, pushed to origin.
-- **Deployed:** blainebooher.com/new-game-demo now runs **canon-v1.0** (deployed + browser-verified
-  this session: 120 cards, purple live, UX fixes in). Redeploy after any merge: `./scripts/deploy-demo.sh`.
+1. `gh issue list --state all --json number,comments,state` — compare comment counts against the
+   ledger below. **If nothing changed: reply "no change" and stop (low token mode — one tool
+   call, one line, no elaboration).**
+2. If Griff (@griffallen) posted: read it, **reply on the thread** (sign as **⚜ The Chronicler**),
+   and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
+   deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
+3. Comment-count ledger as of this hand-off (issue:comments, x = closed):
+   **9:5 · 8:4x · 7:1 · 6:1 · 5:1 · 4:0 · 3:1 · 2:2 · 1:5x — 0 open PRs.**
+   Any number above these = new activity (my own replies are included in these counts).
 
-## Do next
+## State (2026-07-10 midday)
 
-0. **GRIFF'S RULES PASS ARRIVED — issue #9 is the next session's centerpiece.** His 7/8 feedback
-   (relayed by Blaine): colored resource pips, blocker-pairing combat, prison CUT, Overextend/
-   Flying/Reach/untargetable removed, six new keywords (Hidden, Sneak, Capture, Infiltrate,
-   Shielded, Scar). Parsed + acknowledged on the thread with 9 blocking questions; full analysis
-   in `docs/DESIGN/05-V3-DIRECTION.md`. When answers land: decisions 57+ → game-rules v3.0 spec →
-   build plan → implement → card re-churn → canon-v2.0. Canon-v1.0 stays playable meanwhile.
-1. **Griff's inbox:** issues #2–#8 (labeled `designer`) are his welcome + open questions (#3, #5,
-   #8 already cross-linked to #9's answers). Triage `gh issue list` / `gh pr list` every session.
-1. **Point Griff at it** (the demo is already live, running v2.3): the demo's Audit tab has his copy-paste question list (8 questions);
-   `data/cards/README.md` teaches the PR workflow; every session-006 redesign is on its card's
-   Design notes, ratify-or-veto.
-2. **Play it by hand** — the sims say "even"; only humans can say "fun." Feel questions: claiming
-   initiative, the intercept window, the v2.2 prison mortgage, and whether purple's triangle is a
-   feature.
-3. When Griff answers: fold rulings through the loop (DECISIONS.md → charters/cards → sims), and
-   cut canon-v1.1 if the rules move.
+- **Canon-v1.0 / rules v2.3 live everywhere** (demo deployed + verified; server seeds refresh).
+  120 cards (36 purple = proposal), 122 tests green, all four verify scripts pass.
+- **The v3.0 intake is 60% unblocked.** Griff answered Q1–Q6 on issue #9 (folded into
+  `docs/SPECS/game-rules-v3-draft.md`): MTG-style pips; target-declared blocker-pairing combat
+  (defender pairs AND splits gang damage; unblocked damage → declared target; Breakthrough spills
+  to target); Scar = Overextend's heir; prison cut (Capture succeeds it).
+  **WAITING ON: Q7 (can Hidden units block?), Q8 (Sneak per-card payloads?), Q9 (captive returns
+  ready or exhausted?), Q10 (Guard's new meaning under blocking), + one echoed assumption
+  (blocking doesn't exhaust).** When they land: fold into the draft's marked holes → cut
+  DECISIONS 59+ → finalize spec as game-rules v3.0 → build plan (pips → keywords → combat) →
+  card re-churn → canon-v2.0.
+- **Pip proposals delivered** (`docs/DESIGN/06-PIP-PROPOSAL.md`, Q3 task): cost-tiered grammar +
+  13 deviations; awaiting Griff's slash-pass.
+- **London mulligan shipped** (decision 58): `mulliganStyle` param + demo toggle, deployed.
+  Griff's play verdict picks the default.
+- Decisions 57–58 logged (naming stays; mulligan ruling). #8 closed. Audit tab = "The State of
+  the Game" (current-only); original frozen at `/audit/archive`.
+- Issues open for Griff: #3 (prison — answered in #9, close when v3 lands), #4 (ratify
+  redesigns), #5 (purple verdict), #6 (influence rate), #7 (initiative feel), #9 (the gate).
 
-## Open questions (Griff's chair — full list in CANON.md + the demo Audit tab)
+## Working agreements (from Blaine, this session)
 
-Prison's fate (37/53/55) · base/home rename (54) · initiative + intercept feel · influence economy
-(1–3% of competent games — intended upset rate?) · ratify the session-006 redesigns · adopt purple?
+- **Low token mode on idle loop iterations** — one line, no narration.
+- Agent signs GitHub as **⚜ The Chronicler**; Blaine signs `-BB`.
+- Deploy freely; issues are the designer channel; fold accepted rulings without re-asking.
+- Port 3000 belongs to another project — server smoke-tests use `PORT=3100`; kill by listener PID.
 
-## Notes for the next session
+## Reading order for a fresh session
 
-- Read: this file → `docs/canon/CANON.md` → `docs/PLAYTESTS/001.md` → `DECISIONS.md` (46–55 +
-  redesigns block). The implementation plan (executed, all tasks done) is at
-  `docs/superpowers/plans/2026-07-09-canon-and-card-authoring.md`.
-- Likely in the chair: **both** — Griff's ratify pass wants the designer; deploy + any PR triage
-  is builder/agent work.
+This file → `docs/SPECS/game-rules-v3-draft.md` (the Q-holes) → issue #9 thread →
+`docs/DESIGN/05-V3-DIRECTION.md` · `06-PIP-PROPOSAL.md` → DECISIONS.md 46–58 →
+`docs/PLAYTESTS/001.md` (balance truth + the bot-quality moral). Session stories: summaries
+006 (+postscript) and 007.
