@@ -4,6 +4,7 @@ import { Cards } from './pages/Cards.tsx'
 import { Simulate } from './pages/Simulate.tsx'
 import { Rules } from './pages/Rules.tsx'
 import { Audit } from './pages/Audit.tsx'
+import { AuditArchive } from './pages/AuditArchive.tsx'
 import { Appendix } from './pages/Appendix.tsx'
 
 export function App() {
@@ -36,6 +37,7 @@ export function App() {
           <Route path="/simulate" element={<Simulate />} />
           <Route path="/rules" element={<Rules />} />
           <Route path="/audit" element={<Audit />} />
+          <Route path="/audit/archive" element={<AuditArchive />} />
           <Route path="/appendix" element={<Appendix />} />
           <Route path="*" element={<Navigate to="/play" replace />} />
         </Routes>
