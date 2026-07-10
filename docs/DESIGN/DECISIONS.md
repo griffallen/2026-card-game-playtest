@@ -87,6 +87,13 @@ Numbered, in the order they were made. Format: decision — reason.
 57. ✅ **Naming stays "base" / "Home"** (designer: "It's intuitive"). Resolves decision 54; the Banner/Hearth/Seat/Beacon candidates retire.
 58. ✅ **Mulligan keeps the unlimited-decrement style** (decision 32 stands); the designer's MTG-London alternative — full redraw, bottom one card per mulligan taken — is approved for A/B testing as a rules parameter (`mulliganStyle: 'decrement' | 'london'`). **Built same day:** engine + demo toggle ("London mulligans" on the Play tab); default stays decrement.
 
+## Designer session #2, evening (2026-07-10 — Griff, issue #9: the v3.0 gate closes)
+
+59. ✅ **Hidden units can block** (Q7). Blocking isn't being attacked, so a ready Hidden unit may be assigned as a blocker — but blocking exhausts it (decision 62's default), which reveals it until it next readies, same as attacking. — The self-revealing rhythm (strike from safety, then be exposed) is the keyword's whole identity; blocking joining that rhythm keeps one rule instead of two.
+60. ✅ **Sneak carries per-card payloads** (Q8): "Sneak — [effect]" is an exhaust-activated ability whose effect is printed per card (designer's examples: hit for less than full power; forbid the opponent from blocking). Builds the spec's long-deferred `activate` action; payloads reuse the existing effect-op vocabulary. — One keyword, many knives: purple's assassin identity comes from the payload variety, not a fixed number.
+61. ✅ **A freed captive returns exhausted** (Q9). When the capturer leaves play, the captive re-enters its zone exhausted and readies normally at its owner's next ready step. — No same-turn revenge: killing the jailer is tempo, not tempo *plus* an instant attacker.
+62. ✅ **Guard v3 = "does not exhaust to defend"** (Q10) — Guard's intercept meaning dies with the combat rework; its new perk is blocking without exhausting (block repeatedly, stay ready for its own turn). Designer: keep it simple now, buff defending Guards later only if playtesting demands. **Derived default, echoed for veto: blocking exhausts non-Guard blockers** — the perk is vacuous otherwise; this replaces the draft's "blocking is free" assumption. — A veto on the derivation flips combat's block cost and reopens Guard's design.
+
 ## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
 
 - **Red burn grammar:** unit-only burn = cost+1 damage (Devastating Strike became unit-only); face-capable burn = cost (Raging Inferno 5→6 dmg; Searing Bolt/Volcanic Slam/Rupture already conformed). Burn the Frontline 7-for-4 → 6-for-6 one-zone (the wall-breaker; friendly fire stays as red's visible cost).

@@ -11,23 +11,23 @@ loop checks the repo; this file is the fresh context's whole briefing.
 2. If Griff (@griffallen) posted: read it, **reply on the thread** (sign as **⚜ The Chronicler**),
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
-3. Comment-count ledger as of this hand-off (issue:comments, x = closed):
-   **9:5 · 8:4x · 7:1 · 6:1 · 5:1 · 4:0 · 3:1 · 2:2 · 1:5x — 0 open PRs.**
+3. Comment-count ledger as of 2026-07-10 ~23:45 (issue:comments, x = closed):
+   **9:7 · 8:4x · 7:1 · 6:1 · 5:1 · 4:0 · 3:1x · 2:2 · 1:5x — 0 open PRs.**
    Any number above these = new activity (my own replies are included in these counts).
 
 ## State (2026-07-10 midday)
 
 - **Canon-v1.0 / rules v2.3 live everywhere** (demo deployed + verified; server seeds refresh).
   120 cards (36 purple = proposal), 122 tests green, all four verify scripts pass.
-- **The v3.0 intake is 60% unblocked.** Griff answered Q1–Q6 on issue #9 (folded into
-  `docs/SPECS/game-rules-v3-draft.md`): MTG-style pips; target-declared blocker-pairing combat
-  (defender pairs AND splits gang damage; unblocked damage → declared target; Breakthrough spills
-  to target); Scar = Overextend's heir; prison cut (Capture succeeds it).
-  **WAITING ON: Q7 (can Hidden units block?), Q8 (Sneak per-card payloads?), Q9 (captive returns
-  ready or exhausted?), Q10 (Guard's new meaning under blocking), + one echoed assumption
-  (blocking doesn't exhaust).** When they land: fold into the draft's marked holes → cut
-  DECISIONS 59+ → finalize spec as game-rules v3.0 → build plan (pips → keywords → combat) →
-  card re-churn → canon-v2.0.
+- **THE v3.0 GATE IS CLOSED — all ten questions answered.** Griff answered Q1–Q6 midday and
+  Q7–Q10 in the evening (issue #9), all folded into `docs/SPECS/game-rules-v3-draft.md`,
+  decisions 59–62 cut: MTG-style pips; target-declared blocker-pairing combat (defender pairs
+  AND splits gang damage; unblocked damage → declared target; Breakthrough spills to target);
+  Hidden CAN block; Sneak = per-card exhaust payloads; captives return exhausted; **Guard v3 =
+  "does not exhaust to defend."** One derived default echoed on #9 for veto: **blocking exhausts
+  non-Guard blockers** (Guard's perk is vacuous otherwise). Griff also closed #3 (prison) himself.
+  **NEXT ARC (session-scale, needs Blaine or a fresh session — not a watch tick): finalize the
+  draft as game-rules v3.0 → build plan (pips → keywords → combat) → card re-churn → canon-v2.0.**
 - **Pip proposals delivered** (`docs/DESIGN/06-PIP-PROPOSAL.md`, Q3 task): cost-tiered grammar +
   13 deviations; awaiting Griff's slash-pass.
 - **London mulligan shipped** (decision 58): `mulliganStyle` param + demo toggle, deployed.
