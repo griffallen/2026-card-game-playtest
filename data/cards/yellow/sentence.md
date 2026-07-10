@@ -2,13 +2,12 @@
 name: Sentence
 type: action
 cost: 4
-influenceTrigger: onPlay
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"imprison","t":"chosen0"},{"op":"influence","n":1}]}
+effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"imprison","t":"chosen0"},{"op":"draw","n":1}]}
 ---
-Imprison target unit. If your Influence is 10+, it can't move or attack. Influence: +1.
+Imprison target unit. Draw a card.
 
 ## Design notes
 
-⚑ The 10+ rider duplicates what imprisonment already does — dropped pending design.
+Session 006, prison ladder: Sentence 4 = imprison that replaces itself. The old 10+ rider duplicated what imprisonment already does.

@@ -77,3 +77,14 @@ Numbered, in the order they were made. Format: decision — reason.
 52. ⚑ **"This zone" on an action means "choose a zone"** — the action declares an explicit zone target and the text says "choose a zone". — Actions have no location, so the printed phrase was meaningless (flagged on Prison Warrant, Hold the Line).
 53. ⚑ **Prison stays, provisionally.** Decision 37 stands: cards normalize now, the yellow charter marks the whole package provisional, no new prison-dependent designs until the designer rules. — Removing ~15 cards on the agent's authority would pre-empt a decision that is explicitly the designer's.
 54. ⚑ **Base/home rename deferred** — candidates (Banner/Hearth/Seat/Beacon) recorded in `CANON.md`'s open questions; "base" remains the canonical term until the designer picks. — Pure flavor; deferring costs nothing.
+
+## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
+
+- **Red burn grammar:** unit-only burn = cost+1 damage (Devastating Strike became unit-only); face-capable burn = cost (Raging Inferno 5→6 dmg; Searing Bolt/Volcanic Slam/Rupture already conformed). Burn the Frontline 7-for-4 → 6-for-6 one-zone (the wall-breaker; friendly fire stays as red's visible cost).
+- **Dead-text Rush grants rebuilt** (decision 41 made permanent Rush grants a no-op on units already in play): Reckless Charge → round-scoped; Warpath → +1 Power board pump @2; Burning Oath → +2P/Breakthrough 2; Cataclysmic Charge → 4-mana +3P/BT3.
+- **Red re-costs:** Execution Swing 6→4 (charter-legal execute), Pillage 4→2, Bloodfrenzy ≤5-life→≤10 and 5→3. **Statline fixes:** Inferno Titan 6/5→5/4, Crimson Behemoth 6/6→6/5, both +honest text.
+- **Yellow prison ladder** (one job per rung): Warrant 1 = ≤2-power +1 inf · Binding Light 2 = ≤4-power, no inf · Subjugate 3 = any, −1P scar, +1 inf · Sentence 4 = any + draw · Chamber 5 = any +2 inf · Detain 6 = any + heal 3 +1 inf · Prison of Light 7 = whole zone · Supreme Sentence 7 = two anywhere (decision 50 killed its dead 15+ rider).
+- **Yellow armor re-cost vs red's burn economy:** Radiant Aegis 1→2, Radiant Wall 4→5, Iron Discipline 2→1, Disciplined Mind 4→2, Command Edict → permanent mass Armor 1 @7, Sanctified Bastion aura zone-local.
+- **Yellow event-economy:** Aura of Resolve startOfRound income (charter-illegal) → +2 on wearer defend @3; guard payout ladder (≤3-cost guards pay 1: Justicar Enforcer 2→1); Champion of the Faith 6/6→7/7 + honest "gain"; Hierophant 2/6→3/7.
+- **Yellow re-costs:** Absolution 7→3 (it's a jailbreak), Devout Intervention 6→3, Sanctify 6→4 (+1 inf not +2), Light of Authority 6→3, Disarming Order 5→3, Mobilize the Faithful 4→6, Resolve Banner 6→4.
+- **Decision-51/52 honest text** across all auto-target imprisons and zone-choice actions; Radiant Citadel decision-49 text; Flying decision-48 note; "Influence: +N" prose normalized to "Gain N Influence."

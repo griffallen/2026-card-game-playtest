@@ -3,12 +3,12 @@ name: Prison Warrant
 type: action
 cost: 1
 influenceTrigger: onPlay
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"imprison","t":"chosen0"},{"op":"influence","n":1}]}
+effects: {"targets":[{"t":"unit","side":"enemy","maxPower":2}],"onPlay":[{"op":"imprison","t":"chosen0"},{"op":"influence","n":1}]}
 ---
-Imprison target enemy unit in this zone. Influence: +1.
+Imprison target enemy unit with 2 or less Power. Gain 1 Influence.
 
 ## Design notes
 
-⚑ "In this zone" is meaningless for a card played from hand — implemented as any enemy unit. Needs design.
+Session 006, the prison ladder (each imprison action now has one job): Warrant 1 = small fry. The old "in this zone" was meaningless from hand (decision 52 context) and an unrestricted 1-mana imprison embarrassed Detain at 6.

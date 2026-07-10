@@ -14,38 +14,36 @@ const Card = ({ children }: { children: ReactNode }) => (
   <div className="panel mt-4 p-4">{children}</div>
 )
 
-const QUESTIONS = `New Game — designer questions · v2.1 · 2026-07-09
+const QUESTIONS = `New Game — designer questions · canon-v1.0 · 2026-07-09
 Copy this, answer inline (after each →), send it back.
 
 1. Reach (Blaze Juggernaut): attacks one zone away, CAN still hit bases, and DOES take
    counter-damage (unlike Ranged). Is that the intended behavior?
    →
 
-2. Aura of Resolve pays +1 Influence every round at start of round — passive income, which the
-   "influence is event-earned only" ruling meant to remove. Keep it as an exception, or make it event-earned?
+2. Claiming the initiative: you end your round early to act first next round. Does that trade feel good in play?
    →
 
-3. Claiming the initiative: you end your round early to act first next round. Does that trade feel good in play?
-   →
-
-4. Intercept: the defender may redirect one attack onto one of their ready units, and Guard intercepts
+3. Intercept: the defender may redirect one attack onto one of their ready units, and Guard intercepts
    for free. Right amount of defender agency? Does free Guard-interception make yellow too sticky?
    →
 
-5. Naming: keep "base" / "Home", or switch to one of — Banner / Hearth / Seat / Beacon?
+4. Naming: keep "base" / "Home", or switch to one of — Banner / Hearth / Seat / Beacon?
    →
 
-6. Prison is "on notice." Keep it, or cut the prison cards?
+5. Prison is "on notice." Keep it, or cut the prison cards? (The prison actions were re-priced into a
+   clean ladder this pass — see the cards — but the mechanic's fate is still yours.)
    →
 
-7. Mulligans: unlimited, one fewer card each redraw. Does that feel right?
+6. Mulligans: unlimited, one fewer card each redraw. Does that feel right?
    →
 
-8. Influence win at ±15 — upsets land in ~5% of games. Right threshold, and right frequency?
+7. Influence win at ±15 — upsets land in ~5% of games. Right threshold, and right frequency?
    →
 
-9. The 84 cards are AI-generated drafts. Which want renaming or retuning first, and are you ready to do a
-   card pass in data/cards.csv?
+8. Every card was reconciled against the new deck charters (docs/canon/decks/) and many were re-priced
+   or redesigned — each change is logged on the card itself under "Design notes". Veto anything: edit the
+   card's file in data/cards/ on GitHub, or just open an issue saying what feels wrong.
    →`
 
 function QuestionsForYou() {
@@ -81,7 +79,7 @@ function StatRow({ label, a, b, c }: { label: string; a: ReactNode; b: ReactNode
 export function Audit() {
   return (
     <div className="mx-auto max-w-3xl px-6 pb-24 pt-10 text-[15px]">
-      <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · Design Audit · v2.1 · 2026-07-09</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · Design Audit · canon-v1.0 · 2026-07-09</p>
       <h1 className="mt-2 font-display text-4xl font-bold text-parchment">Design & Engine Audit</h1>
       <P>
         This is the full account of what was built, every assumption made along the way, what the simulations
@@ -90,6 +88,22 @@ export function Audit() {
         runs the complete rules engine in your browser, and the <Link className="text-goldbright underline" to="/simulate">Simulator</Link> reruns
         every number in this report in front of you.
       </P>
+
+      <Card>
+        <b className="font-display text-parchment">Update — canon-v1.0: the rules are locked, and every card was reconciled (July 9, session 006).</b>
+        <p className="mt-2 text-[14px] leading-relaxed text-body/90">
+          The project now has a <b>versioned canon</b>: the base rules (game-rules v2.1, out of "proto"), a
+          <b> charter per deck</b> — the written law of what each color may print (identity, allowed keywords,
+          invariants, statline grammar) — and the card ledger itself, now <b>one editable file per card</b> in
+          <code> data/cards/</code> on GitHub. All 84 cards were checked against their two parents (base rules +
+          charter): the inert "Overextend N" came off every red action (it's a unit-only gamble now, decision 47),
+          dead text was rebuilt (permanent Rush grants did nothing after the no-summoning-sickness rework),
+          the prison actions became a priced ladder with one job per rung, yellow's armor suite was re-costed
+          against red's burn economy, Aura of Resolve's passive income became defend-payout, and every
+          auto-targeting card now states its deterministic pick. Every change is logged on the card itself —
+          open any card's file and read its "Design notes". Decisions 46–54 carry the reasons; veto freely.
+        </p>
+      </Card>
 
       <Card>
         <b className="font-display text-parchment">Update — turn structure v2.0 designed (July 8, builder session).</b>
@@ -122,8 +136,9 @@ export function Audit() {
           <b> end-of-round triggers</b> (a promised hook that had been silently skipped), and unimplemented
           rules-parameter values now fail loudly instead of being ignored. <b>Two questions for you:</b> <i>Reach</i>
           (Blaze Juggernaut) attacks an adjacent zone like Ranged but can still hit bases and takes counter-damage —
-          confirm that's the intent; and <i>Aura of Resolve</i> pays +1 influence every round at start-of-round, which
-          brushes against your "no passive influence" ruling — keep it, or make it event-earned?
+          confirm that's the intent; and <i>Aura of Resolve</i> paid +1 influence every round at start-of-round, which
+          brushed against the "no passive influence" ruling — <i>since resolved in session 006: it now pays +2 when
+          the wearer defends</i>.
         </p>
       </Card>
 
@@ -325,8 +340,8 @@ export function Audit() {
       </ul>
 
       <p className="mt-12 border-t hairline pt-4 text-xs text-dim">
-        Sources: docs/DESIGN/DECISIONS.md (all 30 rulings with reasons) · docs/SPECS/game-rules.md (the precise ruleset)
-        · docs/GAME-FLOW.md (narrative rules) — all in the project repository. Engine + this page share one codebase;
+        Sources: docs/DESIGN/DECISIONS.md (54 numbered rulings with reasons) · docs/SPECS/game-rules.md (the precise
+        ruleset) · docs/canon/ (charters + the CANON index) · data/cards/ (the card ledger) — all in the project repository. Engine + this page share one codebase;
         the numbers shown were produced by the same simulator you can run in the next tab.
       </p>
     </div>

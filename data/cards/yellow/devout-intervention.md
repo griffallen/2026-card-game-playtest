@@ -1,10 +1,14 @@
 ---
 name: Devout Intervention
 type: action
-cost: 6
+cost: 3
 influenceTrigger: onPlay
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"preventBase","n":3},{"op":"influence","n":1}]}
 ---
-Reduce damage to your base by 3 this round. Gain 1 Influence.
+Prevent the next 3 damage to your base this round. Gain 1 Influence.
+
+## Design notes
+
+Session 006: 6 → 3 mana. A one-round shield priced like a wall.

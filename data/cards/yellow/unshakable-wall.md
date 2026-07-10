@@ -2,7 +2,7 @@
 name: Unshakable Wall
 type: upgrade
 cost: 5
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"aura","scope":"attached","armor":2},{"s":"aura","scope":"attached","kw":{"k":"guard"}}]}
 ---

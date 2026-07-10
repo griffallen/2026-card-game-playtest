@@ -5,7 +5,7 @@ cost: 6
 power: 3
 health: 9
 keywords: cantAttack
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"imprisonWatcher","n":1}]}
 ---

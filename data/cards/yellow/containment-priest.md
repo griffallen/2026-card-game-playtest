@@ -4,12 +4,12 @@ type: unit
 cost: 2
 power: 2
 health: 3
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onEnterZone":[{"op":"imprison","t":"auto","auto":{"scope":"enteredZone"}}]}
 ---
-When this enters a zone, imprison target enemy unit in that zone.
+When this enters a zone, imprison the strongest enemy unit there.
 
 ## Design notes
 
-⚑ Imprison target is auto-picked: strongest eligible enemy unit (deterministic; DECISIONS/spec §3.3). Fires on deploy and on every move.
+Decision 51: the pick is deterministic (strongest eligible; ties go to the earliest arrival) and the text says so. Fires on deploy and on every move.

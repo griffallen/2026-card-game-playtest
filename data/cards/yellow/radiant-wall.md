@@ -1,10 +1,14 @@
 ---
 name: Radiant Wall
 type: action
-cost: 4
+cost: 5
 influenceTrigger: onPlay
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"buff","t":"chosen0","armor":3,"dur":"perm"},{"op":"influence","n":1}]}
 ---
-Give target unit Armor 3. Influence: +1.
+Target unit gets Armor 3, permanently. Gain 1 Influence.
+
+## Design notes
+
+Session 006: 4 → 5 mana (armor ladder — see Radiant Aegis).

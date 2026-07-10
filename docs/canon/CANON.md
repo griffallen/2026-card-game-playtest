@@ -24,8 +24,12 @@ laws?). Feel and balance stay human.
 
 ## Reconciliation status
 
-- Red: pending session-006 churn.
-- Yellow: pending session-006 churn.
+- **Red: all 36 cards `canon`** (session 006 — Overextend stripped from actions per decision 47,
+  dead Rush grants rebuilt, burn grammar unified, statline outliers fixed).
+- **Yellow: all 48 cards `canon`** (session 006 — prison ladder re-priced with one job per rung,
+  armor suite re-costed, Aura of Resolve made event-earned, decision-51 honest auto-target text).
+- Every redesign is logged in the card's own "Design notes" — veto by editing the card file or
+  opening an issue.
 
 ## Open questions (Griff's chair)
 

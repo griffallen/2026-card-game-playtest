@@ -5,7 +5,7 @@ cost: 4
 power: 1
 health: 7
 keywords: cantAttack
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"aura","scope":"friendlyInZone","kw":{"k":"guard"}}]}
 ---

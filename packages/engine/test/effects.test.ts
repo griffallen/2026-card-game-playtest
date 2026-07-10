@@ -96,7 +96,7 @@ describe('prison', () => {
   it('imprisoned units release when the jailer dips below the threshold; decay charges each round', () => {
     let { s, p1, p2 } = arena()
     const jailerHand = toHand(s, p2, 'prison-warrant')
-    const captive = put(s, p1, 'doombringer', 1)
+    const captive = put(s, p1, 'flameblade-raider', 1)     // 2 power — inside Warrant's ≤2 cap (session 006)
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: jailerHand, targets: [{ kind: 'unit', id: captive }] })
     expect(s.units[captive].imprisoned?.by).toBe(p2)
@@ -165,7 +165,7 @@ describe('auras and upgrades', () => {
     expect(effPower(s, s.units[wall])).toBe(2)             // influence < 10 → no buff
     s.influence = p2 === 0 ? 10 : -10
     expect(effPower(s, s.units[wall])).toBe(3)
-    expect(effPower(s, s.units[hiero])).toBe(2)            // "other" excludes self
+    expect(effPower(s, s.units[hiero])).toBe(3)            // "other" excludes self (3/7 since session 006)
   })
 
   it('upgrades grant stats/keywords, pressure influence on the second, and die with Pillage', () => {
@@ -265,7 +265,7 @@ describe('tempo and timing', () => {
 })
 
 describe('start-of-round engines', () => {
-  it('Bloodfrenzy pumps only at ≤5 life; Censer trades influence for healing; Aura of Resolve pays out', () => {
+  it('Bloodfrenzy pumps only at ≤10 life; Censer trades influence for healing', () => {
     let { s, p1, p2 } = arena()
     const carrier = put(s, p1, 'berserker', 1)
     const frenzyCard = toHand(s, p1, 'bloodfrenzy')
@@ -273,19 +273,29 @@ describe('start-of-round engines', () => {
     put(s, p2, 'censer-of-purity', homeZone(p2))
     s.sides[p2].life = 15
     s.influence = p2 === 0 ? 3 : -3
-    const resolveCarrier = put(s, p2, 'custodian-of-law', homeZone(p2))
-    const resolve = toHand(s, p2, 'aura-of-resolve')
-    // p2 attaches off-turn (frenzy play flipped the window to p2)
-    s = act(s, p2, { type: 'play', card: resolve, targets: [{ kind: 'unit', id: resolveCarrier }] })
-    // reach p2's start step: censer −1, aura +1 (net 0 vs 3), heal +2
+    // reach p2's start step: censer −1 influence, heal +2 (Aura of Resolve no longer pays here — session 006)
     s = toStartStepOf(s, p2)
-    expect(influenceFor(s, p2)).toBe(3)
+    expect(influenceFor(s, p2)).toBe(2)
     expect(s.sides[p2].life).toBe(17)
-    // p1 at 20 life: frenzy silent. Drop p1 to 4 and reach p1's start step → frenzy fires
-    s.sides[p1].life = 4
+    // p1 at 20 life: frenzy silent. Drop p1 to 9 and reach p1's start step → frenzy fires (≤10 since session 006)
+    s.sides[p1].life = 9
     const before = effPower(s, s.units[carrier])
     s = toStartStepOf(s, p1)
     expect(effPower(s, s.units[carrier])).toBe(before + 1)
+  })
+
+  it('Aura of Resolve pays when the wearer defends (session-006 redesign)', () => {
+    let { s, p1, p2 } = arena()
+    const raider = put(s, p1, 'flameblade-raider', homeZone(p2))
+    const wearer = put(s, p2, 'custodian-of-law', homeZone(p2))
+    const aura = toHand(s, p2, 'aura-of-resolve')
+    s = act(s, p1, { type: 'pass' })
+    s = act(s, p2, { type: 'play', card: aura, targets: [{ kind: 'unit', id: wearer }] })
+    const before = influenceFor(s, p2)
+    s = act(s, p1, { type: 'attack', attackers: [raider], target: { kind: 'unit', id: wearer } })
+    if (s.phase === 'intercept') s = act(s, p2, { type: 'declineIntercept' })
+    // custodian's own onDefend (+2) plus the aura's onDefend (+2)
+    expect(influenceFor(s, p2)).toBe(before + 4)
   })
 })
 

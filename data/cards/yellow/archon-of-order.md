@@ -4,12 +4,12 @@ type: unit
 cost: 7
 power: 7
 health: 7
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"startOfRound":{"ops":[{"op":"imprison","t":"auto","auto":{"scope":"eachZone"}}]}}
 ---
-At the start of your round, imprison up to one unit in each enemy zone.
+At the start of your round, imprison the strongest enemy unit in each zone.
 
 ## Design notes
 
-⚑ Imprison target is auto-picked: strongest eligible enemy unit (deterministic; DECISIONS/spec §3.3). "Each enemy zone" = each zone holding enemy units.
+Decision 51 text (deterministic pick per zone; zones with no eligible enemies are skipped). The mass-jailer — remember each prisoner costs 1 Influence per round.

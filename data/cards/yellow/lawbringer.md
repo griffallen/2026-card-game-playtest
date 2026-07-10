@@ -4,12 +4,12 @@ type: unit
 cost: 4
 power: 4
 health: 4
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onEnterZone":[{"op":"imprison","t":"auto","auto":{"scope":"enteredZone"}}]}
 ---
-When this enters a zone, imprison target unit.
+When this enters a zone, imprison the strongest enemy unit there.
 
 ## Design notes
 
-⚑ Imprison target is auto-picked: strongest eligible enemy unit (deterministic; DECISIONS/spec §3.3). Fires on deploy and on every move.
+Decision 51 text. Containment Priest's big sibling: full statline plus the same arrest, two mana later.
