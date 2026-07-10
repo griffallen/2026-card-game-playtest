@@ -16,7 +16,10 @@ export function App() {
         <span className="font-display text-lg font-bold tracking-wide text-parchment">
           ⚔ New Game <span className="ml-1 align-middle text-[10px] font-normal uppercase tracking-widest text-dim">static demo — no server, everything runs in your browser</span>
         </span>
-        <nav className="ml-auto flex items-center gap-1">
+        {/* six tabs outgrew a phone (451px vs 390): wrap instead of forcing the layout viewport
+            wide — an overflowing nav stretched mobile Chrome's ICB and dragged the fixed dock
+            off-viewport, breaking taps (playtest 001, mobile probe) */}
+        <nav className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-1">
           <NavLink to="/play" className={tab}>Play</NavLink>
           <NavLink to="/cards" className={tab}>Cards</NavLink>
           <NavLink to="/simulate" className={tab}>Simulate</NavLink>

@@ -36,6 +36,8 @@ Project state lives in `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md`. **Read it at th
 
 **Start:** read the handoff prompt, then check the designer's inbox — `gh pr list` and `gh issue list` — for card PRs or intent issues from Griff (triage: respond on the thread, review card PRs per `data/cards/README.md`, fold accepted changes into the canon). State where the project stands and what's next, confirm with the user before doing work.
 
+**GitHub voice:** the agent signs issue/PR comments as **⚜ The Chronicler** (Blaine signs `-BB`). One consistent handle so Griff always knows which replies are the agent.
+
 **During:** present decisions **one at a time** — the back-and-forth is where the good ideas emerge. If open threads pile up to where a clean handoff would be hard to write, suggest wrapping. Nudge, don't force.
 
 **Wrap** — when the user signals the end ("let's wrap up", "that's good for now"):
