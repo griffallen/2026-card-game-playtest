@@ -1,10 +1,10 @@
 # Game Rules Spec — v3.0 DRAFT (not canon; do not implement yet)
 
-**Status:** skeleton built from the designer's rules pass
-([issue #9](https://github.com/booherbg/2026-card-game/issues/9), parsed in
-`docs/DESIGN/05-V3-DIRECTION.md`). Sections marked **[Qn]** are blocked on the numbered questions
-on that issue; everything else is settled enough to implement once the whole draft is ratified.
-`game-rules.md` (v2.3) remains the engine's contract until this replaces it.
+**Status:** Q1–Q6 answered by the designer (2026-07-10, on the issue) and folded in below.
+**Remaining blockers: Q7–Q10** (Hidden-blocks, Sneak payloads, Capture return state, Guard's new
+meaning). Pip *assignments* are a separate proposal track (designer asked for drafts —
+`docs/DESIGN/06-PIP-PROPOSAL.md`). `game-rules.md` (v2.3) remains the engine's contract until
+this replaces it; formal DECISIONS entries (59+) get cut when the set completes.
 
 ---
 
@@ -14,32 +14,34 @@ on that issue; everything else is settled enough to implement once the whole dra
 Round 1 skips the ready step by construction (nothing is in play, resources were just banked);
 the rules text now says so instead of implying a phantom step.
 
-### 1.2 Colored resource pips — NEW ECONOMY
+### 1.2 Colored resource pips — NEW ECONOMY *(Q1–Q3 answered)*
 A card's cost is `cost` total, of which `pips` (0..cost) are colored. Paying requires exhausting
 one matching-color resource per pip; the remainder takes any resources.
-- A banked card provides **[Q1: its faction color? its own pips?]** as its resource color.
-- A multi-pip card banked as a resource pays as **any one** of its colors, chosen when spent
-  **[Q2: confirm at-spend-time choice]**.
-- `pips` is a designer-owned field in the card file **[Q3: confirm]**.
-- Cards with zero pips cost pure-generic (and future colorless cards bank as colorless).
-- Engine: `CardDef.pips?: Color[]`; resource row entries carry a color; payment validation in
-  `playCard`; deck legality probably unchanged (pips constrain play, not deckbuilding — confirm
-  later).
+- **[Q1 ✓]** A banked card provides the colors of **its own cost pips** (MTG-style: a card costing
+  1UW banks as Blue *or* White). Pip-less cards bank as colorless (pay generic only).
+- **[Q2 ✓]** Multi-pip resources choose their color **at spend time**; one card = one resource.
+- **[Q3 ✓]** `pips` is a designer-owned card-file field. Initial policy: mono-color pips only;
+  **stronger cards carry more pips of their own color** — the splash tax is a deliberate balance
+  lever for big/good cards (cf. MTG CC costs, SWU aspects). Agent drafts proposals
+  (`docs/DESIGN/06-PIP-PROPOSAL.md`); playtesting tunes.
+- Engine: `CardDef.pips?: Color[]`; resource row entries carry a color set; payment validation in
+  `playCard`; deck legality unchanged (pips constrain play, not deckbuilding).
 
-### 1.3 Combat — blocker pairing (replaces combined-hit + intercept, decision 42)
-1. **Declare:** attacker exhausts a group of ready units in one zone, attacking **that zone**.
-2. **Block:** the defender assigns any of their ready units in that zone as blockers — 1v1 or
-   several blockers on one attacker. Blocking does not exhaust **[assumption — confirm]**.
-3. **Resolve simultaneously, per pairing:** attacker deals its power to its blocker(s)
-   **[Q5: who splits damage across multiple blockers?]** and takes their combined power back.
-4. **Unblocked attackers:** hit the enemy **base** if the zone is that player's Home
-   **[Q4: and in Neutral — nothing? something?]**.
-5. **Breakthrough (new semantics, no N):** excess damage beyond a killed blocker carries over —
-   to another unit in the zone or the base (if in the owner's Home zone)
-   **[Q6: who chooses the spill target?]**.
+### 1.3 Combat — target-declared, blocker-paired *(Q4–Q6 answered; replaces combined-hit + intercept)*
+1. **Declare:** attacker exhausts a group of ready units in one zone and declares **one target:
+   an enemy unit there, or the enemy's Home** (Home only while standing in that zone, as today).
+2. **Block:** the defender assigns any of their ready units in that zone as blockers, pairing
+   them onto attackers — 1v1 or several blockers ganging one attacker. Blocking does not exhaust
+   **[assumption — echoed for confirmation on the issue]**.
+3. **Resolve simultaneously, per pairing:** each attacker fights its blocker(s); **[Q5 ✓] in a
+   gang-block the DEFENDER divides the attacker's damage** among the blockers; blockers' combined
+   power hits the attacker back.
+4. **[Q4 ✓] Unblocked attackers deal their full damage to the declared target** (unit or Home).
+5. **[Q6 ✓] Breakthrough** (no number): excess damage from a killed blocker pushes through **to
+   the original declared target**. No choices; fully deterministic.
 6. **Guard:** the intercept window no longer exists, so Guard needs a new meaning
-   **[Q10: e.g. "attackers must be blocked by Guards first"? "may block one extra attacker"?
-   "must be attacked before the base"? — designer's call]**.
+   **[Q10 — open: "must be blocked first"? "blocks an extra attacker"? "must be attacked before
+   the Home"? retire?]**.
 
 ### 1.4 Moving — unchanged, minus Flying
 Adjacent-zone move, exhausts the unit (Rush's first-move waiver unchanged). All flying text gone.
@@ -67,7 +69,7 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
 | **Capture** | On its trigger, this unit takes an enemy unit **under itself** (out of play, no zone presence). The captive returns when the capturer leaves play — or when the capturer readies; its owner **may decline to ready the capturer** at their ready step to keep holding. | Prison's successor with a body-attached cost (the capturer stays exhausted = can't block/attack under [Q10]/1.3). **[Q9: captive returns ready or exhausted?]** |
 | **Infiltrate** | May be deployed to **any zone**, not just its owner's Home. | Clear; deploy-time zone choice in the play action. |
 | **Shielded** | Enters play with a shield token; the first instance of damage it would take is prevented entirely and the token is removed. | Clear. "Instance" = one damage event (combat hit, one effect op). |
-| **Scar** | This unit gets **+1 power for each damage marked on it**. | Clear; power derivation from `damage`. Red's post-Overextend identity candidate. |
+| **Scar** | This unit gets **+1 power for each damage marked on it**. | Clear; power derivation from `damage`. **Designer-confirmed as Overextend's successor** (red's identity). |
 
 ## 3. Effect-vocabulary deltas
 - Remove: `imprison`, `release` (reserved), `imprisonWatcher` static.
@@ -85,6 +87,7 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
    purple→Hidden/Infiltrate/Sneak if adopted), then canon-v2.0.
 
 ## Open questions index
-Q1–Q9 live on [issue #9](https://github.com/booherbg/2026-card-game/issues/9); **Q10 (Guard's
-meaning under blocking)** was added while drafting this. Answers slot directly into the marked
-holes above.
+**Answered (2026-07-10):** Q1–Q6 — folded in above. **Open:** Q7 (Hidden block eligibility),
+Q8 (Sneak per-card payloads), Q9 (captive's return state), Q10 (Guard's meaning), plus one
+echoed assumption (blocking doesn't exhaust). All on
+[issue #9](https://github.com/booherbg/2026-card-game/issues/9).
