@@ -12,6 +12,8 @@
     "typecheck": "npm run typecheck -w packages/engine && npm run typecheck -w apps/server && npm run typecheck -w apps/web && npm run typecheck -w apps/demo",
     "test": "npm test -w packages/engine && npm test -w apps/server",
     "sim": "npm run sim -w packages/engine",
+    "cards": "tsx scripts/cards-build.ts",
+    "cards:check": "tsx scripts/cards-build.ts --check",
     "db:migrate": "npm run db:migrate -w apps/server",
     "db:seed": "npm run db:seed -w apps/server"
   },

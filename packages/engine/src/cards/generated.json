@@ -1,0 +1,1963 @@
+{
+ "cinder-initiate": {
+  "slug": "cinder-initiate",
+  "name": "Cinder Initiate",
+  "color": "red",
+  "type": "unit",
+  "cost": 1,
+  "power": 1,
+  "health": 1,
+  "text": "Rush. Overextend 1.",
+  "kw": [
+   {
+    "k": "rush"
+   },
+   {
+    "k": "overextend",
+    "n": 1
+   }
+  ],
+  "designerNote": "Decision 35: when attacking you MAY overextend for +N power; the unit takes N damage at end of round. A gamble, not a given.",
+  "artUrl": "/cards/cinder-initiate.jpg"
+ },
+ "devastating-strike": {
+  "targets": [
+   {
+    "t": "unitOrBase",
+    "side": "any",
+    "baseSide": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "damage",
+    "t": "chosen0",
+    "n": 2
+   }
+  ],
+  "slug": "devastating-strike",
+  "name": "Devastating Strike",
+  "color": "red",
+  "type": "action",
+  "cost": 1,
+  "text": "Deal 2 damage to target unit or base. Overextend 1.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/devastating-strike.jpg"
+ },
+ "reckless-charge": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "rush"
+    },
+    "dur": "perm"
+   }
+  ],
+  "slug": "reckless-charge",
+  "name": "Reckless Charge",
+  "color": "red",
+  "type": "action",
+  "cost": 1,
+  "text": "Target unit gains Rush. Overextend 1.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/reckless-charge.jpg"
+ },
+ "spark-hound": {
+  "onAttack": [
+   {
+    "op": "buff",
+    "t": "self",
+    "p": 1,
+    "dur": "round"
+   }
+  ],
+  "slug": "spark-hound",
+  "name": "Spark Hound",
+  "color": "red",
+  "type": "unit",
+  "cost": 1,
+  "power": 2,
+  "health": 1,
+  "text": "Rush. When this attacks, it gets +1 Power this round.",
+  "kw": [
+   {
+    "k": "rush"
+   }
+  ],
+  "artUrl": "/cards/spark-hound.jpg"
+ },
+ "berserker": {
+  "slug": "berserker",
+  "name": "Berserker",
+  "color": "red",
+  "type": "unit",
+  "cost": 2,
+  "power": 3,
+  "health": 2,
+  "text": "Rush. Overextend 2.",
+  "kw": [
+   {
+    "k": "rush"
+   },
+   {
+    "k": "overextend",
+    "n": 2
+   }
+  ],
+  "artUrl": "/cards/berserker.jpg"
+ },
+ "blood-rush": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "p": 2,
+    "dur": "round"
+   },
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "rush"
+    },
+    "dur": "round"
+   }
+  ],
+  "slug": "blood-rush",
+  "name": "Blood Rush",
+  "color": "red",
+  "type": "action",
+  "cost": 2,
+  "text": "Target unit gets +2 Power and Rush this round. Overextend 1.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/blood-rush.jpg"
+ },
+ "flameblade-raider": {
+  "slug": "flameblade-raider",
+  "name": "Flameblade Raider",
+  "color": "red",
+  "type": "unit",
+  "cost": 2,
+  "power": 2,
+  "health": 2,
+  "text": "Rush. Breakthrough 1.",
+  "kw": [
+   {
+    "k": "rush"
+   },
+   {
+    "k": "breakthrough",
+    "n": 1
+   }
+  ],
+  "artUrl": "/cards/flameblade-raider.jpg"
+ },
+ "searing-bolt": {
+  "targets": [
+   {
+    "t": "unitOrBase",
+    "side": "any",
+    "baseSide": "any"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "damage",
+    "t": "chosen0",
+    "n": 2
+   }
+  ],
+  "slug": "searing-bolt",
+  "name": "Searing Bolt",
+  "color": "red",
+  "type": "action",
+  "cost": 2,
+  "text": "Deal 2 damage to any target. Overextend 1.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/searing-bolt.jpg"
+ },
+ "smash-through": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly",
+    "withKw": "rush"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "breakthrough",
+     "n": 2
+    },
+    "dur": "round"
+   }
+  ],
+  "slug": "smash-through",
+  "name": "Smash Through",
+  "color": "red",
+  "type": "action",
+  "cost": 2,
+  "text": "Target unit with Rush gains Breakthrough 2 this round. Overextend 1.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/smash-through.jpg"
+ },
+ "warcry-leader": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "otherFriendly",
+    "kw": {
+     "k": "rush"
+    }
+   }
+  ],
+  "slug": "warcry-leader",
+  "name": "Warcry Leader",
+  "color": "red",
+  "type": "unit",
+  "cost": 2,
+  "power": 2,
+  "health": 3,
+  "text": "Other friendly units have Rush.",
+  "artUrl": "/cards/warcry-leader.jpg"
+ },
+ "collateral-damage": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "any",
+    "count": 2
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "damage",
+    "t": "chosen0",
+    "n": 2
+   },
+   {
+    "op": "damage",
+    "t": "chosen1",
+    "n": 2
+   }
+  ],
+  "slug": "collateral-damage",
+  "name": "Collateral Damage",
+  "color": "red",
+  "type": "action",
+  "cost": 3,
+  "text": "Deal 2 damage to two different target units. Overextend 2.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/collateral-damage.jpg"
+ },
+ "fiery-impaler": {
+  "onAttack": [
+   {
+    "op": "damage",
+    "t": "autoSplash",
+    "n": 1
+   }
+  ],
+  "slug": "fiery-impaler",
+  "name": "Fiery Impaler",
+  "color": "red",
+  "type": "unit",
+  "cost": 3,
+  "power": 3,
+  "health": 3,
+  "text": "When this attacks a unit, it deals 1 damage to an adjacent unit.",
+  "designerNote": "⚑ \"Adjacent unit\" auto-targets the strongest other enemy unit in the defending zone (deterministic pick).",
+  "artUrl": "/cards/fiery-impaler.jpg"
+ },
+ "rageforged-brute": {
+  "slug": "rageforged-brute",
+  "name": "Rageforged Brute",
+  "color": "red",
+  "type": "unit",
+  "cost": 3,
+  "power": 4,
+  "health": 3,
+  "text": "Breakthrough 2. Overextend 2.",
+  "kw": [
+   {
+    "k": "breakthrough",
+    "n": 2
+   },
+   {
+    "k": "overextend",
+    "n": 2
+   }
+  ],
+  "artUrl": "/cards/rageforged-brute.jpg"
+ },
+ "volcanic-slam": {
+  "targets": [
+   {
+    "t": "unitOrBase",
+    "side": "any",
+    "baseSide": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "damage",
+    "t": "chosen0",
+    "n": 3
+   }
+  ],
+  "slug": "volcanic-slam",
+  "name": "Volcanic Slam",
+  "color": "red",
+  "type": "action",
+  "cost": 3,
+  "text": "Deal 3 damage to target unit or base. Overextend 2.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/volcanic-slam.jpg"
+ },
+ "warpath": {
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": {
+     "side": "friendly"
+    },
+    "kw": {
+     "k": "rush"
+    },
+    "dur": "perm"
+   }
+  ],
+  "slug": "warpath",
+  "name": "Warpath",
+  "color": "red",
+  "type": "action",
+  "cost": 3,
+  "text": "All friendly units gain Rush. Overextend 2.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/warpath.jpg"
+ },
+ "blaze-juggernaut": {
+  "slug": "blaze-juggernaut",
+  "name": "Blaze Juggernaut",
+  "color": "red",
+  "type": "unit",
+  "cost": 4,
+  "power": 4,
+  "health": 4,
+  "text": "Rush. This unit can attack adjacent zones.",
+  "kw": [
+   {
+    "k": "rush"
+   },
+   {
+    "k": "reach"
+   }
+  ],
+  "designerNote": "⚑ \"Attack adjacent zones\" = Reach: like Ranged but still draws counter-damage and can assault bases normally.",
+  "artUrl": "/cards/blaze-juggernaut.jpg"
+ },
+ "burning-oath": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "attached",
+    "p": 2
+   },
+   {
+    "s": "aura",
+    "scope": "attached",
+    "kw": {
+     "k": "rush"
+    }
+   }
+  ],
+  "slug": "burning-oath",
+  "name": "Burning Oath",
+  "color": "red",
+  "type": "upgrade",
+  "cost": 4,
+  "text": "Give attached unit +2 Power and Rush. Overextend 1.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/burning-oath.jpg"
+ },
+ "inferno-titan": {
+  "slug": "inferno-titan",
+  "name": "Inferno Titan",
+  "color": "red",
+  "type": "unit",
+  "cost": 4,
+  "power": 6,
+  "health": 5,
+  "text": "Breakthrough 3. Overextend 3.",
+  "kw": [
+   {
+    "k": "breakthrough",
+    "n": 3
+   },
+   {
+    "k": "overextend",
+    "n": 3
+   }
+  ],
+  "artUrl": "/cards/inferno-titan.jpg"
+ },
+ "pillage": {
+  "targets": [
+   {
+    "t": "upgrade",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "destroyUpgrade"
+   }
+  ],
+  "slug": "pillage",
+  "name": "Pillage",
+  "color": "red",
+  "type": "action",
+  "cost": 4,
+  "text": "Destroy target enemy upgrade. Overextend 2.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/pillage.jpg"
+ },
+ "rupture": {
+  "targets": [
+   {
+    "t": "unitOrBase",
+    "side": "any",
+    "baseSide": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "damage",
+    "t": "chosen0",
+    "n": 4
+   }
+  ],
+  "slug": "rupture",
+  "name": "Rupture",
+  "color": "red",
+  "type": "action",
+  "cost": 4,
+  "text": "Deal 4 damage to target unit or base. Overextend 3.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/rupture.jpg"
+ },
+ "bloodfrenzy": {
+  "startOfRound": {
+   "cond": {
+    "selfLifeAtMost": 5
+   },
+   "ops": [
+    {
+     "op": "buff",
+     "t": "attached",
+     "p": 1,
+     "dur": "perm"
+    }
+   ]
+  },
+  "slug": "bloodfrenzy",
+  "name": "Bloodfrenzy",
+  "color": "red",
+  "type": "upgrade",
+  "cost": 5,
+  "text": "At the start of your round, attached unit gets +1 Power if you have 5 or less life.",
+  "artUrl": "/cards/bloodfrenzy.jpg"
+ },
+ "crimson-behemoth": {
+  "onAttackBase": [
+   {
+    "op": "damageFilter",
+    "f": {
+     "side": "all",
+     "zone": "sameAsSelf",
+     "other": true
+    },
+    "n": 2
+   }
+  ],
+  "slug": "crimson-behemoth",
+  "name": "Crimson Behemoth",
+  "color": "red",
+  "type": "unit",
+  "cost": 5,
+  "power": 6,
+  "health": 6,
+  "text": "When this attacks a base, it deals 2 damage to all adjacent zones.",
+  "designerNote": "⚑ Re-ruled after playtest 004: the assault splashes 2 damage onto every OTHER unit in the defended Home zone, both sides (the original \"zones adjacent to the Behemoth\" reading only ever hit Neutral — dead text during a siege).",
+  "artUrl": "/cards/crimson-behemoth.jpg"
+ },
+ "doombringer": {
+  "slug": "doombringer",
+  "name": "Doombringer",
+  "color": "red",
+  "type": "unit",
+  "cost": 5,
+  "power": 5,
+  "health": 4,
+  "text": "Rush. Breakthrough 3.",
+  "kw": [
+   {
+    "k": "rush"
+   },
+   {
+    "k": "breakthrough",
+    "n": 3
+   }
+  ],
+  "artUrl": "/cards/doombringer.jpg"
+ },
+ "relentless-assault": {
+  "onPlay": [
+   {
+    "op": "ready",
+    "side": "friendly"
+   }
+  ],
+  "slug": "relentless-assault",
+  "name": "Relentless Assault",
+  "color": "red",
+  "type": "action",
+  "cost": 5,
+  "text": "Take an extra combat phase after this one. Overextend 3.",
+  "designerNote": "⚑ Combat is merged into the Main Phase (DECISIONS 8), so \"extra combat phase\" = ready all your units; they may attack again. ⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/relentless-assault.jpg"
+ },
+ "scorching-howl": {
+  "onPlay": [
+   {
+    "op": "damageFilter",
+    "f": {
+     "side": "all"
+    },
+    "n": 3
+   }
+  ],
+  "slug": "scorching-howl",
+  "name": "Scorching Howl",
+  "color": "red",
+  "type": "action",
+  "cost": 5,
+  "text": "Deal 3 damage to all units. Overextend 3.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/scorching-howl.jpg"
+ },
+ "cataclysmic-charge": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "rush"
+    },
+    "dur": "round"
+   },
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "p": 3,
+    "dur": "round"
+   }
+  ],
+  "slug": "cataclysmic-charge",
+  "name": "Cataclysmic Charge",
+  "color": "red",
+  "type": "action",
+  "cost": 6,
+  "text": "Target unit gains Rush and +3 Power this round. Overextend 4.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/cataclysmic-charge.jpg"
+ },
+ "earthshaker": {
+  "slug": "earthshaker",
+  "name": "Earthshaker",
+  "color": "red",
+  "type": "unit",
+  "cost": 6,
+  "power": 6,
+  "health": 5,
+  "text": "Breakthrough 3. Overextend 3.",
+  "kw": [
+   {
+    "k": "breakthrough",
+    "n": 3
+   },
+   {
+    "k": "overextend",
+    "n": 3
+   }
+  ],
+  "artUrl": "/cards/earthshaker.jpg"
+ },
+ "execution-swing": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "any",
+    "mustBeDamaged": true
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "destroy",
+    "t": "chosen0"
+   }
+  ],
+  "slug": "execution-swing",
+  "name": "Execution Swing",
+  "color": "red",
+  "type": "action",
+  "cost": 6,
+  "text": "Destroy target damaged unit. Overextend 3.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/execution-swing.jpg"
+ },
+ "raging-inferno": {
+  "targets": [
+   {
+    "t": "unitOrBase",
+    "side": "any",
+    "baseSide": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "damage",
+    "t": "chosen0",
+    "n": 5
+   }
+  ],
+  "slug": "raging-inferno",
+  "name": "Raging Inferno",
+  "color": "red",
+  "type": "action",
+  "cost": 6,
+  "text": "Deal 5 damage to target unit or base. Overextend 4.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/raging-inferno.jpg"
+ },
+ "warlord-garok": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "otherFriendly",
+    "p": 1
+   }
+  ],
+  "slug": "warlord-garok",
+  "name": "Warlord Garok",
+  "color": "red",
+  "type": "unit",
+  "cost": 6,
+  "power": 5,
+  "health": 5,
+  "text": "Rush. Your other units have +1 Power.",
+  "kw": [
+   {
+    "k": "rush"
+   }
+  ],
+  "artUrl": "/cards/warlord-garok.jpg"
+ },
+ "apocalypse-engine": {
+  "slug": "apocalypse-engine",
+  "name": "Apocalypse Engine",
+  "color": "red",
+  "type": "unit",
+  "cost": 7,
+  "power": 7,
+  "health": 7,
+  "text": "Breakthrough 4. Overextend 4.",
+  "kw": [
+   {
+    "k": "breakthrough",
+    "n": 4
+   },
+   {
+    "k": "overextend",
+    "n": 4
+   }
+  ],
+  "artUrl": "/cards/apocalypse-engine.jpg"
+ },
+ "burn-the-frontline": {
+  "targets": [
+   {
+    "t": "zone"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "damageFilter",
+    "f": {
+     "side": "all",
+     "zone": "chosenZone"
+    },
+    "n": 4
+   }
+  ],
+  "slug": "burn-the-frontline",
+  "name": "Burn the Frontline",
+  "color": "red",
+  "type": "action",
+  "cost": 7,
+  "text": "Deal 4 damage to all units in one zone. Overextend 4.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/burn-the-frontline.jpg"
+ },
+ "last-stand": {
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": {
+     "side": "friendly"
+    },
+    "p": 2,
+    "dur": "round"
+   },
+   {
+    "op": "damage",
+    "t": "selfBase",
+    "n": 2
+   }
+  ],
+  "slug": "last-stand",
+  "name": "Last Stand",
+  "color": "red",
+  "type": "action",
+  "cost": 7,
+  "text": "Your units gain +2 Power this round. You lose 2 life.",
+  "artUrl": "/cards/last-stand.jpg"
+ },
+ "unchained-rage": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "any"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "double",
+    "t": "chosen0"
+   }
+  ],
+  "slug": "unchained-rage",
+  "name": "Unchained Rage",
+  "color": "red",
+  "type": "action",
+  "cost": 7,
+  "text": "Double a unit's Power this round. Overextend 4.",
+  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/unchained-rage.jpg"
+ },
+ "final-onslaught": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "ready",
+    "side": "friendly",
+    "t": "chosen0"
+   },
+   {
+    "op": "extraAction"
+   }
+  ],
+  "slug": "final-onslaught",
+  "name": "Final Onslaught",
+  "color": "red",
+  "type": "action",
+  "cost": 8,
+  "text": "Ready one of your units, then immediately take an extra action. Overextend 5.",
+  "designerNote": "Decision 43: rounds have no extra turns — \"extra turn\" became ready one of your units + an extra action. Unplayable with no friendly unit to ready, by design. ⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "artUrl": "/cards/final-onslaught.jpg"
+ },
+ "worldrender": {
+  "slug": "worldrender",
+  "name": "Worldrender",
+  "color": "red",
+  "type": "unit",
+  "cost": 8,
+  "power": 8,
+  "health": 8,
+  "text": "Breakthrough 5. Overextend 5.",
+  "kw": [
+   {
+    "k": "breakthrough",
+    "n": 5
+   },
+   {
+    "k": "overextend",
+    "n": 5
+   }
+  ],
+  "artUrl": "/cards/worldrender.jpg"
+ },
+ "oath-of-order": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "attached",
+    "p": 1
+   },
+   {
+    "s": "aura",
+    "scope": "attached",
+    "kw": {
+     "k": "guard"
+    }
+   }
+  ],
+  "slug": "oath-of-order",
+  "name": "Oath of Order",
+  "color": "yellow",
+  "type": "upgrade",
+  "cost": 1,
+  "text": "Attach to unit. This unit gets +1 Power and Guard.",
+  "artUrl": "/cards/oath-of-order.jpg"
+ },
+ "prison-warrant": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "imprison",
+    "t": "chosen0"
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "prison-warrant",
+  "name": "Prison Warrant",
+  "color": "yellow",
+  "type": "action",
+  "cost": 1,
+  "text": "Imprison target enemy unit in this zone. Influence: +1.",
+  "designerNote": "⚑ \"In this zone\" is meaningless for a card played from hand — implemented as any enemy unit. Needs design.",
+  "artUrl": "/cards/prison-warrant.jpg"
+ },
+ "radiant-aegis": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "armor": 2,
+    "dur": "perm"
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "radiant-aegis",
+  "name": "Radiant Aegis",
+  "color": "yellow",
+  "type": "action",
+  "cost": 1,
+  "text": "Give target unit Armor 2. Influence: +1.",
+  "artUrl": "/cards/radiant-aegis.jpg"
+ },
+ "vanguard-sentinel": {
+  "onDefend": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "vanguard-sentinel",
+  "name": "Vanguard Sentinel",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 1,
+  "power": 1,
+  "health": 2,
+  "text": "Guard. When this defends, gain 1 Influence.",
+  "kw": [
+   {
+    "k": "guard"
+   }
+  ],
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
+  "artUrl": "/cards/vanguard-sentinel.jpg"
+ },
+ "binding-light": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "imprison",
+    "t": "chosen0"
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "binding-light",
+  "name": "Binding Light",
+  "color": "yellow",
+  "type": "action",
+  "cost": 2,
+  "text": "Imprison target unit. If your Influence is 10+, it can't attack players. Influence: +1.",
+  "designerNote": "⚑ The 10+ rider is redundant while imprisoned (prisoners cannot attack at all) — dropped pending design.",
+  "artUrl": "/cards/binding-light.jpg"
+ },
+ "containment-priest": {
+  "onEnterZone": [
+   {
+    "op": "imprison",
+    "t": "auto",
+    "auto": {
+     "scope": "enteredZone"
+    }
+   }
+  ],
+  "slug": "containment-priest",
+  "name": "Containment Priest",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 2,
+  "power": 2,
+  "health": 3,
+  "text": "When this enters a zone, imprison target enemy unit in that zone.",
+  "designerNote": "⚑ Imprison target is auto-picked: strongest eligible enemy unit (deterministic; DECISIONS/spec §3.3). Fires on deploy and on every move.",
+  "artUrl": "/cards/containment-priest.jpg"
+ },
+ "hold-the-line": {
+  "targets": [
+   {
+    "t": "zone"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": {
+     "side": "friendly",
+     "zone": "chosenZone"
+    },
+    "kw": {
+     "k": "guard"
+    },
+    "dur": "perm"
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "hold-the-line",
+  "name": "Hold the Line",
+  "color": "yellow",
+  "type": "action",
+  "cost": 2,
+  "text": "Give all friendly units in this zone Guard. Influence: +1.",
+  "designerNote": "⚑ \"This zone\" read as \"choose a zone\".",
+  "artUrl": "/cards/hold-the-line.jpg"
+ },
+ "iron-discipline": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "attached",
+    "armor": 1
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "iron-discipline",
+  "name": "Iron Discipline",
+  "color": "yellow",
+  "type": "upgrade",
+  "cost": 2,
+  "text": "Attach to unit. This unit gets Armor 1. Influence: +1.",
+  "artUrl": "/cards/iron-discipline.jpg"
+ },
+ "sunguard-defender": {
+  "onDefend": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "sunguard-defender",
+  "name": "Sunguard Defender",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 2,
+  "power": 2,
+  "health": 3,
+  "text": "Guard. When this defends, gain 1 Influence.",
+  "kw": [
+   {
+    "k": "guard"
+   }
+  ],
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
+  "artUrl": "/cards/sunguard-defender.jpg"
+ },
+ "bulwark-protector": {
+  "onDefend": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "bulwark-protector",
+  "name": "Bulwark Protector",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 3,
+  "power": 2,
+  "health": 5,
+  "text": "Guard. When this defends, gain 1 Influence.",
+  "kw": [
+   {
+    "k": "guard"
+   }
+  ],
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
+  "artUrl": "/cards/bulwark-protector.jpg"
+ },
+ "chain-of-law": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "attached",
+    "kw": {
+     "k": "untargetable"
+    }
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "chain-of-law",
+  "name": "Chain of Law",
+  "color": "yellow",
+  "type": "upgrade",
+  "cost": 3,
+  "text": "Attach to unit. This unit can't be the target of enemy actions. Influence: +1.",
+  "artUrl": "/cards/chain-of-law.jpg"
+ },
+ "justicar-enforcer": {
+  "onDefend": [
+   {
+    "op": "influence",
+    "n": 2
+   }
+  ],
+  "slug": "justicar-enforcer",
+  "name": "Justicar Enforcer",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 3,
+  "power": 3,
+  "health": 4,
+  "text": "Guard. When this defends, gain 2 Influence.",
+  "kw": [
+   {
+    "k": "guard"
+   }
+  ],
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
+  "artUrl": "/cards/justicar-enforcer.jpg"
+ },
+ "noble-purifier": {
+  "onAttack": [
+   {
+    "op": "imprison",
+    "t": "auto",
+    "auto": {
+     "scope": "targetZone"
+    }
+   }
+  ],
+  "slug": "noble-purifier",
+  "name": "Noble Purifier",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 3,
+  "power": 3,
+  "health": 3,
+  "text": "When this attacks, you may imprison a unit in the defending zone.",
+  "designerNote": "⚑ Imprison target is auto-picked: strongest eligible enemy unit (deterministic; DECISIONS/spec §3.3). The \"may\" auto-applies (strictly beneficial; DECISIONS 24).",
+  "artUrl": "/cards/noble-purifier.jpg"
+ },
+ "sanctified-bastion": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "otherFriendly",
+    "armor": 1
+   }
+  ],
+  "slug": "sanctified-bastion",
+  "name": "Sanctified Bastion",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 3,
+  "power": 0,
+  "health": 6,
+  "text": "This can't attack. Your other units have Armor 1.",
+  "kw": [
+   {
+    "k": "cantAttack"
+   }
+  ],
+  "artUrl": "/cards/sanctified-bastion.jpg"
+ },
+ "subjugate": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "imprison",
+    "t": "chosen0"
+   },
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "p": -1,
+    "dur": "perm",
+    "cond": {
+     "influenceAtMost": 5
+    }
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "subjugate",
+  "name": "Subjugate",
+  "color": "yellow",
+  "type": "action",
+  "cost": 3,
+  "text": "Imprison target unit. If your Influence is 5 or less, it gets -1 Power. Influence: +1.",
+  "artUrl": "/cards/subjugate.jpg"
+ },
+ "unwavering-faith": {
+  "targets": [
+   {
+    "t": "unitOrBase",
+    "side": "any",
+    "baseSide": "any"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "heal",
+    "t": "chosen0",
+    "n": 3
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "unwavering-faith",
+  "name": "Unwavering Faith",
+  "color": "yellow",
+  "type": "action",
+  "cost": 3,
+  "text": "Heal 3 damage from a unit or your base. Influence: +1.",
+  "artUrl": "/cards/unwavering-faith.jpg"
+ },
+ "disciplined-mind": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "attached",
+    "armor": 1
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "disciplined-mind",
+  "name": "Disciplined Mind",
+  "color": "yellow",
+  "type": "upgrade",
+  "cost": 4,
+  "text": "Attach to unit. This unit gets +1 Armor. Draw a card.",
+  "artUrl": "/cards/disciplined-mind.jpg"
+ },
+ "exemplar-knight": {
+  "onAttack": [
+   {
+    "op": "buff",
+    "t": "self",
+    "p": 2,
+    "dur": "round"
+   }
+  ],
+  "onKill": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "exemplar-knight",
+  "name": "Exemplar Knight",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 4,
+  "power": 4,
+  "health": 4,
+  "text": "When this attacks, give it +2 Power this round. When it defeats a unit, gain 1 Influence.",
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
+  "artUrl": "/cards/exemplar-knight.jpg"
+ },
+ "fortress-keeper": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "friendlyInZone",
+    "kw": {
+     "k": "guard"
+    }
+   }
+  ],
+  "slug": "fortress-keeper",
+  "name": "Fortress Keeper",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 4,
+  "power": 1,
+  "health": 7,
+  "text": "This can't attack. Other friendly units in this zone have Guard.",
+  "kw": [
+   {
+    "k": "cantAttack"
+   }
+  ],
+  "artUrl": "/cards/fortress-keeper.jpg"
+ },
+ "high-justiciar": {
+  "startOfRound": {
+   "ops": [
+    {
+     "op": "imprison",
+     "t": "auto",
+     "auto": {
+      "scope": "otherZone"
+     }
+    }
+   ]
+  },
+  "slug": "high-justiciar",
+  "name": "High Justiciar",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 4,
+  "power": 3,
+  "health": 5,
+  "text": "At the start of your round, imprison target enemy unit in another zone.",
+  "designerNote": "⚑ Imprison target is auto-picked: strongest eligible enemy unit (deterministic; DECISIONS/spec §3.3). \"Another zone\" = any zone other than the Justiciar's.",
+  "artUrl": "/cards/high-justiciar.jpg"
+ },
+ "lawbringer": {
+  "onEnterZone": [
+   {
+    "op": "imprison",
+    "t": "auto",
+    "auto": {
+     "scope": "enteredZone"
+    }
+   }
+  ],
+  "slug": "lawbringer",
+  "name": "Lawbringer",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 4,
+  "power": 4,
+  "health": 4,
+  "text": "When this enters a zone, imprison target unit.",
+  "designerNote": "⚑ Imprison target is auto-picked: strongest eligible enemy unit (deterministic; DECISIONS/spec §3.3). Fires on deploy and on every move.",
+  "artUrl": "/cards/lawbringer.jpg"
+ },
+ "mobilize-the-faithful": {
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": {
+     "side": "friendly"
+    },
+    "p": 1,
+    "dur": "perm"
+   },
+   {
+    "op": "grant",
+    "t": {
+     "side": "friendly"
+    },
+    "kw": {
+     "k": "guard"
+    },
+    "dur": "perm"
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "mobilize-the-faithful",
+  "name": "Mobilize the Faithful",
+  "color": "yellow",
+  "type": "action",
+  "cost": 4,
+  "text": "Give all friendly units +1 Power and Guard. Influence: +1.",
+  "artUrl": "/cards/mobilize-the-faithful.jpg"
+ },
+ "radiant-wall": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "armor": 3,
+    "dur": "perm"
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "radiant-wall",
+  "name": "Radiant Wall",
+  "color": "yellow",
+  "type": "action",
+  "cost": 4,
+  "text": "Give target unit Armor 3. Influence: +1.",
+  "artUrl": "/cards/radiant-wall.jpg"
+ },
+ "sentence": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "imprison",
+    "t": "chosen0"
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "sentence",
+  "name": "Sentence",
+  "color": "yellow",
+  "type": "action",
+  "cost": 4,
+  "text": "Imprison target unit. If your Influence is 10+, it can't move or attack. Influence: +1.",
+  "designerNote": "⚑ The 10+ rider duplicates what imprisonment already does — dropped pending design.",
+  "artUrl": "/cards/sentence.jpg"
+ },
+ "aura-of-resolve": {
+  "startOfRound": {
+   "ops": [
+    {
+     "op": "influence",
+     "n": 1
+    }
+   ]
+  },
+  "slug": "aura-of-resolve",
+  "name": "Aura of Resolve",
+  "color": "yellow",
+  "type": "upgrade",
+  "cost": 5,
+  "text": "Attach to unit. At the start of your round, gain 1 Influence.",
+  "artUrl": "/cards/aura-of-resolve.jpg"
+ },
+ "censer-of-purity": {
+  "startOfRound": {
+   "ops": [
+    {
+     "op": "influence",
+     "n": -1
+    },
+    {
+     "op": "heal",
+     "t": "selfBase",
+     "n": 2
+    }
+   ]
+  },
+  "slug": "censer-of-purity",
+  "name": "Censer of Purity",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 5,
+  "power": 3,
+  "health": 6,
+  "text": "At the start of your round, lose 1 Influence. If you do, heal 2 damage from your base.",
+  "artUrl": "/cards/censer-of-purity.jpg"
+ },
+ "custodian-of-law": {
+  "onDefend": [
+   {
+    "op": "influence",
+    "n": 2
+   }
+  ],
+  "slug": "custodian-of-law",
+  "name": "Custodian of Law",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 5,
+  "power": 4,
+  "health": 6,
+  "text": "Guard. When this defends, gain 2 Influence.",
+  "kw": [
+   {
+    "k": "guard"
+   }
+  ],
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
+  "artUrl": "/cards/custodian-of-law.jpg"
+ },
+ "dawnspear-paladin": {
+  "onAttack": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "dawnspear-paladin",
+  "name": "Dawnspear Paladin",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 5,
+  "power": 5,
+  "health": 5,
+  "text": "When this attacks, you may gain 1 Influence.",
+  "designerNote": "⚑ The \"may\" auto-applies (DECISIONS 24).",
+  "artUrl": "/cards/dawnspear-paladin.jpg"
+ },
+ "disarming-order": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "cantAttack"
+    },
+    "dur": "round"
+   },
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "disarming-order",
+  "name": "Disarming Order",
+  "color": "yellow",
+  "type": "action",
+  "cost": 5,
+  "text": "Target unit can't attack this round. Draw a card.",
+  "artUrl": "/cards/disarming-order.jpg"
+ },
+ "imprisonment-chamber": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "imprison",
+    "t": "chosen0"
+   }
+  ],
+  "slug": "imprisonment-chamber",
+  "name": "Imprisonment Chamber",
+  "color": "yellow",
+  "type": "action",
+  "cost": 5,
+  "text": "Imprison target unit. At the start of your round, lose 1 Influence.",
+  "designerNote": "⚑ The printed \"at the start of your round, lose 1 Influence\" is the global Prison Decay rule (v1.2) — not charged twice.",
+  "artUrl": "/cards/imprisonment-chamber.jpg"
+ },
+ "radiant-judgment": {
+  "onPlay": [
+   {
+    "op": "imprison",
+    "t": "auto",
+    "f": {
+     "side": "enemy",
+     "maxPower": 3
+    }
+   },
+   {
+    "op": "influence",
+    "n": 2
+   }
+  ],
+  "slug": "radiant-judgment",
+  "name": "Radiant Judgment",
+  "color": "yellow",
+  "type": "action",
+  "cost": 5,
+  "text": "Imprison all enemy units with 3 Power or less. Influence: +2.",
+  "artUrl": "/cards/radiant-judgment.jpg"
+ },
+ "unshakable-wall": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "attached",
+    "armor": 2
+   },
+   {
+    "s": "aura",
+    "scope": "attached",
+    "kw": {
+     "k": "guard"
+    }
+   }
+  ],
+  "slug": "unshakable-wall",
+  "name": "Unshakable Wall",
+  "color": "yellow",
+  "type": "upgrade",
+  "cost": 5,
+  "text": "Attach to unit. This unit gets +2 Armor and Guard.",
+  "artUrl": "/cards/unshakable-wall.jpg"
+ },
+ "detain": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "imprison",
+    "t": "chosen0"
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "detain",
+  "name": "Detain",
+  "color": "yellow",
+  "type": "action",
+  "cost": 6,
+  "text": "Imprison target enemy unit. You gain 1 Influence.",
+  "artUrl": "/cards/detain.jpg"
+ },
+ "devout-intervention": {
+  "onPlay": [
+   {
+    "op": "preventBase",
+    "n": 3
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "devout-intervention",
+  "name": "Devout Intervention",
+  "color": "yellow",
+  "type": "action",
+  "cost": 6,
+  "text": "Reduce damage to your base by 3 this round. Gain 1 Influence.",
+  "artUrl": "/cards/devout-intervention.jpg"
+ },
+ "gateward-colossus": {
+  "statics": [
+   {
+    "s": "imprisonWatcher",
+    "n": 1
+   }
+  ],
+  "slug": "gateward-colossus",
+  "name": "Gateward Colossus",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 6,
+  "power": 3,
+  "health": 9,
+  "text": "This can't attack. Whenever a unit is imprisoned, gain 1 Influence.",
+  "kw": [
+   {
+    "k": "cantAttack"
+   }
+  ],
+  "artUrl": "/cards/gateward-colossus.jpg"
+ },
+ "hierophant": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "otherFriendly",
+    "p": 1,
+    "cond": {
+     "influenceAtLeast": 10
+    }
+   }
+  ],
+  "slug": "hierophant",
+  "name": "Hierophant",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 6,
+  "power": 2,
+  "health": 6,
+  "text": "Other friendly units get +1 Power while your Influence is 10 or more.",
+  "artUrl": "/cards/hierophant.jpg"
+ },
+ "inquisitor": {
+  "onEnterZone": [
+   {
+    "op": "imprison",
+    "t": "auto",
+    "auto": {
+     "scope": "enteredZone",
+     "maxPower": 4
+    }
+   }
+  ],
+  "slug": "inquisitor",
+  "name": "Inquisitor",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 6,
+  "power": 4,
+  "health": 5,
+  "text": "When this enters a zone, imprison target unit with 4 Power or less.",
+  "designerNote": "⚑ Imprison target is auto-picked: strongest eligible enemy unit (deterministic; DECISIONS/spec §3.3). Fires on deploy and on every move.",
+  "artUrl": "/cards/inquisitor.jpg"
+ },
+ "light-of-authority": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "p": 3,
+    "dur": "round"
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "light-of-authority",
+  "name": "Light of Authority",
+  "color": "yellow",
+  "type": "action",
+  "cost": 6,
+  "text": "Give target unit +3 Power until end of round. Influence: +1.",
+  "artUrl": "/cards/light-of-authority.jpg"
+ },
+ "resolve-banner": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "friendlyInZone",
+    "p": 1
+   }
+  ],
+  "slug": "resolve-banner",
+  "name": "Resolve Banner",
+  "color": "yellow",
+  "type": "upgrade",
+  "cost": 6,
+  "text": "Attach to unit. Other friendly units in this zone get +1 Power.",
+  "designerNote": "⚑ Buffs friendly units sharing the carrier's zone, excluding the carrier.",
+  "artUrl": "/cards/resolve-banner.jpg"
+ },
+ "sanctify": {
+  "onPlay": [
+   {
+    "op": "heal",
+    "t": "selfBase",
+    "n": 4
+   },
+   {
+    "op": "influence",
+    "n": 2
+   }
+  ],
+  "slug": "sanctify",
+  "name": "Sanctify",
+  "color": "yellow",
+  "type": "action",
+  "cost": 6,
+  "text": "Heal 4 damage from your base. Gain 2 Influence.",
+  "artUrl": "/cards/sanctify.jpg"
+ },
+ "absolution": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "removeNegative",
+    "t": "chosen0"
+   },
+   {
+    "op": "influence",
+    "n": 2
+   }
+  ],
+  "slug": "absolution",
+  "name": "Absolution",
+  "color": "yellow",
+  "type": "action",
+  "cost": 7,
+  "text": "Remove all negative effects from target unit. Gain 2 Influence.",
+  "artUrl": "/cards/absolution.jpg"
+ },
+ "archon-of-order": {
+  "startOfRound": {
+   "ops": [
+    {
+     "op": "imprison",
+     "t": "auto",
+     "auto": {
+      "scope": "eachZone"
+     }
+    }
+   ]
+  },
+  "slug": "archon-of-order",
+  "name": "Archon of Order",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 7,
+  "power": 7,
+  "health": 7,
+  "text": "At the start of your round, imprison up to one unit in each enemy zone.",
+  "designerNote": "⚑ Imprison target is auto-picked: strongest eligible enemy unit (deterministic; DECISIONS/spec §3.3). \"Each enemy zone\" = each zone holding enemy units.",
+  "artUrl": "/cards/archon-of-order.jpg"
+ },
+ "champion-of-the-faith": {
+  "onAttack": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "champion-of-the-faith",
+  "name": "Champion of the Faith",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 7,
+  "power": 6,
+  "health": 6,
+  "text": "When this attacks, your opponent loses 1 Influence.",
+  "designerNote": "⚑ Influence is one shared track: \"opponent loses 1\" = you gain 1 (DECISIONS 15).",
+  "artUrl": "/cards/champion-of-the-faith.jpg"
+ },
+ "command-edict": {
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": {
+     "side": "friendly"
+    },
+    "armor": 2,
+    "dur": "round"
+   },
+   {
+    "op": "influence",
+    "n": 2
+   }
+  ],
+  "slug": "command-edict",
+  "name": "Command Edict",
+  "color": "yellow",
+  "type": "action",
+  "cost": 7,
+  "text": "Give all friendly units +2 Armor this round. Influence: +2.",
+  "artUrl": "/cards/command-edict.jpg"
+ },
+ "prison-of-light": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "imprison",
+    "t": "chosen0"
+   }
+  ],
+  "slug": "prison-of-light",
+  "name": "Prison of Light",
+  "color": "yellow",
+  "type": "action",
+  "cost": 7,
+  "text": "Imprison target unit. At the start of your round, lose 1 Influence.",
+  "designerNote": "⚑ The printed \"at the start of your round, lose 1 Influence\" is the global Prison Decay rule (v1.2) — not charged twice.",
+  "artUrl": "/cards/prison-of-light.jpg"
+ },
+ "radiant-citadel": {
+  "statics": [
+   {
+    "s": "oppThreshold",
+    "n": 2
+   }
+  ],
+  "slug": "radiant-citadel",
+  "name": "Radiant Citadel",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 7,
+  "power": 0,
+  "health": 8,
+  "text": "This can't attack. Your maximum Influence is increased by 2.",
+  "kw": [
+   {
+    "k": "cantAttack"
+   }
+  ],
+  "designerNote": "⚑ \"Maximum Influence +2\" has no meaning on a ±15 shared track — reinterpreted as: your opponent needs 17 to win on Influence while this is in play. Needs design.",
+  "artUrl": "/cards/radiant-citadel.jpg"
+ },
+ "supreme-sentence": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "imprison",
+    "t": "chosen0"
+   }
+  ],
+  "slug": "supreme-sentence",
+  "name": "Supreme Sentence",
+  "color": "yellow",
+  "type": "action",
+  "cost": 7,
+  "text": "Imprison target unit. If your Influence is 15 or more, imprison another.",
+  "designerNote": "⚑ The 15+ clause can never fire while 15 IS the win threshold — inert as printed. Needs design.",
+  "artUrl": "/cards/supreme-sentence.jpg"
+ },
+ "light-s-vanguard": {
+  "onDefend": [
+   {
+    "op": "influence",
+    "n": 2
+   }
+  ],
+  "slug": "light-s-vanguard",
+  "name": "Light's Vanguard",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 8,
+  "power": 6,
+  "health": 8,
+  "text": "Flying, Guard. When this defends, gain 2 Influence.",
+  "kw": [
+   {
+    "k": "flying"
+   },
+   {
+    "k": "guard"
+   }
+  ],
+  "designerNote": "⚑ Flying is undefined in rules v1.2 — implemented as \"may move to any zone, ignoring adjacency\". Needs design.",
+  "artUrl": "/cards/light-s-vanguard.jpg"
+ }
+}

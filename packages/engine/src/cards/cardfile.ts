@@ -8,6 +8,8 @@ import type { CardDef, Color, KeywordName, KeywordSpec } from '../types.ts'
  * does the I/O; the engine itself only ever sees the compiled generated.json.
  */
 
+export const slugify = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
 export const CARD_STATUSES = ['draft', 'redesign', 'canon'] as const
 export type CardStatus = (typeof CARD_STATUSES)[number]
 export interface CardFile { def: CardDef; status: CardStatus }

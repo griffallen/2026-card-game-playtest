@@ -1,4 +1,4 @@
-import { RED_CARDS, YELLOW_CARDS } from './cards/index.ts'
+import { CARD_SET } from './cards/index.ts'
 
 export interface PrebuiltDeck {
   slug: string
@@ -7,6 +7,10 @@ export interface PrebuiltDeck {
   description: string
   cards: { slug: string; count: number }[]
 }
+
+const byColor = (color: PrebuiltDeck['color']) => Object.values(CARD_SET).filter(c => c.color === color)
+const RED_CARDS = byColor('red')
+const YELLOW_CARDS = byColor('yellow')
 
 // Red has 36 uniques; duplicate the twelve cheapest (cost ≤ 3 core) to reach 48 (DECISIONS 25).
 const RED_DOUBLES = new Set(RED_CARDS.filter(c => c.cost <= 2).map(c => c.slug))
