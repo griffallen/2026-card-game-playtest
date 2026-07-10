@@ -25,7 +25,7 @@ const KEYWORDS: [string, string][] = [
 export function Rules() {
   return (
     <div className="mx-auto max-w-3xl px-6 pb-24 pt-10 text-[15px]">
-      <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · Rulebook · v2.1 · 2026-07-09</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · Rulebook · v2.3 · 2026-07-09</p>
       <h1 className="mt-2 font-display text-4xl font-bold text-parchment">How to Play</h1>
       <P>
         Everything you need to sit down and play, the game as it stands today. Want to try it while you read? The{' '}
@@ -151,7 +151,7 @@ export function Rules() {
       <H2 id="prison">Prison</H2>
       <P>
         Some cards <B>imprison</B> an enemy unit: it stays on the board but can’t attack, move, defend, or use abilities. Holding
-        prisoners costs the jailer <B>2 Influence each round, per prisoner</B> — and if the jailer’s Influence ever goes <B>negative</B>, all
+        prisoners costs the jailer <B>1 Influence each round, per prisoner</B> — and if the jailer’s Influence ever goes <B>negative</B>, all
         their prisons break at once. Caging an army is powerful and expensive.
       </P>
 

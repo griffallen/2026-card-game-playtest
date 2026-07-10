@@ -28,7 +28,7 @@ Each player shuffles and draws 7, then **chooses 2 of them to bank** as face-up 
 The game is played in **rounds** — a shift from the old per-player-turn structure. Within a round, players take **turns** (a turn = one action). A round has two parts.
 
 **1. Start steps — each player, initiative-holder first.** Automatic, except the one choice noted:
-- Pay 2 Influence for each enemy unit you hold imprisoned (⚑ this upkeep comes first; see Prison).
+- Pay 1 Influence for each enemy unit you hold imprisoned (⚑ this upkeep comes first; see Prison).
 - Your start-of-round card effects fire.
 - **All your cards ready.** *(Both players untap every round now — not just the active player, as in the old turn model.)*
 - **Draw 2.**
@@ -83,17 +83,17 @@ The keywords, as implemented:
 Imprisoned units stay on the board but can't attack, move, defend (no counter-damage — and they can't intercept), or use abilities; their Guard goes dark.
 
 - Prisons from **units** (Containment Priest, Lawbringer…) break when the jailer unit leaves play.
-- Prisons from **actions** persist — but every prisoner costs the jailer **2 Influence at the start of each round** (the decay rule; doubled in rules v2.2 — the mortgage is real), and the moment the jailer's Influence goes **negative, every cell springs open** ⚑. Mass imprisonment is powerful and expensive.
+- Prisons from **actions** persist — but every prisoner costs the jailer **1 Influence at the start of each round** (the decay rule; briefly doubled in v2.2, reverted in v2.3 once a smarter sim bot showed the single tax is enough), and the moment the jailer's Influence goes **negative, every cell springs open** ⚑. Mass imprisonment is powerful and expensive.
 
 ## The decks
 
-- **Crimson Assault (Red):** rush, burn, breakthrough, and the Overextend gamble. *After the canon-v1.0 balance pass (session 006):* competent bot mirrors land red at **~45–55%** (sample-dependent; call it even within bot noise) — up from ~17% right after the card churn, fixed mostly by the v2.2 prison-decay doubling plus a target-aware bot upgrade that changed what the sims could see.
-- **Radiant Order (Yellow):** walls, armor, prisons, and event-earned Influence. Its fortress plan is deliberately weaker now that Guard is optional interception rather than a hard wall — and mass imprisonment now carries a real mortgage (2 Influence per prisoner per round, rules v2.2).
+- **Crimson Assault (Red):** rush, burn, breakthrough, and the Overextend gamble. *After the canon-v1.0 balance pass (session 006):* competent bot mirrors land red at **~45–55%** (sample-dependent; call it even within bot noise) — up from ~17% right after the card churn, fixed by making the sim bot target-aware (it now fights prisons and casts board wipes) — which also revealed the v2.2 decay-doubling was overkill and got it reverted (v2.3).
+- **Radiant Order (Yellow):** walls, armor, prisons, and event-earned Influence. Its fortress plan is deliberately weaker now that Guard is optional interception rather than a hard wall — and mass imprisonment carries its mortgage (1 Influence per prisoner per round).
 - **Veiled Court (Purple — a session-006 *proposal*, not yet canon):** ranged assassins, flying flankers, permanent "-Power" withering, and Influence earned only by kills. Built entirely from existing mechanics; sims show a deliberate soft triangle (it beats yellow's walls, loses to red's aggression). Adopting it is the designer's call — CANON.md question 7.
 
 ## What the simulation says (and doesn't)
 
-Every test run plays **150 full games with random legal moves** — all finish with a winner, no rule crashes, no cards lost or duplicated, both win conditions reachable. The picture is **combat-dominated**: the large majority end on Life (influence upsets run ~5–13% depending on the batch), median ~19 rounds under random play. With the competent (heuristic) bot mirroring itself after the canon-v1.0 pass: **red ~45–55% (even, within bot-sample noise), ~99% by Life, first-mover ~49%, median 11–12 rounds**; under random play influence upsets run ~5%. The bot itself got smarter this pass (it now scores targeted plays against their actual targets and values freeing prisoners by killing jailers) — earlier percentages were partly artifacts of a target-blind bot. It still does **not** prove balance. That's what your playtesting is for.
+Every test run plays **150 full games with random legal moves** — all finish with a winner, no rule crashes, no cards lost or duplicated, both win conditions reachable. The picture is **combat-dominated**: the large majority end on Life (influence upsets run ~5–13% depending on the batch), median ~19 rounds under random play. With the competent (heuristic) bot mirroring itself after the canon-v1.0 pass (rules v2.3): **red 44% vs yellow, ~96% by Life with influence upsets at 4–10%, first-mover ~49%, median 11–12 rounds**; the purple proposal sits even with red (~50%) and favored over yellow (~58%). The bot itself got smarter this pass (it now scores targeted plays against their actual targets and values freeing prisoners by killing jailers) — earlier percentages were partly artifacts of a target-blind bot. It still does **not** prove balance. That's what your playtesting is for.
 
 ## Changing the game (no code required)
 

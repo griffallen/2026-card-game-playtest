@@ -4,7 +4,7 @@
  *   npm run cards:check    # validate + fail if generated files are stale (the PR gate)
  */
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs'
-import { parseCardFile, validateCardSet, type CardDef, type CardStatus } from '@newgame/engine'
+import { DEFAULT_RULES, buildPrebuiltDecks, deckSlugs, parseCardFile, validateCardSet, validateDeck, type CardDef, type CardStatus } from '@newgame/engine'
 
 const COLORS = ['red', 'yellow', 'purple'] as const
 const entries: { def: CardDef; status: CardStatus }[] = []
@@ -21,9 +21,31 @@ for (const color of COLORS) {
   }
 }
 
-entries.sort((a, b) => a.def.color.localeCompare(b.def.color) || a.def.cost - b.def.cost || a.def.name.localeCompare(b.def.name))
+// deterministic ordering: fixed color rank + cost + ASCII slug (bare localeCompare follows the
+// machine's ICU locale, which made the PR gate flap across systems)
+const COLOR_RANK: Record<string, number> = { red: 0, yellow: 1, purple: 2 }
+entries.sort((a, b) =>
+  (COLOR_RANK[a.def.color] ?? 9) - (COLOR_RANK[b.def.color] ?? 9)
+  || a.def.cost - b.def.cost
+  || (a.def.slug < b.def.slug ? -1 : a.def.slug > b.def.slug ? 1 : 0))
+
 const set = Object.fromEntries(entries.map(e => [e.def.slug, e.def]))
+if (Object.keys(set).length !== entries.length) {
+  const seen = new Set<string>()
+  for (const e of entries) {
+    if (seen.has(e.def.slug)) errors.push(`${e.def.slug}: duplicate slug — a card with this filename exists in more than one color directory`)
+    seen.add(e.def.slug)
+  }
+}
 errors.push(...validateCardSet(set))
+// deck-legality gate: a cost edit can silently move a card in/out of a doubles rule
+for (const deck of buildPrebuiltDecks(set)) {
+  const slugs = deckSlugs(deck)
+  if (slugs.length !== DEFAULT_RULES.deckMinSize) {
+    errors.push(`${deck.name}: prebuilt deck has ${slugs.length} cards, needs exactly ${DEFAULT_RULES.deckMinSize} — a cost change probably moved a card across the doubles threshold (see the charter's curve section)`)
+  }
+  errors.push(...validateDeck(slugs, set, DEFAULT_RULES).map(e => `${deck.name}: ${e}`))
+}
 if (errors.length) { console.error(`✗ ${errors.length} problem(s):\n  ` + errors.join('\n  ')); process.exit(1) }
 
 const json = JSON.stringify(set, null, 1) + '\n'

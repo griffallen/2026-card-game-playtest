@@ -1,7 +1,7 @@
-# Game Rules Spec — v2.2
+# Game Rules Spec — v2.3
 
 **Canon:** member of **canon-v1.0** (`docs/canon/CANON.md`); the `-proto` suffix was dropped when the canon sprint (decisions 46–54, 2026-07-09) resolved the open rules flags. Deck-level law lives in the charters (`docs/canon/decks/`); every card must satisfy both this document and its charter.
-**Derived from:** `docs/REFERENCES/extracted/rules-v1.2.md` + the July 5 card sheets, reconciled per `docs/DESIGN/DECISIONS.md`. **v2.0:** round-based turn structure with claimable initiative, no summoning sickness, multi-unit attack + intercept (decisions 40–44, 2026-07-08) — supersedes v1.2-proto's phase ladder and per-player turns. **v2.1 (2026-07-09):** Rush's move-exhaust waiver is **one free reposition**, not a whole-round pass (decision 41 clarified) — a fresh Rush unit's first move is free, a second exhausts it. **v2.2 (2026-07-09, canon sprint balance pass):** `prisonDecayPerUnit` 1 → **2** (decision 55) — the prison mortgage bites; sims moved red 38.7% → ~46% in heuristic mirrors.
+**Derived from:** `docs/REFERENCES/extracted/rules-v1.2.md` + the July 5 card sheets, reconciled per `docs/DESIGN/DECISIONS.md`. **v2.0:** round-based turn structure with claimable initiative, no summoning sickness, multi-unit attack + intercept (decisions 40–44, 2026-07-08) — supersedes v1.2-proto's phase ladder and per-player turns. **v2.1 (2026-07-09):** Rush's move-exhaust waiver is **one free reposition**, not a whole-round pass (decision 41 clarified) — a fresh Rush unit's first move is free, a second exhausts it. **v2.2 (2026-07-09, canon sprint balance pass):** `prisonDecayPerUnit` 1 → 2 (decision 55). **v2.3 (2026-07-09, same night):** decay reverted to **1** (decision 56) — 55's sims were run against a target-blind bot; after the bot learned to fight prisons (kill jailers, value AoE), re-measurement showed decay 1 gives the better game on every axis (red–yellow 44%, live influence economy at 4–10% upsets).
 **Consumed by:** `packages/engine` — this document *is* the engine's contract. When they diverge, stop and fix one.
 **Designer-facing summary:** `docs/GAME-FLOW.md` tells the same story without implementation detail.
 
@@ -40,7 +40,7 @@ A **round** = one **start step per player** (initiative holder first), then the 
 
 **Start step** (per player, in initiative order; the only input is the bank choice):
 
-1. **Prison decay** (−`prisonDecayPerUnit` (2) Influence to this player per unit they hold imprisoned coming into the round — decay-before-triggers, else a start-of-round imprison would instantly self-break at 0 influence).
+1. **Prison decay** (−`prisonDecayPerUnit` (1) Influence to this player per unit they hold imprisoned coming into the round — decay-before-triggers, else a start-of-round imprison would instantly self-break at 0 influence).
 2. Resolve this player's **start-of-round triggers** (their units, entry order).
 3. **Ready** all of this player's cards (units + resources).
 4. **Draw** `drawPerRound` (2); round 1 draws `firstRoundDraw` (default = `drawPerRound` — decision 44: no first-round asymmetry). **Decision 33:** each card that fails to appear from an empty deck costs its owner `emptyDrawLifeLoss` (1) life and `emptyDrawInfluenceLoss` (1) influence.
@@ -101,7 +101,7 @@ Printed as "Exhaust: effect" — exhaust the ready unit, resolve the effect. **�
 
 - **Imprison:** target unit becomes imprisoned (stays in its zone, keeps upgrades/damage). It cannot attack, move, defend (deals no counter-damage), or use abilities; its Guard is inert; it still counts as a unit for zone effects.
 - **Sources:** unit-sourced prisons (from a unit's trigger) end when that unit leaves play. Action-sourced prisons have no in-play source and persist until another condition ends them.
-- **Decay:** at the jailer's **start step**, jailer loses `prisonDecayPerUnit` (**2** since v2.2; v1.2 said 1) Influence per unit they hold imprisoned. Cards restating this are reminder text — no double charge.
+- **Decay:** at the jailer's **start step**, jailer loses `prisonDecayPerUnit` (1) Influence per unit they hold imprisoned. Cards restating this are reminder text — no double charge.
 - **Release threshold (default 0; the whole prison package is provisional pending decision 37):** the moment a jailer's Influence is negative (track on their opponent's side), **all their prisons release**.
 - Released or source-dead prisons end immediately; the unit stays exhausted/ready as it was.
 
@@ -135,7 +135,7 @@ Same `(rulesConfig, decks, seed, action list)` ⇒ identical states and events, 
 | `deckMinSize` | 48 | Deck legality floor |
 | `maxCopies` | 4 | Per-slug copy ceiling |
 | `upgradePressureInfluence` | 1 | Influence the opponent gains per beyond-first upgrade |
-| `prisonDecayPerUnit` | 2 | Influence lost per imprisoned unit at the jailer's start step (1 → 2 in v2.2, decision 55) |
+| `prisonDecayPerUnit` | 1 | Influence lost per imprisoned unit at the jailer's start step (briefly 2 in v2.2; reverted in v2.3, decisions 55–56) |
 | `prisonReleaseThreshold` | 0 | Jailer influence below this ⇒ prisons release |
 | `chooseStartingResources` | true | Setup: players pick their starting banks (false = auto-bank last drawn) |
 | `mulliganPenalty` | 1 | Cards lost per mulligan (decision 32) |

@@ -50,6 +50,16 @@ function retargetInfluence(def: CardDef, trigger: string, slug: string, errors: 
     if (rest.length) out[k] = rest
     else delete out[k]
   }
+  if (out.startOfRound) {
+    // the dial also lifts influence out of start-of-round engines (Censer of Purity)
+    const infl = out.startOfRound.ops.filter(o => o.op === 'influence')
+    if (infl.length) {
+      moved = [...moved, ...infl]
+      const rest = out.startOfRound.ops.filter(o => o.op !== 'influence')
+      if (rest.length) out.startOfRound = { ...out.startOfRound, ops: rest }
+      else delete out.startOfRound
+    }
+  }
   if (!moved.length) { errors.push(`${slug}: influenceTrigger set but the card has no influence effect to move`); return def }
   const key = trigger as InfluenceTrigger
   out[key] = [...(out[key] ?? []), ...moved]

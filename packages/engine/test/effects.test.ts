@@ -101,7 +101,11 @@ describe('prison', () => {
     s = act(s, p2, { type: 'play', card: jailerHand, targets: [{ kind: 'unit', id: captive }] })
     expect(s.units[captive].imprisoned?.by).toBe(p2)
     expect(influenceFor(s, p2)).toBe(1)
-    // p2's next start step → decay −2 (v2.2 mortgage) → −1 < threshold 0 → release
+    // p2's next start step → decay −1 → back to 0: exactly AT the threshold, the prison HOLDS
+    s = toStartStepOf(s, p2)
+    expect(influenceFor(s, p2)).toBe(0)
+    expect(s.units[captive].imprisoned).toBeTruthy()
+    // another round without income → second decay drops p2 to −1 → release
     s = toStartStepOf(s, p2)
     expect(influenceFor(s, p2)).toBe(-1)
     expect(s.units[captive].imprisoned).toBeNull()

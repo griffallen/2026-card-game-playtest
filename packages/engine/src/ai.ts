@@ -23,7 +23,7 @@ export function randomPolicy(state: GameState, seat: Seat, rngState: number): [G
   return [pool[Math.floor(v * pool.length)], s]
 }
 
-/** How many units this seat currently holds imprisoned (each is −1 influence per round — the mortgage). */
+/** How many units this seat currently holds imprisoned (each costs prisonDecayPerUnit influence per round — the mortgage). */
 const heldPrisoners = (state: GameState, seat: Seat): number =>
   Object.values(state.units).filter(u => u.imprisoned?.by === seat).length
 
@@ -155,7 +155,9 @@ function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'p
       }
       case 'destroy': {
         const u = unitAt(chosenIdx(op.t) ?? -1)
-        if (u && u.owner !== seat) score += stockValue(u) * 2 + jailerBonus(state, seat, u)
+        if (!u) break
+        if (u.owner !== seat) score += stockValue(u) * 2 + jailerBonus(state, seat, u)
+        else score -= 25 // Execution Swing on our own damaged unit is not a play, it's a suicide
         break
       }
       case 'imprison': {
@@ -173,9 +175,43 @@ function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'p
         if (u) score += Math.min(op.n, u.damage) * 2
         break
       }
-      case 'buff': case 'grant': case 'double': {
-        const u = unitAt(chosenIdx((op as { t?: unknown }).t) ?? -1)
-        if (u && u.owner !== seat) score -= 20 // don't pump theirs
+      case 'buff': {
+        const u = unitAt(chosenIdx(op.t) ?? -1)
+        if (!u) break
+        const net = (op.p ?? 0) + (op.h ?? 0) + (op.armor ?? 0)
+        if (u.owner === seat) score += net < 0 ? -25 : net * 2
+        else score += net < 0 ? Math.min(-net, effPower(state, u)) * 2 : -20 // wither their attacker, never pump it
+        break
+      }
+      case 'grant': {
+        const u = unitAt(chosenIdx(op.t) ?? -1)
+        if (!u) break
+        const pacify = op.kw?.k === 'cantAttack'
+        if (u.owner === seat) score += pacify ? -25 : 4
+        else score += pacify ? effPower(state, u) * 1.5 : -20
+        break
+      }
+      case 'double': {
+        const u = unitAt(chosenIdx(op.t) ?? -1)
+        if (!u) break
+        score += u.owner === seat ? effPower(state, u) * 1.5 : -25
+        break
+      }
+      case 'damageFilter': {
+        // AoE: value every unit the filter actually reaches (enemy hits earn, friendly-fire costs)
+        const f = op.f as { side?: string; zone?: string }
+        const chosenZone = action.targets?.find(t => t.kind === 'zone') as { kind: 'zone'; zone: number } | undefined
+        for (const u of Object.values(state.units)) {
+          if (f.side === 'enemy' && u.owner === seat) continue
+          if (f.side === 'friendly' && u.owner !== seat) continue
+          if (f.zone === 'chosenZone') { if (!chosenZone || u.zone !== chosenZone.zone) continue }
+          else if (f.zone && f.zone !== 'all') continue // sameAsSelf/adjacentToSelf never appear on actions
+          const remaining = effHealth(state, u) - u.damage
+          const through = Math.max(0, op.n - effArmor(state, u))
+          const dealt = Math.min(through, remaining)
+          if (u.owner !== seat) score += dealt * 1.5 + (through >= remaining ? stockValue(u) + jailerBonus(state, seat, u) : 0)
+          else score -= dealt * 1.5 + (through >= remaining ? stockValue(u) : 0)
+        }
         break
       }
     }

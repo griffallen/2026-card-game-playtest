@@ -29,7 +29,7 @@ export function CardsBrowser() {
         <input className="input ml-auto max-w-56" placeholder="Search names and text…" value={q} onChange={e => setQ(e.target.value)} />
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
-        {['all', 'red', 'yellow'].map(c => (
+        {['all', 'red', 'yellow', 'purple'].map(c => (
           <button key={c} className={chip(color === c)} onClick={() => setColor(c)}>{c}</button>
         ))}
         <span className="mx-1 text-dim">·</span>

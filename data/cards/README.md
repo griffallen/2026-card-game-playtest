@@ -1,6 +1,6 @@
 # The Card Ledger — how to edit cards
 
-Every card in the game is one file in this folder: `red/` and `yellow/`, one `.md` file per card.
+Every card in the game is one file in this folder: `red/`, `yellow/`, and `purple/` (a proposal deck awaiting adoption), one `.md` file per card.
 **These files are the real cards** — the game engine is built from them. Change a file, and once
 it's merged, every new game uses your version.
 
@@ -48,7 +48,7 @@ That's it. The agent reviews every card PR with three questions:
    caught here with a readable message naming your card.
 2. **Consistent?** — does the printed text match what the card actually does?
 3. **In-charter?** — does the card obey its color's laws
-   ([red charter](../../docs/canon/decks/red.md) · [yellow charter](../../docs/canon/decks/yellow.md))?
+   ([red charter](../../docs/canon/decks/red.md) · [yellow charter](../../docs/canon/decks/yellow.md) · [purple charter](../../docs/canon/decks/purple.md))?
 
 Then the agent fixes up `effects` if needed, and merges. **Feel and balance stay yours** — the
 agent never rejects a card for being too strong, only for being broken, dishonest, or off-color.

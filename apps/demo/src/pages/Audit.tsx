@@ -92,7 +92,7 @@ export function Audit() {
       <Card>
         <b className="font-display text-parchment">Update — canon-v1.0: the rules are locked, and every card was reconciled (July 9, session 006).</b>
         <p className="mt-2 text-[14px] leading-relaxed text-body/90">
-          The project now has a <b>versioned canon</b>: the base rules (game-rules v2.1, out of "proto"), a
+          The project now has a <b>versioned canon</b>: the base rules (game-rules v2.3, out of "proto"), a
           <b> charter per deck</b> — the written law of what each color may print (identity, allowed keywords,
           invariants, statline grammar) — and the card ledger itself, now <b>one editable file per card</b> in
           <code> data/cards/</code> on GitHub. All 84 cards were checked against their two parents (base rules +
@@ -101,7 +101,7 @@ export function Audit() {
           the prison actions became a priced ladder with one job per rung, yellow's armor suite was re-costed
           against red's burn economy, Aura of Resolve's passive income became defend-payout, and every
           auto-targeting card now states its deterministic pick. Every change is logged on the card itself —
-          open any card's file and read its "Design notes". Decisions 46–54 carry the reasons; veto freely.
+          open any card's file and read its "Design notes". Decisions 46–56 carry the reasons; veto freely.
         </p>
       </Card>
 
@@ -340,7 +340,7 @@ export function Audit() {
       </ul>
 
       <p className="mt-12 border-t hairline pt-4 text-xs text-dim">
-        Sources: docs/DESIGN/DECISIONS.md (54 numbered rulings with reasons) · docs/SPECS/game-rules.md (the precise
+        Sources: docs/DESIGN/DECISIONS.md (56 numbered rulings with reasons) · docs/SPECS/game-rules.md (the precise
         ruleset) · docs/canon/ (charters + the CANON index) · data/cards/ (the card ledger) — all in the project repository. Engine + this page share one codebase;
         the numbers shown were produced by the same simulator you can run in the next tab.
       </p>

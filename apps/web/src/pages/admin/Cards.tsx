@@ -139,7 +139,7 @@ export function AdminCards() {
               onClick={() => setOpen(open === c.slug ? null : c.slug)}
               className="flex w-full items-center gap-3 border-b hairline px-4 py-2 text-left text-sm hover:bg-raised"
             >
-              <span className={`h-2.5 w-2.5 rounded-full ${c.color === 'red' ? 'bg-crimson' : c.color === 'yellow' ? 'bg-sun' : 'bg-dim'}`} />
+              <span className={`h-2.5 w-2.5 rounded-full ${c.color === 'red' ? 'bg-crimson' : c.color === 'yellow' ? 'bg-sun' : c.color === 'purple' ? 'bg-[#8a63c9]' : 'bg-dim'}`} />
               <span className="w-8 text-dim">{c.cost}</span>
               <span className="min-w-0 flex-1 truncate font-display text-parchment">{c.name} {c.designerNote && <span className="text-goldbright">⚑</span>}</span>
               <span className="w-16 text-xs text-dim">{c.type}</span>

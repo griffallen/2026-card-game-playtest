@@ -10,7 +10,7 @@ version through the same process — locked baseline, never frozen forever.
 
 | Document | Role | Version |
 |---|---|---|
-| `docs/SPECS/game-rules.md` | Base rules — the engine's contract | **v2.2** |
+| `docs/SPECS/game-rules.md` | Base rules — the engine's contract | **v2.3** |
 | `docs/canon/decks/red.md` | Red charter — deck law | canon-v1.0 |
 | `docs/canon/decks/yellow.md` | Yellow charter — deck law | canon-v1.0 |
 | `docs/canon/decks/purple.md` | Purple charter — **proposal, not yet canon** | draft |
