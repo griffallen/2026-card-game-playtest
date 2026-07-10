@@ -16,7 +16,7 @@ export const DEFAULT_RULES: RulesConfig = {
   deckMinSize: 48,
   maxCopies: 4,
   upgradePressureInfluence: 1,
-  prisonDecayPerUnit: 1,
+  prisonDecayPerUnit: 2,
   prisonReleaseThreshold: 0,
   summoningSickness: false,   // decision 41: units enter ready
   moveExhausts: true,

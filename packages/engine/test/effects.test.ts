@@ -101,11 +101,7 @@ describe('prison', () => {
     s = act(s, p2, { type: 'play', card: jailerHand, targets: [{ kind: 'unit', id: captive }] })
     expect(s.units[captive].imprisoned?.by).toBe(p2)
     expect(influenceFor(s, p2)).toBe(1)
-    // p2's next start step → decay −1 → back to 0 (≥ threshold 0, prison holds)
-    s = toStartStepOf(s, p2)
-    expect(influenceFor(s, p2)).toBe(0)
-    expect(s.units[captive].imprisoned).toBeTruthy()
-    // another round without income → second decay drops p2 to −1 → release
+    // p2's next start step → decay −2 (v2.2 mortgage) → −1 < threshold 0 → release
     s = toStartStepOf(s, p2)
     expect(influenceFor(s, p2)).toBe(-1)
     expect(s.units[captive].imprisoned).toBeNull()
@@ -118,9 +114,9 @@ describe('prison', () => {
     const victim = put(s, p1, 'worldrender', homeZone(p2))
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: priest })
-    // priest enters p2 home → auto-imprisons strongest enemy there (worldrender); colossus +1
+    // priest enters p2 home → auto-imprisons strongest enemy there (worldrender); colossus +2 (session 006)
     expect(s.units[victim].imprisoned?.by).toBe(p2)
-    expect(influenceFor(s, p2)).toBe(1)
+    expect(influenceFor(s, p2)).toBe(2)
     // kill the priest → release
     const priestUnit = Object.values(s.units).find(u => u.slug === 'containment-priest')!
     const slam = toHand(s, p1, 'volcanic-slam')

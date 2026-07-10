@@ -151,7 +151,7 @@ export function Rules() {
       <H2 id="prison">Prison</H2>
       <P>
         Some cards <B>imprison</B> an enemy unit: it stays on the board but can’t attack, move, defend, or use abilities. Holding
-        prisoners costs the jailer <B>1 Influence each round, per prisoner</B> — and if the jailer’s Influence ever goes <B>negative</B>, all
+        prisoners costs the jailer <B>2 Influence each round, per prisoner</B> — and if the jailer’s Influence ever goes <B>negative</B>, all
         their prisons break at once. Caging an army is powerful and expensive.
       </P>
 

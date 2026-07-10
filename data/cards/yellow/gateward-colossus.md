@@ -7,6 +7,6 @@ health: 9
 keywords: cantAttack
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"imprisonWatcher","n":1}]}
+effects: {"statics":[{"s":"imprisonWatcher","n":2}]}
 ---
-This can't attack. Whenever a unit is imprisoned, gain 1 Influence.
+This can't attack. Whenever a unit is imprisoned, gain 2 Influence.

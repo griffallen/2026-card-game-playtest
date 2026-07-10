@@ -1,7 +1,7 @@
 ---
 name: Sanctify
 type: action
-cost: 4
+cost: 5
 influenceTrigger: onPlay
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

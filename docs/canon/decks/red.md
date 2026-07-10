@@ -40,7 +40,7 @@ or shoot from safety — it closes distance and swings.
 
 - **36 uniques** (15 units / 19 actions / 2 upgrades) + a second copy of the twelve cheapest
   workhorses = the 48-card *Crimson Assault* deck.
-- Cost histogram (uniques): `1:4 2:6 3:5 4:5 5:5 6:5 7:4 8:2` — flat, aggressive, playable from
+- Cost histogram (uniques): `1:4 2:6 3:5 4:6 5:5 6:4 7:4 8:2` — flat, aggressive, playable from
   round one.
 - **Statline grammar:** a unit's Power + Health = **2 × cost**, ±1; keywords and triggers eat the
   "+1". **Power ≥ Health** on at least two-thirds of units — red leads with the blade.

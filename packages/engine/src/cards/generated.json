@@ -467,6 +467,27 @@
   "designerNote": "Session 006 redesign: was 6 mana for +3 Power and Rush this round — overcosted (Blood Rush gives +2 and Rush for 2) and the Rush rider was near-dead text on veterans. Now the single-target alpha strike: the Breakthrough rider makes the pump land on the base, not just the wall.",
   "artUrl": "/cards/cataclysmic-charge.jpg"
  },
+ "doombringer": {
+  "slug": "doombringer",
+  "name": "Doombringer",
+  "color": "red",
+  "type": "unit",
+  "cost": 4,
+  "power": 5,
+  "health": 4,
+  "text": "Rush. Breakthrough 3.",
+  "kw": [
+   {
+    "k": "rush"
+   },
+   {
+    "k": "breakthrough",
+    "n": 3
+   }
+  ],
+  "designerNote": "Session 006 balance pass: 5 → 4 mana (sim-guided red curve compression; a hot statline for the cost — watch it in play).",
+  "artUrl": "/cards/doombringer.jpg"
+ },
  "execution-swing": {
   "targets": [
    {
@@ -558,26 +579,6 @@
   "designerNote": "Re-ruled after playtest 004: the assault splashes the defended Home zone, both sides (the original \"adjacent zones\" reading only ever hit Neutral — dead text during a siege). Session 006: 6/6 → 6/5 to sit on the statline grammar, and the text now says what actually happens.",
   "artUrl": "/cards/crimson-behemoth.jpg"
  },
- "doombringer": {
-  "slug": "doombringer",
-  "name": "Doombringer",
-  "color": "red",
-  "type": "unit",
-  "cost": 5,
-  "power": 5,
-  "health": 4,
-  "text": "Rush. Breakthrough 3.",
-  "kw": [
-   {
-    "k": "rush"
-   },
-   {
-    "k": "breakthrough",
-    "n": 3
-   }
-  ],
-  "artUrl": "/cards/doombringer.jpg"
- },
  "relentless-assault": {
   "onPlay": [
    {
@@ -611,6 +612,30 @@
   "cost": 5,
   "text": "Deal 3 damage to all units.",
   "artUrl": "/cards/scorching-howl.jpg"
+ },
+ "warlord-garok": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "otherFriendly",
+    "p": 1
+   }
+  ],
+  "slug": "warlord-garok",
+  "name": "Warlord Garok",
+  "color": "red",
+  "type": "unit",
+  "cost": 5,
+  "power": 5,
+  "health": 5,
+  "text": "Rush. Your other units have +1 Power.",
+  "kw": [
+   {
+    "k": "rush"
+   }
+  ],
+  "designerNote": "Session 006 balance pass: 6 → 5 mana (sim-guided red curve compression).",
+  "artUrl": "/cards/warlord-garok.jpg"
  },
  "burn-the-frontline": {
   "targets": [
@@ -681,29 +706,6 @@
   "text": "Deal 6 damage to target unit or base.",
   "designerNote": "Session 006: 5 damage → 6, matching the face-capable burn grammar (damage = cost): Searing Bolt 2@2, Volcanic Slam 3@3, Rupture 4@4, Raging Inferno 6@6.",
   "artUrl": "/cards/raging-inferno.jpg"
- },
- "warlord-garok": {
-  "statics": [
-   {
-    "s": "aura",
-    "scope": "otherFriendly",
-    "p": 1
-   }
-  ],
-  "slug": "warlord-garok",
-  "name": "Warlord Garok",
-  "color": "red",
-  "type": "unit",
-  "cost": 6,
-  "power": 5,
-  "health": 5,
-  "text": "Rush. Your other units have +1 Power.",
-  "kw": [
-   {
-    "k": "rush"
-   }
-  ],
-  "artUrl": "/cards/warlord-garok.jpg"
  },
  "apocalypse-engine": {
   "slug": "apocalypse-engine",
@@ -1064,32 +1066,6 @@
   "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
   "artUrl": "/cards/sunguard-defender.jpg"
  },
- "absolution": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "friendly"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "removeNegative",
-    "t": "chosen0"
-   },
-   {
-    "op": "influence",
-    "n": 1
-   }
-  ],
-  "slug": "absolution",
-  "name": "Absolution",
-  "color": "yellow",
-  "type": "action",
-  "cost": 3,
-  "text": "Free target friendly unit from imprisonment and remove its negative effects. Gain 1 Influence.",
-  "designerNote": "Session 006: 7 → 3 mana and the text now says what removeNegative actually does (it is primarily a jailbreak). A situational cleanse was priced like a bomb.",
-  "artUrl": "/cards/absolution.jpg"
- },
  "aura-of-resolve": {
   "onDefend": [
    {
@@ -1153,61 +1129,11 @@
   "text": "Attach to unit. This unit can't be the target of enemy actions. Influence: +1.",
   "artUrl": "/cards/chain-of-law.jpg"
  },
- "devout-intervention": {
-  "onPlay": [
-   {
-    "op": "preventBase",
-    "n": 3
-   },
-   {
-    "op": "influence",
-    "n": 1
-   }
-  ],
-  "slug": "devout-intervention",
-  "name": "Devout Intervention",
-  "color": "yellow",
-  "type": "action",
-  "cost": 3,
-  "text": "Prevent the next 3 damage to your base this round. Gain 1 Influence.",
-  "designerNote": "Session 006: 6 → 3 mana. A one-round shield priced like a wall.",
-  "artUrl": "/cards/devout-intervention.jpg"
- },
- "disarming-order": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "enemy"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "grant",
-    "t": "chosen0",
-    "kw": {
-     "k": "cantAttack"
-    },
-    "dur": "round"
-   },
-   {
-    "op": "draw",
-    "n": 1
-   }
-  ],
-  "slug": "disarming-order",
-  "name": "Disarming Order",
-  "color": "yellow",
-  "type": "action",
-  "cost": 3,
-  "text": "Target unit can't attack this round. Draw a card.",
-  "designerNote": "Session 006: 5 → 3 mana. A one-round pacify plus a card is a trick, not a threat.",
-  "artUrl": "/cards/disarming-order.jpg"
- },
  "justicar-enforcer": {
   "onDefend": [
    {
     "op": "influence",
-    "n": 1
+    "n": 2
    }
   ],
   "slug": "justicar-enforcer",
@@ -1217,42 +1143,14 @@
   "cost": 3,
   "power": 3,
   "health": 4,
-  "text": "Guard. When this defends, gain 1 Influence.",
+  "text": "Guard. When this defends, gain 2 Influence.",
   "kw": [
    {
     "k": "guard"
    }
   ],
-  "designerNote": "Session 006: defend payout 2 → 1. The guard payout ladder: cheap guards (≤3) pay 1, elite guards (5+) pay 2 (Custodian of Law, Light's Vanguard).",
+  "designerNote": "Session 006 balance pass: payout restored to 2 — this is yellow's dedicated influence-engine guard (the vanilla walls pay 1). Sims: without real influence payouts yellow's second win axis never fires.",
   "artUrl": "/cards/justicar-enforcer.jpg"
- },
- "light-of-authority": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "friendly"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "buff",
-    "t": "chosen0",
-    "p": 3,
-    "dur": "round"
-   },
-   {
-    "op": "influence",
-    "n": 1
-   }
-  ],
-  "slug": "light-of-authority",
-  "name": "Light of Authority",
-  "color": "yellow",
-  "type": "action",
-  "cost": 3,
-  "text": "Target unit gets +3 Power this round. Gain 1 Influence.",
-  "designerNote": "Session 006: 6 → 3 mana (red's Cataclysmic Charge gives +3 AND Breakthrough 3 at 4 — yellow's pump can cost less because it converts defense, not kills).",
-  "artUrl": "/cards/light-of-authority.jpg"
  },
  "noble-purifier": {
   "onAttack": [
@@ -1358,6 +1256,82 @@
   "designerNote": "Session 006: became unit-only. The old targeting technically allowed healing the enemy base — the engine can't say \"any unit or YOUR base\" in one target, and the flexible version was dishonest text.",
   "artUrl": "/cards/unwavering-faith.jpg"
  },
+ "absolution": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "removeNegative",
+    "t": "chosen0"
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "absolution",
+  "name": "Absolution",
+  "color": "yellow",
+  "type": "action",
+  "cost": 4,
+  "text": "Free target friendly unit from imprisonment and remove its negative effects. Gain 1 Influence.",
+  "designerNote": "Session 006: 7 → 3 mana and the text now says what removeNegative actually does (it is primarily a jailbreak). A situational cleanse was priced like a bomb.",
+  "artUrl": "/cards/absolution.jpg"
+ },
+ "devout-intervention": {
+  "onPlay": [
+   {
+    "op": "preventBase",
+    "n": 3
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "devout-intervention",
+  "name": "Devout Intervention",
+  "color": "yellow",
+  "type": "action",
+  "cost": 4,
+  "text": "Prevent the next 3 damage to your base this round. Gain 1 Influence.",
+  "designerNote": "Session 006: 6 → 3 mana. A one-round shield priced like a wall.",
+  "artUrl": "/cards/devout-intervention.jpg"
+ },
+ "disarming-order": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "cantAttack"
+    },
+    "dur": "round"
+   },
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "disarming-order",
+  "name": "Disarming Order",
+  "color": "yellow",
+  "type": "action",
+  "cost": 4,
+  "text": "Target unit can't attack this round. Draw a card.",
+  "designerNote": "Session 006: 5 → 3 mana. A one-round pacify plus a card is a trick, not a threat.",
+  "artUrl": "/cards/disarming-order.jpg"
+ },
  "exemplar-knight": {
   "onAttack": [
    {
@@ -1453,6 +1427,34 @@
   "designerNote": "Decision 51 text. Containment Priest's big sibling: full statline plus the same arrest, two mana later.",
   "artUrl": "/cards/lawbringer.jpg"
  },
+ "light-of-authority": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "p": 3,
+    "dur": "round"
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "light-of-authority",
+  "name": "Light of Authority",
+  "color": "yellow",
+  "type": "action",
+  "cost": 4,
+  "text": "Target unit gets +3 Power this round. Gain 1 Influence.",
+  "designerNote": "Session 006: 6 → 3 mana (red's Cataclysmic Charge gives +3 AND Breakthrough 3 at 4 — yellow's pump can cost less because it converts defense, not kills).",
+  "artUrl": "/cards/light-of-authority.jpg"
+ },
  "resolve-banner": {
   "statics": [
    {
@@ -1469,27 +1471,6 @@
   "text": "Attach to unit. Other friendly units in this zone get +1 Power.",
   "designerNote": "Session 006: 6 → 4 mana (red gets the same aura board-wide ON a 5/5 body for 6 — Warlord Garok).",
   "artUrl": "/cards/resolve-banner.jpg"
- },
- "sanctify": {
-  "onPlay": [
-   {
-    "op": "heal",
-    "t": "selfBase",
-    "n": 4
-   },
-   {
-    "op": "influence",
-    "n": 1
-   }
-  ],
-  "slug": "sanctify",
-  "name": "Sanctify",
-  "color": "yellow",
-  "type": "action",
-  "cost": 4,
-  "text": "Heal 4 damage from your base. Gain 1 Influence.",
-  "designerNote": "Session 006: 6 → 4 mana, influence 2 → 1 (life-gain shouldn't also be the biggest influence payout — that belongs to the prison ladder's Chamber).",
-  "artUrl": "/cards/sanctify.jpg"
  },
  "sentence": {
   "targets": [
@@ -1569,7 +1550,7 @@
   "onAttack": [
    {
     "op": "influence",
-    "n": 1
+    "n": 2
    }
   ],
   "slug": "dawnspear-paladin",
@@ -1579,7 +1560,7 @@
   "cost": 5,
   "power": 5,
   "health": 5,
-  "text": "When this attacks, gain 1 Influence.",
+  "text": "When this attacks, gain 2 Influence.",
   "designerNote": "Session 006: dropped the \"may\" — strictly-beneficial effects auto-apply (decision 24), so the card now says what happens.",
   "artUrl": "/cards/dawnspear-paladin.jpg"
  },
@@ -1660,6 +1641,27 @@
   "designerNote": "Session 006: 4 → 5 mana (armor ladder — see Radiant Aegis).",
   "artUrl": "/cards/radiant-wall.jpg"
  },
+ "sanctify": {
+  "onPlay": [
+   {
+    "op": "heal",
+    "t": "selfBase",
+    "n": 4
+   },
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "sanctify",
+  "name": "Sanctify",
+  "color": "yellow",
+  "type": "action",
+  "cost": 5,
+  "text": "Heal 4 damage from your base. Gain 1 Influence.",
+  "designerNote": "Session 006: 6 → 4 mana, influence 2 → 1 (life-gain shouldn't also be the biggest influence payout — that belongs to the prison ladder's Chamber).",
+  "artUrl": "/cards/sanctify.jpg"
+ },
  "unshakable-wall": {
   "statics": [
    {
@@ -1718,7 +1720,7 @@
   "statics": [
    {
     "s": "imprisonWatcher",
-    "n": 1
+    "n": 2
    }
   ],
   "slug": "gateward-colossus",
@@ -1728,7 +1730,7 @@
   "cost": 6,
   "power": 3,
   "health": 9,
-  "text": "This can't attack. Whenever a unit is imprisoned, gain 1 Influence.",
+  "text": "This can't attack. Whenever a unit is imprisoned, gain 2 Influence.",
   "kw": [
    {
     "k": "cantAttack"
@@ -1837,7 +1839,7 @@
   "power": 7,
   "health": 7,
   "text": "At the start of your round, imprison the strongest enemy unit in each zone.",
-  "designerNote": "Decision 51 text (deterministic pick per zone; zones with no eligible enemies are skipped). The mass-jailer — remember each prisoner costs 1 Influence per round.",
+  "designerNote": "Decision 51 text (deterministic pick per zone; zones with no eligible enemies are skipped). The mass-jailer — remember each prisoner costs 2 Influence per round (rules v2.2).",
   "artUrl": "/cards/archon-of-order.jpg"
  },
  "champion-of-the-faith": {
@@ -1904,7 +1906,7 @@
   "type": "action",
   "cost": 7,
   "text": "Choose a zone. Imprison every enemy unit there.",
-  "designerNote": "Session 006, prison ladder: Prison of Light 7 = the zone-wide haymaker. Remember the mortgage: every prisoner costs you 1 Influence per round, so caging an army is a real bet.",
+  "designerNote": "Session 006, prison ladder: Prison of Light 7 = the zone-wide haymaker. Remember the mortgage: every prisoner costs you 2 Influence per round (rules v2.2), so caging an army is a serious bet.",
   "artUrl": "/cards/prison-of-light.jpg"
  },
  "radiant-citadel": {

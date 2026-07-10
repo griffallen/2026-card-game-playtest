@@ -23,6 +23,19 @@ export function randomPolicy(state: GameState, seat: Seat, rngState: number): [G
   return [pool[Math.floor(v * pool.length)], s]
 }
 
+/** How many units this seat currently holds imprisoned (each is −1 influence per round — the mortgage). */
+const heldPrisoners = (state: GameState, seat: Seat): number =>
+  Object.values(state.units).filter(u => u.imprisoned?.by === seat).length
+
+/** Value of killing this unit beyond its stats: freeing every friendly it jails. */
+function jailerBonus(state: GameState, seat: Seat, victim: UnitInstance): number {
+  let bonus = 0
+  for (const u of Object.values(state.units)) {
+    if (u.owner === seat && u.imprisoned?.source === victim.id) bonus += (defOf(state, u.id).cost + effPower(state, u)) * 2
+  }
+  return bonus
+}
+
 /** Score a (possibly multi-unit) attack: combined power vs the target, counter on the highest-power member. */
 function attackScore(state: GameState, action: GameAction & { type: 'attack' }): number {
   const units = action.attackers.map(id => state.units[id]).filter(Boolean) as UnitInstance[]
@@ -68,8 +81,9 @@ function attackScore(state: GameState, action: GameAction & { type: 'attack' }):
   // only gamble when the Overextend bonus is what converts the kill
   if (oeTotal > 0 && dealtPlain >= defRemaining) return 2
 
-  if (kills && !dies) return 70 + defValue * 3 - oeTotal + groupKill
-  if (kills && dies) return 40 + (defValue - atkValue) * 3 + groupKill
+  const freed = jailerBonus(state, units[0].owner, defender)
+  if (kills && !dies) return 70 + defValue * 3 + freed - oeTotal + groupKill
+  if (kills && dies) return 40 + (defValue - atkValue) * 3 + freed + groupKill
   if (dealt > 0 && !dies) return (oeTotal > 0 ? 3 : 15 + dealt) + groupMiss
   return (dealt > 0 ? 4 : 0) + groupMiss
 }
@@ -108,14 +122,64 @@ function interceptScore(state: GameState, action: GameAction & { type: 'intercep
 function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'play' }): number {
   const def = defOf(state, action.card)
   if (def.type === 'unit') return 45 + def.cost * 3 // develop the board, biggest first
-  // actions/upgrades: modest default, influence-aware
-  let score = 28 + def.cost
-  const infOps = [...(def.onPlay ?? [])].filter(op => op.op === 'influence')
-  for (const op of infOps) {
-    if (op.op !== 'influence') continue
-    score += op.n > 0 ? op.n * 4 : op.n * 2 // gaining influence is good; ceding it (red overextend) costs
+
+  // actions/upgrades: score the ops against the actual chosen targets —
+  // a target-blind bot burns 1/1s and jails tokens, and every sim conclusion inherits that.
+  let score = 12 + def.cost
+  const ref = (i: number) => action.targets?.[i]
+  const unitAt = (i: number) => {
+    const r = ref(i)
+    return r && r.kind === 'unit' ? state.units[r.id] : undefined
   }
-  // don't dump removal on nothing: targeted plays already require legal targets
+  const chosenIdx = (t: unknown): number | null => (t === 'chosen0' ? 0 : t === 'chosen1' ? 1 : null)
+  const stockValue = (u: UnitInstance) => defOf(state, u.id).cost + effPower(state, u)
+
+  for (const op of def.onPlay ?? []) {
+    switch (op.op) {
+      case 'influence': score += op.n > 0 ? op.n * 4 : op.n * 2; break
+      case 'draw': score += op.n * 3; break
+      case 'ready': score += 6; break
+      case 'damage': {
+        const i = chosenIdx(op.t)
+        if (i === null) { score += op.n; break }
+        const r = ref(i)
+        if (r?.kind === 'base') { score += r.seat !== seat ? op.n * 3 : -25; break }
+        const u = unitAt(i)
+        if (!u) break
+        if (u.owner === seat) { score -= 25; break }
+        const remaining = effHealth(state, u) - u.damage
+        const through = Math.max(0, op.n - effArmor(state, u))
+        score += Math.min(through, remaining) * 2
+        if (through >= remaining) score += stockValue(u) * 2 + jailerBonus(state, seat, u)
+        break
+      }
+      case 'destroy': {
+        const u = unitAt(chosenIdx(op.t) ?? -1)
+        if (u && u.owner !== seat) score += stockValue(u) * 2 + jailerBonus(state, seat, u)
+        break
+      }
+      case 'imprison': {
+        const i = chosenIdx((op as { t?: unknown }).t)
+        const u = i !== null ? unitAt(i) : undefined
+        if (u) {
+          if (u.owner === seat || u.imprisoned) { score -= 25; break }   // jailing our own / the already-jailed
+          score += stockValue(u) * 2 - heldPrisoners(state, seat) * 3    // decay mortgage awareness
+        } else score += 10                                               // auto/filter imprisons
+        break
+      }
+      case 'heal': {
+        if (op.t === 'selfBase') { score += Math.min(op.n, state.rules.startingLife - state.sides[seat].life) * 2; break }
+        const u = unitAt(chosenIdx(op.t) ?? -1)
+        if (u) score += Math.min(op.n, u.damage) * 2
+        break
+      }
+      case 'buff': case 'grant': case 'double': {
+        const u = unitAt(chosenIdx((op as { t?: unknown }).t) ?? -1)
+        if (u && u.owner !== seat) score -= 20 // don't pump theirs
+        break
+      }
+    }
+  }
   return score
 }
 

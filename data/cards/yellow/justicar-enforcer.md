@@ -8,10 +8,10 @@ keywords: guard
 influenceTrigger: onDefend
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onDefend":[{"op":"influence","n":1}]}
+effects: {"onDefend":[{"op":"influence","n":2}]}
 ---
-Guard. When this defends, gain 1 Influence.
+Guard. When this defends, gain 2 Influence.
 
 ## Design notes
 
-Session 006: defend payout 2 → 1. The guard payout ladder: cheap guards (≤3) pay 1, elite guards (5+) pay 2 (Custodian of Law, Light's Vanguard).
+Session 006 balance pass: payout restored to 2 — this is yellow's dedicated influence-engine guard (the vanilla walls pay 1). Sims: without real influence payouts yellow's second win axis never fires.

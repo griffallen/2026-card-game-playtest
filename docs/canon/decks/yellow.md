@@ -25,7 +25,9 @@ contest the board, not just sit (Guard no longer auto-blocks — decision 42).
 
 ## Invariants (the design laws)
 
-1. **Influence is event-earned, never passive income** (decision 34). Legal triggers: onDefend,
+1. **Influence is event-earned, never passive income** (decision 34). Payout scale: vanilla walls
+   earn 1; the dedicated influence engines (Justicar Enforcer, Custodian of Law, Dawnspear Paladin,
+   Gateward Colossus, Chamber) earn 2. Legal triggers: onDefend,
    onKill, onAttack, onPlay. **startOfRound / endOfRound Influence income is charter-illegal** —
    the track moves because something *happened*, not because a card exists. (Aura of Resolve was
    redesigned under this law, session 006.)

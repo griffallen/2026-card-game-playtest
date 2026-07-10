@@ -78,6 +78,8 @@ Numbered, in the order they were made. Format: decision — reason.
 53. ⚑ **Prison stays, provisionally.** Decision 37 stands: cards normalize now, the yellow charter marks the whole package provisional, no new prison-dependent designs until the designer rules. — Removing ~15 cards on the agent's authority would pre-empt a decision that is explicitly the designer's.
 54. ⚑ **Base/home rename deferred** — candidates (Banner/Hearth/Seat/Beacon) recorded in `CANON.md`'s open questions; "base" remains the canonical term until the designer picks. — Pure flavor; deferring costs nothing.
 
+55. ⚑ **Prison decay doubles: `prisonDecayPerUnit` 1 → 2 (rules v2.2).** Ablation sims showed prison as the structural dominator (removing imprison effects entirely: red 17% → 44%); doubling the mortgage instead keeps the mechanic and its drama while making mass imprisonment a real bet. With the balance package (this + the influence-payout restores + red curve compression) heuristic mirrors land at red ~46%, influence upsets ~3%, median 12 rounds. Prison remains "on notice" (decisions 37/53) — this is the tuned version for the designer to judge, not a verdict.
+
 ## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
 
 - **Red burn grammar:** unit-only burn = cost+1 damage (Devastating Strike became unit-only); face-capable burn = cost (Raging Inferno 5→6 dmg; Searing Bolt/Volcanic Slam/Rupture already conformed). Burn the Frontline 7-for-4 → 6-for-6 one-zone (the wall-breaker; friendly fire stays as red's visible cost).

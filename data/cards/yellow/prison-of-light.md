@@ -10,4 +10,4 @@ Choose a zone. Imprison every enemy unit there.
 
 ## Design notes
 
-Session 006, prison ladder: Prison of Light 7 = the zone-wide haymaker. Remember the mortgage: every prisoner costs you 1 Influence per round, so caging an army is a real bet.
+Session 006, prison ladder: Prison of Light 7 = the zone-wide haymaker. Remember the mortgage: every prisoner costs you 2 Influence per round (rules v2.2), so caging an army is a serious bet.

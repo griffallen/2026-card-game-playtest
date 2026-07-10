@@ -12,9 +12,14 @@ const byColor = (color: PrebuiltDeck['color']) => Object.values(CARD_SET).filter
 const RED_CARDS = byColor('red')
 const YELLOW_CARDS = byColor('yellow')
 
-// Red has 36 uniques; duplicate the twelve cheapest to reach 48 (DECISIONS 25).
-// Since the session-006 churn re-costed the pool, cost ≤ 2 is exactly twelve slugs.
+// Red has 36 uniques; duplicate twelve workhorses to reach 48 (DECISIONS 25).
+// Curated (session 006 balance pass): the cheap core minus the two utility actions,
+// plus the two cost-3 bodies — doubling Warpath/Pillage instead measurably sank red.
 const RED_DOUBLES = new Set(RED_CARDS.filter(c => c.cost <= 2).map(c => c.slug))
+RED_DOUBLES.delete('warpath')
+RED_DOUBLES.delete('pillage')
+RED_DOUBLES.add('rageforged-brute')
+RED_DOUBLES.add('volcanic-slam')
 
 export const PREBUILT_DECKS: PrebuiltDeck[] = [
   {

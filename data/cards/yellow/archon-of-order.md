@@ -12,4 +12,4 @@ At the start of your round, imprison the strongest enemy unit in each zone.
 
 ## Design notes
 
-Decision 51 text (deterministic pick per zone; zones with no eligible enemies are skipped). The mass-jailer — remember each prisoner costs 1 Influence per round.
+Decision 51 text (deterministic pick per zone; zones with no eligible enemies are skipped). The mass-jailer — remember each prisoner costs 2 Influence per round (rules v2.2).

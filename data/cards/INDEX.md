@@ -28,17 +28,17 @@
 | [Blaze Juggernaut](red/blaze-juggernaut.md) | 4 | unit | 4/4 | rush, reach | canon | Rush. Reach. |
 | [Burning Oath](red/burning-oath.md) | 4 | upgrade | — |  | canon | Attached unit gets +2 Power and Breakthrough 2. |
 | [Cataclysmic Charge](red/cataclysmic-charge.md) | 4 | action | — |  | canon | Target unit gets +3 Power and Breakthrough 3 this round. |
+| [Doombringer](red/doombringer.md) | 4 | unit | 5/4 | rush, breakthrough 3 | canon | Rush. Breakthrough 3. |
 | [Execution Swing](red/execution-swing.md) | 4 | action | — |  | canon | Destroy target damaged unit. |
 | [Inferno Titan](red/inferno-titan.md) | 4 | unit | 5/4 | breakthrough 3, overextend 3 | canon | Breakthrough 3. Overextend 3. |
 | [Rupture](red/rupture.md) | 4 | action | — |  | canon | Deal 4 damage to target unit or base. |
 | [Crimson Behemoth](red/crimson-behemoth.md) | 5 | unit | 6/5 |  | canon | When this attacks a base, it deals 2 damage to every other unit in that zone — yours included. |
-| [Doombringer](red/doombringer.md) | 5 | unit | 5/4 | rush, breakthrough 3 | canon | Rush. Breakthrough 3. |
 | [Relentless Assault](red/relentless-assault.md) | 5 | action | — |  | canon | Ready all your units. |
 | [Scorching Howl](red/scorching-howl.md) | 5 | action | — |  | canon | Deal 3 damage to all units. |
+| [Warlord Garok](red/warlord-garok.md) | 5 | unit | 5/5 | rush | canon | Rush. Your other units have +1 Power. |
 | [Burn the Frontline](red/burn-the-frontline.md) | 6 | action | — |  | canon | Choose a zone. Deal 6 damage to every unit there — yours included. |
 | [Earthshaker](red/earthshaker.md) | 6 | unit | 6/5 | breakthrough 3, overextend 3 | canon | Breakthrough 3. Overextend 3. |
 | [Raging Inferno](red/raging-inferno.md) | 6 | action | — |  | canon | Deal 6 damage to target unit or base. |
-| [Warlord Garok](red/warlord-garok.md) | 6 | unit | 5/5 | rush | canon | Rush. Your other units have +1 Power. |
 | [Apocalypse Engine](red/apocalypse-engine.md) | 7 | unit | 7/7 | breakthrough 4, overextend 4 | canon | Breakthrough 4. Overextend 4. |
 | [Last Stand](red/last-stand.md) | 7 | action | — |  | canon | Your units gain +2 Power this round. You lose 2 life. |
 | [Unchained Rage](red/unchained-rage.md) | 7 | action | — |  | canon | Double a unit's Power this round. |
@@ -59,34 +59,34 @@
 | [Hold the Line](yellow/hold-the-line.md) | 2 | action | — |  | canon | Choose a zone. Your units there gain Guard. Gain 1 Influence. |
 | [Radiant Aegis](yellow/radiant-aegis.md) | 2 | action | — |  | canon | Target unit gets Armor 2, permanently. Gain 1 Influence. |
 | [Sunguard Defender](yellow/sunguard-defender.md) | 2 | unit | 2/3 | guard | canon | Guard. When this defends, gain 1 Influence. |
-| [Absolution](yellow/absolution.md) | 3 | action | — |  | canon | Free target friendly unit from imprisonment and remove its negative effects. Gain 1 Influence. |
 | [Aura of Resolve](yellow/aura-of-resolve.md) | 3 | upgrade | — |  | canon | Attach to unit. When this unit defends, gain 2 Influence. |
 | [Bulwark Protector](yellow/bulwark-protector.md) | 3 | unit | 2/5 | guard | canon | Guard. When this defends, gain 1 Influence. |
 | [Chain of Law](yellow/chain-of-law.md) | 3 | upgrade | — |  | canon | Attach to unit. This unit can't be the target of enemy actions. Influence: +1. |
-| [Devout Intervention](yellow/devout-intervention.md) | 3 | action | — |  | canon | Prevent the next 3 damage to your base this round. Gain 1 Influence. |
-| [Disarming Order](yellow/disarming-order.md) | 3 | action | — |  | canon | Target unit can't attack this round. Draw a card. |
-| [Justicar Enforcer](yellow/justicar-enforcer.md) | 3 | unit | 3/4 | guard | canon | Guard. When this defends, gain 1 Influence. |
-| [Light of Authority](yellow/light-of-authority.md) | 3 | action | — |  | canon | Target unit gets +3 Power this round. Gain 1 Influence. |
+| [Justicar Enforcer](yellow/justicar-enforcer.md) | 3 | unit | 3/4 | guard | canon | Guard. When this defends, gain 2 Influence. |
 | [Noble Purifier](yellow/noble-purifier.md) | 3 | unit | 3/3 |  | canon | When this attacks, imprison the strongest enemy unit in the defending zone. |
 | [Sanctified Bastion](yellow/sanctified-bastion.md) | 3 | unit | 0/6 | cantAttack | canon | This can't attack. Other friendly units in this zone have Armor 1. |
 | [Subjugate](yellow/subjugate.md) | 3 | action | — |  | canon | Imprison target unit. It gets -1 Power permanently. Gain 1 Influence. |
 | [Unwavering Faith](yellow/unwavering-faith.md) | 3 | action | — |  | canon | Heal 3 damage from target unit. Gain 1 Influence. |
+| [Absolution](yellow/absolution.md) | 4 | action | — |  | canon | Free target friendly unit from imprisonment and remove its negative effects. Gain 1 Influence. |
+| [Devout Intervention](yellow/devout-intervention.md) | 4 | action | — |  | canon | Prevent the next 3 damage to your base this round. Gain 1 Influence. |
+| [Disarming Order](yellow/disarming-order.md) | 4 | action | — |  | canon | Target unit can't attack this round. Draw a card. |
 | [Exemplar Knight](yellow/exemplar-knight.md) | 4 | unit | 4/4 |  | canon | When this attacks, it gets +2 Power this round. When it defeats a unit, gain 1 Influence. |
 | [Fortress Keeper](yellow/fortress-keeper.md) | 4 | unit | 1/7 | cantAttack | canon | This can't attack. Other friendly units in this zone have Guard. |
 | [High Justiciar](yellow/high-justiciar.md) | 4 | unit | 3/5 |  | canon | At the start of your round, imprison the strongest enemy unit outside this unit's zone. |
 | [Lawbringer](yellow/lawbringer.md) | 4 | unit | 4/4 |  | canon | When this enters a zone, imprison the strongest enemy unit there. |
+| [Light of Authority](yellow/light-of-authority.md) | 4 | action | — |  | canon | Target unit gets +3 Power this round. Gain 1 Influence. |
 | [Resolve Banner](yellow/resolve-banner.md) | 4 | upgrade | — |  | canon | Attach to unit. Other friendly units in this zone get +1 Power. |
-| [Sanctify](yellow/sanctify.md) | 4 | action | — |  | canon | Heal 4 damage from your base. Gain 1 Influence. |
 | [Sentence](yellow/sentence.md) | 4 | action | — |  | canon | Imprison target unit. Draw a card. |
 | [Censer of Purity](yellow/censer-of-purity.md) | 5 | unit | 3/6 |  | canon | At the start of your round, lose 1 Influence and heal 2 damage from your base. |
 | [Custodian of Law](yellow/custodian-of-law.md) | 5 | unit | 4/6 | guard | canon | Guard. When this defends, gain 2 Influence. |
-| [Dawnspear Paladin](yellow/dawnspear-paladin.md) | 5 | unit | 5/5 |  | canon | When this attacks, gain 1 Influence. |
+| [Dawnspear Paladin](yellow/dawnspear-paladin.md) | 5 | unit | 5/5 |  | canon | When this attacks, gain 2 Influence. |
 | [Imprisonment Chamber](yellow/imprisonment-chamber.md) | 5 | action | — |  | canon | Imprison target unit. Gain 2 Influence. |
 | [Radiant Judgment](yellow/radiant-judgment.md) | 5 | action | — |  | canon | Imprison all enemy units with 3 Power or less. Influence: +2. |
 | [Radiant Wall](yellow/radiant-wall.md) | 5 | action | — |  | canon | Target unit gets Armor 3, permanently. Gain 1 Influence. |
+| [Sanctify](yellow/sanctify.md) | 5 | action | — |  | canon | Heal 4 damage from your base. Gain 1 Influence. |
 | [Unshakable Wall](yellow/unshakable-wall.md) | 5 | upgrade | — |  | canon | Attach to unit. This unit gets +2 Armor and Guard. |
 | [Detain](yellow/detain.md) | 6 | action | — |  | canon | Imprison target unit. Heal 3 damage from your base. Gain 1 Influence. |
-| [Gateward Colossus](yellow/gateward-colossus.md) | 6 | unit | 3/9 | cantAttack | canon | This can't attack. Whenever a unit is imprisoned, gain 1 Influence. |
+| [Gateward Colossus](yellow/gateward-colossus.md) | 6 | unit | 3/9 | cantAttack | canon | This can't attack. Whenever a unit is imprisoned, gain 2 Influence. |
 | [Hierophant](yellow/hierophant.md) | 6 | unit | 3/7 |  | canon | Other friendly units get +1 Power while your Influence is 10 or more. |
 | [Inquisitor](yellow/inquisitor.md) | 6 | unit | 4/5 |  | canon | When this enters a zone, imprison the strongest enemy unit there with 4 or less Power. |
 | [Mobilize the Faithful](yellow/mobilize-the-faithful.md) | 6 | action | — |  | canon | Your units get +1 Power and gain Guard, permanently. Gain 1 Influence. |
