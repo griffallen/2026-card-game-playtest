@@ -12,13 +12,9 @@ const byColor = (color: PrebuiltDeck['color']) => Object.values(CARD_SET).filter
 const RED_CARDS = byColor('red')
 const YELLOW_CARDS = byColor('yellow')
 
-// Red has 36 uniques; duplicate the twelve cheapest (cost ≤ 3 core) to reach 48 (DECISIONS 25).
+// Red has 36 uniques; duplicate the twelve cheapest to reach 48 (DECISIONS 25).
+// Since the session-006 churn re-costed the pool, cost ≤ 2 is exactly twelve slugs.
 const RED_DOUBLES = new Set(RED_CARDS.filter(c => c.cost <= 2).map(c => c.slug))
-{
-  // cost ≤2 gives 10 slugs; add the two cost-3 workhorses for exactly 12 doubles
-  RED_DOUBLES.add('rageforged-brute')
-  RED_DOUBLES.add('volcanic-slam')
-}
 
 export const PREBUILT_DECKS: PrebuiltDeck[] = [
   {

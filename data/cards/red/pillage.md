@@ -1,13 +1,13 @@
 ---
 name: Pillage
 type: action
-cost: 4
-status: draft
+cost: 2
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"upgrade","side":"enemy"}],"onPlay":[{"op":"destroyUpgrade"}]}
 ---
-Destroy target enemy upgrade. Overextend 2.
+Destroy target enemy upgrade.
 
 ## Design notes
 
-⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.
+Session 006: 4 mana → 2. Utility removal was priced like a threat; yellow runs seven upgrades and red needs a real answer at a price it can pay mid-assault.

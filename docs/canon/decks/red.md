@@ -33,8 +33,8 @@ or shoot from safety — it closes distance and swings.
    state. No free power.
 4. **Red does not heal** — not units, not its base. Damage taken is the price already paid.
 5. **Red does not imprison, release, or touch the prison system in any way.**
-6. **Red's removal is damage**, resolved through Armor like all damage. No destroy-effects that
-   skip the fight (exception on ratify only).
+6. **Red's removal is damage — or an execute that finishes a fight.** Destroy-effects are legal
+   only against *damaged* units (Execution Swing); unconditional destroy or exile is forbidden.
 
 ## Curve & size (the standard base set)
 

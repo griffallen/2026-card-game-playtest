@@ -5,6 +5,6 @@ cost: 7
 power: 7
 health: 7
 keywords: breakthrough 4, overextend 4
-status: draft
+status: canon
 ---
 Breakthrough 4. Overextend 4.

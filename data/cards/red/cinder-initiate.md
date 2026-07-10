@@ -5,7 +5,7 @@ cost: 1
 power: 1
 health: 1
 keywords: rush, overextend 1
-status: draft
+status: canon
 ---
 Rush. Overextend 1.
 

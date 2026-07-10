@@ -23,9 +23,8 @@
  "devastating-strike": {
   "targets": [
    {
-    "t": "unitOrBase",
-    "side": "any",
-    "baseSide": "enemy"
+    "t": "unit",
+    "side": "any"
    }
   ],
   "onPlay": [
@@ -40,8 +39,8 @@
   "color": "red",
   "type": "action",
   "cost": 1,
-  "text": "Deal 2 damage to target unit or base. Overextend 1.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Deal 2 damage to target unit.",
+  "designerNote": "Session 006: became unit-only. Red's burn grammar — unit-only burn deals cost+1, face-capable burn deals exactly cost (the reach is the tax). This is the efficient unit-killer; Searing Bolt is the flexible one.",
   "artUrl": "/cards/devastating-strike.jpg"
  },
  "reckless-charge": {
@@ -58,7 +57,7 @@
     "kw": {
      "k": "rush"
     },
-    "dur": "perm"
+    "dur": "round"
    }
   ],
   "slug": "reckless-charge",
@@ -66,8 +65,8 @@
   "color": "red",
   "type": "action",
   "cost": 1,
-  "text": "Target unit gains Rush. Overextend 1.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Target unit gains Rush this round.",
+  "designerNote": "Session 006: was \"gains Rush\" permanently — dead text under decision 41 (Rush only matters the round a unit enters play, so a permanent grant on a veteran does nothing, ever). Now scoped to the round: the real play is on a unit you just dropped — its first move becomes free, so it can cross a zone and still fight.",
   "artUrl": "/cards/reckless-charge.jpg"
  },
  "spark-hound": {
@@ -142,8 +141,7 @@
   "color": "red",
   "type": "action",
   "cost": 2,
-  "text": "Target unit gets +2 Power and Rush this round. Overextend 1.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Target unit gets +2 Power and Rush this round.",
   "artUrl": "/cards/blood-rush.jpg"
  },
  "flameblade-raider": {
@@ -166,6 +164,27 @@
   ],
   "artUrl": "/cards/flameblade-raider.jpg"
  },
+ "pillage": {
+  "targets": [
+   {
+    "t": "upgrade",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "destroyUpgrade"
+   }
+  ],
+  "slug": "pillage",
+  "name": "Pillage",
+  "color": "red",
+  "type": "action",
+  "cost": 2,
+  "text": "Destroy target enemy upgrade.",
+  "designerNote": "Session 006: 4 mana → 2. Utility removal was priced like a threat; yellow runs seven upgrades and red needs a real answer at a price it can pay mid-assault.",
+  "artUrl": "/cards/pillage.jpg"
+ },
  "searing-bolt": {
   "targets": [
    {
@@ -186,8 +205,7 @@
   "color": "red",
   "type": "action",
   "cost": 2,
-  "text": "Deal 2 damage to any target. Overextend 1.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Deal 2 damage to any target.",
   "artUrl": "/cards/searing-bolt.jpg"
  },
  "smash-through": {
@@ -214,8 +232,7 @@
   "color": "red",
   "type": "action",
   "cost": 2,
-  "text": "Target unit with Rush gains Breakthrough 2 this round. Overextend 1.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Target unit with Rush gains Breakthrough 2 this round.",
   "artUrl": "/cards/smash-through.jpg"
  },
  "warcry-leader": {
@@ -237,6 +254,49 @@
   "health": 3,
   "text": "Other friendly units have Rush.",
   "artUrl": "/cards/warcry-leader.jpg"
+ },
+ "warpath": {
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": {
+     "side": "friendly"
+    },
+    "p": 1,
+    "dur": "round"
+   }
+  ],
+  "slug": "warpath",
+  "name": "Warpath",
+  "color": "red",
+  "type": "action",
+  "cost": 2,
+  "text": "Your units get +1 Power this round.",
+  "designerNote": "Session 006 redesign: was \"all friendly units gain Rush\" permanently — dead text under decision 41 (see Reckless Charge). Rebuilt as the go-wide pump: 2 mana, +1 Power to the whole board for the round. Last Stand (+2 and a blood price) is its big sibling.",
+  "artUrl": "/cards/warpath.jpg"
+ },
+ "bloodfrenzy": {
+  "startOfRound": {
+   "cond": {
+    "selfLifeAtMost": 10
+   },
+   "ops": [
+    {
+     "op": "buff",
+     "t": "attached",
+     "p": 1,
+     "dur": "perm"
+    }
+   ]
+  },
+  "slug": "bloodfrenzy",
+  "name": "Bloodfrenzy",
+  "color": "red",
+  "type": "upgrade",
+  "cost": 3,
+  "text": "At the start of your round, if you have 10 or less life, attached unit gets +1 Power permanently.",
+  "designerNote": "Session 006: threshold 5 → 10 life and cost 5 → 3. At ≤5 life the game is usually already decided; half-life is where red's desperation engine should start paying.",
+  "artUrl": "/cards/bloodfrenzy.jpg"
  },
  "collateral-damage": {
   "targets": [
@@ -263,8 +323,7 @@
   "color": "red",
   "type": "action",
   "cost": 3,
-  "text": "Deal 2 damage to two different target units. Overextend 2.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Deal 2 damage to two different target units.",
   "artUrl": "/cards/collateral-damage.jpg"
  },
  "fiery-impaler": {
@@ -282,8 +341,8 @@
   "cost": 3,
   "power": 3,
   "health": 3,
-  "text": "When this attacks a unit, it deals 1 damage to an adjacent unit.",
-  "designerNote": "⚑ \"Adjacent unit\" auto-targets the strongest other enemy unit in the defending zone (deterministic pick).",
+  "text": "When this attacks a unit, it also deals 1 damage to the strongest other enemy unit in that zone.",
+  "designerNote": "Session 006: text now states the deterministic pick (decision 51) instead of the vague \"an adjacent unit\".",
   "artUrl": "/cards/fiery-impaler.jpg"
  },
  "rageforged-brute": {
@@ -327,31 +386,8 @@
   "color": "red",
   "type": "action",
   "cost": 3,
-  "text": "Deal 3 damage to target unit or base. Overextend 2.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Deal 3 damage to target unit or base.",
   "artUrl": "/cards/volcanic-slam.jpg"
- },
- "warpath": {
-  "onPlay": [
-   {
-    "op": "grant",
-    "t": {
-     "side": "friendly"
-    },
-    "kw": {
-     "k": "rush"
-    },
-    "dur": "perm"
-   }
-  ],
-  "slug": "warpath",
-  "name": "Warpath",
-  "color": "red",
-  "type": "action",
-  "cost": 3,
-  "text": "All friendly units gain Rush. Overextend 2.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
-  "artUrl": "/cards/warpath.jpg"
  },
  "blaze-juggernaut": {
   "slug": "blaze-juggernaut",
@@ -361,7 +397,7 @@
   "cost": 4,
   "power": 4,
   "health": 4,
-  "text": "Rush. This unit can attack adjacent zones.",
+  "text": "Rush. Reach.",
   "kw": [
    {
     "k": "rush"
@@ -370,7 +406,7 @@
     "k": "reach"
    }
   ],
-  "designerNote": "⚑ \"Attack adjacent zones\" = Reach: like Ranged but still draws counter-damage and can assault bases normally.",
+  "designerNote": "Reach (canon since v2.0 audit): may attack into an adjacent zone like Ranged, but unlike Ranged it can assault bases and does take counter-damage.",
   "artUrl": "/cards/blaze-juggernaut.jpg"
  },
  "burning-oath": {
@@ -384,7 +420,8 @@
     "s": "aura",
     "scope": "attached",
     "kw": {
-     "k": "rush"
+     "k": "breakthrough",
+     "n": 2
     }
    }
   ],
@@ -393,9 +430,65 @@
   "color": "red",
   "type": "upgrade",
   "cost": 4,
-  "text": "Give attached unit +2 Power and Rush. Overextend 1.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Attached unit gets +2 Power and Breakthrough 2.",
+  "designerNote": "Session 006 redesign: was +2 Power and Rush — the Rush half was dead text on any unit already in play (decision 41). Breakthrough keeps the oath aggressive and permanent.",
   "artUrl": "/cards/burning-oath.jpg"
+ },
+ "cataclysmic-charge": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "p": 3,
+    "dur": "round"
+   },
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "breakthrough",
+     "n": 3
+    },
+    "dur": "round"
+   }
+  ],
+  "slug": "cataclysmic-charge",
+  "name": "Cataclysmic Charge",
+  "color": "red",
+  "type": "action",
+  "cost": 4,
+  "text": "Target unit gets +3 Power and Breakthrough 3 this round.",
+  "designerNote": "Session 006 redesign: was 6 mana for +3 Power and Rush this round — overcosted (Blood Rush gives +2 and Rush for 2) and the Rush rider was near-dead text on veterans. Now the single-target alpha strike: the Breakthrough rider makes the pump land on the base, not just the wall.",
+  "artUrl": "/cards/cataclysmic-charge.jpg"
+ },
+ "execution-swing": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "any",
+    "mustBeDamaged": true
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "destroy",
+    "t": "chosen0"
+   }
+  ],
+  "slug": "execution-swing",
+  "name": "Execution Swing",
+  "color": "red",
+  "type": "action",
+  "cost": 4,
+  "text": "Destroy target damaged unit.",
+  "designerNote": "Session 006: 6 mana → 4. Legal under the red charter as the \"finish the fight\" execute — it requires combat to have happened first (damaged-only); red still never gets unconditional destroy.",
+  "artUrl": "/cards/execution-swing.jpg"
  },
  "inferno-titan": {
   "slug": "inferno-titan",
@@ -403,8 +496,8 @@
   "color": "red",
   "type": "unit",
   "cost": 4,
-  "power": 6,
-  "health": 5,
+  "power": 5,
+  "health": 4,
   "text": "Breakthrough 3. Overextend 3.",
   "kw": [
    {
@@ -416,28 +509,8 @@
     "n": 3
    }
   ],
+  "designerNote": "Session 006: 6/5 → 5/4. It beat the statline grammar by +3 while carrying two keywords — the pool's most undercosted body.",
   "artUrl": "/cards/inferno-titan.jpg"
- },
- "pillage": {
-  "targets": [
-   {
-    "t": "upgrade",
-    "side": "enemy"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "destroyUpgrade"
-   }
-  ],
-  "slug": "pillage",
-  "name": "Pillage",
-  "color": "red",
-  "type": "action",
-  "cost": 4,
-  "text": "Destroy target enemy upgrade. Overextend 2.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
-  "artUrl": "/cards/pillage.jpg"
  },
  "rupture": {
   "targets": [
@@ -459,31 +532,8 @@
   "color": "red",
   "type": "action",
   "cost": 4,
-  "text": "Deal 4 damage to target unit or base. Overextend 3.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Deal 4 damage to target unit or base.",
   "artUrl": "/cards/rupture.jpg"
- },
- "bloodfrenzy": {
-  "startOfRound": {
-   "cond": {
-    "selfLifeAtMost": 5
-   },
-   "ops": [
-    {
-     "op": "buff",
-     "t": "attached",
-     "p": 1,
-     "dur": "perm"
-    }
-   ]
-  },
-  "slug": "bloodfrenzy",
-  "name": "Bloodfrenzy",
-  "color": "red",
-  "type": "upgrade",
-  "cost": 5,
-  "text": "At the start of your round, attached unit gets +1 Power if you have 5 or less life.",
-  "artUrl": "/cards/bloodfrenzy.jpg"
  },
  "crimson-behemoth": {
   "onAttackBase": [
@@ -503,9 +553,9 @@
   "type": "unit",
   "cost": 5,
   "power": 6,
-  "health": 6,
-  "text": "When this attacks a base, it deals 2 damage to all adjacent zones.",
-  "designerNote": "⚑ Re-ruled after playtest 004: the assault splashes 2 damage onto every OTHER unit in the defended Home zone, both sides (the original \"zones adjacent to the Behemoth\" reading only ever hit Neutral — dead text during a siege).",
+  "health": 5,
+  "text": "When this attacks a base, it deals 2 damage to every other unit in that zone — yours included.",
+  "designerNote": "Re-ruled after playtest 004: the assault splashes the defended Home zone, both sides (the original \"adjacent zones\" reading only ever hit Neutral — dead text during a siege). Session 006: 6/6 → 6/5 to sit on the statline grammar, and the text now says what actually happens.",
   "artUrl": "/cards/crimson-behemoth.jpg"
  },
  "doombringer": {
@@ -540,8 +590,8 @@
   "color": "red",
   "type": "action",
   "cost": 5,
-  "text": "Take an extra combat phase after this one. Overextend 3.",
-  "designerNote": "⚑ Combat is merged into the Main Phase (DECISIONS 8), so \"extra combat phase\" = ready all your units; they may attack again. ⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Ready all your units.",
+  "designerNote": "Session 006: retexted from \"take an extra combat phase\" (a phase that no longer exists — decision 40 dissolved the phase ladder). The effect was already ready-all; now the card says so.",
   "artUrl": "/cards/relentless-assault.jpg"
  },
  "scorching-howl": {
@@ -559,41 +609,33 @@
   "color": "red",
   "type": "action",
   "cost": 5,
-  "text": "Deal 3 damage to all units. Overextend 3.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Deal 3 damage to all units.",
   "artUrl": "/cards/scorching-howl.jpg"
  },
- "cataclysmic-charge": {
+ "burn-the-frontline": {
   "targets": [
    {
-    "t": "unit",
-    "side": "friendly"
+    "t": "zone"
    }
   ],
   "onPlay": [
    {
-    "op": "grant",
-    "t": "chosen0",
-    "kw": {
-     "k": "rush"
+    "op": "damageFilter",
+    "f": {
+     "side": "all",
+     "zone": "chosenZone"
     },
-    "dur": "round"
-   },
-   {
-    "op": "buff",
-    "t": "chosen0",
-    "p": 3,
-    "dur": "round"
+    "n": 6
    }
   ],
-  "slug": "cataclysmic-charge",
-  "name": "Cataclysmic Charge",
+  "slug": "burn-the-frontline",
+  "name": "Burn the Frontline",
   "color": "red",
   "type": "action",
   "cost": 6,
-  "text": "Target unit gains Rush and +3 Power this round. Overextend 4.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
-  "artUrl": "/cards/cataclysmic-charge.jpg"
+  "text": "Choose a zone. Deal 6 damage to every unit there — yours included.",
+  "designerNote": "Session 006: was 7 mana for 4 damage in one zone — strictly worse than Scorching Howl (5 mana, 3 damage everywhere). Now the wall-breaker: 6 mana, 6 damage to one zone, both sides. Kills almost every yellow wall through the fortress plan; the friendly-fire is the red cost made visible.",
+  "artUrl": "/cards/burn-the-frontline.jpg"
  },
  "earthshaker": {
   "slug": "earthshaker",
@@ -616,29 +658,6 @@
   ],
   "artUrl": "/cards/earthshaker.jpg"
  },
- "execution-swing": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "any",
-    "mustBeDamaged": true
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "destroy",
-    "t": "chosen0"
-   }
-  ],
-  "slug": "execution-swing",
-  "name": "Execution Swing",
-  "color": "red",
-  "type": "action",
-  "cost": 6,
-  "text": "Destroy target damaged unit. Overextend 3.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
-  "artUrl": "/cards/execution-swing.jpg"
- },
  "raging-inferno": {
   "targets": [
    {
@@ -651,7 +670,7 @@
    {
     "op": "damage",
     "t": "chosen0",
-    "n": 5
+    "n": 6
    }
   ],
   "slug": "raging-inferno",
@@ -659,8 +678,8 @@
   "color": "red",
   "type": "action",
   "cost": 6,
-  "text": "Deal 5 damage to target unit or base. Overextend 4.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Deal 6 damage to target unit or base.",
+  "designerNote": "Session 006: 5 damage → 6, matching the face-capable burn grammar (damage = cost): Searing Bolt 2@2, Volcanic Slam 3@3, Rupture 4@4, Raging Inferno 6@6.",
   "artUrl": "/cards/raging-inferno.jpg"
  },
  "warlord-garok": {
@@ -707,31 +726,6 @@
   ],
   "artUrl": "/cards/apocalypse-engine.jpg"
  },
- "burn-the-frontline": {
-  "targets": [
-   {
-    "t": "zone"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "damageFilter",
-    "f": {
-     "side": "all",
-     "zone": "chosenZone"
-    },
-    "n": 4
-   }
-  ],
-  "slug": "burn-the-frontline",
-  "name": "Burn the Frontline",
-  "color": "red",
-  "type": "action",
-  "cost": 7,
-  "text": "Deal 4 damage to all units in one zone. Overextend 4.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
-  "artUrl": "/cards/burn-the-frontline.jpg"
- },
  "last-stand": {
   "onPlay": [
    {
@@ -774,8 +768,7 @@
   "color": "red",
   "type": "action",
   "cost": 7,
-  "text": "Double a unit's Power this round. Overextend 4.",
-  "designerNote": "⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Double a unit's Power this round.",
   "artUrl": "/cards/unchained-rage.jpg"
  },
  "final-onslaught": {
@@ -800,8 +793,8 @@
   "color": "red",
   "type": "action",
   "cost": 8,
-  "text": "Ready one of your units, then immediately take an extra action. Overextend 5.",
-  "designerNote": "Decision 43: rounds have no extra turns — \"extra turn\" became ready one of your units + an extra action. Unplayable with no friendly unit to ready, by design. ⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.",
+  "text": "Ready one of your units, then immediately take an extra action.",
+  "designerNote": "Decision 43: rounds have no extra turns — \"extra turn\" became ready one of your units + an extra action. Unplayable with no friendly unit to ready, by design.",
   "artUrl": "/cards/final-onslaught.jpg"
  },
  "worldrender": {

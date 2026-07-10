@@ -1,13 +1,13 @@
 ---
 name: Cataclysmic Charge
 type: action
-cost: 6
-status: draft
+cost: 4
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"grant","t":"chosen0","kw":{"k":"rush"},"dur":"round"},{"op":"buff","t":"chosen0","p":3,"dur":"round"}]}
+effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"buff","t":"chosen0","p":3,"dur":"round"},{"op":"grant","t":"chosen0","kw":{"k":"breakthrough","n":3},"dur":"round"}]}
 ---
-Target unit gains Rush and +3 Power this round. Overextend 4.
+Target unit gets +3 Power and Breakthrough 3 this round.
 
 ## Design notes
 
-⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.
+Session 006 redesign: was 6 mana for +3 Power and Rush this round — overcosted (Blood Rush gives +2 and Rush for 2) and the Rush rider was near-dead text on veterans. Now the single-target alpha strike: the Breakthrough rider makes the pump land on the base, not just the wall.

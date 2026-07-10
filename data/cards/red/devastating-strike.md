@@ -2,12 +2,12 @@
 name: Devastating Strike
 type: action
 cost: 1
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unitOrBase","side":"any","baseSide":"enemy"}],"onPlay":[{"op":"damage","t":"chosen0","n":2}]}
+effects: {"targets":[{"t":"unit","side":"any"}],"onPlay":[{"op":"damage","t":"chosen0","n":2}]}
 ---
-Deal 2 damage to target unit or base. Overextend 1.
+Deal 2 damage to target unit.
 
 ## Design notes
 
-⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.
+Session 006: became unit-only. Red's burn grammar — unit-only burn deals cost+1, face-capable burn deals exactly cost (the reach is the tax). This is the efficient unit-killer; Searing Bolt is the flexible one.

@@ -1,13 +1,13 @@
 ---
 name: Warpath
 type: action
-cost: 3
-status: draft
+cost: 2
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"grant","t":{"side":"friendly"},"kw":{"k":"rush"},"dur":"perm"}]}
+effects: {"onPlay":[{"op":"buff","t":{"side":"friendly"},"p":1,"dur":"round"}]}
 ---
-All friendly units gain Rush. Overextend 2.
+Your units get +1 Power this round.
 
 ## Design notes
 
-⚑ Overextend printed on an action/upgrade is inert pending the designer card pass — the designer defined Overextend as a unit combat gamble (decision 35), so the influence-cede reading was removed.
+Session 006 redesign: was "all friendly units gain Rush" permanently — dead text under decision 41 (see Reckless Charge). Rebuilt as the go-wide pump: 2 mana, +1 Power to the whole board for the round. Last Stand (+2 and a blood price) is its big sibling.
