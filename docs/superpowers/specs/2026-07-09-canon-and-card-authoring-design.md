@@ -122,3 +122,30 @@ A `docs/canon/*` or `data/cards.csv` edit → dedicated branch → PR → agent 
 - Migration steps + verification for the Decision 1 flip (DB seed / snapshot; lossless round-trip spot-check).
 - Whether the branch-per-edit workflow uses GitHub PRs or local branches for the two-person interim.
 - The Phase-1 open-rules-question list is the sprint agenda; capture each ruling in `DECISIONS.md` as it lands.
+
+---
+
+## Amendments (session 006, 2026-07-09 — reviewed with Blaine)
+
+1. **Decision 1's representation changes: one markdown file per card**, `data/cards/<color>/<slug>.md`
+   (YAML-style frontmatter + card text as the body), replacing the single CSV. The *substance* of
+   Decision 1 is unchanged — file layer authoritative, TS retires, agent validates every change.
+   Why the format flip: card text escapes CSV quoting entirely (it's the field the designer edits
+   most and the field CSV is worst at); a bad edit's blast radius is one card, not the parse of
+   every row after it; per-card `git log` is the card's design history; parallel PRs on different
+   cards can't conflict; and GitHub renders each file as a readable card page. The CSV's
+   single-table overview survives as a **generated, read-only `data/cards/INDEX.md`**.
+   `status` (`draft`/`redesign`/`canon`) becomes a frontmatter field — authoring metadata, never
+   part of `CardDef`.
+2. **No backwards version stamp.** `game-rules.md` keeps its own version line (v2.1, `-proto`
+   dropped at lock). `CANON.md` pins canon members at their own versions; `canon-vN.M` tags the set.
+3. **Stale claim corrected:** the "half the card text still says 'this turn'" evidence was already
+   fixed by the 2026-07-08 vocabulary sweep (0 occurrences in CSV and TS base). The normalize lane
+   is smaller than estimated; the ⚑ reinterpretations (mostly design rulings) dominate.
+4. **Card license (Blaine):** the 84 cards are drafts, not commitments. Churn should produce
+   *clean, easy-to-rectify values* and prose with zero ambiguity — redesign freely where a card's
+   printed idea is confused, logging the why in `DECISIONS.md`.
+5. **Scope added mid-session (Blaine):** a fresh-eyes UX audit of the demo (+fixes), a red/yellow
+   balance pass through their charter identities, a playable **purple** deck built strictly from
+   existing engine mechanics (SVG placeholder art direction), and a synchronization audit of the
+   full game (apps/web + server) against tonight's canon. See the implementation plan.
