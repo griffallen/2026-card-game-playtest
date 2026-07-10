@@ -53,11 +53,17 @@ That's it. The agent reviews every card PR with three questions:
 Then the agent fixes up `effects` if needed, and merges. **Feel and balance stay yours** — the
 agent never rejects a card for being too strong, only for being broken, dishonest, or off-color.
 
-## Asking for a redesign
+## Asking for a redesign — or anything bigger
 
-Don't fight the format — just write intent. Open a PR (or edit Design notes) saying *"Prison
-Warrant should punish the jailer harder — something like double decay"* and the agent turns it
-into a concrete card and shows you the result. The why gets logged in
+Don't fight the format — just write intent. Two channels, both dead simple:
+
+- **A pull request** when you know the concrete change (edit the file, PR it).
+- **A GitHub issue** when you have an idea, a complaint, or a feel note — *"Prison Warrant should
+  punish the jailer harder — something like double decay"* or *"red feels unstoppable after round
+  6"*. New issue → type it → submit. No format required.
+
+Blaine and the agent pick up both at the start of every session (`gh pr list` / `gh issue list`),
+respond on the thread, and fold accepted changes into the canon. The why gets logged in
 [`DECISIONS.md`](../../docs/DESIGN/DECISIONS.md).
 
 ## The rules this all hangs from
