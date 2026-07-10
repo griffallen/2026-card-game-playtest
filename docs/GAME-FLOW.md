@@ -98,7 +98,7 @@ Every test run plays **150 full games with random legal moves** — all finish w
 
 From the **Admin** hall (admin account required):
 
-- **Cards** — edit cost, power, health, name, text, keywords, and the influence-trigger on any card; new games pick up changes instantly (games in progress keep the cards they started with). Validated by the engine — an edit it can't execute is rejected on save, so a typo can't corrupt a game. *(Today the same pool is also editable as one file, `data/cards.csv`, straight on GitHub — decision 45.)*
+- **Cards** — edit cost, power, health, name, text, keywords, and the influence-trigger on any card; new games pick up changes instantly (games in progress keep the cards they started with). Validated by the engine — an edit it can't execute is rejected on save, so a typo can't corrupt a game. *(The same pool is editable card-by-card as files in `data/cards/`, straight on GitHub — decision 46; see `data/cards/README.md`.)*
 - **Rules** — every number above (starting life, win threshold, draws per round, prison decay, and the new v2 levers — `rushCoversAttack`, `interceptExhausts`, `maxAttackers`…) lives in a named, versioned parameter set. Save as "v2.1-experiment," make it default, and the next game plays by it.
 - **Decks** — build or edit the shared prebuilt decks with a live legality meter.
 
