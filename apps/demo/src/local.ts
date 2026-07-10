@@ -3,11 +3,11 @@ import {
   type CardSet, type GameState, type PolicyName, type Seat,
 } from '@newgame/engine'
 
-/** Engine card set with art urls resolved against the deployed base path. */
+/** Engine card set with art urls resolved against the deployed base path (keep each card's own extension — the veil set ships SVGs). */
 export const DEMO_CARDS: CardSet = Object.fromEntries(
   Object.entries(CARD_SET).map(([slug, def]) => [
     slug,
-    { ...def, artUrl: `${import.meta.env.BASE_URL}cards/${slug}.jpg` },
+    { ...def, artUrl: `${import.meta.env.BASE_URL}${(def.artUrl ?? `/cards/${slug}.jpg`).replace(/^\//, '')}` },
   ]),
 )
 

@@ -41,7 +41,7 @@ export function Cards() {
         <button className={chip(deck === 'all')} onClick={() => setDeck('all')}>all cards</button>
         {PREBUILT_DECKS.map(d => (
           <button key={d.slug} className={chip(deck === d.slug)} onClick={() => setDeck(d.slug)}>
-            {d.color === 'red' ? '🔴' : '🟡'} {d.name}
+            {d.color === 'red' ? '🔴' : d.color === 'purple' ? '🟣' : '🟡'} {d.name}
           </button>
         ))}
         <span className="mx-1 text-dim">·</span>

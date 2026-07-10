@@ -1,4 +1,745 @@
 {
+ "glimpse": {
+  "onPlay": [
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "glimpse",
+  "name": "Glimpse",
+  "color": "purple",
+  "type": "action",
+  "cost": 1,
+  "text": "Draw a card.",
+  "artUrl": "/cards/glimpse.svg"
+ },
+ "veil-adept": {
+  "slug": "veil-adept",
+  "name": "Veil Adept",
+  "color": "purple",
+  "type": "unit",
+  "cost": 1,
+  "power": 1,
+  "health": 1,
+  "text": "Ranged.",
+  "kw": [
+   {
+    "k": "ranged"
+   }
+  ],
+  "designerNote": "Session 006 proposal: The statline pays the ranged tax: shooting without taking counter-damage is worth a stat.",
+  "artUrl": "/cards/veil-adept.svg"
+ },
+ "whisper-blade": {
+  "onKill": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "whisper-blade",
+  "name": "Whisper Blade",
+  "color": "purple",
+  "type": "unit",
+  "cost": 1,
+  "power": 2,
+  "health": 1,
+  "text": "When this defeats a unit, gain 1 Influence.",
+  "designerNote": "Session 006 proposal: Purple's influence law: the track moves only on kills.",
+  "artUrl": "/cards/whisper-blade.svg"
+ },
+ "cloak-of-haze": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "attached",
+    "kw": {
+     "k": "flying"
+    }
+   }
+  ],
+  "slug": "cloak-of-haze",
+  "name": "Cloak of Haze",
+  "color": "purple",
+  "type": "upgrade",
+  "cost": 2,
+  "text": "Attached unit has Flying.",
+  "artUrl": "/cards/cloak-of-haze.svg"
+ },
+ "crippling-dart": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "damage",
+    "t": "chosen0",
+    "n": 2
+   },
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "p": -1,
+    "dur": "perm"
+   }
+  ],
+  "slug": "crippling-dart",
+  "name": "Crippling Dart",
+  "color": "purple",
+  "type": "action",
+  "cost": 2,
+  "text": "Deal 2 damage to target enemy unit. It gets -1 Power permanently.",
+  "artUrl": "/cards/crippling-dart.svg"
+ },
+ "dusk-archer": {
+  "slug": "dusk-archer",
+  "name": "Dusk Archer",
+  "color": "purple",
+  "type": "unit",
+  "cost": 2,
+  "power": 2,
+  "health": 2,
+  "text": "Ranged.",
+  "kw": [
+   {
+    "k": "ranged"
+   }
+  ],
+  "artUrl": "/cards/dusk-archer.svg"
+ },
+ "mist-stalker": {
+  "onKill": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "mist-stalker",
+  "name": "Mist Stalker",
+  "color": "purple",
+  "type": "unit",
+  "cost": 2,
+  "power": 2,
+  "health": 2,
+  "text": "When this defeats a unit, gain 1 Influence.",
+  "artUrl": "/cards/mist-stalker.svg"
+ },
+ "pacify": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "cantAttack"
+    },
+    "dur": "round"
+   }
+  ],
+  "slug": "pacify",
+  "name": "Pacify",
+  "color": "purple",
+  "type": "action",
+  "cost": 2,
+  "text": "Target enemy unit can't attack this round.",
+  "artUrl": "/cards/pacify.svg"
+ },
+ "shadowstep": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "flying"
+    },
+    "dur": "round"
+   },
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "shadowstep",
+  "name": "Shadowstep",
+  "color": "purple",
+  "type": "action",
+  "cost": 2,
+  "text": "Target friendly unit gains Flying this round. Draw a card.",
+  "artUrl": "/cards/shadowstep.svg"
+ },
+ "twilight-scout": {
+  "slug": "twilight-scout",
+  "name": "Twilight Scout",
+  "color": "purple",
+  "type": "unit",
+  "cost": 2,
+  "power": 2,
+  "health": 3,
+  "text": "Flying.",
+  "kw": [
+   {
+    "k": "flying"
+   }
+  ],
+  "artUrl": "/cards/twilight-scout.svg"
+ },
+ "veiled-messenger": {
+  "onPlay": [
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "veiled-messenger",
+  "name": "Veiled Messenger",
+  "color": "purple",
+  "type": "unit",
+  "cost": 2,
+  "power": 1,
+  "health": 3,
+  "text": "When this enters play, draw a card.",
+  "artUrl": "/cards/veiled-messenger.svg"
+ },
+ "wither": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "p": -2,
+    "dur": "perm"
+   }
+  ],
+  "slug": "wither",
+  "name": "Wither",
+  "color": "purple",
+  "type": "action",
+  "cost": 2,
+  "text": "Target enemy unit gets -2 Power permanently.",
+  "designerNote": "Session 006 proposal: The signature removal: purple weakens instead of burning (red) or walling (yellow). Power floors at 0.\nFirst sims: 1 mana was a permanent answer to any attacker — 2 respects red.",
+  "artUrl": "/cards/wither.svg"
+ },
+ "gloom-piercer": {
+  "slug": "gloom-piercer",
+  "name": "Gloom Piercer",
+  "color": "purple",
+  "type": "unit",
+  "cost": 3,
+  "power": 3,
+  "health": 2,
+  "text": "Ranged.",
+  "kw": [
+   {
+    "k": "ranged"
+   }
+  ],
+  "artUrl": "/cards/gloom-piercer.svg"
+ },
+ "nightweaver": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "p": -1,
+    "dur": "perm"
+   }
+  ],
+  "slug": "nightweaver",
+  "name": "Nightweaver",
+  "color": "purple",
+  "type": "unit",
+  "cost": 3,
+  "power": 3,
+  "health": 3,
+  "text": "When this enters play, target enemy unit gets -1 Power permanently.",
+  "artUrl": "/cards/nightweaver.svg"
+ },
+ "obscure": {
+  "onPlay": [
+   {
+    "op": "preventBase",
+    "n": 2
+   },
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "obscure",
+  "name": "Obscure",
+  "color": "purple",
+  "type": "action",
+  "cost": 3,
+  "text": "Prevent the next 2 damage to your base this round. Draw a card.",
+  "artUrl": "/cards/obscure.svg"
+ },
+ "veil-assassin": {
+  "onKill": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "veil-assassin",
+  "name": "Veil Assassin",
+  "color": "purple",
+  "type": "unit",
+  "cost": 3,
+  "power": 4,
+  "health": 2,
+  "text": "When this defeats a unit, gain 1 Influence.",
+  "artUrl": "/cards/veil-assassin.svg"
+ },
+ "assassin-s-contract": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "attached",
+    "p": 2
+   }
+  ],
+  "onKill": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "assassin-s-contract",
+  "name": "Assassin's Contract",
+  "color": "purple",
+  "type": "upgrade",
+  "cost": 4,
+  "text": "Attached unit gets +2 Power. When it defeats a unit, gain 1 Influence.",
+  "artUrl": "/cards/assassin-s-contract.svg"
+ },
+ "blackout": {
+  "targets": [
+   {
+    "t": "zone"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": {
+     "side": "enemy",
+     "zone": "chosenZone"
+    },
+    "kw": {
+     "k": "cantAttack"
+    },
+    "dur": "round"
+   }
+  ],
+  "slug": "blackout",
+  "name": "Blackout",
+  "color": "purple",
+  "type": "action",
+  "cost": 4,
+  "text": "Choose a zone. Enemy units there can't attack this round.",
+  "artUrl": "/cards/blackout.svg"
+ },
+ "cull-the-weak": {
+  "onPlay": [
+   {
+    "op": "damageFilter",
+    "f": {
+     "side": "enemy"
+    },
+    "n": 1
+   },
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "cull-the-weak",
+  "name": "Cull the Weak",
+  "color": "purple",
+  "type": "action",
+  "cost": 4,
+  "text": "Deal 1 damage to every enemy unit. Draw a card.",
+  "artUrl": "/cards/cull-the-weak.svg"
+ },
+ "duskwing-tyrant": {
+  "slug": "duskwing-tyrant",
+  "name": "Duskwing Tyrant",
+  "color": "purple",
+  "type": "unit",
+  "cost": 4,
+  "power": 3,
+  "health": 3,
+  "text": "Flying.",
+  "kw": [
+   {
+    "k": "flying"
+   }
+  ],
+  "artUrl": "/cards/duskwing-tyrant.svg"
+ },
+ "phantom-duelist": {
+  "slug": "phantom-duelist",
+  "name": "Phantom Duelist",
+  "color": "purple",
+  "type": "unit",
+  "cost": 4,
+  "power": 4,
+  "health": 2,
+  "text": "This can't be the target of enemy actions.",
+  "kw": [
+   {
+    "k": "untargetable"
+   }
+  ],
+  "artUrl": "/cards/phantom-duelist.svg"
+ },
+ "rain-of-quarrels": {
+  "targets": [
+   {
+    "t": "zone"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "damageFilter",
+    "f": {
+     "side": "enemy",
+     "zone": "chosenZone"
+    },
+    "n": 2
+   }
+  ],
+  "slug": "rain-of-quarrels",
+  "name": "Rain of Quarrels",
+  "color": "purple",
+  "type": "action",
+  "cost": 4,
+  "text": "Choose a zone. Deal 2 damage to every enemy unit there.",
+  "designerNote": "Session 006 proposal: Purple sweeps are precise — enemies only. Red pays for its bigger zone nuke in friendly fire.",
+  "artUrl": "/cards/rain-of-quarrels.svg"
+ },
+ "shade-of-the-bazaar": {
+  "onPlay": [
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "shade-of-the-bazaar",
+  "name": "Shade of the Bazaar",
+  "color": "purple",
+  "type": "unit",
+  "cost": 4,
+  "power": 3,
+  "health": 4,
+  "text": "When this enters play, draw a card.",
+  "artUrl": "/cards/shade-of-the-bazaar.svg"
+ },
+ "silence-the-song": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "p": -2,
+    "dur": "perm"
+   },
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "silence-the-song",
+  "name": "Silence the Song",
+  "color": "purple",
+  "type": "action",
+  "cost": 4,
+  "text": "Target enemy unit gets -2 Power permanently. Draw a card.",
+  "artUrl": "/cards/silence-the-song.svg"
+ },
+ "dream-thief": {
+  "onPlay": [
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "dream-thief",
+  "name": "Dream Thief",
+  "color": "purple",
+  "type": "unit",
+  "cost": 5,
+  "power": 4,
+  "health": 4,
+  "text": "Flying. When this enters play, draw a card.",
+  "kw": [
+   {
+    "k": "flying"
+   }
+  ],
+  "artUrl": "/cards/dream-thief.svg"
+ },
+ "nocturne-sniper": {
+  "onKill": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "slug": "nocturne-sniper",
+  "name": "Nocturne Sniper",
+  "color": "purple",
+  "type": "unit",
+  "cost": 5,
+  "power": 4,
+  "health": 3,
+  "text": "Ranged. When this defeats a unit, gain 1 Influence.",
+  "kw": [
+   {
+    "k": "ranged"
+   }
+  ],
+  "artUrl": "/cards/nocturne-sniper.svg"
+ },
+ "second-shadow": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "ready",
+    "side": "friendly",
+    "t": "chosen0"
+   },
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "second-shadow",
+  "name": "Second Shadow",
+  "color": "purple",
+  "type": "action",
+  "cost": 5,
+  "text": "Ready one of your units. Draw a card.",
+  "artUrl": "/cards/second-shadow.svg"
+ },
+ "veilmaster": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "otherFriendly",
+    "kw": {
+     "k": "ranged"
+    }
+   }
+  ],
+  "slug": "veilmaster",
+  "name": "Veilmaster",
+  "color": "purple",
+  "type": "unit",
+  "cost": 5,
+  "power": 3,
+  "health": 5,
+  "text": "Your other units have Ranged.",
+  "designerNote": "Session 006 proposal: The lord of the color: the whole court starts shooting across zones.",
+  "artUrl": "/cards/veilmaster.svg"
+ },
+ "duskweaver-oracle": {
+  "onPlay": [
+   {
+    "op": "draw",
+    "n": 2
+   }
+  ],
+  "slug": "duskweaver-oracle",
+  "name": "Duskweaver Oracle",
+  "color": "purple",
+  "type": "unit",
+  "cost": 6,
+  "power": 4,
+  "health": 6,
+  "text": "When this enters play, draw 2 cards.",
+  "artUrl": "/cards/duskweaver-oracle.svg"
+ },
+ "fog-of-knives": {
+  "targets": [
+   {
+    "t": "zone"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "damageFilter",
+    "f": {
+     "side": "enemy",
+     "zone": "chosenZone"
+    },
+    "n": 3
+   }
+  ],
+  "slug": "fog-of-knives",
+  "name": "Fog of Knives",
+  "color": "purple",
+  "type": "action",
+  "cost": 6,
+  "text": "Choose a zone. Deal 3 damage to every enemy unit there.",
+  "artUrl": "/cards/fog-of-knives.svg"
+ },
+ "umbral-colossus": {
+  "slug": "umbral-colossus",
+  "name": "Umbral Colossus",
+  "color": "purple",
+  "type": "unit",
+  "cost": 6,
+  "power": 5,
+  "health": 5,
+  "text": "This can't be the target of enemy actions.",
+  "kw": [
+   {
+    "k": "untargetable"
+   }
+  ],
+  "artUrl": "/cards/umbral-colossus.svg"
+ },
+ "veil-of-silence": {
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": {
+     "side": "enemy"
+    },
+    "kw": {
+     "k": "cantAttack"
+    },
+    "dur": "round"
+   }
+  ],
+  "slug": "veil-of-silence",
+  "name": "Veil of Silence",
+  "color": "purple",
+  "type": "action",
+  "cost": 6,
+  "text": "Enemy units can't attack this round.",
+  "artUrl": "/cards/veil-of-silence.svg"
+ },
+ "eclipse": {
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": {
+     "side": "enemy"
+    },
+    "p": -2,
+    "dur": "perm"
+   }
+  ],
+  "slug": "eclipse",
+  "name": "Eclipse",
+  "color": "purple",
+  "type": "action",
+  "cost": 7,
+  "text": "Every enemy unit gets -2 Power permanently.",
+  "designerNote": "Session 006 proposal: The wither bomb — the whole board fades.\nFirst sims: at 6 it deleted yellow's whole plan; 7 makes it the finisher it reads as.",
+  "artUrl": "/cards/eclipse.svg"
+ },
+ "midnight-reckoning": {
+  "onPlay": [
+   {
+    "op": "damageFilter",
+    "f": {
+     "side": "enemy"
+    },
+    "n": 3
+   },
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "midnight-reckoning",
+  "name": "Midnight Reckoning",
+  "color": "purple",
+  "type": "action",
+  "cost": 7,
+  "text": "Deal 3 damage to every enemy unit. Draw a card.",
+  "artUrl": "/cards/midnight-reckoning.svg"
+ },
+ "sovereign-of-the-veil": {
+  "slug": "sovereign-of-the-veil",
+  "name": "Sovereign of the Veil",
+  "color": "purple",
+  "type": "unit",
+  "cost": 7,
+  "power": 5,
+  "health": 6,
+  "text": "Flying. This can't be the target of enemy actions.",
+  "kw": [
+   {
+    "k": "flying"
+   },
+   {
+    "k": "untargetable"
+   }
+  ],
+  "artUrl": "/cards/sovereign-of-the-veil.svg"
+ },
+ "the-unseen-court": {
+  "onKill": [
+   {
+    "op": "influence",
+    "n": 2
+   }
+  ],
+  "slug": "the-unseen-court",
+  "name": "The Unseen Court",
+  "color": "purple",
+  "type": "unit",
+  "cost": 8,
+  "power": 6,
+  "health": 7,
+  "text": "Ranged. When this defeats a unit, gain 2 Influence.",
+  "kw": [
+   {
+    "k": "ranged"
+   }
+  ],
+  "artUrl": "/cards/the-unseen-court.svg"
+ },
  "cinder-initiate": {
   "slug": "cinder-initiate",
   "name": "Cinder Initiate",

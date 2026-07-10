@@ -6,7 +6,7 @@ import { parseCardFile } from '../src/cards/cardfile.ts'
 describe('card ledger', () => {
   it('generated.json matches data/cards/ exactly (run `npm run cards` after editing cards)', () => {
     const seen = new Set<string>()
-    for (const color of ['red', 'yellow'] as const) {
+    for (const color of ['red', 'yellow', 'purple'] as const) {
       const dir = new URL(`../../../data/cards/${color}/`, import.meta.url)
       for (const file of readdirSync(dir)) {
         if (!file.endsWith('.md')) continue

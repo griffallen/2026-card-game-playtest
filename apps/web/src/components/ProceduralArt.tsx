@@ -29,6 +29,7 @@ function mulberry(seed: number) {
 const PALETTES: Record<string, { sky: [string, string]; ground: string; sigil: string; glow: string; mote: string }> = {
   red: { sky: ['#2a0f0a', '#571f12'], ground: '#1c0c07', sigil: '#e2583e', glow: '#ff9a5e', mote: '#f4c04a' },
   yellow: { sky: ['#2a220c', '#5d4a14'], ground: '#1d1708', sigil: '#e8c14a', glow: '#fff0b0', mote: '#f7e08a' },
+  purple: { sky: ['#1c1033', '#3d2364'], ground: '#130a24', sigil: '#8a63c9', glow: '#d9c8f5', mote: '#b79ae8' },
   neutral: { sky: ['#1c1c22', '#3c3d4d'], ground: '#131318', sigil: '#9aa3c0', glow: '#dfe6ff', mote: '#c9d0e8' },
 }
 

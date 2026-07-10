@@ -3,7 +3,7 @@ import { CARD_SET } from './cards/index.ts'
 export interface PrebuiltDeck {
   slug: string
   name: string
-  color: 'red' | 'yellow'
+  color: 'red' | 'yellow' | 'purple'
   description: string
   cards: { slug: string; count: number }[]
 }
@@ -11,6 +11,7 @@ export interface PrebuiltDeck {
 const byColor = (color: PrebuiltDeck['color']) => Object.values(CARD_SET).filter(c => c.color === color)
 const RED_CARDS = byColor('red')
 const YELLOW_CARDS = byColor('yellow')
+const PURPLE_CARDS = byColor('purple')
 
 // Red has 36 uniques; duplicate twelve workhorses to reach 48 (DECISIONS 25).
 // Curated (session 006 balance pass): the cheap core minus the two utility actions,
@@ -37,6 +38,18 @@ export const PREBUILT_DECKS: PrebuiltDeck[] = [
     cards: YELLOW_CARDS.map(c => ({ slug: c.slug, count: 1 })),
   },
 ]
+
+// Purple's 36 uniques were designed with exactly twelve cost ≤ 2 slugs, so the doubles rule is clean.
+if (PURPLE_CARDS.length) {
+  const PURPLE_DOUBLES = new Set(PURPLE_CARDS.filter(c => c.cost <= 2).map(c => c.slug))
+  PREBUILT_DECKS.push({
+    slug: 'veiled-court',
+    name: 'Veiled Court',
+    color: 'purple',
+    description: 'Strike from where you cannot be answered. Ranged assassins, withering curses, and a court that profits from every named kill.',
+    cards: PURPLE_CARDS.map(c => ({ slug: c.slug, count: PURPLE_DOUBLES.has(c.slug) ? 2 : 1 })),
+  })
+}
 
 export const deckSlugs = (d: PrebuiltDeck): string[] =>
   d.cards.flatMap(c => Array.from({ length: c.count }, () => c.slug))

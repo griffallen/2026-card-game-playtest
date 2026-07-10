@@ -8,11 +8,12 @@ import { validateDeck } from '../src/setup.ts'
 import { DEFAULT_RULES } from '../src/rules.ts'
 
 describe('card set', () => {
-  it('holds all 84 sheet cards (36 red, 48 yellow), unique slugs', () => {
+  it('holds the full pool (36 red, 48 yellow, 36 purple), unique slugs', () => {
     const cards = Object.values(CARD_SET)
     expect(cards.filter(c => c.color === 'red').length).toBe(36)
     expect(cards.filter(c => c.color === 'yellow').length).toBe(48)
-    expect(Object.keys(CARD_SET).length).toBe(84)
+    expect(cards.filter(c => c.color === 'purple').length).toBe(36)
+    expect(Object.keys(CARD_SET).length).toBe(120)
   })
 
   it('passes structural validation — the admin-edit safety contract', () => {
@@ -28,16 +29,17 @@ describe('card set', () => {
     expect(errors.some(e => e.includes('lifelink'))).toBe(true)
   })
 
-  it('every card has its sliced art crop on disk', () => {
+  it('every card has art on disk (jpg crops; svg for the veil placeholder set)', () => {
     const dir = fileURLToPath(new URL('../../../apps/web/public/cards/', import.meta.url))
     const files = new Set(readdirSync(dir))
-    const missing = Object.keys(CARD_SET).filter(slug => !files.has(`${slug}.jpg`))
+    const missing = Object.keys(CARD_SET).filter(slug => !files.has(`${slug}.jpg`) && !files.has(`${slug}.svg`))
     expect(missing).toEqual([])
   })
 })
 
 describe('prebuilt decks', () => {
-  it('both decks are legal 48-card lists', () => {
+  it('all prebuilt decks are legal 48-card lists', () => {
+    expect(PREBUILT_DECKS.length).toBe(3)
     for (const deck of PREBUILT_DECKS) {
       const slugs = deckSlugs(deck)
       expect(slugs.length).toBe(48)

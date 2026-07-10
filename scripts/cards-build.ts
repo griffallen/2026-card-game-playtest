@@ -6,7 +6,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs'
 import { parseCardFile, validateCardSet, type CardDef, type CardStatus } from '@newgame/engine'
 
-const COLORS = ['red', 'yellow'] as const
+const COLORS = ['red', 'yellow', 'purple'] as const
 const entries: { def: CardDef; status: CardStatus }[] = []
 const errors: string[] = []
 

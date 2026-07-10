@@ -2,7 +2,7 @@
 export type Seat = 0 | 1
 /** 0 = seat 0's Home, 1 = Neutral, 2 = seat 1's Home */
 export type ZoneId = 0 | 1 | 2
-export type Color = 'red' | 'yellow' | 'neutral'
+export type Color = 'red' | 'yellow' | 'purple' | 'neutral'
 export type CardType = 'unit' | 'action' | 'upgrade'
 
 export const ZONES: ZoneId[] = [0, 1, 2]

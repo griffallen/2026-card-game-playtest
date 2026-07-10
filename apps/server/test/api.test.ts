@@ -46,14 +46,14 @@ describe('auth', () => {
 })
 
 describe('library', () => {
-  it('serves 84 cards and 2 prebuilt decks with 48-card lists', async () => {
+  it('serves the full pool and all prebuilt decks with 48-card lists', async () => {
     await register('boba')
     const cards = await app.inject({ method: 'GET', url: '/api/cards', headers: cookieFor('boba') })
-    expect(cards.json().cards.length).toBe(84)
+    expect(cards.json().cards.length).toBe(120)
 
     const decks = await app.inject({ method: 'GET', url: '/api/decks', headers: cookieFor('boba') })
     const list = decks.json().decks
-    expect(list.length).toBe(2)
+    expect(list.length).toBe(3)
     expect(list.every((d: { cardCount: number }) => d.cardCount === 48)).toBe(true)
 
     const detail = await app.inject({ method: 'GET', url: `/api/decks/${list[0].id}`, headers: cookieFor('boba') })

@@ -50,6 +50,7 @@ export interface CardLike {
 const frameTint: Record<string, string> = {
   red: 'from-[#4a1710] to-[#2a0d08] border-[#7e3325]',
   yellow: 'from-[#4a3a10] to-[#2a2008] border-[#8a6b1a]',
+  purple: 'from-[#31184e] to-[#180a2c] border-[#6b3f9e]',
   neutral: 'from-[#2e2e38] to-[#1a1a20] border-[#4a4a5a]',
 }
 

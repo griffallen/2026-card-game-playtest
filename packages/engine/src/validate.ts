@@ -22,7 +22,7 @@ export function validateCardSet(cards: CardSet): string[] {
   for (const [slug, def] of Object.entries(cards)) {
     if (def.slug !== slug) err(slug, `slug mismatch (${def.slug})`)
     if (!def.name?.trim()) err(slug, 'missing name')
-    if (!['red', 'yellow', 'neutral'].includes(def.color)) err(slug, `bad color ${def.color}`)
+    if (!['red', 'yellow', 'purple', 'neutral'].includes(def.color)) err(slug, `bad color ${def.color}`)
     if (!['unit', 'action', 'upgrade'].includes(def.type)) err(slug, `bad type ${def.type}`)
     if (!isInt(def.cost, 0, 30)) err(slug, `bad cost ${def.cost}`)
     if (def.type === 'unit') {
