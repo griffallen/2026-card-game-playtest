@@ -12,7 +12,7 @@ loop checks the repo; this file is the fresh context's whole briefing.
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
 3. Comment-count ledger as of 2026-07-10 ~23:45 (issue:comments, x = closed):
-   **9:7 · 8:4x · 7:1 · 6:3 · 5:1 · 4:0 · 3:1x · 2:2 · 1:5x — 0 open PRs.**
+   **9:7 · 8:4x · 7:3x · 6:3 · 5:1 · 4:0 · 3:1x · 2:2 · 1:5x — 0 open PRs.**
    Griff said he'll open a NEW issue (color identities ↔ play styles) — a new issue number
    appearing is activity even if all counts match.
    Any number above these = new activity (my own replies are included in these counts).
@@ -39,8 +39,10 @@ loop checks the repo; this file is the fresh context's whole briefing.
 - **#6 answered (decision 63):** matchup-dependent influence is by design; blue + purple get
   pushed toward influence gameplay via the color-identity thread Griff is about to open (purple's
   influence posture feeds the v3 card re-churn; blue is a blank slate). #6 stays open until that
-  thread lands. Issues still open for Griff: #4 (ratify redesigns), #5 (purple verdict),
-  #7 (initiative feel), #9 (pip proposals slash-pass + blocking-exhausts veto window).
+  thread lands. **#7 closed (decision 64):** claiming initiative stays (necessary for next-round
+  first-actor; alternatives welcome via v3 playtesting); intercept half was moot. Issues still
+  open for Griff: #4 (ratify redesigns), #5 (purple verdict), #9 (pip proposals slash-pass +
+  blocking-exhausts veto window).
 
 ## Working agreements (from Blaine, this session)
 

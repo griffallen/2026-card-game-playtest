@@ -96,6 +96,8 @@ Numbered, in the order they were made. Format: decision — reason.
 
 63. ✅ **Influence is a matchup-dependent win axis by design** (issue #6). The 4–10% mixed-matchup / 23% yellow-mirror upset spread is intended, not a bug to tune away: in the color wheel, red and yellow are the *least* influence-interactive colors; **blue and purple are to be pushed toward influence-based gameplay** as their identity. Designer is opening a dedicated color-identity thread to keep colors mapped to play styles — purple's v3 kit and any future blue design take their influence posture from that thread. — The win-rate dial for influence is color design, not the rate parameters.
 
+64. ✅ **Claiming initiative stays** (issue #7). Designer verdict: with alternating turns, the game needs an explicit way to declare who acts first next round, and claiming is it; he's open to simpler/more intuitive alternatives if one emerges — v3 playtesting is the venue. The issue's other half (intercept feel) died with the v3 combat rework (blocker-pairing replaced the intercept window), so #7 closes. — Keep the mechanic, keep the door ajar; don't redesign what nobody has felt under the new combat yet.
+
 ## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
 
 - **Red burn grammar:** unit-only burn = cost+1 damage (Devastating Strike became unit-only); face-capable burn = cost (Raging Inferno 5→6 dmg; Searing Bolt/Volcanic Slam/Rupture already conformed). Burn the Frontline 7-for-4 → 6-for-6 one-zone (the wall-breaker; friendly fire stays as red's visible cost).
