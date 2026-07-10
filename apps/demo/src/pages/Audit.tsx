@@ -10,7 +10,7 @@ const Card = ({ children }: { children: ReactNode }) => (
   <div className="panel mt-4 p-4">{children}</div>
 )
 
-const QUESTIONS = `New Game — the open questions · canon-v1.0 (rules v2.3) · 2026-07-10
+const QUESTIONS = `New Game — the open questions · canon-v1.0 (rules v2.3) · updated 2026-07-10
 Answer inline (after each →) and send it back — or answer on the GitHub issue noted per question.
 
 A. THE v3.0 RULES PASS (your feedback — issue #9). Ten blockers before the spec is buildable:
@@ -33,17 +33,15 @@ A10. Guard: the intercept window is gone under blocking — what should Guard me
      ("must be blocked first"? "blocks an extra attacker"? "must be attacked before the base"?
      retire it?) →
 
-B. STILL OPEN FROM canon-v1.0:
+B. STILL OPEN FROM canon-v1.0 (naming + mulligans: answered Jul 10, decisions 57–58 — thanks!):
 
 B1. Claiming initiative — you give up the rest of your round to act first next round. Does the
     trade ever feel good? (issue #7) →
-B2. Naming: keep "base" / "Home", or Banner / Hearth / Seat / Beacon? (issue #8) →
-B3. Mulligans: unlimited, one fewer card each redraw — feel right? (issue #8) →
-B4. Influence upsets land in 4–10% of mixed bot games and 23% of yellow mirrors — the track
+B2. Influence upsets land in 4–10% of mixed bot games and 23% of yellow mirrors — the track
     matters when both players court it. Intended, or should it press harder everywhere? (issue #6) →
-B5. Every card carries its redesign notes ("Design notes" on the card, ⓘ / right-click in game).
+B3. Every card carries its redesign notes ("Design notes" on the card, ⓘ / right-click in game).
     Veto anything. (issue #4) →
-B6. The purple deck: adopt, revise, or shelve? (issue #5) →`
+B4. The purple deck: adopt, revise, or shelve? (issue #5) →`
 
 function QuestionsForYou() {
   const [copied, setCopied] = useState(false)

@@ -44,4 +44,4 @@ The live, merged list — ten v3.0 blockers + six canon-v1.0 questions — is on
 3. **The purple deck: adopt / revise / shelve** ([#5](https://github.com/booherbg/2026-card-game/issues/5)).
 4. **Influence economy** ([#6](https://github.com/booherbg/2026-card-game/issues/6)) — 4–10% upsets in mixed matchups, 23% in yellow mirrors.
 5. **Claiming initiative feel** ([#7](https://github.com/booherbg/2026-card-game/issues/7)) — the intercept half of that issue is mooted by #9's combat rework.
-6. **Naming (base/home) and mulligan feel** ([#8](https://github.com/booherbg/2026-card-game/issues/8)).
+6. ~~Naming and mulligan feel~~ — **answered** (issue #8, decisions 57–58): "Home"/"base" stay; mulligan style stays, London variant staged for A/B.

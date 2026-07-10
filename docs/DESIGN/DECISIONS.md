@@ -82,6 +82,11 @@ Numbered, in the order they were made. Format: decision — reason.
 
 56. ⚑ **Prison decay reverts to 1 (rules v2.3)** — the post-review re-measurement. Decision 55's sims were run against a *target-blind* bot (it never cast board wipes, never valued killing jailers, could suicide its own units); the code review caught the scorer bugs, and with the fixed bot: decay 1 gives red–yellow 44%, purple–yellow 58%, and a **live influence economy** (4–10% upsets) vs decay 2's 58%/70%/~2%. — The night's best lesson: sim conclusions are bounded by policy quality; re-verify after any bot change (playtest 001, finding 2 — proven twice in one session).
 
+## Designer session #2 (2026-07-10 — Griff, via GitHub issue #8)
+
+57. ✅ **Naming stays "base" / "Home"** (designer: "It's intuitive"). Resolves decision 54; the Banner/Hearth/Seat/Beacon candidates retire.
+58. ✅ **Mulligan keeps the unlimited-decrement style** (decision 32 stands); the designer's MTG-London alternative — full redraw, bottom one card per mulligan taken — is approved for A/B testing as a rules parameter (`mulliganStyle: 'decrement' | 'london'`, unbuilt; build with the v3.0 batch or sooner if playtests want it).
+
 ## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
 
 - **Red burn grammar:** unit-only burn = cost+1 damage (Devastating Strike became unit-only); face-capable burn = cost (Raging Inferno 5→6 dmg; Searing Bolt/Volcanic Slam/Rupture already conformed). Burn the Frontline 7-for-4 → 6-for-6 one-zone (the wall-breaker; friendly fire stays as red's visible cost).

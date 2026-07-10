@@ -108,6 +108,6 @@ From the **Admin** hall (admin account required):
 1. **Does claiming initiative feel good?** The new tempo lever — watch whether players use it, and whether "first next round" is worth a whole round's actions.
 2. **Intercepts** — is one redirect per attack the right amount of defender agency? Does free Guard-interception make yellow too sticky, or not sticky enough?
 3. **The Influence economy** — still rare (4–6% of games). Is that the intended "upset" frequency, or should Yellow's trickle bite harder?
-4. **Base/home naming** — still "base"; the designer floated Banner/Hearth/Seat/Beacon.
-5. **Prison's fate** — kept but "on notice" (decision 37).
+4. ~~Base/home naming~~ — **answered** (decision 57): "Home"/"base" stay.
+5. ~~Prison's fate~~ — **answered** (issue #9): cut in rules v3.0; Capture is the successor.
 6. **The ⚑ card rulings** — 20+ cards carry a prototype ruling; each is in DECISIONS.md and flagged on the card. The designer's CSV card pass is the place to normalize them.

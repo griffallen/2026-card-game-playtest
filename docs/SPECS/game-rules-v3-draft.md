@@ -47,7 +47,7 @@ Adjacent-zone move, exhausts the unit (Rush's first-move waiver unchanged). All 
 ## 2. Keyword set v3
 
 ### Removed
-`overextend` (and its attack-declaration UI), `flying`, `reach`, `untargetable` (superseded by
+`overextend` (and its attack-declaration UI), `flying`, `reach` (designer re-confirmed, issue #8), `untargetable` (superseded by
 Hidden), the entire **prison** package (imprison/release ops, decay, release threshold,
 `imprisonWatcher`, §1.11 — resolves decisions 16/37/53).
 
