@@ -1,7 +1,8 @@
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { ProceduralArt } from './ProceduralArt.tsx'
 
-/** Long-press (450ms, cancels on drag) that also swallows the click it would otherwise trigger. */
+/** Long-press (450ms, cancels on drag) that also swallows the click it would otherwise trigger.
+ *  Right-click fires the same inspect path — the desktop mirror of the mobile long-press. */
 export function useLongPress(onLongPress?: () => void) {
   const timer = useRef<number | null>(null)
   const origin = useRef<{ x: number; y: number } | null>(null)
@@ -22,7 +23,13 @@ export function useLongPress(onLongPress?: () => void) {
     onPointerUp: clear,
     onPointerLeave: clear,
     onPointerCancel: clear,
-    onContextMenu: (e: React.MouseEvent) => { if (onLongPress) e.preventDefault() },
+    onContextMenu: (e: React.MouseEvent) => {
+      if (!onLongPress) return
+      e.preventDefault()
+      clear()
+      fired.current = true // swallow the synthetic click some browsers send after contextmenu
+      onLongPress()
+    },
   }
   return { fired, handlers }
 }

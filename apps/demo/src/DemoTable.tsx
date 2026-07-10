@@ -293,10 +293,10 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       setSetupPicks(p => p.includes(card.id) ? p.filter(id => id !== card.id) : p.length < setupN ? [...p, card.id] : p)
       return
     }
-    // tap-again-to-confirm: second tap on the selected card takes its primary action (bank or play)
+    // second tap on the selected card deselects — playing/banking is ONLY the explicit button.
+    // (tap-again-to-confirm shipped first and promptly ate a playtester's card: a habitual
+    // double-click reads as one select + one confirm, so "let me look at this" became "banked forever".)
     if (selection?.kind === 'hand' && selection.id === card.id) {
-      if (resourceActionFor(card.id)) { apply({ type: 'resource', card: card.id }, seat); return }
-      if (playActionsFor(card.id).length > 0) { beginPlay(card.id); return }
       setSelection(null)
       return
     }
@@ -416,9 +416,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           {whyUnplayable(selection.id) && (
             <span className="w-full text-[11px] text-[#e5a99f]">Can't play: {whyUnplayable(selection.id)}.</span>
           )}
-          {!whyUnplayable(selection.id) && (
-            <span className="w-full text-[10px] text-dim">tip: tap the card again to confirm</span>
-          )}
+          <button className="btn !py-1 text-xs" onClick={() => setInspect({ kind: 'card', slug: state.cardOf[selection.id] })}>ⓘ details</button>
           <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel</button>
         </div>
       )}
@@ -646,7 +644,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                 <p className="mt-1.5 text-[10px] text-dim">space = pause · ←/→ = step while paused</p>
               </div>
             )}
-            <p className="mt-2 border-t hairline pt-1.5 text-[10px] text-dim">tip: tap any unit, card, ♥ life, ⬢ resources, or ✕ discard to inspect it</p>
+            <p className="mt-2 border-t hairline pt-1.5 text-[10px] text-dim">tip: right-click or long-press any card or unit to inspect it — a plain tap selects/targets. ♥ life, ⬢ resources, ✕ discard open on tap.</p>
           </div>
 
           <InfluenceTrack
