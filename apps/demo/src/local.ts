@@ -24,6 +24,8 @@ export interface DemoConfig {
   /** bot brains per seat (watch mode; seat 1 in vs-ai) — must match the simulator for faithful replays */
   policyA: PolicyName
   policyB: PolicyName
+  /** decision 58 A/B: full-redraw mulligans that owe cards to the deck bottom */
+  londonMulligan?: boolean
 }
 
 export function newLocalGame(cfg: DemoConfig): GameState {
@@ -31,7 +33,7 @@ export function newLocalGame(cfg: DemoConfig): GameState {
   const b = DECKS.find(d => d.slug === cfg.deckB) ?? DECKS[1]
   return createGame({
     seed: cfg.seed,
-    rules: DEFAULT_RULES,
+    rules: cfg.londonMulligan ? { ...DEFAULT_RULES, mulliganStyle: 'london' as const } : DEFAULT_RULES,
     cardSet: DEMO_CARDS,
     players: [
       { name: cfg.nameA, deck: deckSlugs(a) },

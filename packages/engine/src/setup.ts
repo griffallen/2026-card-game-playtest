@@ -34,6 +34,7 @@ export function createGame(opts: CreateGameOpts): GameState {
   }
   // Fail loudly on rules values the engine doesn't implement yet, rather than silently ignoring them (audit F7).
   if (rules.counterAssignment !== 'auto') throw new EngineError('unsupported-rule', `counterAssignment '${rules.counterAssignment}' is not implemented (only 'auto')`)
+  if (!['decrement', 'london'].includes(rules.mulliganStyle)) throw new EngineError('unsupported-rule', `mulliganStyle '${rules.mulliganStyle}' is not implemented (decrement|london)`)
   if (rules.armorPerAttack !== 'once') throw new EngineError('unsupported-rule', `armorPerAttack '${rules.armorPerAttack}' is not implemented (only 'once')`)
 
   let rngState = seed | 0

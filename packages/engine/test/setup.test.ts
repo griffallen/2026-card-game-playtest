@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { createGame } from '../src/setup.ts'
 import { applyAction } from '../src/engine.ts'
+import { getLegalActions } from '../src/legal.ts'
 import { DEFAULT_RULES } from '../src/rules.ts'
 import type { CardSet } from '../src/types.ts'
 
@@ -167,5 +168,80 @@ describe('createGame', () => {
         players: [{ name: 'A', deck: [...deck(47), 'nope'] }, { name: 'B', deck: deck() }],
       }),
     ).toThrow(/unknown/i)
+  })
+})
+
+describe('london mulligan (decision 58 — mulliganStyle A/B parameter)', () => {
+  const makeLondon = (seed = 1) =>
+    createGame({
+      seed,
+      rules: { ...DEFAULT_RULES, chooseStartingResources: true, mulliganStyle: 'london' },
+      cardSet: CARDS,
+      players: [
+        { name: 'Ada', deck: deck() },
+        { name: 'Bo', deck: deck() },
+      ],
+    })
+
+  it('redraws the FULL hand each mulligan; keep requires bottoming one card per mulligan', () => {
+    let s = makeLondon(11)
+    const first = s.initiative
+    expect(s.sides[first].hand.length).toBe(7)
+    s = applyAction(s, { type: 'mulligan' }, first).state
+    expect(s.sides[first].hand.length).toBe(7)          // full redraw, not one fewer
+    expect(s.mulligans[first]).toBe(1)
+    s = applyAction(s, { type: 'mulligan' }, first).state
+    expect(s.sides[first].hand.length).toBe(7)
+
+    const hand = [...s.sides[first].hand]
+    const banks = hand.slice(0, 2)
+    const bottoms = hand.slice(2, 4)                     // 2 mulligans → bottom 2
+    // banking without bottoms is rejected with a readable error
+    expect(() => applyAction(s, { type: 'setupBank', cards: banks }, first)).toThrow(/bottom/)
+    // bottoms overlapping banks are rejected
+    expect(() => applyAction(s, { type: 'setupBank', cards: banks, bottom: [banks[0], hand[2]] }, first)).toThrow()
+    const deckBefore = [...s.sides[first].deck]
+    s = applyAction(s, { type: 'setupBank', cards: banks, bottom: bottoms }, first).state
+    expect(s.sides[first].hand.length).toBe(3)           // 7 − 2 banked − 2 bottomed
+    expect(s.sides[first].resources.length).toBe(2)
+    // bottomed cards sit at the BOTTOM of the deck (index 0 side — draws pop from the end)
+    expect(s.sides[first].deck.slice(0, 2)).toEqual([bottoms[1], bottoms[0]].sort((a, b) => s.sides[first].deck.indexOf(a) - s.sides[first].deck.indexOf(b)))
+    expect(s.sides[first].deck.length).toBe(deckBefore.length + 2)
+  })
+
+  it('with zero mulligans, banking neither needs nor accepts bottoms', () => {
+    let s = makeLondon(12)
+    const first = s.initiative
+    const banks = s.sides[first].hand.slice(0, 2)
+    expect(() => applyAction(s, { type: 'setupBank', cards: banks, bottom: [s.sides[first].hand[3]] }, first)).toThrow()
+    s = applyAction(s, { type: 'setupBank', cards: banks }, first).state
+    expect(s.sides[first].resources.length).toBe(2)
+  })
+
+  it('mulligan floor: stop while the kept hand can still bank', () => {
+    let s = makeLondon(13)
+    const first = s.initiative
+    for (let i = 0; i < 5; i++) s = applyAction(s, { type: 'mulligan' }, first).state
+    // 5 mulligans → keep 7−5 = 2 = bank size; a 6th would leave too few
+    expect(() => applyAction(s, { type: 'mulligan' }, first)).toThrow(/bank/)
+  })
+
+  it('legal actions include bottom choices exactly when owed', () => {
+    let s = makeLondon(14)
+    const first = s.initiative
+    s = applyAction(s, { type: 'mulligan' }, first).state
+    const legal = getLegalActions(s, first).filter(a => a.type === 'setupBank')
+    expect(legal.length).toBeGreaterThan(0)
+    for (const a of legal) {
+      expect(a.type === 'setupBank' && a.bottom?.length).toBe(1)
+      if (a.type === 'setupBank') expect(a.bottom!.every(id => !a.cards.includes(id))).toBe(true)
+    }
+  })
+
+  it('decrement style is untouched: banking with a bottom field is rejected', () => {
+    let s = make(15, true)
+    const first = s.initiative
+    const banks = s.sides[first].hand.slice(0, 2)
+    expect(() => applyAction(s, { type: 'setupBank', cards: banks, bottom: [s.sides[first].hand[3]] }, first)).toThrow()
   })
 })

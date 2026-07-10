@@ -17,12 +17,28 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     // mulligan while a smaller hand could still bank (decision 32)
     const nextCount = state.rules.startingHandSize - (state.mulligans[seat] + 1) * state.rules.mulliganPenalty
     if (nextCount >= state.rules.startingResources) out.push({ type: 'mulligan' })
-    // every combination of startingResources cards from hand
+    // every combination of startingResources cards from hand — in london mode, crossed with
+    // every combination of owed bottom cards from the remainder (decision 58)
     const hand = state.sides[seat].hand
     const n = state.rules.startingResources
+    const owed = state.rules.mulliganStyle === 'london' ? state.mulligans[seat] * state.rules.mulliganPenalty : 0
     const combo: string[] = []
+    const emitBottoms = (banks: string[]) => {
+      if (!owed) { out.push({ type: 'setupBank', cards: banks }); return }
+      const rest = hand.filter(id => !banks.includes(id))
+      const bot: string[] = []
+      const emitB = (start: number) => {
+        if (bot.length === owed) { out.push({ type: 'setupBank', cards: banks, bottom: [...bot] }); return }
+        for (let i = start; i < rest.length; i++) {
+          bot.push(rest[i])
+          emitB(i + 1)
+          bot.pop()
+        }
+      }
+      emitB(0)
+    }
     const emit = (start: number) => {
-      if (combo.length === n) { out.push({ type: 'setupBank', cards: [...combo] }); return }
+      if (combo.length === n) { emitBottoms([...combo]); return }
       for (let i = start; i < hand.length; i++) {
         combo.push(hand[i])
         emit(i + 1)

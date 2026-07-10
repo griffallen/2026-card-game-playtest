@@ -105,6 +105,8 @@ export interface RulesConfig {
   chooseStartingResources: boolean
   /** decision 32: unlimited mulligans, drawing this many fewer cards each time */
   mulliganPenalty: number
+  /** decision 58 (designer A/B): 'decrement' redraws smaller; 'london' redraws full, then bottoms mulligans×penalty cards at bank time */
+  mulliganStyle: 'decrement' | 'london'
   /** decision 33: failing to draw from an empty deck costs life and influence per missing card */
   emptyDrawLifeLoss: number
   emptyDrawInfluenceLoss: number
@@ -217,8 +219,8 @@ export type TargetRef =
   | { kind: 'upgrade'; id: string }
 
 export type GameAction =
-  | { type: 'mulligan' }                     // setup phase: shuffle back, redraw one fewer (decision 32)
-  | { type: 'setupBank'; cards: string[] }   // setup phase: choose starting resources
+  | { type: 'mulligan' }                     // setup phase: shuffle back, redraw (style per rules.mulliganStyle — decisions 32/58)
+  | { type: 'setupBank'; cards: string[]; bottom?: string[] }  // bottom: london-mulligan payback (decision 58)   // setup phase: choose starting resources
   | { type: 'resource'; card: string }       // bank phase: resource a card
   | { type: 'skipResource' }                 // bank phase: end your start step
   | { type: 'play'; card: string; targets?: TargetRef[] }

@@ -8,6 +8,7 @@ export const DEFAULT_RULES: RulesConfig = {
   startingResources: 2,
   chooseStartingResources: true,
   mulliganPenalty: 1,
+  mulliganStyle: 'decrement',   // decision 58: 'london' = full redraw, bottom one per mulligan
   emptyDrawLifeLoss: 1,
   emptyDrawInfluenceLoss: 1,
   drawPerRound: 2,

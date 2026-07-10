@@ -39,6 +39,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const [state, setState] = useState<GameState>(() => newLocalGame(config))
   const [history, setHistory] = useState<HistoryEntry[]>([])
   const [selection, setSelection] = useState<Selection>(null)
+  const [setupBottoms, setSetupBottoms] = useState<string[]>([])
   const [confirming, setConfirming] = useState<'concede' | null>(null)
   const [overlayDismissed, setOverlayDismissed] = useState(false)
   const [toast, setToast] = useState('')
@@ -290,7 +291,17 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     if (!myWindow) { setInspect(null); setSelection(null); return }
     setConfirming(null)
     if (view.phase === 'setup') {
-      setSetupPicks(p => p.includes(card.id) ? p.filter(id => id !== card.id) : p.length < setupN ? [...p, card.id] : p)
+      const owed = state.rules.mulliganStyle === 'london' ? state.mulligans[seat] * state.rules.mulliganPenalty : 0
+      if (owed > 0 && setupPicks.length === setupN && !setupPicks.includes(card.id)) {
+        // banks chosen — the tap now picks the cards owed to the deck bottom (decision 58)
+        setSetupBottoms(b => b.includes(card.id) ? b.filter(id => id !== card.id) : b.length < owed ? [...b, card.id] : b)
+        return
+      }
+      setSetupPicks(p => {
+        const next = p.includes(card.id) ? p.filter(id => id !== card.id) : p.length < setupN ? [...p, card.id] : p
+        if (next.length < setupN) setSetupBottoms([])   // reopened the bank choice — bottoms reset
+        return next
+      })
       return
     }
     // second tap on the selected card deselects — playing/banking is ONLY the explicit button.
@@ -356,23 +367,38 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const pendingAttack = view.pendingAttack
   const selectionControls = view.phase === 'setup' && myWindow ? (
     <div className="flex flex-wrap items-center gap-1.5">
-      <button
-        className="btn btn-primary !py-1 text-xs"
-        disabled={setupPicks.length !== setupN}
-        onClick={() => { apply({ type: 'setupBank', cards: setupPicks }, seat); setSetupPicks([]) }}
-      >
-        Bank these {setupN} ⬢
-      </button>
+      {(() => {
+        const owed = state.rules.mulliganStyle === 'london' ? state.mulligans[seat] * state.rules.mulliganPenalty : 0
+        return (
+          <button
+            className="btn btn-primary !py-1 text-xs"
+            disabled={setupPicks.length !== setupN || setupBottoms.length !== owed}
+            onClick={() => {
+              apply({ type: 'setupBank', cards: setupPicks, ...(owed ? { bottom: setupBottoms } : {}) }, seat)
+              setSetupPicks([]); setSetupBottoms([])
+            }}
+          >
+            Bank these {setupN} ⬢{owed ? ` + bottom ${owed}` : ''}
+          </button>
+        )
+      })()}
       {canMulligan && (
         <button className="btn !py-1 text-xs" title="shuffle back and redraw one fewer card — as often as you dare"
-          onClick={() => { setSetupPicks([]); apply({ type: 'mulligan' }, seat) }}>
-          Mulligan ↻ (redraw {view.hand.length - 1})
+          onClick={() => { setSetupPicks([]); setSetupBottoms([]); apply({ type: 'mulligan' }, seat) }}>
+          Mulligan ↻ ({state.rules.mulliganStyle === 'london' ? `redraw ${state.rules.startingHandSize}, owe ${(state.mulligans[seat] + 1) * state.rules.mulliganPenalty} to the bottom` : `redraw ${view.hand.length - 1}`})
         </button>
       )}
       {setupPicks.length > 0 && (
-        <button className="btn !py-1 text-xs" onClick={() => setSetupPicks([])}>Clear</button>
+        <button className="btn !py-1 text-xs" onClick={() => { setSetupPicks([]); setSetupBottoms([]) }}>Clear</button>
       )}
-      <span className="text-[11px] text-dim">tap cards to choose ({setupPicks.length}/{setupN})</span>
+      <span className="text-[11px] text-dim">
+        {(() => {
+          const owed = state.rules.mulliganStyle === 'london' ? state.mulligans[seat] * state.rules.mulliganPenalty : 0
+          return owed > 0 && setupPicks.length === setupN
+            ? `now tap ${owed} for the deck bottom (${setupBottoms.length}/${owed})`
+            : `tap cards to bank (${setupPicks.length}/${setupN})`
+        })()}
+      </span>
     </div>
   ) : isIntercept && myWindow ? (
     <div className="rounded-md border border-[#c98a27] bg-[#c98a27]/10 p-2 text-xs">
@@ -584,6 +610,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
               return (
                 <CardFrame key={h.id} card={def} size="sm"
                   selected={view.phase === 'setup' ? setupPicks.includes(h.id) : (selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id))}
+                  badge={view.phase === 'setup' && setupBottoms.includes(h.id) ? '⤓ bottom' : undefined}
                   dimmed={view.phase !== 'setup' && myWindow && !canAct}
                   onLongPress={() => setInspect({ kind: 'card', slug: h.slug })}
                   onClick={() => clickHandCard(h)} />

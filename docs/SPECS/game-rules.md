@@ -31,7 +31,7 @@ Every card: `slug`, `name`, `color` (red|yellow), `type` (unit|action|upgrade), 
 1. Inputs: two players, each with a legal deck (≥ `deckMinSize` cards, ≤ `maxCopies` per slug), a `rulesConfig`, and a 32-bit `seed`.
 2. Shuffle both decks with the seeded RNG (Fisher–Yates; player A's deck first, then B's).
 3. Initial **initiative holder** = seeded coin flip.
-4. Each player draws `startingHandSize` (7). Then the **Setup phase** (initiative holder first): the acting player may **mulligan any number of times — shuffle the hand back, redraw `mulliganPenalty` (1) fewer cards each time** (decision 32; floor = `startingResources`) — then **chooses `startingResources` (2) cards to bank face-up** (`setupBank`, decision 31). When both have banked, round 1 begins. (`chooseStartingResources: false` restores zero-input setup.)
+4. Each player draws `startingHandSize` (7). Then the **Setup phase** (initiative holder first): the acting player may **mulligan any number of times** — style per `mulliganStyle` (decision 58): `decrement` (default) redraws `mulliganPenalty` (1) fewer cards each time; `london` redraws the full hand and owes mulligans×penalty cards to the deck bottom, chosen and paid with the bank action (decision 32; floor = `startingResources` either way) — then **chooses `startingResources` (2) cards to bank face-up** (`setupBank`, decision 31). When both have banked, round 1 begins. (`chooseStartingResources: false` restores zero-input setup.)
 5. Influence 0, Life 20/20, round 1, initiative = coin-flip winner.
 
 ### 1.4 Round structure (decision 40 — supersedes per-player turns)
@@ -139,6 +139,7 @@ Same `(rulesConfig, decks, seed, action list)` ⇒ identical states and events, 
 | `prisonReleaseThreshold` | 0 | Jailer influence below this ⇒ prisons release |
 | `chooseStartingResources` | true | Setup: players pick their starting banks (false = auto-bank last drawn) |
 | `mulliganPenalty` | 1 | Cards lost per mulligan (decision 32) |
+| `mulliganStyle` | `"decrement"` | Mulligan flavor (decision 58): `decrement` redraws smaller; `london` redraws full, then bottoms mulligans×penalty cards at bank time |
 | `emptyDrawLifeLoss` | 1 | Life lost per failed draw (decision 33) |
 | `emptyDrawInfluenceLoss` | 1 | Influence lost per failed draw (decision 33) |
 | `summoningSickness` | **false** | Legacy A/B lever (decision 41: units enter ready); true restores can't-act-on-entry |

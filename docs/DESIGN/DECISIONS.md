@@ -85,7 +85,7 @@ Numbered, in the order they were made. Format: decision — reason.
 ## Designer session #2 (2026-07-10 — Griff, via GitHub issue #8)
 
 57. ✅ **Naming stays "base" / "Home"** (designer: "It's intuitive"). Resolves decision 54; the Banner/Hearth/Seat/Beacon candidates retire.
-58. ✅ **Mulligan keeps the unlimited-decrement style** (decision 32 stands); the designer's MTG-London alternative — full redraw, bottom one card per mulligan taken — is approved for A/B testing as a rules parameter (`mulliganStyle: 'decrement' | 'london'`, unbuilt; build with the v3.0 batch or sooner if playtests want it).
+58. ✅ **Mulligan keeps the unlimited-decrement style** (decision 32 stands); the designer's MTG-London alternative — full redraw, bottom one card per mulligan taken — is approved for A/B testing as a rules parameter (`mulliganStyle: 'decrement' | 'london'`). **Built same day:** engine + demo toggle ("London mulligans" on the Play tab); default stays decrement.
 
 ## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
 

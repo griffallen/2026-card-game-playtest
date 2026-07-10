@@ -49,19 +49,24 @@ export function applyAction(prev: GameState, action: GameAction, actorSeat: Seat
 function applySetupPhase(state: GameState, action: GameAction, seat: Seat) {
   if (action.type === 'mulligan') {
     const side = state.sides[seat]
-    const nextCount = state.rules.startingHandSize - (state.mulligans[seat] + 1) * state.rules.mulliganPenalty
-    if (nextCount < state.rules.startingResources) {
+    const london = state.rules.mulliganStyle === 'london'
+    // both styles keep the same effective hand after payback, so the floor formula is shared
+    const keptCount = state.rules.startingHandSize - (state.mulligans[seat] + 1) * state.rules.mulliganPenalty
+    if (keptCount < state.rules.startingResources) {
       fail('mulligan-floor', `a smaller hand couldn't bank ${state.rules.startingResources} resources`)
     }
+    const drawCount = london ? state.rules.startingHandSize : keptCount
     side.deck.push(...side.hand)
     side.hand = []
     ;[side.deck, state.rngState] = shuffle(side.deck, state.rngState)
-    for (let i = 0; i < nextCount; i++) {
+    for (let i = 0; i < drawCount; i++) {
       const id = side.deck.pop()
       if (id) side.hand.push(id)
     }
     state.mulligans[seat] += 1
-    log(state, seat, `${side.name} mulligans to ${nextCount} cards`)
+    log(state, seat, london
+      ? `${side.name} mulligans (will owe ${state.mulligans[seat] * state.rules.mulliganPenalty} to the deck bottom)`
+      : `${side.name} mulligans to ${drawCount} cards`)
     return // same player decides again: mulligan further or bank
   }
   if (action.type !== 'setupBank') fail('bad-phase', `setup: mulligan, or choose ${state.rules.startingResources} cards to bank`)
@@ -72,10 +77,28 @@ function applySetupPhase(state: GameState, action: GameAction, seat: Seat) {
   for (const id of action.cards) {
     if (!side.hand.includes(id)) fail('not-in-hand', 'card is not in your hand')
   }
+  // london payback (decision 58): bottom one card per mulligan taken, chosen with the banks
+  const owed = state.rules.mulliganStyle === 'london' ? state.mulligans[seat] * state.rules.mulliganPenalty : 0
+  const bottom = action.bottom ?? []
+  if (bottom.length !== owed) {
+    fail('bad-setup', owed
+      ? `choose exactly ${owed} card${owed === 1 ? '' : 's'} for the deck bottom (one per mulligan)`
+      : 'no cards are owed to the deck bottom')
+  }
+  if (new Set(bottom).size !== bottom.length) fail('bad-setup', 'bottomed cards must be distinct')
+  for (const id of bottom) {
+    if (!side.hand.includes(id)) fail('not-in-hand', 'bottomed card is not in your hand')
+    if (action.cards.includes(id)) fail('bad-setup', 'a card cannot be banked and bottomed')
+  }
   for (const id of action.cards) {
     side.hand.splice(side.hand.indexOf(id), 1)
     side.resources.push({ id, exhausted: false })
   }
+  for (const id of bottom) {
+    side.hand.splice(side.hand.indexOf(id), 1)
+    side.deck.unshift(id) // draws pop from the end — index 0 is the bottom
+  }
+  if (bottom.length) log(state, seat, `${side.name} puts ${bottom.length} card${bottom.length === 1 ? '' : 's'} on the bottom of their deck`)
   state.setupBanked[seat] = true
   log(state, seat, `${side.name} banks ${action.cards.map(id => defOf(state, id).name).join(' and ')} as starting resources`)
   const other_ = other(seat)
