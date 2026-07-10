@@ -12,7 +12,9 @@ loop checks the repo; this file is the fresh context's whole briefing.
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
 3. Comment-count ledger as of 2026-07-10 ~23:45 (issue:comments, x = closed):
-   **9:7 · 8:4x · 7:1 · 6:1 · 5:1 · 4:0 · 3:1x · 2:2 · 1:5x — 0 open PRs.**
+   **9:7 · 8:4x · 7:1 · 6:3 · 5:1 · 4:0 · 3:1x · 2:2 · 1:5x — 0 open PRs.**
+   Griff said he'll open a NEW issue (color identities ↔ play styles) — a new issue number
+   appearing is activity even if all counts match.
    Any number above these = new activity (my own replies are included in these counts).
 
 ## State (2026-07-10 midday)
@@ -34,8 +36,11 @@ loop checks the repo; this file is the fresh context's whole briefing.
   Griff's play verdict picks the default.
 - Decisions 57–58 logged (naming stays; mulligan ruling). #8 closed. Audit tab = "The State of
   the Game" (current-only); original frozen at `/audit/archive`.
-- Issues open for Griff: #3 (prison — answered in #9, close when v3 lands), #4 (ratify
-  redesigns), #5 (purple verdict), #6 (influence rate), #7 (initiative feel), #9 (the gate).
+- **#6 answered (decision 63):** matchup-dependent influence is by design; blue + purple get
+  pushed toward influence gameplay via the color-identity thread Griff is about to open (purple's
+  influence posture feeds the v3 card re-churn; blue is a blank slate). #6 stays open until that
+  thread lands. Issues still open for Griff: #4 (ratify redesigns), #5 (purple verdict),
+  #7 (initiative feel), #9 (pip proposals slash-pass + blocking-exhausts veto window).
 
 ## Working agreements (from Blaine, this session)
 
