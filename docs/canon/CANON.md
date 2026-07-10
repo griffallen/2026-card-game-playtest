@@ -1,6 +1,6 @@
 # CANON — the versioned baseline
 
-**Current canon: canon-v1.0 — IN PROGRESS (stamping happens when every card below is `canon`).**
+**Current canon: canon-v1.0 — STAMPED 2026-07-09 (git tag `canon-v1.0`).** Red and yellow are fully reconciled; the purple proposal rides alongside as `draft` until adopted.
 
 The canon is the *set* of documents the whole project builds against. Cards, UI copy, and engine
 behavior are all checked against it; when playtests change the rules, we cut a **new** canon
@@ -10,9 +10,10 @@ version through the same process — locked baseline, never frozen forever.
 
 | Document | Role | Version |
 |---|---|---|
-| `docs/SPECS/game-rules.md` | Base rules — the engine's contract | **v2.1** |
+| `docs/SPECS/game-rules.md` | Base rules — the engine's contract | **v2.2** |
 | `docs/canon/decks/red.md` | Red charter — deck law | canon-v1.0 |
 | `docs/canon/decks/yellow.md` | Yellow charter — deck law | canon-v1.0 |
+| `docs/canon/decks/purple.md` | Purple charter — **proposal, not yet canon** | draft |
 | `data/cards/` | The card ledger (one file per card; source of truth — decision 46) | per-card `status` |
 | `docs/DESIGN/DECISIONS.md` | The why-log | rolling |
 

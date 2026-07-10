@@ -1,55 +1,57 @@
 # Current Hand-off
 
-**Phase:** **Design** — a canon & card-authoring *process* was designed this session (005). The design
-is approved in shape and captured in `docs/superpowers/specs/2026-07-09-canon-and-card-authoring-design.md`.
-Next is a spec review, then **Phase 1: the rules-canon sprint**.
+**Phase:** Playtest & iterate — **canon-v1.0 is stamped and tagged** (session 006). The rules are
+locked at v2.2, every red/yellow card is reconciled and `canon`, the per-card GitHub editing
+workflow is live, and a purple third-deck proposal is waiting for the designer.
 
 ## State
 
-- **The process is designed, not yet built.** No rules or code changed in session 005 — it was
-  design only. Read the spec first: `docs/superpowers/specs/2026-07-09-canon-and-card-authoring-design.md`.
-- **The problem being solved:** the 84 cards are drifted July drafts (Overextend inert on ~15 red
-  actions, "this turn" text vs. the rules' "round", a dozen ⚑ "needs design" notes). Root cause: the
-  **middle layer** — the rules each deck introduces + the invariants its cards must obey — was never
-  written down, so cards had nothing to be consistent against. Rush is the poster child.
-- **The system (approved):** one **versioned canon** = base rules (`game-rules.md`, stamp proto→v1.0)
-  + a **charter per deck** (`docs/canon/decks/*.md`, the new middle layer) + the **card ledger**
-  (`data/cards.csv`, flipped to the single source of truth). Anti-drift rule: every card obeys **two
-  parents** — base rules + its deck charter. Loop: branch → PR → the agent reviews (valid? text↔effects
-  consistent? in-charter?) and implements; a `status` column (`canon`/`draft`/`redesign`) makes
-  "locked in" concrete; feel + balance stay human.
-- **Decision 1 = A:** `cards.csv` becomes authoritative; the engine generates from it; `red.ts`/`yellow.ts`
-  retire (types + `validateCardSet` stay). Deliberately overturns decision 45's TS-authoritative holding pattern.
-- **Git:** `main` is pushed and up to date on `origin` (the old "nothing pushed" note was stale); tags
-  `v0.1`/`v0.2` present. Session 005's wrap-up (spec + summary + this handoff) is committed and pushed.
-- **The live demo at https://blainebooher.com/new-game-demo/ still runs the OLD v1.2 build** — redeploy
-  with `./scripts/deploy-demo.sh` is still a carried item (v0.2 was never put in front of Griff).
+- **The canon:** `docs/canon/CANON.md` (index) · game-rules **v2.2** · red + yellow **charters**
+  (the middle layer — identity, invariants, statline grammar) · the **card ledger** at
+  `data/cards/<color>/<slug>.md` — one file per card, the single source of truth (decision 46).
+  `npm run cards` compiles+validates → `generated.json` + `INDEX.md`; `npm run cards:check` is the
+  PR gate; a drift test fails if anyone forgets to rebuild.
+- **Griff's workflow is live:** edit any card file on GitHub → PR (guide: `data/cards/README.md`);
+  bigger ideas → plain-language issues. **Session start: `gh pr list` + `gh issue list`** — triage
+  per CLAUDE.md. The agent reviews every card PR: valid? · text↔effects consistent? · in-charter?
+- **Balance (playtest 001):** red ~45–55% vs yellow (even within bot noise), median 11–12 rounds,
+  seat parity ✓. Two load-bearing findings: the sim bot is only now *target-aware* (older
+  percentages were partly artifacts), and **prison was the dominator** — fixed by rules v2.2's
+  decay 2/prisoner (decision 55 ⚑, prison itself still "on notice", decision 37).
+- **Purple (proposal):** the **Veiled Court** — 36 cards, `status: draft`, charter at
+  `docs/canon/decks/purple.md`, veil-motif SVG placeholder art, playable in the demo (third deck
+  in every picker). Soft triangle: 47.5% vs red, 65% vs yellow. Adopt/revise/shelve = CANON.md
+  question 7.
+- **UX:** the double-click-plays trap is dead (second tap deselects; explicit buttons only);
+  right-click/long-press inspects everything. Audit record in `docs/PLAYTESTS/001.md`.
+- **Verified:** 117 tests green, typecheck clean, ledger current, server seeds 120 cards/3 decks
+  against real Postgres (healthz ok), web production build ok. This machine now has a working
+  local env (`apps/server/.env`, Homebrew Postgres 14 via `brew services run`).
+- **Git:** everything on `main`, tagged `canon-v1.0`, pushed to origin.
+- **Carried:** the live demo at blainebooher.com/new-game-demo **still runs the old v1.2 build** —
+  `./scripts/deploy-demo.sh` to put canon-v1.0 (with purple + UX fixes) in front of Griff.
 
 ## Do next
 
-1. **Review the spec** (`.../2026-07-09-canon-and-card-authoring-design.md`) — confirm or redline before executing.
-2. **Phase 1 — rules-canon sprint** (design dialogue, wants Griff's input on feel questions): rule the
-   open ⚑ questions below, write `red.md` + `yellow.md` charters, then stamp `canon-v1.0`. It's a
-   decision sprint, not a rewrite — `game-rules.md` is ~90% there.
-3. **Phase 2 — card churn** (write an implementation plan once canon is stamped): do the Decision-1 CSV
-   flip, normalize-lane the pool against canon, then redesign-lane the flagged handful, until every
-   Red/Yellow card is `status: canon`.
+1. **Redeploy the demo** — everything this session built is invisible to Griff until then.
+2. **Point Griff at it:** the demo's Audit tab has his copy-paste question list (8 questions);
+   `data/cards/README.md` teaches the PR workflow; every session-006 redesign is on its card's
+   Design notes, ratify-or-veto.
+3. **Play it by hand** — the sims say "even"; only humans can say "fun." Feel questions: claiming
+   initiative, the intercept window, the v2.2 prison mortgage, and whether purple's triangle is a
+   feature.
+4. When Griff answers: fold rulings through the loop (DECISIONS.md → charters/cards → sims), and
+   cut canon-v1.1 if the rules move.
 
-## Open ⚑ questions — the Phase 1 sprint agenda
+## Open questions (Griff's chair — full list in CANON.md + the demo Audit tab)
 
-- **Prison's fate** (decision 37, "on notice"): keep / cut / rework? Blocks Yellow's charter and ~15 cards.
-- **Overextend on actions**: currently inert; the Red charter's likely invariant is "unit-only" → strip it from actions and retext.
-- **The base/home rename** (Banner/Hearth/Seat/Beacon) — pick or drop.
-- **Flying** (undefined; currently "move to any zone"), **Radiant Citadel** (opponent-threshold +2), and
-  the other card-text reinterpretations — rule them for real or cut.
-- **Influence win threshold** (15) and **mulligan** feel.
-- **Playtest-driven feel** (carried): does *claiming initiative* feel good? is one intercept per attack
-  the right defender agency? These feed the charters and any rules tuning.
+Prison's fate (37/53/55) · base/home rename (54) · initiative + intercept feel · influence economy
+(1–3% of competent games — intended upset rate?) · ratify the session-006 redesigns · adopt purple?
 
 ## Notes for the next session
 
-- Blaine intended to switch the model to **Fable** for the next session (couldn't switch mid-session on
-  the remote terminal). Context does not carry across a new session — start by reading this handoff, the
-  spec doc, `game-rules.md`, `DECISIONS.md`, and `data/cards.csv`.
-- Likely in the chair: **both** — Phase 1's feel questions (Prison, rename, thresholds) want the designer;
-  the CSV flip is builder + agent.
+- Read: this file → `docs/canon/CANON.md` → `docs/PLAYTESTS/001.md` → `DECISIONS.md` (46–55 +
+  redesigns block). The implementation plan (executed, all tasks done) is at
+  `docs/superpowers/plans/2026-07-09-canon-and-card-authoring.md`.
+- Likely in the chair: **both** — Griff's ratify pass wants the designer; deploy + any PR triage
+  is builder/agent work.
