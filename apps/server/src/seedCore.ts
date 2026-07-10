@@ -3,7 +3,7 @@ import { prisma } from './db.ts'
 import { hashPassword } from './auth.ts'
 
 /** The rules row seeded from the engine's current defaults — named for the spec version it carries. */
-const RULES_NAME = 'v2.2'
+const RULES_NAME = 'v2.3'
 
 /**
  * Idempotent baseline data: admin, rules version, the full card pool, prebuilt decks.

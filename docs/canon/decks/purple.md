@@ -59,6 +59,6 @@ A purple influence win should feel like a career of assassinations, not an econo
 - Adopt / revise / shelve: Griff's call (CANON.md question 7).
 - Art is a **placeholder direction**: deterministic "veil" SVGs (night-violet, eclipse + sigil)
   so the deck reads as intentional until real art exists. Regenerate any time.
-- Balance (fixed-bot sims, N=300, rules v2.3): **~50% into red, ~58% into yellow** — a soft
-  triangle: purple's evasion beats walls, red's aggression matches it, red–yellow near even
-  (44/56). Whether the triangle is a feature is Griff's call.
+- Balance (fixed-bot sims, N=300, rules v2.3 — `npm run sim:matchups`): **~50% into red,
+  ~60% into yellow, mirrors seat-fair** — a soft triangle: purple's evasion beats walls, red's
+  aggression matches it, yellow edges red (56/44). Whether the triangle is a feature is Griff's call.
