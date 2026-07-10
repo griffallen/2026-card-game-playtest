@@ -1,7 +1,7 @@
 # Current Hand-off
 
 **Phase:** Playtest & iterate — **canon-v1.0 is stamped and tagged** (session 006). The rules are
-locked at v2.2, every red/yellow card is reconciled and `canon`, the per-card GitHub editing
+locked at v2.3, every red/yellow card is reconciled and `canon`, the per-card GitHub editing
 workflow is live, and a purple third-deck proposal is waiting for the designer.
 
 ## State
@@ -14,10 +14,11 @@ workflow is live, and a purple third-deck proposal is waiting for the designer.
 - **Griff's workflow is live:** edit any card file on GitHub → PR (guide: `data/cards/README.md`);
   bigger ideas → plain-language issues. **Session start: `gh pr list` + `gh issue list`** — triage
   per CLAUDE.md. The agent reviews every card PR: valid? · text↔effects consistent? · in-charter?
-- **Balance (playtest 001):** red ~45–55% vs yellow (even within bot noise), median 11–12 rounds,
-  seat parity ✓. Two load-bearing findings: the sim bot is only now *target-aware* (older
-  percentages were partly artifacts), and **prison was the dominator** — fixed by rules v2.2's
-  decay 2/prisoner (decision 55 ⚑, prison itself still "on notice", decision 37).
+- **Balance (playtest 001, three addenda):** after a code-review workflow caught three bot-scorer
+  bugs (no AoE case, destroy-own suicide, sign-blind curses), everything was re-measured with the
+  honest bot: **red–yellow 44%, purple–red 50%, purple–yellow 58%, influence upsets 4–10%**,
+  median 11–12 rounds. Decision 55's decay-2 was compensating for bot blindness → **reverted,
+  rules v2.3 (decision 56)**. Twice-proven moral: re-verify sims after any bot change.
 - **Purple (proposal):** the **Veiled Court** — 36 cards, `status: draft`, charter at
   `docs/canon/decks/purple.md`, veil-motif SVG placeholder art, playable in the demo (third deck
   in every picker). Soft triangle: 47.5% vs red, 65% vs yellow. Adopt/revise/shelve = CANON.md
@@ -33,7 +34,10 @@ workflow is live, and a purple third-deck proposal is waiting for the designer.
 
 ## Do next
 
-1. **Point Griff at it** (the demo is already live): the demo's Audit tab has his copy-paste question list (8 questions);
+0. **Griff's inbox is live:** issues #2–#8 (labeled `designer`) are his welcome + the six open
+   design questions; the root README is rewritten around his pick-and-go workflow. Triage
+   `gh issue list` / `gh pr list` every session — he may have answered.
+1. **Point Griff at it** (the demo is already live, running v2.3): the demo's Audit tab has his copy-paste question list (8 questions);
    `data/cards/README.md` teaches the PR workflow; every session-006 redesign is on its card's
    Design notes, ratify-or-veto.
 2. **Play it by hand** — the sims say "even"; only humans can say "fun." Feel questions: claiming
