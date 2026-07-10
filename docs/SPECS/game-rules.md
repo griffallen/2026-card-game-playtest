@@ -1,5 +1,6 @@
-# Game Rules Spec — v2.1-proto
+# Game Rules Spec — v2.1
 
+**Canon:** member of **canon-v1.0** (`docs/canon/CANON.md`); the `-proto` suffix was dropped when the canon sprint (decisions 46–54, 2026-07-09) resolved the open rules flags. Deck-level law lives in the charters (`docs/canon/decks/`); every card must satisfy both this document and its charter.
 **Derived from:** `docs/REFERENCES/extracted/rules-v1.2.md` + the July 5 card sheets, reconciled per `docs/DESIGN/DECISIONS.md`. **v2.0:** round-based turn structure with claimable initiative, no summoning sickness, multi-unit attack + intercept (decisions 40–44, 2026-07-08) — supersedes v1.2-proto's phase ladder and per-player turns. **v2.1 (2026-07-09):** Rush's move-exhaust waiver is **one free reposition**, not a whole-round pass (decision 41 clarified) — a fresh Rush unit's first move is free, a second exhausts it.
 **Consumed by:** `packages/engine` — this document *is* the engine's contract. When they diverge, stop and fix one.
 **Designer-facing summary:** `docs/GAME-FLOW.md` tells the same story without implementation detail.
@@ -101,7 +102,7 @@ Printed as "Exhaust: effect" — exhaust the ready unit, resolve the effect. **�
 - **Imprison:** target unit becomes imprisoned (stays in its zone, keeps upgrades/damage). It cannot attack, move, defend (deals no counter-damage), or use abilities; its Guard is inert; it still counts as a unit for zone effects.
 - **Sources:** unit-sourced prisons (from a unit's trigger) end when that unit leaves play. Action-sourced prisons have no in-play source and persist until another condition ends them.
 - **Decay (v1.2):** at the jailer's **start step**, jailer loses 1 Influence per unit they hold imprisoned. Cards restating this are reminder text — no double charge.
-- **Release threshold (⚑ default 0):** the moment a jailer's Influence is negative (track on their opponent's side), **all their prisons release**.
+- **Release threshold (default 0; the whole prison package is provisional pending decision 37):** the moment a jailer's Influence is negative (track on their opponent's side), **all their prisons release**.
 - Released or source-dead prisons end immediately; the unit stays exhausted/ready as it was.
 
 ### 1.12 Winning, losing, simultaneity
@@ -157,7 +158,7 @@ Cards carry structured effects — never free text — so the engine can validat
 
 ### 3.1 Keywords (static, on units)
 
-`guard` (intercepts without exhausting — §1.7; forced targeting is gone), `armor N`, `rush` (the round it enters play, its *first* move doesn't exhaust it — one free reposition, not a whole-round pass — decision 41; `rushCoversAttack` extends to attacks; meaningful on veterans when granted mid-round), `ranged` (may shoot an adjacent zone; never bases; no counter-damage cross-zone), `reach` (may attack an adjacent zone like Ranged, but unlike Ranged it *can* still assault bases and *does* take counter-damage — Blaze Juggernaut), `flying` (⚑), `breakthrough N`, `overextend N` (optional attack gamble: +N power now, N self-damage at end of round — decision 35), `cantAttack`, `untargetable` (can't be targeted by enemy actions — Chain of Law).
+`guard` (intercepts without exhausting — §1.7; forced targeting is gone), `armor N`, `rush` (the round it enters play, its *first* move doesn't exhaust it — one free reposition, not a whole-round pass — decision 41; `rushCoversAttack` extends to attacks; meaningful on veterans when granted mid-round), `ranged` (may shoot an adjacent zone; never bases; no counter-damage cross-zone), `reach` (may attack an adjacent zone like Ranged, but unlike Ranged it *can* still assault bases and *does* take counter-damage — Blaze Juggernaut), `flying` (may move to *any* zone, ignoring adjacency — decision 48), `breakthrough N`, `overextend N` (optional attack gamble: +N power now, N self-damage at end of round — decision 35), `cantAttack`, `untargetable` (can't be targeted by enemy actions — Chain of Law).
 
 ### 3.2 Effect ops (one-shot, run in order)
 
@@ -167,7 +168,7 @@ Cards carry structured effects — never free text — so the engine can validat
 | `damageAll` | scope (zone/all/enemy), amount | e.g. Scorching Howl |
 | `heal` | target, amount | unit damage or base life (capped) |
 | `draw` | count | |
-| `influence` | amount (±, from controller's view) | event-attached (decision 34): onDefend / onKill / onPlay / startOfRound / endOfRound — ⚑ Aura of Resolve's per-round startOfRound gain reads like the passive income decision 34 rejected; designer to confirm |
+| `influence` | amount (±, from controller's view) | event-attached (decision 34): onDefend / onKill / onPlay / startOfRound / endOfRound. The engine allows any attachment; the **deck charters** govern which a color may print (yellow: event-earned only — per-round income is charter-illegal, which is why Aura of Resolve was redesigned in session 006) |
 | `imprison` | target(s) or filter (e.g. power ≤ N, all-in-zone) | source recorded |
 | `release` | target | ⚑ reserved — no current card; standalone release not implemented (auto-release on source-death / negative influence is built into cleanup) |
 | `buff` | target, power/health delta, duration (`round`/`permanent`) | "this round" expires at end of round |
@@ -179,7 +180,7 @@ Cards carry structured effects — never free text — so the engine can validat
 | `moveUnit` | target, zone | ⚑ reserved — no current card; not implemented as an op (movement is a player action, §1.8) |
 | `preventBaseDamage` | amount, duration round | Devout Intervention |
 | `removeNegative` | target | clears imprisonment + negative modifiers (Absolution) |
-| `thresholdMod` | side, delta, while-in-play | Radiant Citadel ⚑ |
+| `thresholdMod` | side, delta, while-in-play | Radiant Citadel (decision 49) |
 
 **Spec ↔ code names:** the engine implements a few ops/triggers under different identifiers — `damageAll`=`damageFilter`, `grantKeyword`=`grant`, `readyUnits`=`ready`, `preventBaseDamage`=`preventBase`, `thresholdMod`=`oppThreshold` (a static), `onEnter`=`onEnterZone`/`onPlay`. All are guarded by `validateCardSet`.
 
@@ -187,7 +188,7 @@ Cards carry structured effects — never free text — so the engine can validat
 
 `onEnter` (play or zone entry), `onAttack`, `onDefend` (final target of an attack **or** intercepts — §1.7), `onAttackBase` (final target is the base), `onKill`, `startOfRound` (controller's start step), `endOfRound`, `onAnyImprisoned` (Gateward Colossus), `onDestroyed`.
 
-Each trigger holds effect ops. Targets a trigger needs are declared in the submitted action (`onEnter` imprisons, etc.); start-of-round triggers that need targets use a deterministic default (⚑ e.g. High Justiciar imprisons the highest-power eligible enemy unit; flagged on the card).
+Each trigger holds effect ops. Targets a trigger needs are declared in the submitted action (`onEnter` imprisons, etc.); start-of-round triggers that need targets use the deterministic default of decision 51 — **the strongest eligible enemy unit, ties → earliest entry — and the card text must state the rule** rather than imply a choice.
 
 ### 3.4 Statics (continuous while in play)
 

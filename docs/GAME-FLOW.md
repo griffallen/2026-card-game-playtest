@@ -74,9 +74,9 @@ The keywords, as implemented:
 | **Armor X** | Every hit on this unit is reduced by X. Against a group, applied once to the combined hit. Multiple sources add up ⚑. |
 | **Rush** | The round it arrives, its **first move doesn't exhaust it** (one free reposition) — so it can move and still fight; a second move exhausts it like any unit (decision 41). Units otherwise enter **ready** now: no summoning sickness — a fresh unit can already act (moving/attacking exhausts it as normal). |
 | **Breakthrough N** | Kill the target with damage to spare and up to N of the excess hits the owner's Life. In a group, the attackers' Breakthrough values sum. |
-| **Overextend N** | The designer's gamble (decision 35): declared per attacking unit — +N Power now, N self-damage at **end of round**. Inert on actions pending the card pass. |
+| **Overextend N** | The designer's gamble (decision 35): declared per attacking unit — +N Power now, N self-damage at **end of round**. **Units only** (decision 47) — it no longer appears on actions. |
 | **Ranged** | May shoot into an adjacent zone; never the base; cross-zone shots draw no counter-damage ⚑. |
-| **Flying** | ⚑ Placeholder: may move to *any* zone. Needs a real design. |
+| **Flying** | May move to *any* zone, ignoring adjacency (decision 48). |
 
 ## Prison (Yellow's engine)
 
