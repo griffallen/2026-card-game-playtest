@@ -1,7 +1,7 @@
 /* Two-player end-to-end drive through the real UI. */
 import { chromium, type Page } from 'playwright-core'
 
-const BASE = 'http://localhost:3000'
+const BASE = process.env.BASE_URL ?? 'http://localhost:3000'
 const SHOTS = '/private/tmp/claude-501/-Users-blaine-workspace-2026-card-game/ebeacc3f-5301-4623-9700-484a9d5aea64/scratchpad'
 const stamp = Date.now().toString(36).slice(-5)
 
