@@ -1,4 +1,4 @@
-# How the Game Plays — Prototype v2.0
+# How the Game Plays — Rules v2.3 (canon-v1.0)
 
 *Written for the designer. This is the game as it exists at the table right now — every rule here is live in the prototype (turn-structure v2.0: shared rounds, claimable initiative, multi-unit attacks with a defender's intercept). Where the printed rules were silent or contradictory, the prototype makes a call and flags it with ⚑; the full list (with reasons) is in `docs/DESIGN/DECISIONS.md`, and every affected card shows a small ⚑ flag in the Cards page with the ruling on hover. Nothing flagged is sacred — each one is a conversation starter.*
 

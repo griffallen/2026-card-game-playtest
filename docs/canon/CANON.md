@@ -34,12 +34,14 @@ laws?). Feel and balance stay human.
 
 ## Open questions (Griff's chair)
 
-1. **Prison's fate** (decisions 37/53) — keep, cut, or rework? Blocks ~15 yellow cards' identity.
-2. **Base/home rename** (decision 54) — Banner / Hearth / Seat / Beacon, or stay "base"?
-3. **Claiming initiative** — does trading your whole round for next round's first move feel good?
-4. **Intercept window** — is one redirect per attack the right defender agency?
-5. **Influence economy** — ~5% of games end by the track. Intended upset rate, or should it bite
-   harder (threshold 15 → lower, or bigger event payouts)?
-6. **Session-006 redesigns** — every card the agent redesigned tonight is listed in
-   `DECISIONS.md` under "Session-006 card redesigns" and needs your ratify-or-veto.
-7. **Purple** (if it shipped this session) — adopt, revise, or shelve the third color.
+The live, merged list — ten v3.0 blockers + six canon-v1.0 questions — is on the demo's
+**Design Audit tab** and in the GitHub issue tracker (each question is its own issue):
+
+1. **The v3.0 rules pass** ([#9](https://github.com/booherbg/2026-card-game/issues/9)) — ten
+   questions block the spec: pips semantics, blocker-pairing details, Hidden/Sneak/Capture edge
+   cases, and Guard's new meaning. **Prison's fate is already answered there: cut.**
+2. **Ratify the session-006 card redesigns** ([#4](https://github.com/booherbg/2026-card-game/issues/4)) — every change is on its card's Design notes.
+3. **The purple deck: adopt / revise / shelve** ([#5](https://github.com/booherbg/2026-card-game/issues/5)).
+4. **Influence economy** ([#6](https://github.com/booherbg/2026-card-game/issues/6)) — 4–10% upsets in mixed matchups, 23% in yellow mirrors.
+5. **Claiming initiative feel** ([#7](https://github.com/booherbg/2026-card-game/issues/7)) — the intercept half of that issue is mooted by #9's combat rework.
+6. **Naming (base/home) and mulligan feel** ([#8](https://github.com/booherbg/2026-card-game/issues/8)).
