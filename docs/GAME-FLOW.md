@@ -85,10 +85,11 @@ Imprisoned units stay on the board but can't attack, move, defend (no counter-da
 - Prisons from **units** (Containment Priest, Lawbringer…) break when the jailer unit leaves play.
 - Prisons from **actions** persist — but every prisoner costs the jailer **2 Influence at the start of each round** (the decay rule; doubled in rules v2.2 — the mortgage is real), and the moment the jailer's Influence goes **negative, every cell springs open** ⚑. Mass imprisonment is powerful and expensive.
 
-## The two decks
+## The decks
 
 - **Crimson Assault (Red):** rush, burn, breakthrough, and the Overextend gamble. *After the canon-v1.0 balance pass (session 006):* competent bot mirrors land red at **~45–55%** (sample-dependent; call it even within bot noise) — up from ~17% right after the card churn, fixed mostly by the v2.2 prison-decay doubling plus a target-aware bot upgrade that changed what the sims could see.
 - **Radiant Order (Yellow):** walls, armor, prisons, and event-earned Influence. Its fortress plan is deliberately weaker now that Guard is optional interception rather than a hard wall — and mass imprisonment now carries a real mortgage (2 Influence per prisoner per round, rules v2.2).
+- **Veiled Court (Purple — a session-006 *proposal*, not yet canon):** ranged assassins, flying flankers, permanent "-Power" withering, and Influence earned only by kills. Built entirely from existing mechanics; sims show a deliberate soft triangle (it beats yellow's walls, loses to red's aggression). Adopting it is the designer's call — CANON.md question 7.
 
 ## What the simulation says (and doesn't)
 

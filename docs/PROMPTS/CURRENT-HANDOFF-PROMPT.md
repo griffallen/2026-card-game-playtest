@@ -28,19 +28,18 @@ workflow is live, and a purple third-deck proposal is waiting for the designer.
   against real Postgres (healthz ok), web production build ok. This machine now has a working
   local env (`apps/server/.env`, Homebrew Postgres 14 via `brew services run`).
 - **Git:** everything on `main`, tagged `canon-v1.0`, pushed to origin.
-- **Carried:** the live demo at blainebooher.com/new-game-demo **still runs the old v1.2 build** —
-  `./scripts/deploy-demo.sh` to put canon-v1.0 (with purple + UX fixes) in front of Griff.
+- **Deployed:** blainebooher.com/new-game-demo now runs **canon-v1.0** (deployed + browser-verified
+  this session: 120 cards, purple live, UX fixes in). Redeploy after any merge: `./scripts/deploy-demo.sh`.
 
 ## Do next
 
-1. **Redeploy the demo** — everything this session built is invisible to Griff until then.
-2. **Point Griff at it:** the demo's Audit tab has his copy-paste question list (8 questions);
+1. **Point Griff at it** (the demo is already live): the demo's Audit tab has his copy-paste question list (8 questions);
    `data/cards/README.md` teaches the PR workflow; every session-006 redesign is on its card's
    Design notes, ratify-or-veto.
-3. **Play it by hand** — the sims say "even"; only humans can say "fun." Feel questions: claiming
+2. **Play it by hand** — the sims say "even"; only humans can say "fun." Feel questions: claiming
    initiative, the intercept window, the v2.2 prison mortgage, and whether purple's triangle is a
    feature.
-4. When Griff answers: fold rulings through the loop (DECISIONS.md → charters/cards → sims), and
+3. When Griff answers: fold rulings through the loop (DECISIONS.md → charters/cards → sims), and
    cut canon-v1.1 if the rules move.
 
 ## Open questions (Griff's chair — full list in CANON.md + the demo Audit tab)
