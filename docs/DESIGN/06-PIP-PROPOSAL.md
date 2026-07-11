@@ -1,9 +1,11 @@
 # Pip Assignment Proposal — v3.0 resource economy (decision-58-era draft)
 
-**Status:** proposal for playtesting, per the designer's ask on
-[issue #9](https://github.com/booherbg/2026-card-game/issues/9) (Q3): mono-color pips only for
-now; **more same-color pips = harder to splash = the balance lever for big/good cards** (cf. MTG
-CC costs, SWU aspects). Slash at will — every number here is a default, not a verdict.
+**Status: DESIGNER-APPROVED as the working baseline** (2026-07-11, on
+[issue #9](https://github.com/booherbg/2026-card-game/issues/9); decision 66) — tweaks come
+after playtesting. The designer's stated tuning lens: since pips are mono-colored, judge each
+card by **how well it would work in other colors' decks, and whether to hinder that with a
+higher pip count** — splash-hostility is the dial. Original framing (Q3): more same-color pips
+= harder to splash = the balance lever for big/good cards (cf. MTG CC costs, SWU aspects).
 
 ## The grammar (baseline rule)
 
