@@ -210,22 +210,26 @@ describe('auras and upgrades', () => {
 })
 
 describe('tempo and timing', () => {
-  it('this-round buffs expire at end of round (Blood Rush)', () => {
+  it('Blood Rush transfers the wound home (2026-07-11 rework, issue #4)', () => {
     let { s, p1 } = arena()
-    const zerk = put(s, p1, 'berserker', 1)
+    const zerk = put(s, p1, 'berserker', 1, { damage: 2 })
     const rush = toHand(s, p1, 'blood-rush')
+    const lifeBefore = s.sides[p1].life
     s = act(s, p1, { type: 'play', card: rush, targets: [{ kind: 'unit', id: zerk }] })
-    expect(effPower(s, s.units[zerk])).toBe(5)
-    s = act(s, (1 - p1) as Seat, { type: 'pass' })
-    s = act(s, p1, { type: 'pass' })                 // double pass → round ends, buffs expire
-    expect(effPower(s, s.units[zerk])).toBe(3)
+    expect(s.units[zerk].damage).toBe(0)
+    expect(s.sides[p1].life).toBe(lifeBefore - 2)    // exactly the damage removed
   })
 
-  it('Unchained Rage doubles effective power', () => {
+  it('Unchained Rage doubles ALL friendlies for two rounds (2026-07-11 rework, issue #4)', () => {
     let { s, p1 } = arena()
     const engine = put(s, p1, 'apocalypse-engine', 1)  // 7/7
+    const zerk = put(s, p1, 'berserker', 2)            // 3/2
     const rage = toHand(s, p1, 'unchained-rage')
-    s = act(s, p1, { type: 'play', card: rage, targets: [{ kind: 'unit', id: engine }] })
+    s = act(s, p1, { type: 'play', card: rage })
+    expect(effPower(s, s.units[engine])).toBe(14)
+    expect(effPower(s, s.units[zerk])).toBe(6)
+    s = act(s, (1 - p1) as Seat, { type: 'pass' })
+    s = act(s, p1, { type: 'pass' })                   // round ends once: still doubled
     expect(effPower(s, s.units[engine])).toBe(14)
   })
 

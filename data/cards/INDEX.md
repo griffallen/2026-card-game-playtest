@@ -8,12 +8,12 @@
 
 | Card | Cost | Type | P/H | Keywords | Status | Text |
 |---|---|---|---|---|---|---|
-| [Reckless Charge](red/reckless-charge.md) | 0 | action | — |  | canon | Target unit gains Rush this round. |
+| [Reckless Charge](red/reckless-charge.md) | 0 | action | — |  | canon | Choose one — target unit gains Rush this round; OR target unit gets +1 Power this round for each other red unit in its zone (either side's). |
 | [Cinder Initiate](red/cinder-initiate.md) | 1 | unit | 1/1 | rush, overextend 1 | canon | Rush. Overextend 1. |
-| [Devastating Strike](red/devastating-strike.md) | 1 | action | — |  | canon | Deal 2 damage to target unit. |
+| [Devastating Strike](red/devastating-strike.md) | 1 | action | — |  | canon | Deal 2 damage to target unit — 3 instead if it's already damaged. |
 | [Spark Hound](red/spark-hound.md) | 1 | unit | 2/1 | rush | canon | Rush. When this attacks, it gets +1 Power this round. |
 | [Berserker](red/berserker.md) | 2 | unit | 3/2 | rush, overextend 2 | canon | Rush. Overextend 2. |
-| [Blood Rush](red/blood-rush.md) | 2 | action | — |  | canon | Target unit gets +2 Power and Rush this round. |
+| [Blood Rush](red/blood-rush.md) | 2 | action | — |  | canon | Remove all damage from a unit you control; deal that much damage to your Home. |
 | [Flameblade Raider](red/flameblade-raider.md) | 2 | unit | 2/2 | rush, breakthrough 1 | canon | Rush. Breakthrough 1. |
 | [Pillage](red/pillage.md) | 2 | action | — |  | canon | Destroy target enemy upgrade. |
 | [Searing Bolt](red/searing-bolt.md) | 2 | action | — |  | canon | Deal 3 damage to any target. |
@@ -24,7 +24,7 @@
 | [Collateral Damage](red/collateral-damage.md) | 3 | action | — |  | canon | Deal 2 damage to two different target units. |
 | [Fiery Impaler](red/fiery-impaler.md) | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to the strongest other enemy unit in that zone. |
 | [Rageforged Brute](red/rageforged-brute.md) | 3 | unit | 4/3 | breakthrough 2, overextend 2 | canon | Breakthrough 2. Overextend 2. |
-| [Volcanic Slam](red/volcanic-slam.md) | 3 | action | — |  | canon | Deal 3 damage to target unit or base. |
+| [Volcanic Slam](red/volcanic-slam.md) | 3 | action | — |  | canon | Deal 3 damage to up to two units in the same zone. |
 | [Blaze Juggernaut](red/blaze-juggernaut.md) | 4 | unit | 4/4 | rush, reach | canon | Rush. Reach. |
 | [Burning Oath](red/burning-oath.md) | 4 | upgrade | — |  | canon | Attached unit gets +2 Power and Breakthrough 2. |
 | [Cataclysmic Charge](red/cataclysmic-charge.md) | 4 | action | — |  | canon | Target unit gets +3 Power and Breakthrough 3 this round. |
@@ -41,7 +41,7 @@
 | [Raging Inferno](red/raging-inferno.md) | 6 | action | — |  | canon | Deal 6 damage to target unit or base. |
 | [Apocalypse Engine](red/apocalypse-engine.md) | 7 | unit | 7/7 | breakthrough 4, overextend 4 | canon | Breakthrough 4. Overextend 4. |
 | [Last Stand](red/last-stand.md) | 7 | action | — |  | canon | Your units gain +2 Power this round. You lose 2 life. |
-| [Unchained Rage](red/unchained-rage.md) | 7 | action | — |  | canon | Double a unit's Power this round. |
+| [Unchained Rage](red/unchained-rage.md) | 7 | action | — |  | canon | Double the Power of all your units for the next 2 rounds. |
 | [Final Onslaught](red/final-onslaught.md) | 8 | action | — |  | canon | Ready one of your units, then immediately take an extra action. |
 | [Worldrender](red/worldrender.md) | 8 | unit | 8/8 | breakthrough 5, overextend 5 | canon | Breakthrough 5. Overextend 5. |
 

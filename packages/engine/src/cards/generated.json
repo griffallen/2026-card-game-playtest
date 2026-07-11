@@ -1,19 +1,47 @@
 {
  "reckless-charge": {
-  "targets": [
+  "modes": [
    {
-    "t": "unit",
-    "side": "friendly"
-   }
-  ],
-  "onPlay": [
+    "label": "Rush",
+    "targets": [
+     {
+      "t": "unit",
+      "side": "friendly"
+     }
+    ],
+    "ops": [
+     {
+      "op": "grant",
+      "t": "chosen0",
+      "kw": {
+       "k": "rush"
+      },
+      "dur": "round"
+     }
+    ]
+   },
    {
-    "op": "grant",
-    "t": "chosen0",
-    "kw": {
-     "k": "rush"
-    },
-    "dur": "round"
+    "label": "Pack fury",
+    "targets": [
+     {
+      "t": "unit",
+      "side": "friendly"
+     }
+    ],
+    "ops": [
+     {
+      "op": "countBuff",
+      "t": "chosen0",
+      "per": {
+       "color": "red",
+       "side": "all",
+       "zone": "ofTarget",
+       "other": true
+      },
+      "p": 1,
+      "dur": "round"
+     }
+    ]
    }
   ],
   "slug": "reckless-charge",
@@ -21,8 +49,8 @@
   "color": "red",
   "type": "action",
   "cost": 0,
-  "text": "Target unit gains Rush this round.",
-  "designerNote": "Session 006: was \"gains Rush\" permanently — dead text under decision 41 (Rush only matters the round a unit enters play, so a permanent grant on a veteran does nothing, ever). Now scoped to the round: the real play is on a unit you just dropped — its first move becomes free, so it can cross a zone and still fight.",
+  "text": "Choose one — target unit gains Rush this round; OR target unit gets +1 Power this round for each other red unit in its zone (either side's).",
+  "designerNote": "Session 006: was \"gains Rush\" permanently — dead text under decision 41 (Rush only matters the round a unit enters play, so a permanent grant on a veteran does nothing, ever). Now scoped to the round: the real play is on a unit you just dropped — its first move becomes free, so it can cross a zone and still fight.\n\n2026-07-11 (designer, PR #13 + #14): cost 1 → 0 and became modal — the second mode is the pack-fury\npump counting ALL red units in the zone, enemy red included (rage recognizes rage). First modal card\nin the game; the mode is declared when you cast.",
   "artUrl": "/cards/reckless-charge.jpg"
  },
  "cinder-initiate": {
@@ -57,7 +85,8 @@
    {
     "op": "damage",
     "t": "chosen0",
-    "n": 2
+    "n": 2,
+    "bonusIfDamaged": 1
    }
   ],
   "slug": "devastating-strike",
@@ -65,8 +94,8 @@
   "color": "red",
   "type": "action",
   "cost": 1,
-  "text": "Deal 2 damage to target unit.",
-  "designerNote": "Session 006: became unit-only. Red's burn grammar — unit-only burn deals cost+1, face-capable burn deals exactly cost (the reach is the tax). This is the efficient unit-killer; Searing Bolt is the flexible one.",
+  "text": "Deal 2 damage to target unit — 3 instead if it's already damaged.",
+  "designerNote": "Session 006: became unit-only. Red's burn grammar — unit-only burn deals cost+1, face-capable burn deals exactly cost (the reach is the tax). This is the efficient unit-killer; Searing Bolt is the flexible one.\n\n2026-07-11 (designer, issue #4): finish-the-wounded clause added (2, or 3 to a damaged unit) —\nfirst conditional-bonus card. Pairs with red's chip damage; the executioner rewards setup.",
   "artUrl": "/cards/devastating-strike.jpg"
  },
  "spark-hound": {
@@ -122,18 +151,13 @@
   ],
   "onPlay": [
    {
-    "op": "buff",
-    "t": "chosen0",
-    "p": 2,
-    "dur": "round"
+    "op": "clearDamage",
+    "t": "chosen0"
    },
    {
-    "op": "grant",
-    "t": "chosen0",
-    "kw": {
-     "k": "rush"
-    },
-    "dur": "round"
+    "op": "damage",
+    "t": "selfBase",
+    "n": "linked"
    }
   ],
   "slug": "blood-rush",
@@ -141,7 +165,8 @@
   "color": "red",
   "type": "action",
   "cost": 2,
-  "text": "Target unit gets +2 Power and Rush this round.",
+  "text": "Remove all damage from a unit you control; deal that much damage to your Home.",
+  "designerNote": "2026-07-11 (designer, issue #4): full rework — the wound comes home. Red's healing is a\nmortgage: your champion fights on, your Home bleeds for it. First linked-amount card.",
   "artUrl": "/cards/blood-rush.jpg"
  },
  "flameblade-raider": {
@@ -382,15 +407,22 @@
  "volcanic-slam": {
   "targets": [
    {
-    "t": "unitOrBase",
+    "t": "unit",
     "side": "any",
-    "baseSide": "enemy"
+    "count": 2,
+    "upTo": true,
+    "sameZone": true
    }
   ],
   "onPlay": [
    {
     "op": "damage",
     "t": "chosen0",
+    "n": 3
+   },
+   {
+    "op": "damage",
+    "t": "chosen1",
     "n": 3
    }
   ],
@@ -399,7 +431,8 @@
   "color": "red",
   "type": "action",
   "cost": 3,
-  "text": "Deal 3 damage to target unit or base.",
+  "text": "Deal 3 damage to up to two units in the same zone.",
+  "designerNote": "2026-07-11 (designer, issue #4): one eruption, one zone — trades face-reach for a second body.\nFirst upTo/sameZone card. Under decision 68's curve a 3-cost dealing up to 6 across two bodies\nis the convex rate red wants.",
   "artUrl": "/cards/volcanic-slam.jpg"
  },
  "blaze-juggernaut": {
@@ -766,16 +799,13 @@
   "artUrl": "/cards/last-stand.jpg"
  },
  "unchained-rage": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "any"
-   }
-  ],
   "onPlay": [
    {
     "op": "double",
-    "t": "chosen0"
+    "t": {
+     "side": "friendly"
+    },
+    "rounds": 2
    }
   ],
   "slug": "unchained-rage",
@@ -783,7 +813,8 @@
   "color": "red",
   "type": "action",
   "cost": 7,
-  "text": "Double a unit's Power this round.",
+  "text": "Double the Power of all your units for the next 2 rounds.",
+  "designerNote": "2026-07-11 (designer, issue #4): from one unit, one round — to YOUR WHOLE ARMY, TWO ROUNDS.\nThe poster child of decision 68 (superlinear curves): this is what a 7-cost feels like.\nFirst multi-round, board-wide effect.",
   "artUrl": "/cards/unchained-rage.jpg"
  },
  "final-onslaught": {
