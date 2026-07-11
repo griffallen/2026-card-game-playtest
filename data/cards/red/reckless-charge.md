@@ -6,7 +6,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"grant","t":"chosen0","kw":{"k":"rush"},"dur":"round"}]}
 ---
-Target unit gains Rush this round.
+Target unit gains Rush this round OR Give target unit +1 attack for each other red unit in the same zone (even opponent's units).
 
 ## Design notes
 
