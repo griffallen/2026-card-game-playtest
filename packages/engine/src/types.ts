@@ -54,6 +54,7 @@ export type Op =
   | { op: 'extraAction' }                                         // the same player immediately takes another action (decision 43)
   | { op: 'preventBase'; n: number }
   | { op: 'removeNegative'; t: OpTarget }
+  | { op: 'capture'; t: OpTarget }                                // v3: take the enemy unit under the source unit (spec §2)
 
 export type Static =
   | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; armor?: number; kw?: KeywordSpec; cond?: Cond }
@@ -83,6 +84,8 @@ export interface CardDef {
   text: string
   /** v3 (decision 69): presence requirement per color — never a payment. Also defines what this card provides when banked (1 per distinct color). */
   pips?: Color[]
+  /** v3 Sneak payload (decision 60): exhaust-activated, targets constrained to the unit's zone */
+  sneak?: { targets?: TargetSpec[]; ops: Op[] }
   kw?: KeywordSpec[]
   targets?: TargetSpec[]     // play-time targets (upgrades: attach target is implicit and NOT listed)
   onPlay?: Op[]              // action body; unit/upgrade enter-play effects
@@ -208,6 +211,8 @@ export interface GameState {
   outOfRound: [boolean, boolean]      // true = claimed initiative, done acting this round
   claimedThisRound: boolean           // at most one claim per round
   setupBanked: [boolean, boolean]     // per-seat: starting resources chosen (setup phase)
+  /** v3 Capture: captive unit id → its frozen instance + the capturer's unit id */
+  captives: Record<string, { unit: UnitInstance; by: string }>
   mulligans: [number, number]         // per-seat mulligan count (setup phase, decision 32)
   passStreak: number
   pendingExtraAction: Seat | null     // decision 43: this seat takes another action after the current resolves
@@ -237,7 +242,9 @@ export type GameAction =
   | { type: 'setupBank'; cards: string[]; bottom?: string[] }  // bottom: london-mulligan payback (decision 58)   // setup phase: choose starting resources
   | { type: 'resource'; card: string }       // bank phase: resource a card
   | { type: 'skipResource' }                 // bank phase: end your start step
-  | { type: 'play'; card: string; targets?: TargetRef[] }
+  | { type: 'play'; card: string; targets?: TargetRef[]; zone?: ZoneId }  // zone: v3 Infiltrate deploy choice
+  | { type: 'activate'; unit: string; targets?: TargetRef[] }             // v3 Sneak (decision 60)
+  | { type: 'releaseCaptive'; unit: string }                              // v3 Capture: ready the capturer, captive returns exhausted
   | { type: 'attack'; attackers: string[]; target: TargetRef; overextend?: string[] } // decision 42: 1+ attackers, one zone; overextend: subset taking the gamble
   | { type: 'move'; unit: string; to: ZoneId }
   | { type: 'claimInitiative' }              // decision 40: take the token, leave the round

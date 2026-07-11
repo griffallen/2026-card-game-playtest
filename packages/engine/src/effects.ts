@@ -279,6 +279,17 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         log(state, u.owner, `${name(state, u.id)} is cleansed`)
         break
       }
+      case 'capture': {
+        const t = resolveUnitTarget(ctx, op.t)
+        if (!t) break
+        const srcU = ctx.sourceUnit ? state.units[ctx.sourceUnit] : undefined
+        if (!srcU) break
+        // v3 Capture: out of play, under the capturer, upgrades ride along
+        delete state.units[t.id]
+        state.captives[t.id] = { unit: t, by: srcU.id }
+        log(state, ctx.controller, `${name(state, srcU.id)} captures ${name(state, t.id)}`)
+        break
+      }
     }
     stateBasedCleanup(state, ctx.actorSeat)
   }
@@ -286,6 +297,16 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
 
 export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
   if (!state.units[unit.id]) return
+  // v3 Capture: the capturer leaving play frees its captives — exhausted (decision 61)
+  for (const [cid, c] of Object.entries(state.captives)) {
+    if (c.by !== unit.id) continue
+    c.unit.zone = unit.zone
+    c.unit.exhausted = true
+    c.unit.enteredRound = state.round
+    state.units[cid] = c.unit
+    delete state.captives[cid]
+    log(state, c.unit.owner, `${name(state, cid)} is freed as ${name(state, unit.id)} falls`)
+  }
   for (const upId of unit.upgrades) {
     const up = state.upgrades[upId]
     if (up) { state.sides[up.owner].discard.push(upId); delete state.upgrades[upId] }

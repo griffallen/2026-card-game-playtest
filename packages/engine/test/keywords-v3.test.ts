@@ -5,7 +5,7 @@ import { applyAction } from '../src/engine.ts'
 import { getLegalActions } from '../src/legal.ts'
 import { V3_RULES } from '../src/rules.ts'
 import { effPower } from '../src/helpers.ts'
-import { damageUnit } from '../src/effects.ts'
+import { damageUnit, destroyUnit } from '../src/effects.ts'
 import { T, toyDeck, put } from './util.ts'
 
 // Slice V3-3a — the v3 keyword suite, part 1 (spec game-rules-v3-draft §2):
@@ -79,5 +79,96 @@ describe('Hidden — while ready: untouchable; exhausted: fair game (decision 59
     s.units[ghost].exhausted = true
     const attacks2 = getLegalActions(s, me).filter(a => a.type === 'attack')
     expect(attacks2.some(a => a.target.kind === 'unit' && a.target.id === ghost)).toBe(true)
+  })
+})
+
+// ── V3-3b: Infiltrate · Sneak · Capture ─────────────────────────────────────
+const K2: CardSet = {
+  ...T,
+  sapper: { slug: 'sapper', name: 'sapper', color: 'purple', type: 'unit', cost: 2, power: 2, health: 2, text: '', kw: [{ k: 'infiltrate' }] },
+  knifer: { slug: 'knifer', name: 'knifer', color: 'purple', type: 'unit', cost: 3, power: 2, health: 3, text: '',
+    kw: [{ k: 'sneak' }], sneak: { targets: [{ t: 'unit', side: 'enemy' }], ops: [{ op: 'damage', t: 'chosen0', n: 2 }] } },
+  jailer: { slug: 'jailer', name: 'jailer', color: 'yellow', type: 'unit', cost: 4, power: 2, health: 4, text: '',
+    kw: [{ k: 'capture' }], targets: [{ t: 'unit', side: 'enemy' }], onPlay: [{ op: 'capture', t: 'chosen0' }] },
+}
+
+function v3game2(): GameState {
+  let s = createGame({
+    seed: 12,
+    rules: { ...V3_RULES, chooseStartingResources: false },
+    cardSet: K2,
+    players: [{ name: 'Ada', deck: toyDeck() }, { name: 'Bo', deck: toyDeck() }],
+  })
+  while (s.phase === 'bank') s = applyAction(s, { type: 'skipResource' }, s.actorSeat).state
+  return s
+}
+let m = 7100
+function give(s: GameState, seat: 0 | 1, slug: string): string {
+  const id = `q${m++}`
+  s.cardOf[id] = slug; s.sides[seat].hand.push(id)
+  for (let i = 0; i < 8; i++) s.sides[seat].resources.push({ id: `q${m++}`, exhausted: false }), s.cardOf[`q${m - 1}`] = 'pawn'
+  return id
+}
+
+describe('Infiltrate — deploy to any zone', () => {
+  it('deploys to a chosen zone; non-infiltrators cannot choose', () => {
+    let s = v3game2()
+    const me = s.actorSeat
+    const card = give(s, me, 'sapper')
+    s = applyAction(s, { type: 'play', card, zone: 1 }, me).state
+    expect(s.units[card].zone).toBe(1)
+    const s2 = v3game2()
+    const me2 = s2.actorSeat
+    const plain = give(s2, me2, 'soldier')
+    expect(() => applyAction(s2, { type: 'play', card: plain, zone: 1 }, me2)).toThrowError(/infiltrate/i)
+  })
+})
+
+describe('Sneak — exhaust-activated per-card payload (decision 60)', () => {
+  it('activates from ready, hits same-zone only, exhausts (and reveals) the unit', () => {
+    const s = v3game2()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const knifer = put(s, me, 'knifer', 1)
+    const near = put(s, them, 'brute', 1)     // 4/3: survives the 2-damage payload
+    const far = put(s, them, 'brute', 2)
+    expect(() => applyAction(s, { type: 'activate', unit: knifer, targets: [{ kind: 'unit', id: far }] }, me))
+      .toThrowError(/zone/i)
+    const s1 = applyAction(s, { type: 'activate', unit: knifer, targets: [{ kind: 'unit', id: near }] }, me).state
+    expect(s1.units[near].damage).toBe(2)
+    expect(s1.units[knifer].exhausted).toBe(true)
+    s1.actorSeat = me   // tests own the window
+    expect(() => applyAction(s1, { type: 'activate', unit: knifer, targets: [{ kind: 'unit', id: near }] }, me))
+      .toThrowError(/exhaust/i)
+  })
+})
+
+describe('Capture — the captive lifecycle (decisions 61, spec §2)', () => {
+  it('captures under, holder skips ready, release returns the captive exhausted', () => {
+    let s = v3game2()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const victim = put(s, them, 'soldier', s.actorSeat === 0 ? 0 : 2)
+    const card = give(s, me, 'jailer')
+    s = applyAction(s, { type: 'play', card, targets: [{ kind: 'unit', id: victim }] }, me).state
+    expect(s.units[victim]).toBeUndefined()            // out of play, no zone presence
+    expect(s.captives[victim]?.by).toBe(card)
+    expect(s.units[card].exhausted).toBe(false)
+    // release: capturer readies (it already is), captive returns EXHAUSTED to the zone
+    s.actorSeat = me   // tests own the window
+    s = applyAction(s, { type: 'releaseCaptive', unit: card }, me).state
+    expect(s.captives[victim]).toBeUndefined()
+    expect(s.units[victim].exhausted).toBe(true)       // decision 61
+    expect(s.units[victim].zone).toBe(s.units[card].zone)
+  })
+
+  it('capturer death frees the captive, exhausted', () => {
+    const s = v3game2()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const victim = put(s, them, 'soldier', me === 0 ? 0 : 2)
+    const card = give(s, me, 'jailer')
+    const s2 = applyAction(s, { type: 'play', card, targets: [{ kind: 'unit', id: victim }] }, me).state
+    destroyUnit(s2, s2.units[card], 'slain')
+    expect(s2.units[card]).toBeUndefined()
+    expect(s2.captives[victim]).toBeUndefined()
+    expect(s2.units[victim].exhausted).toBe(true)
   })
 })

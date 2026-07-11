@@ -31,7 +31,11 @@ function runStartStepAuto(state: GameState, seat: Seat) {
     }
   }
 
-  for (const u of unitsOf(state, seat)) { u.exhausted = false; u.movedThisRound = false }
+  const holding = new Set(Object.values(state.captives).map(c => c.by))
+  for (const u of unitsOf(state, seat)) {
+    if (holding.has(u.id)) { u.movedThisRound = false; continue }  // v3 Capture: declining to ready = keeping the captive
+    u.exhausted = false; u.movedThisRound = false
+  }
   for (const r of state.sides[seat].resources) r.exhausted = false
 
   const n = state.round === 1 ? state.rules.firstRoundDraw : state.rules.drawPerRound

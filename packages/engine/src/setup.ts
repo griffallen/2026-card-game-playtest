@@ -93,6 +93,7 @@ export function createGame(opts: CreateGameOpts): GameState {
     influence: 0,
     sides,
     units: {},
+    captives: {},
     upgrades: {},
     preventBase: [0, 0],
     winner: null,

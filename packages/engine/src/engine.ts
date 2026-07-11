@@ -163,11 +163,54 @@ function applyLoopPhase(state: GameState, action: GameAction, seat: Seat) {
       return
     }
     case 'play': playCard(state, action, seat); break
+    case 'activate': activateSneak(state, action, seat); break
+    case 'releaseCaptive': releaseCaptive(state, action.unit, seat); break
     case 'move': moveUnit(state, action.unit, action.to, seat); break
     case 'attack': attackDeclare(state, action, seat); return // declare→intercept/resolve advances the window itself
     default: fail('bad-phase', `${(action as GameAction).type} is not a loop action`)
   }
   advanceWindow(state, seat)
+}
+
+// ─── v3 keyword actions ──────────────────────────────────────────────────────
+
+/** Sneak (decision 60): exhaust-activated per-card payload, targets locked to the unit's zone. */
+function activateSneak(state: GameState, action: Extract<GameAction, { type: 'activate' }>, seat: Seat) {
+  const unit = state.units[action.unit] ?? fail('no-unit', 'no such unit')
+  if (unit.owner !== seat) fail('not-yours', 'not your unit')
+  if (unit.exhausted) fail('exhausted', 'exhausted units cannot use Sneak')
+  const def = defOf(state, unit.id)
+  const sneak = def.sneak
+  if (!(def.kw ?? []).some(k => k.k === 'sneak') || !sneak) fail('no-sneak', `${def.name} has no Sneak ability`)
+  const targets = action.targets ?? []
+  validateTargets(state, seat, sneak.targets ?? [], targets, `${def.name} (Sneak)`)
+  for (const ref of targets) {
+    if (ref.kind === 'unit') {
+      const t = state.units[ref.id] ?? fail('bad-targets', 'no such unit')
+      if (t.zone !== unit.zone) fail('bad-zone', 'Sneak strikes within its own zone')
+    }
+    if (ref.kind === 'base' && unit.zone !== homeZone(other(seat))) fail('bad-zone', "Sneak reaches the enemy base only from their home zone")
+  }
+  unit.exhausted = true
+  log(state, seat, `${def.name} sneaks`)
+  runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat }, sneak.ops)
+}
+
+/** Capture (spec §2): the holder's owner readies the capturer, returning the captive exhausted. */
+function releaseCaptive(state: GameState, unitId: string, seat: Seat) {
+  const unit = state.units[unitId] ?? fail('no-unit', 'no such unit')
+  if (unit.owner !== seat) fail('not-yours', 'not your unit')
+  const held = Object.entries(state.captives).filter(([, c]) => c.by === unitId)
+  if (!held.length) fail('no-captive', `${defOf(state, unitId).name} holds no captive`)
+  unit.exhausted = false
+  for (const [cid, c] of held) {
+    c.unit.zone = unit.zone
+    c.unit.exhausted = true          // decision 61: returns exhausted
+    c.unit.enteredRound = state.round
+    state.units[cid] = c.unit
+    delete state.captives[cid]
+    log(state, seat, `${defOf(state, cid).name} is released, dazed`)
+  }
 }
 
 // ─── Playing cards ───────────────────────────────────────────────────────────
@@ -253,7 +296,13 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
   side.hand.splice(idx, 1)
 
   if (def.type === 'unit') {
-    const zone = homeZone(seat)
+    // v3 Infiltrate: deploy-time zone choice; everyone else deploys home
+    let zone = homeZone(seat)
+    if (action.zone !== undefined) {
+      if (!(def.kw ?? []).some(k => k.k === 'infiltrate')) fail('bad-zone', `${def.name} lacks Infiltrate — it deploys to your Home`)
+      if (![0, 1, 2].includes(action.zone)) fail('bad-zone', 'no such zone')
+      zone = action.zone
+    }
     state.units[action.card] = {
       id: action.card, slug: def.slug, owner: seat, zone,
       damage: 0, exhausted: false, enteredRound: state.round, movedThisRound: false,
