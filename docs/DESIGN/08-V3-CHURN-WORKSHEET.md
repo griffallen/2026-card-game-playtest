@@ -1,5 +1,14 @@
 # V3-6 Card Re-churn — Working Sheet
 
+**ALL FOUR PASSES DONE (12367fa).** Zero dead keywords in the pool. First v3 balance read
+(`npx tsx scripts/sim-v3-check.ts [random|heuristic]`, 60 seeds):
+- heuristic: red 58% / yellow 42%, influence wins 22%, ~9.5 rounds — healthy first churn.
+- random: yellow 90%, influence 70% — passive guard-influence riders snowball vs bots that
+  never pressure the track. NOT a tuning emergency (decision 56's lesson), but a WATCH ITEM:
+  free Guard blocks fire onDefend far more often than intercept did. Knob if needed: defend
+  payouts or once-per-round cap.
+Remaining below = V3-7 territory.
+
 **Status:** in progress (night build, 2026-07-11). Pips ✅ all 120 (54ac17c). Griff's five
 reworks ✅ live. This sheet tracks the rest; delete when canon-v2.0 ships.
 
