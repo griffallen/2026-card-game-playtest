@@ -20,7 +20,7 @@ died with the last session.
    exceptions), and fold rulings: DECISIONS.md → spec/cards → tests → deploy
    (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
 3. Ledger at hand-off (issue:comments, x = closed):
-   **19:1x · 18:2x · 17:20 · 16:9x · 15:1 · 12:12x · 11:7x · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x ·
+   **19:1x · 18:2x · 17:22 · 16:9x · 15:1 · 12:12x · 11:7x · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x ·
    5:1 · 4:11x · 3:1x · 2:2x · 1:5x — 0 open PRs.** (Agent replies are included in these counts.)
    (#18 blank screen + #19 art-blip resilience — both fixed; deploys now gated by
    `scripts/verify-demo.ts`: full game drive + sim + 120/120 art assertion.)

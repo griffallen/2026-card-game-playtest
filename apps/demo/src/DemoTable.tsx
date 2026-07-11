@@ -23,6 +23,23 @@ type Selection =
   | { kind: 'targeting'; card: string; collected: TargetRef[] }
   | null
 
+/** Mobile browser chrome (Chrome's bottom bar, the keyboard) can overlay the layout
+    viewport's bottom edge, burying fixed-bottom bars (Griff, issue #17). The visualViewport
+    API reports the covered strip — lift the action bar by exactly that much. */
+function useChromeSafeLift(): number {
+  const [lift, setLift] = useState(0)
+  useEffect(() => {
+    const vv = window.visualViewport
+    if (!vv) return
+    const update = () => setLift(Math.max(0, document.documentElement.clientHeight - (vv.offsetTop + vv.height)))
+    update()
+    vv.addEventListener('resize', update)
+    vv.addEventListener('scroll', update)
+    return () => { vv.removeEventListener('resize', update); vv.removeEventListener('scroll', update) }
+  }, [])
+  return lift
+}
+
 const sameRef = (a: TargetRef, b: TargetRef) =>
   a.kind === b.kind
   && (a.kind !== 'unit' || (b.kind === 'unit' && a.id === b.id))
@@ -68,6 +85,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const isIntercept = view.phase === 'intercept'
   const isBlock = view.phase === 'block'
   const [blockPairs, setBlockPairs] = useState<{ blocker: string; onto: string }[]>([])
+  const chromeLift = useChromeSafeLift()
 
   // v2 windows are keyed off the legal-action list, not the phase name (bullet 2).
   const actions = view.actions
@@ -736,9 +754,13 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         </div>
       )}
 
-      {/* phones: selection controls float above the thumb instead of below the fold */}
+      {/* phones: selection controls float above the thumb instead of below the fold —
+          lifted clear of browser chrome + gesture bar (issue #17) */}
       {selectionControls && (
-        <div className="fixed inset-x-2 bottom-2 z-40 lg:hidden">
+        <div
+          className="fixed inset-x-2 z-40 lg:hidden"
+          style={{ bottom: `calc(0.5rem + ${chromeLift}px + env(safe-area-inset-bottom, 0px))` }}
+        >
           <div className="panel p-2.5 shadow-2xl shadow-black/60">{selectionControls}</div>
         </div>
       )}
