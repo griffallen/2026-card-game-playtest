@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import type { LogLine, UnitView } from '@newgame/engine'
 import { CardFrame, type CardLike } from '../components/CardFrame.tsx'
 import { STATUS_GLOSS, glossFor } from './gloss.ts'
@@ -8,7 +8,8 @@ export function Sheet({ title, onClose, children }: { title: string; onClose: ()
   return (
     <div className="fixed inset-0 z-50 bg-black/60 max-lg:flex max-lg:items-end lg:grid lg:place-items-center lg:p-4" onClick={onClose}>
       <div
-        className="panel max-h-[82vh] w-full overflow-y-auto p-4 max-lg:rounded-b-none lg:max-w-lg"
+        className="panel max-h-[82vh] w-full select-none overflow-y-auto p-4 max-lg:rounded-b-none lg:max-w-lg"
+        style={{ WebkitUserSelect: 'none', WebkitTouchCallout: 'none' } as CSSProperties}
         onClick={e => e.stopPropagation()}
       >
         <div className="mb-3 flex items-center justify-between">
