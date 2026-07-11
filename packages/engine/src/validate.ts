@@ -25,6 +25,10 @@ export function validateCardSet(cards: CardSet): string[] {
     if (!['red', 'yellow', 'purple', 'neutral'].includes(def.color)) err(slug, `bad color ${def.color}`)
     if (!['unit', 'action', 'upgrade'].includes(def.type)) err(slug, `bad type ${def.type}`)
     if (!isInt(def.cost, 0, 30)) err(slug, `bad cost ${def.cost}`)
+    for (const c of def.pips ?? []) {
+      if (!['red', 'yellow', 'purple'].includes(c)) err(slug, `bad pip color ${c}`)
+    }
+    if ((def.pips?.length ?? 0) > 5) err(slug, `too many pips (${def.pips!.length})`)
     if (def.type === 'unit') {
       if (!isInt(def.power, 0, 99)) err(slug, `unit needs power 0–99 (got ${def.power})`)
       if (!isInt(def.health, 1, 99)) err(slug, `unit needs health 1–99 (got ${def.health})`)

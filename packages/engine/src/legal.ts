@@ -1,6 +1,6 @@
 import type { GameAction, GameState, Seat, TargetRef, TargetSpec, UnitInstance, ZoneId } from './types.ts'
 import { ZONES, adjacent, homeZone } from './types.ts'
-import { defOf, effPower, hasKw, idNum, isSick, kwOf, other, unitsInZone, unitsOf } from './helpers.ts'
+import { defOf, effPower, hasKw, idNum, isSick, kwOf, other, pipGateSatisfied, unitsInZone, unitsOf } from './helpers.ts'
 import { interceptCandidates } from './engine.ts'
 
 /**
@@ -73,6 +73,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   for (const card of state.sides[seat].hand) {
     const def = defOf(state, card)
     if (def.cost > ready) continue
+    if (!pipGateSatisfied(state, seat, def)) continue
     for (const targets of enumerateTargets(state, seat, card)) {
       out.push(targets.length ? { type: 'play', card, targets } : { type: 'play', card })
     }

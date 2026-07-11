@@ -14,7 +14,7 @@ export const CARD_STATUSES = ['draft', 'redesign', 'canon'] as const
 export type CardStatus = (typeof CARD_STATUSES)[number]
 export interface CardFile { def: CardDef; status: CardStatus }
 
-const FIELD_KEYS = ['name', 'type', 'cost', 'power', 'health', 'keywords', 'influenceTrigger', 'status', 'art', 'effects'] as const
+const FIELD_KEYS = ['name', 'type', 'cost', 'power', 'health', 'keywords', 'pips', 'influenceTrigger', 'status', 'art', 'effects'] as const
 type FieldKey = (typeof FIELD_KEYS)[number]
 const KW_NAMES = new Set<string>(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable'])
 const INFLUENCE_TRIGGERS = ['onPlay', 'onDefend', 'onKill', 'onAttack'] as const
@@ -133,6 +133,12 @@ export function parseCardFile(src: string, slug: string, color: Color): { card?:
   if (!CARD_STATUSES.includes(status)) err(`status must be one of ${CARD_STATUSES.join('/')} (got "${fields.status ?? ''}")`)
 
   const kw = parseKeywords(fields.keywords ?? '', slug, errors)
+  const PIP_COLORS = ['red', 'yellow', 'purple'] as const
+  const pips = (fields.pips ?? '').split(',').map(s => s.trim()).filter(Boolean).map(s => {
+    if (!(PIP_COLORS as readonly string[]).includes(s)) err(`pips: "${s}" is not a color (${PIP_COLORS.join('/')})`)
+    return s as CardDef['color']
+  })
+  if (pips.length > 5) err('pips: more than 5 is surely a mistake')
   const power = int('power')
   const health = int('health')
   if (errors.length) return { errors }
@@ -148,6 +154,7 @@ export function parseCardFile(src: string, slug: string, color: Color): { card?:
     ...(health !== undefined ? { health } : {}),
     text,
     ...(kw ? { kw } : {}),
+    ...(pips.length ? { pips } : {}),
     ...(designerNote ? { designerNote } : {}),
     artUrl: fields.art ?? `/cards/${slug}.jpg`,
   }
@@ -165,6 +172,7 @@ export function serializeCardFile(def: CardDef, status: CardStatus): string {
   if (def.health !== undefined) out.push(`health: ${def.health}`)
   const kwText = (def.kw ?? []).map(k => (k.n !== undefined ? `${k.k} ${k.n}` : k.k)).join(', ')
   if (kwText) out.push(`keywords: ${kwText}`)
+  if (def.pips?.length) out.push(`pips: ${def.pips.join(', ')}`)
   const trig = influenceTriggerOf(def)
   if (trig && trig !== 'startOfRound') out.push(`influenceTrigger: ${trig}`)
   out.push(`status: ${status}`)

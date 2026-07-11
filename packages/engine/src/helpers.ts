@@ -1,5 +1,5 @@
 import type {
-  CardDef, Cond, GameState, KeywordName, Mod, Seat, Static, UnitInstance, ZoneId,
+  CardDef, Color, Cond, GameState, KeywordName, Mod, Seat, Static, UnitInstance, ZoneId,
 } from './types.ts'
 import { EngineError } from './types.ts'
 
@@ -215,4 +215,20 @@ export function assertConservation(state: GameState) {
   Object.values(state.upgrades).forEach(u => put(u.id, 'play'))
   if (seen.size !== Object.keys(state.cardOf).length)
     throw new EngineError('conservation', `${seen.size} placed vs ${Object.keys(state.cardOf).length} known`)
+}
+
+/** Decision 69: pips gate plays on banked color PRESENCE (ready or exhausted) and never exhaust anything.
+ *  A banked card provides 1 presence of each color in its own pips — same-color pips never stack. */
+export function pipGateSatisfied(state: GameState, seat: Seat, def: CardDef): boolean {
+  if (state.rules.pipModel !== 'presence' || !def.pips?.length) return true
+  const need = new Map<Color, number>()
+  for (const c of def.pips) need.set(c, (need.get(c) ?? 0) + 1)
+  for (const [color, n] of need) {
+    let have = 0
+    for (const r of state.sides[seat].resources) {
+      if (defOf(state, r.id).pips?.includes(color) && ++have >= n) break
+    }
+    if (have < n) return false
+  }
+  return true
 }

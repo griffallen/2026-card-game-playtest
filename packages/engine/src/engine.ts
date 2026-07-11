@@ -4,7 +4,7 @@ import type {
 import { EngineError, adjacent, homeZone } from './types.ts'
 import { shuffle } from './rng.ts'
 import {
-  defOf, effArmor, effHealth, effPower, hasKw, idNum, isSick, kwOf, log, other, unitsInZone,
+  defOf, effArmor, effHealth, effPower, hasKw, idNum, isSick, kwOf, log, other, pipGateSatisfied, unitsInZone,
 } from './helpers.ts'
 import { damageBase, damageUnit, fireTrigger, runOps, stateBasedCleanup } from './effects.ts'
 import { startRound, endRound, finishBankStep } from './round.ts'
@@ -221,6 +221,8 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
   const idx = side.hand.indexOf(action.card)
   if (idx < 0) fail('not-in-hand', 'card is not in your hand')
   const def = defOf(state, action.card)
+  if (!pipGateSatisfied(state, seat, def))
+    fail('pip-gate', `${def.name} needs banked color sources for its pips (decision 69)`)
   const targets = action.targets ?? []
 
   if (def.type === 'upgrade') {

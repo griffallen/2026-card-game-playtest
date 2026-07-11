@@ -79,6 +79,8 @@ export interface CardDef {
   power?: number
   health?: number
   text: string
+  /** v3 (decision 69): presence requirement per color — never a payment. Also defines what this card provides when banked (1 per distinct color). */
+  pips?: Color[]
   kw?: KeywordSpec[]
   targets?: TargetSpec[]     // play-time targets (upgrades: attach target is implicit and NOT listed)
   onPlay?: Op[]              // action body; unit/upgrade enter-play effects
