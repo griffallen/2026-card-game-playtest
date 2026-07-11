@@ -12,7 +12,7 @@ loop checks the repo; this file is the fresh context's whole briefing.
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
 3. Comment-count ledger as of 2026-07-11 ~00:30 (issue:comments, x = closed):
-   **10:1 · 9:7 · 8:4x · 7:3x · 6:4x · 5:1 · 4:0 · 3:1x · 2:2 · 1:5x — 0 open PRs.**
+   **11:2 · 10:1 · 9:7 · 8:4x · 7:3x · 6:4x · 5:1 · 4:0 · 3:1x · 2:2 · 1:5x — 0 open PRs.**
    A new issue number appearing is activity even when all counts match.
    Any number above these = new activity (my own replies are included in these counts).
 
@@ -45,7 +45,9 @@ loop checks the repo; this file is the fresh context's whole briefing.
   **#6 closed into #10** (decision 63: matchup-dependent influence is by design). **#7 closed
   (decision 64):** claiming initiative stays; intercept half moot. Issues still open for Griff:
   #4 (ratify redesigns), #5 (purple verdict), #9 (pip slash-pass + blocking-exhausts veto),
-  #10 (charter follow-ups).
+  #10 (charter follow-ups), #11 (art: Griff posts one anchor image per color; purple filed at
+  `docs/DESIGN/art-themes/`; agent owes SVG per-color frame templates; image-gen-API wiring =
+  Blaine's call, flagged).
 
 ## Working agreements (from Blaine, this session)
 
