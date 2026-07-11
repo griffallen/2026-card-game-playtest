@@ -76,3 +76,40 @@ type TargetRef = {kind:'unit'; id: string} | {kind:'base'; seat: Seat} | {kind:'
 
 ## Test/commit cadence
 Red → green per unit within a slice; `git commit` at every slice boundary (message `slice N: …`). Engine slices are strict TDD; UI slices get build + interaction smoke via the running dev stack.
+
+---
+
+# v3.0 build plan (2026-07-11 — Blaine's build order, issue #12)
+
+**Contract:** `docs/SPECS/game-rules-v3-draft.md` (all questions answered, decisions 59–70).
+**Prime directive:** one engine, two rule sets — v3 lands behind rules parameters
+(`combatModel`, `pipModel`, keyword availability), v2.3 configs keep playing unchanged.
+Strict TDD per slice; commit per slice; deploy + release tag at the end.
+
+**V3-1 — Version plumbing.** `RulesConfig` gains `combatModel: 'intercept'|'blockerPairing'`,
+`pipModel: 'none'|'presence'`, `upgradeOrphanRule`, `scarCap`, `blockingExhausts` — v2.3
+defaults preserve today's behavior; a `V3_RULES` preset flips them. Tests: both presets
+normalize; v2.3 sims unchanged.
+**V3-2 — Pips (presence model, decision 69).** `CardDef.pips?: Color[]`; bank exposes color
+presence (1 per color per card, no stacking); `playCard` gates on presence ≥ per-color pip
+count; pip data imported from `06-PIP-PROPOSAL.md` table into card files (`pips:` line).
+Tests: presence counting, multi-color providers, 0-cost gate, no-stack, v2.3 ignores pips.
+**V3-3 — Keyword suite.** Under v3 rules: overextend/flying/reach/untargetable/prison inert;
+Scar (capped, decision 70), Shielded, Infiltrate, Hidden (targeting+attack filter), Sneak
+(`activate` action, per-card payload ops), Capture (orphan-under, decline-ready, exhausted
+return — decision 61). Tests per keyword incl. Hidden-blocks-and-reveals, capture round-trip.
+**V3-4 — Combat (blocker-pairing).** Declare(group→one target) → block(pairing, gang) →
+simultaneous resolve; defender splits gang damage; unblocked → declared target; breakthrough
+spill to target; blocking exhausts (Guard exempt, decision 62); Home only from its zone.
+Replaces intercept under v3. Tests: every §1.3 sentence + intercept tests still green on v2.3.
+**V3-5 — Vocabulary extensions.** Modal (`modes:[]`, declared at cast), count-pump, linked
+amounts, conditional bonus (`bonusIf`), `upTo`/`sameZone` target flags, `attachOrphan` action
+(decision 67), `double` over UnitFilter, `dur:{rounds:N}`. Tests: one card-shaped test each.
+**V3-6 — Card re-churn.** All 120 cards re-priced (superlinear, decision 68) against the #10
+charter; staged queue folds in (PR #13 modal Reckless, Blood Rush, Devastating Strike,
+Volcanic Slam, Unchained Rage); purple converts to Hidden/Sneak/Infiltrate identity; pips per
+approved baseline. `npm run cards` green; sim harness matchup table regenerated; canon-v2.0.
+**V3-7 — Demo + ship.** Rules-version toggle on Play setup (v3.0 default, v2.3 selectable);
+pip presence UI (Griff's sigils from `art-themes/pips/`); blocker-assignment interaction;
+new-keyword badges; UX audit pass (playable > pretty); `game-rules.md` swapped to v3.0 (v2.3
+archived); deploy; **GitHub release tag with executive summary posted to #12**.
