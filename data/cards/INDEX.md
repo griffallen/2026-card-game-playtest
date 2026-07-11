@@ -105,13 +105,13 @@
 | [Glimpse](purple/glimpse.md) | 1 | action | — |  | draft | Draw a card. |
 | [Veil Adept](purple/veil-adept.md) | 1 | unit | 1/1 | ranged | draft | Ranged. |
 | [Whisper Blade](purple/whisper-blade.md) | 1 | unit | 2/1 |  | draft | When this defeats a unit, gain 1 Influence. |
-| [Cloak of Haze](purple/cloak-of-haze.md) | 2 | upgrade | — |  | draft | Attached unit has Flying. |
+| [Cloak of Haze](purple/cloak-of-haze.md) | 2 | upgrade | — |  | draft | Attached unit has Hidden. |
 | [Crippling Dart](purple/crippling-dart.md) | 2 | action | — |  | draft | Deal 2 damage to target enemy unit. It gets -1 Power permanently. |
 | [Dusk Archer](purple/dusk-archer.md) | 2 | unit | 2/2 | ranged | draft | Ranged. |
 | [Mist Stalker](purple/mist-stalker.md) | 2 | unit | 2/2 |  | draft | When this defeats a unit, gain 1 Influence. |
 | [Pacify](purple/pacify.md) | 2 | action | — |  | draft | Target enemy unit can't attack this round. |
-| [Shadowstep](purple/shadowstep.md) | 2 | action | — |  | draft | Target friendly unit gains Flying this round. Draw a card. |
-| [Twilight Scout](purple/twilight-scout.md) | 2 | unit | 2/3 | flying | draft | Flying. |
+| [Shadowstep](purple/shadowstep.md) | 2 | action | — |  | draft | Target friendly unit gains Hidden this round. Draw a card. |
+| [Twilight Scout](purple/twilight-scout.md) | 2 | unit | 2/3 | infiltrate | draft | Infiltrate. (Deploy this to any zone.) |
 | [Veiled Messenger](purple/veiled-messenger.md) | 2 | unit | 1/3 |  | draft | When this enters play, draw a card. |
 | [Wither](purple/wither.md) | 2 | action | — |  | draft | Target enemy unit gets -2 Power permanently. |
 | [Gloom Piercer](purple/gloom-piercer.md) | 3 | unit | 3/2 | ranged | draft | Ranged. |
@@ -121,20 +121,20 @@
 | [Assassin's Contract](purple/assassin-s-contract.md) | 4 | upgrade | — |  | draft | Attached unit gets +2 Power. When it defeats a unit, gain 1 Influence. |
 | [Blackout](purple/blackout.md) | 4 | action | — |  | draft | Choose a zone. Enemy units there can't attack this round. |
 | [Cull the Weak](purple/cull-the-weak.md) | 4 | action | — |  | draft | Deal 1 damage to every enemy unit. Draw a card. |
-| [Duskwing Tyrant](purple/duskwing-tyrant.md) | 4 | unit | 3/3 | flying | draft | Flying. |
-| [Phantom Duelist](purple/phantom-duelist.md) | 4 | unit | 4/2 | untargetable | draft | This can't be the target of enemy actions. |
+| [Duskwing Tyrant](purple/duskwing-tyrant.md) | 4 | unit | 3/3 | hidden, sneak | draft | Hidden. Sneak — deal 2 damage to target enemy unit in this zone. |
+| [Phantom Duelist](purple/phantom-duelist.md) | 4 | unit | 4/2 | hidden | draft | Hidden. (While ready: can't be targeted or attacked. Acting reveals it.) |
 | [Rain of Quarrels](purple/rain-of-quarrels.md) | 4 | action | — |  | draft | Choose a zone. Deal 2 damage to every enemy unit there. |
 | [Shade of the Bazaar](purple/shade-of-the-bazaar.md) | 4 | unit | 3/4 |  | draft | When this enters play, draw a card. |
 | [Silence the Song](purple/silence-the-song.md) | 4 | action | — |  | draft | Target enemy unit gets -2 Power permanently. Draw a card. |
-| [Dream Thief](purple/dream-thief.md) | 5 | unit | 4/4 | flying | draft | Flying. When this enters play, draw a card. |
+| [Dream Thief](purple/dream-thief.md) | 5 | unit | 4/4 | hidden, sneak | draft | Flying. When this enters play, draw a card. |
 | [Nocturne Sniper](purple/nocturne-sniper.md) | 5 | unit | 4/3 | ranged | draft | Ranged. When this defeats a unit, gain 1 Influence. |
 | [Second Shadow](purple/second-shadow.md) | 5 | action | — |  | draft | Ready one of your units. Draw a card. |
 | [Veilmaster](purple/veilmaster.md) | 5 | unit | 3/5 |  | draft | Your other units have Ranged. |
 | [Duskweaver Oracle](purple/duskweaver-oracle.md) | 6 | unit | 4/6 |  | draft | When this enters play, draw 2 cards. |
 | [Fog of Knives](purple/fog-of-knives.md) | 6 | action | — |  | draft | Choose a zone. Deal 3 damage to every enemy unit there. |
-| [Umbral Colossus](purple/umbral-colossus.md) | 6 | unit | 5/5 | untargetable | draft | This can't be the target of enemy actions. |
+| [Umbral Colossus](purple/umbral-colossus.md) | 6 | unit | 5/5 | hidden, shielded | draft | Hidden. Shielded. (Enters with a shield that eats the first damage.) |
 | [Veil of Silence](purple/veil-of-silence.md) | 6 | action | — |  | draft | Enemy units can't attack this round. |
 | [Eclipse](purple/eclipse.md) | 7 | action | — |  | draft | Every enemy unit gets -2 Power permanently. |
 | [Midnight Reckoning](purple/midnight-reckoning.md) | 7 | action | — |  | draft | Deal 3 damage to every enemy unit. Draw a card. |
-| [Sovereign of the Veil](purple/sovereign-of-the-veil.md) | 7 | unit | 5/6 | flying, untargetable | draft | Flying. This can't be the target of enemy actions. |
+| [Sovereign of the Veil](purple/sovereign-of-the-veil.md) | 7 | unit | 5/6 | hidden, infiltrate, sneak | draft | Hidden. Infiltrate. Sneak — deal 4 damage to target enemy unit in this zone and gain 1 Influence. |
 | [The Unseen Court](purple/the-unseen-court.md) | 8 | unit | 6/7 | ranged | draft | Ranged. When this defeats a unit, gain 2 Influence. |

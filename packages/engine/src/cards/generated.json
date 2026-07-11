@@ -2411,7 +2411,7 @@
     "s": "aura",
     "scope": "attached",
     "kw": {
-     "k": "flying"
+     "k": "hidden"
     }
    }
   ],
@@ -2420,10 +2420,11 @@
   "color": "purple",
   "type": "upgrade",
   "cost": 2,
-  "text": "Attached unit has Flying.",
+  "text": "Attached unit has Hidden.",
   "pips": [
    "purple"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): the cloak now grants the veil itself — any unit can learn to disappear.",
   "artUrl": "/cards/cloak-of-haze.svg"
  },
  "crippling-dart": {
@@ -2536,7 +2537,7 @@
     "op": "grant",
     "t": "chosen0",
     "kw": {
-     "k": "flying"
+     "k": "hidden"
     },
     "dur": "round"
    },
@@ -2550,10 +2551,11 @@
   "color": "purple",
   "type": "action",
   "cost": 2,
-  "text": "Target friendly unit gains Flying this round. Draw a card.",
+  "text": "Target friendly unit gains Hidden this round. Draw a card.",
   "pips": [
    "purple"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): the escape trick: a round of the veil (ready = safe) plus a card. Purple pays for knowledge either way.",
   "artUrl": "/cards/shadowstep.svg"
  },
  "twilight-scout": {
@@ -2564,15 +2566,16 @@
   "cost": 2,
   "power": 2,
   "health": 3,
-  "text": "Flying.",
+  "text": "Infiltrate. (Deploy this to any zone.)",
   "kw": [
    {
-    "k": "flying"
+    "k": "infiltrate"
    }
   ],
   "pips": [
    "purple"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): flier grounds into the Infiltrate scout — purple's map presence starts anywhere.",
   "artUrl": "/cards/twilight-scout.svg"
  },
  "veiled-messenger": {
@@ -2800,6 +2803,21 @@
   "artUrl": "/cards/cull-the-weak.svg"
  },
  "duskwing-tyrant": {
+  "sneak": {
+   "targets": [
+    {
+     "t": "unit",
+     "side": "enemy"
+    }
+   ],
+   "ops": [
+    {
+     "op": "damage",
+     "t": "chosen0",
+     "n": 2
+    }
+   ]
+  },
   "slug": "duskwing-tyrant",
   "name": "Duskwing Tyrant",
   "color": "purple",
@@ -2807,16 +2825,20 @@
   "cost": 4,
   "power": 3,
   "health": 3,
-  "text": "Flying.",
+  "text": "Hidden. Sneak — deal 2 damage to target enemy unit in this zone.",
   "kw": [
    {
-    "k": "flying"
+    "k": "hidden"
+   },
+   {
+    "k": "sneak"
    }
   ],
   "pips": [
    "purple",
    "purple"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): the tyrant becomes a Hidden ambusher; its Sneak is the knife-drawer's damage blade (decision 60).",
   "artUrl": "/cards/duskwing-tyrant.svg"
  },
  "phantom-duelist": {
@@ -2827,16 +2849,17 @@
   "cost": 4,
   "power": 4,
   "health": 2,
-  "text": "This can't be the target of enemy actions.",
+  "text": "Hidden. (While ready: can't be targeted or attacked. Acting reveals it.)",
   "kw": [
    {
-    "k": "untargetable"
+    "k": "hidden"
    }
   ],
   "pips": [
    "purple",
    "purple"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): untargetable maps 1:1 onto Hidden — same fantasy, now with the self-revealing rhythm (decision 59).",
   "artUrl": "/cards/phantom-duelist.svg"
  },
  "rain-of-quarrels": {
@@ -2927,6 +2950,14 @@
     "n": 1
    }
   ],
+  "sneak": {
+   "ops": [
+    {
+     "op": "influence",
+     "n": 2
+    }
+   ]
+  },
   "slug": "dream-thief",
   "name": "Dream Thief",
   "color": "purple",
@@ -2937,13 +2968,17 @@
   "text": "Flying. When this enters play, draw a card.",
   "kw": [
    {
-    "k": "flying"
+    "k": "hidden"
+   },
+   {
+    "k": "sneak"
    }
   ],
   "pips": [
    "purple",
    "purple"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): purple's influence is REACTIVE (decision 63/#10 thread): the thief steals standing, not ground — Sneak gains 2 Influence. Draw stays.",
   "artUrl": "/cards/dream-thief.svg"
  },
  "nocturne-sniper": {
@@ -3085,16 +3120,20 @@
   "cost": 6,
   "power": 5,
   "health": 5,
-  "text": "This can't be the target of enemy actions.",
+  "text": "Hidden. Shielded. (Enters with a shield that eats the first damage.)",
   "kw": [
    {
-    "k": "untargetable"
+    "k": "hidden"
+   },
+   {
+    "k": "shielded"
    }
   ],
   "pips": [
    "purple",
    "purple"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 2): the colossus keeps its ghost-fortress feel — Hidden while ready, and Shielded so even a revealed colossus shrugs the first blow. A 6-cost that does a lot (decision 68).",
   "artUrl": "/cards/umbral-colossus.svg"
  },
  "veil-of-silence": {
@@ -3175,6 +3214,25 @@
   "artUrl": "/cards/midnight-reckoning.svg"
  },
  "sovereign-of-the-veil": {
+  "sneak": {
+   "targets": [
+    {
+     "t": "unit",
+     "side": "enemy"
+    }
+   ],
+   "ops": [
+    {
+     "op": "damage",
+     "t": "chosen0",
+     "n": 4
+    },
+    {
+     "op": "influence",
+     "n": 1
+    }
+   ]
+  },
   "slug": "sovereign-of-the-veil",
   "name": "Sovereign of the Veil",
   "color": "purple",
@@ -3182,13 +3240,16 @@
   "cost": 7,
   "power": 5,
   "health": 6,
-  "text": "Flying. This can't be the target of enemy actions.",
+  "text": "Hidden. Infiltrate. Sneak — deal 4 damage to target enemy unit in this zone and gain 1 Influence.",
   "kw": [
    {
-    "k": "flying"
+    "k": "hidden"
    },
    {
-    "k": "untargetable"
+    "k": "infiltrate"
+   },
+   {
+    "k": "sneak"
    }
   ],
   "pips": [
@@ -3196,6 +3257,7 @@
    "purple",
    "purple"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): the finisher does a lot (decision 68): appears anywhere, untouchable while ready, and its knife both cuts and steals.",
   "artUrl": "/cards/sovereign-of-the-veil.svg"
  },
  "the-unseen-court": {

@@ -6,6 +6,10 @@ pips: purple
 status: draft
 art: /cards/cloak-of-haze.svg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"aura","scope":"attached","kw":{"k":"flying"}}]}
+effects: {"statics":[{"s":"aura","scope":"attached","kw":{"k":"hidden"}}]}
 ---
-Attached unit has Flying.
+Attached unit has Hidden.
+
+## Design notes
+
+2026-07-11 (v3 churn pass 2, charter #10: reactive control): the cloak now grants the veil itself — any unit can learn to disappear.
