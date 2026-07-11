@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { CardSet } from '../src/types.ts'
+import type { CardDef, CardSet } from '../src/types.ts'
 import { simulateGame } from '../src/simulate.ts'
 import { V3_RULES } from '../src/rules.ts'
 import { T } from './util.ts'
@@ -19,7 +19,7 @@ const V3T: CardSet = Object.fromEntries(Object.entries({
     kw: [{ k: 'capture' }], targets: [{ t: 'unit', side: 'enemy' }], onPlay: [{ op: 'capture', t: 'chosen0' }] },
   shell:   { slug: 'shell', name: 'shell', color: 'yellow', type: 'unit', cost: 2, power: 1, health: 3, text: '', kw: [{ k: 'shielded' }] },
   scarred: { slug: 'scarred', name: 'scarred', color: 'red', type: 'unit', cost: 3, power: 2, health: 5, text: '', kw: [{ k: 'scar' }] },
-}).filter(([slug]) => !['loner', 'hawk'].includes(slug)))   // v3 sets carry no overextend/flying
+} satisfies Record<string, CardDef>).filter(([slug]) => !['loner', 'hawk'].includes(slug)))   // v3 sets carry no overextend/flying
 
 const deck = () => Object.keys(V3T).flatMap(slug => [slug, slug, slug])
 
