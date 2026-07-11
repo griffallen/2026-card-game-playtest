@@ -92,6 +92,9 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
 - **Linked-amount ops** ("X = the amount just healed/removed/dealt"): first customer is the
   designer's Blood Rush rewrite (issue #4) — "remove all damage from a unit you control, deal
   that much to your Home". Current ops take fixed `n` only.
+- **Conditional amounts** (target-state predicates): "2 damage to a unit, or 3 if it's already
+  damaged" — the designer's Devastating Strike rework (issue #4). Wants a `bonus-if` clause
+  (predicate: damaged/exhausted/keyword) rather than a full modal.
 - **[PENDING designer clarification, issue #12]** an Overextend/Scar cap: "can't overextend
   beyond remaining health" (example given: 3 health, 2 damage → max +1). Overextend is cut in
   v3, so this likely means **Scar's bonus caps at remaining health** — asked which before

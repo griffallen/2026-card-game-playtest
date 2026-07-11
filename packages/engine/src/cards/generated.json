@@ -197,7 +197,7 @@
    {
     "op": "damage",
     "t": "chosen0",
-    "n": 2
+    "n": 3
    }
   ],
   "slug": "searing-bolt",
@@ -205,7 +205,8 @@
   "color": "red",
   "type": "action",
   "cost": 2,
-  "text": "Deal 2 damage to any target.",
+  "text": "Deal 3 damage to any target.",
+  "designerNote": "2026-07-11 (designer, issue #4): 2 → 3 damage at unchanged cost 2. This runs ABOVE the\nsession-006 burn grammar (face-capable burn = cost) — designer's call on his ratify pass;\nflagged on the thread in case cost 3 was intended.",
   "artUrl": "/cards/searing-bolt.jpg"
  },
  "smash-through": {

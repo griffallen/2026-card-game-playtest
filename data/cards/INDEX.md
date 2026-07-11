@@ -16,7 +16,7 @@
 | [Blood Rush](red/blood-rush.md) | 2 | action | — |  | canon | Target unit gets +2 Power and Rush this round. |
 | [Flameblade Raider](red/flameblade-raider.md) | 2 | unit | 2/2 | rush, breakthrough 1 | canon | Rush. Breakthrough 1. |
 | [Pillage](red/pillage.md) | 2 | action | — |  | canon | Destroy target enemy upgrade. |
-| [Searing Bolt](red/searing-bolt.md) | 2 | action | — |  | canon | Deal 2 damage to any target. |
+| [Searing Bolt](red/searing-bolt.md) | 2 | action | — |  | canon | Deal 3 damage to any target. |
 | [Smash Through](red/smash-through.md) | 2 | action | — |  | canon | Target unit with Rush gains Breakthrough 2 this round. |
 | [Warcry Leader](red/warcry-leader.md) | 2 | unit | 2/3 |  | canon | Other friendly units have Rush. |
 | [Warpath](red/warpath.md) | 2 | action | — |  | canon | Your units get +1 Power this round. |

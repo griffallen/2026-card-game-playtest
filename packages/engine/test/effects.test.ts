@@ -50,15 +50,16 @@ describe('influence effects', () => {
     expect(influenceFor(s, p2)).toBe(0)                    // entering play pays nothing now
     // red spells no longer cede influence (decision 35 removed the artifact reading)
     const bolt = toHand(s, p1, 'searing-bolt')
-    const victim = put(s, p2, 'sunguard-defender', 2)
+    // Bulwark Protector (2/5 guard): survives the bolt — Searing Bolt deals 3 since issue #4
+    const victim = put(s, p2, 'bulwark-protector', 2)
     s = act(s, p1, { type: 'play', card: bolt, targets: [{ kind: 'unit', id: victim }] })
     expect(influenceFor(s, p2)).toBe(0)
-    expect(s.units[victim].damage).toBe(2)
+    expect(s.units[victim].damage).toBe(3)
     // but being ATTACKED triggers the guard's influence
     const raider = put(s, p1, 'berserker', 2)
     s = act(s, p2, { type: 'pass' })
     s = act(s, p1, { type: 'attack', attackers: [raider], target: { kind: 'unit', id: victim } })
-    expect(influenceFor(s, p2)).toBe(1)                    // Sunguard defended → +1
+    expect(influenceFor(s, p2)).toBe(1)                    // Bulwark defended → +1
   })
 
   it('influence win threshold ends the game', () => {
