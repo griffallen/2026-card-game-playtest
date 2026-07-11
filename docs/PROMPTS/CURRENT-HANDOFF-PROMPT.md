@@ -1,15 +1,15 @@
 # Current Hand-off
 
-**Phase:** **V3.0 BUILD (Blaine's order, #12) + live watch.** A **1-minute** loop checks GitHub,
-folds designer/builder activity, then **continues the build** — slices in
-`docs/DESIGN/03-BUILD-PLAN.md`. **DONE: V3-1 ✅ · V3-2 pips ✅ · V3-3 keywords ✅ · V3-4 combat
-+ sim proof ✅ · V3-5 vocabulary ✅ (attachOrphan deferred to re-churn's first upgrade) ·
-GRIFF'S FIVE REWORKS LIVE ON THE DEMO (PR #13 merged; modal Reckless, Blood Rush,
-Devastating Strike, Volcanic Slam, Unchained Rage — 7264550). 146 tests green.
-NEXT: V3-6 card re-churn (remaining ~115 cards: strip dead keywords, prison→Capture ladder,
-purple→Hidden/Sneak/Infiltrate, superlinear re-pricing, pips: lines from 06 baseline,
-attachOrphan with first upgrade) → V3-7 demo+ship.** Mobile UX + contrast hotfixes shipped (#17).
-Strict TDD; commit per slice; finish = deploy + GitHub release tag with exec summary to #12.
+**Phase:** **V3.0 SHIPPED (release v3.0.0, #12 closed) → playtest & iterate.** The 1-minute
+watch continues: check GitHub, fold designer activity. **v3.0 is LIVE and default on the demo**
+(v2.3 one checkbox away); all 120 cards churned; spec promoted (`game-rules.md` = v3.0, v2.3
+archived beside it); 149 tests green; sim evidence in `08-V3-CHURN-WORKSHEET.md`.
+Release + exec summary: https://github.com/booherbg/2026-card-game/releases/tag/v3.0.0
+**OPEN WATCH ITEMS:** guard-influence snowball under passive play (knob: defend payouts /
+per-round cap) · blocking-exhausts veto window (Griff can still flip it) · purple verdict (#5) ·
+pip tuning slash-pass · #17 mobile polish · art anchors flow (#11) · **offer Griff a ratify
+thread over the whole churn when he surfaces** · banner protocol: NO exceptions (Blaine
+enforced it on a one-liner).
 
 ## THE WATCH (what the loop iteration does)
 
