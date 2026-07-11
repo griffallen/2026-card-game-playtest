@@ -159,15 +159,26 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
     if (state.winner !== null) return
     switch (op.op) {
       case 'damage': {
-        if (op.t === 'enemyBase') { damageBase(state, other(controller), op.n, ''); break }
-        if (op.t === 'selfBase') { damageBase(state, controller, op.n, ''); break }
+        const base = op.n === 'linked' ? (ctx.linked ?? 0) : op.n   // v3: "that much" (spec §3)
+        if (op.t === 'enemyBase') { if (base > 0) damageBase(state, other(controller), base, ''); break }
+        if (op.t === 'selfBase') { if (base > 0) damageBase(state, controller, base, ''); break }
         // chosen targets may be a base ref
         if ((op.t === 'chosen0' || op.t === 'chosen1')) {
           const ref = ctx.targets?.[op.t === 'chosen0' ? 0 : 1]
-          if (ref?.kind === 'base') { damageBase(state, ref.seat, op.n, ''); break }
+          if (ref?.kind === 'base') { if (base > 0) damageBase(state, ref.seat, base, ''); break }
         }
         const u = resolveUnitTarget(ctx, op.t)
-        if (u) damageUnit(state, u, op.n, '')
+        // v3 conditional bonus (Devastating Strike): read the target's state BEFORE the hit
+        const n = u && op.bonusIfDamaged && u.damage > 0 ? base + op.bonusIfDamaged : base
+        if (u && n > 0) damageUnit(state, u, n, '')
+        break
+      }
+      case 'clearDamage': {
+        const u = resolveUnitTarget(ctx, op.t)
+        if (!u) { ctx.linked = 0; break }
+        ctx.linked = u.damage                            // v3: the amount removed becomes the linked value
+        if (u.damage > 0) log(state, u.owner, `${name(state, u.id)} is made whole (${u.damage} damage removed)`)
+        u.damage = 0
         break
       }
       case 'damageFilter': {

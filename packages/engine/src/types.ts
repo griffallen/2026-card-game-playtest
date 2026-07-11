@@ -39,7 +39,7 @@ export interface AutoPick {   // deterministic engine-chosen target(s): highest 
 }
 
 export type Op =
-  | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number }  // autoSplash: strongest other enemy unit in the attack target's zone
+  | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number | 'linked'; bonusIfDamaged?: number }  // 'linked' = the amount from the previous linking op (v3, spec §3)  // autoSplash: strongest other enemy unit in the attack target's zone
   | { op: 'damageFilter'; f: UnitFilter; n: number }
   | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number }         // chosen may be unitOrBase
   | { op: 'draw'; n: number }
@@ -54,6 +54,7 @@ export type Op =
   | { op: 'extraAction' }                                         // the same player immediately takes another action (decision 43)
   | { op: 'preventBase'; n: number }
   | { op: 'removeNegative'; t: OpTarget }
+  | { op: 'clearDamage'; t: OpTarget }                            // v3 (Blood Rush): remove ALL damage; the amount becomes the linked value
   | { op: 'capture'; t: OpTarget }                                // v3: take the enemy unit under the source unit (spec §2)
 
 export type Static =
@@ -86,6 +87,8 @@ export interface CardDef {
   pips?: Color[]
   /** v3 Sneak payload (decision 60): exhaust-activated, targets constrained to the unit's zone */
   sneak?: { targets?: TargetSpec[]; ops: Op[] }
+  /** v3 modal actions (spec §3, PR #13): the player declares one mode at cast time; each mode owns its targets+ops */
+  modes?: { label: string; targets?: TargetSpec[]; ops: Op[] }[]
   kw?: KeywordSpec[]
   targets?: TargetSpec[]     // play-time targets (upgrades: attach target is implicit and NOT listed)
   onPlay?: Op[]              // action body; unit/upgrade enter-play effects
@@ -242,7 +245,7 @@ export type GameAction =
   | { type: 'setupBank'; cards: string[]; bottom?: string[] }  // bottom: london-mulligan payback (decision 58)   // setup phase: choose starting resources
   | { type: 'resource'; card: string }       // bank phase: resource a card
   | { type: 'skipResource' }                 // bank phase: end your start step
-  | { type: 'play'; card: string; targets?: TargetRef[]; zone?: ZoneId }  // zone: v3 Infiltrate deploy choice
+  | { type: 'play'; card: string; targets?: TargetRef[]; zone?: ZoneId; mode?: number }  // zone: v3 Infiltrate; mode: v3 modal cards
   | { type: 'activate'; unit: string; targets?: TargetRef[] }             // v3 Sneak (decision 60)
   | { type: 'releaseCaptive'; unit: string }                              // v3 Capture: ready the capturer, captive returns exhausted
   | { type: 'block'; pairs: { blocker: string; onto: string }[] }         // v3 combat: defender pairs blockers (empty = let it through); pour order = pair order

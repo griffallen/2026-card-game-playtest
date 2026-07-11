@@ -91,6 +91,14 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     if (def.cost > ready) continue
     if (!pipGateSatisfied(state, seat, def)) continue
     const infiltrates = def.type === 'unit' && (def.kw ?? []).some(k => k.k === 'infiltrate')
+    if (def.modes) {  // v3 modal cards: each mode enumerates with its own targets
+      def.modes.forEach((mode, mi) => {
+        for (const targets of enumerateTargetSpecs(state, seat, mode.targets ?? [])) {
+          out.push(targets.length ? { type: 'play', card, mode: mi, targets } : { type: 'play', card, mode: mi })
+        }
+      })
+      continue
+    }
     for (const targets of enumerateTargets(state, seat, card)) {
       out.push(targets.length ? { type: 'play', card, targets } : { type: 'play', card })
       if (infiltrates) for (const z of ZONES) {
@@ -188,6 +196,35 @@ function attackTargets(state: GameState, attacker: UnitInstance): TargetRef[] {
  * Returns [[]] when the card needs no targets, [] when required targets don't exist.
  * Each slot contributes a list of choices; a choice is one-or-more refs (count-2 specs bundle pairs).
  */
+
+/** v3 modal support: enumerate target combinations for a bare spec list (no card def involved). */
+function enumerateTargetSpecs(state: GameState, seat: Seat, specs: TargetSpec[]): TargetRef[][] {
+  if (!specs.length) return [[]]
+  const slotChoices: TargetRef[][][] = []
+  for (const spec of specs) {
+    const candidates = candidatesFor(state, seat, spec)
+    const count = spec.count ?? 1
+    if (candidates.length < count) return []
+    if (count === 1) slotChoices.push(candidates.map(c => [c]))
+    else {
+      const combos: TargetRef[][] = []
+      const pick = (start: number, acc: TargetRef[]) => {
+        if (acc.length === count) { combos.push([...acc]); return }
+        for (let i = start; i < candidates.length; i++) { acc.push(candidates[i]); pick(i + 1, acc); acc.pop() }
+      }
+      pick(0, [])
+      slotChoices.push(combos)
+    }
+  }
+  let acc: TargetRef[][] = [[]]
+  for (const choices of slotChoices) {
+    const next: TargetRef[][] = []
+    for (const a of acc) for (const c of choices) next.push([...a, ...c])
+    acc = next
+  }
+  return acc
+}
+
 function enumerateTargets(state: GameState, seat: Seat, card: string): TargetRef[][] {
   const def = defOf(state, card)
   const slotChoices: TargetRef[][][] = []

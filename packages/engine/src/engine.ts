@@ -293,7 +293,12 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     return
   }
 
-  validateTargets(state, seat, def.targets ?? [], targets, def.name)
+  const mode = def.modes ? (
+    action.mode === undefined || !def.modes[action.mode]
+      ? fail('bad-mode', `${def.name} is modal — declare a mode (0-${def.modes.length - 1})`)
+      : def.modes[action.mode]
+  ) : undefined
+  validateTargets(state, seat, (mode ? mode.targets : def.targets) ?? [], targets, def.name)
   payCost(state, seat, def.cost)
   side.hand.splice(idx, 1)
 
@@ -319,8 +324,8 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     }
   } else {
     // action card
-    log(state, seat, `${side.name} plays ${def.name}`)
-    runOps({ state, controller: seat, targets, actorSeat: seat }, def.onPlay ?? [])
+    log(state, seat, `${side.name} plays ${def.name}${mode ? ` — ${mode.label}` : ''}`)
+    runOps({ state, controller: seat, targets, actorSeat: seat }, mode ? mode.ops : (def.onPlay ?? []))
     side.discard.push(action.card)
   }
 }
