@@ -127,6 +127,8 @@ export interface RulesConfig {
   emptyDrawInfluenceLoss: number
   drawPerRound: number
   firstRoundDraw: number
+  /** decision 71 (v3): false = round 1 has no start step — no ready/draw/bank, straight to the loop */
+  firstRoundStartStep: boolean
   resourcesPerRound: number
   deckMinSize: number
   maxCopies: number

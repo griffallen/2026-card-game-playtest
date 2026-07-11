@@ -15,6 +15,7 @@ describe('rules versioning (v3 plumbing)', () => {
     expect(V3_RULES.pipModel).toBe('presence')
     expect(V3_RULES.upgradesOrphan).toBe(true)     // decision 67: orphan + salvage
     expect(V3_RULES.blockingExhausts).toBe(true)   // decision 62: Guard exempt in combat code
+    expect(V3_RULES.firstRoundStartStep).toBe(false) // decision 71: round 1 has no start step
     // everything not deliberately flipped inherits the shared defaults
     expect(V3_RULES.startingLife).toBe(DEFAULT_RULES.startingLife)
     expect(V3_RULES.mulliganStyle).toBe(DEFAULT_RULES.mulliganStyle)
@@ -24,6 +25,7 @@ describe('rules versioning (v3 plumbing)', () => {
     const legacy = normalizeRules({ startingLife: 25 })   // a pre-v3 stored config
     expect(legacy.combatModel).toBe('intercept')
     expect(legacy.pipModel).toBe('none')
+    expect(legacy.firstRoundStartStep).toBe(true)         // legacy keeps its round-1 step
     expect(legacy.startingLife).toBe(25)
   })
 })

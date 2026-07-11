@@ -47,6 +47,14 @@ function runStartStepAuto(state: GameState, seat: Seat) {
 /** Begin a round: initiative's start step runs, then pauses at their bank choice. */
 export function startRound(state: GameState) {
   log(state, null, `— Round ${state.round} · ${state.sides[state.initiative].name} has the initiative —`)
+  // decision 71 (v3): round 1 has no start step — opening hand + setup resources, straight to the loop
+  if (state.round === 1 && !state.rules.firstRoundStartStep) {
+    state.phase = 'loop'
+    state.startStep = null
+    state.actorSeat = state.initiative
+    state.passStreak = 0
+    return
+  }
   runStartStepAuto(state, state.initiative)
   if (state.winner !== null) return
   state.phase = 'bank'

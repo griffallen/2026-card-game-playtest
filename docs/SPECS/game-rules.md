@@ -9,9 +9,12 @@ for A/B play. Deltas below are stated against v2.3.
 
 ## 1. Deltas from v2.3
 
-### 1.1 Setup / round structure — unchanged, plus one clarification
-Round 1 skips the ready step by construction (nothing is in play, resources were just banked);
-the rules text now says so instead of implying a phantom step.
+### 1.1 Setup / round structure — one structural change (decision 71, issue #20)
+**Round 1 has no start step at all** — no ready, no draw, no bank. Setup ends with each player
+holding their opening hand (minus the 2 banked starting resources), and round 1 opens straight
+into the action loop. The first start step (ready → draw 2 → bank up to 1) arrives with
+round 2. Reverses decision 44's "no first-round asymmetry" for v3; engine knob
+`firstRoundStartStep` (v2.3 keeps `true`). Everything else in §1.4 (v2.3) is unchanged.
 
 ### 1.2 Colored resource pips — PRESENCE MODEL *(Q1–Q3 answered; REVISED by issue #15, decision 69)*
 Cost and color are now two separate checks:

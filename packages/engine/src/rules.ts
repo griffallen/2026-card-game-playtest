@@ -12,7 +12,8 @@ export const DEFAULT_RULES: RulesConfig = {
   emptyDrawLifeLoss: 1,
   emptyDrawInfluenceLoss: 1,
   drawPerRound: 2,
-  firstRoundDraw: 2,          // decision 44: no round-1 asymmetry
+  firstRoundDraw: 2,          // decision 44: no round-1 asymmetry (v2.3; inert when the step is skipped)
+  firstRoundStartStep: true,  // decision 71 flips this off for v3: round 1 has no start step at all
   resourcesPerRound: 1,
   deckMinSize: 48,
   maxCopies: 4,
@@ -39,6 +40,7 @@ export const V3_RULES: RulesConfig = {
   combatModel: 'blockerPairing',
   pipModel: 'presence',
   upgradesOrphan: true,
+  firstRoundStartStep: false,   // decision 71: play round 1 from the opening hand + 2 setup resources
 }
 
 /** Merge a stored (possibly partial/older) config over current defaults, mapping legacy v1 keys. */
