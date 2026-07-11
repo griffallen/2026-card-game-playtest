@@ -197,6 +197,23 @@ function attackTargets(state: GameState, attacker: UnitInstance): TargetRef[] {
  * Each slot contributes a list of choices; a choice is one-or-more refs (count-2 specs bundle pairs).
  */
 
+
+/** v3: expand a multi-target spec into concrete combinations, honoring upTo (sizes 1..count)
+ *  and sameZone (all unit refs share a zone). */
+function multiCombos(state: GameState, spec: TargetSpec, candidates: TargetRef[], count: number): TargetRef[][] {
+  const sizes = spec.upTo ? Array.from({ length: count }, (_, i) => i + 1) : [count]
+  const out: TargetRef[][] = []
+  for (const size of sizes) {
+    const pick = (start: number, acc: TargetRef[]) => {
+      if (acc.length === size) { out.push([...acc]); return }
+      for (let i = start; i < candidates.length; i++) { acc.push(candidates[i]); pick(i + 1, acc); acc.pop() }
+    }
+    pick(0, [])
+  }
+  if (!spec.sameZone) return out
+  return out.filter(refs => new Set(refs.filter(r => r.kind === 'unit').map(r => state.units[r.id]?.zone)).size <= 1)
+}
+
 /** v3 modal support: enumerate target combinations for a bare spec list (no card def involved). */
 function enumerateTargetSpecs(state: GameState, seat: Seat, specs: TargetSpec[]): TargetRef[][] {
   if (!specs.length) return [[]]
@@ -204,17 +221,9 @@ function enumerateTargetSpecs(state: GameState, seat: Seat, specs: TargetSpec[])
   for (const spec of specs) {
     const candidates = candidatesFor(state, seat, spec)
     const count = spec.count ?? 1
-    if (candidates.length < count) return []
+    if (candidates.length < (spec.upTo ? 1 : count)) return []
     if (count === 1) slotChoices.push(candidates.map(c => [c]))
-    else {
-      const combos: TargetRef[][] = []
-      const pick = (start: number, acc: TargetRef[]) => {
-        if (acc.length === count) { combos.push([...acc]); return }
-        for (let i = start; i < candidates.length; i++) { acc.push(candidates[i]); pick(i + 1, acc); acc.pop() }
-      }
-      pick(0, [])
-      slotChoices.push(combos)
-    }
+    else slotChoices.push(multiCombos(state, spec, candidates, count))
   }
   let acc: TargetRef[][] = [[]]
   for (const choices of slotChoices) {
@@ -238,15 +247,11 @@ function enumerateTargets(state: GameState, seat: Seat, card: string): TargetRef
   for (const spec of def.targets ?? []) {
     const candidates = candidatesFor(state, seat, spec)
     const count = spec.count ?? 1
-    if (candidates.length < count) return []
+    if (candidates.length < (spec.upTo ? 1 : count)) return []
     if (count === 1) {
       slotChoices.push(candidates.map(c => [c]))
     } else {
-      const pairs: TargetRef[][] = []
-      for (let i = 0; i < candidates.length; i++) {
-        for (let j = i + 1; j < candidates.length; j++) pairs.push([candidates[i], candidates[j]])
-      }
-      slotChoices.push(pairs)
+      slotChoices.push(multiCombos(state, spec, candidates, count))
     }
   }
 

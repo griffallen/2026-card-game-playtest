@@ -233,8 +233,29 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'double': {
+        const targets = typeof op.t === 'string' ? [resolveUnitTarget(ctx, op.t)].filter(Boolean) as UnitInstance[] : filterUnits(ctx, op.t)
+        for (const u of targets) {
+          u.mods.push(op.rounds ? { double: true, rounds: op.rounds } : { double: true, round: true })
+          log(state, u.owner, `${name(state, u.id)}'s power is doubled${op.rounds ? ` for ${op.rounds} rounds` : ' this round'}`)
+        }
+        break
+      }
+      case 'countBuff': {
         const u = resolveUnitTarget(ctx, op.t)
-        if (u) { u.mods.push({ double: true, round: true }); log(state, u.owner, `${name(state, u.id)}'s power is doubled this round`) }
+        if (!u) break
+        let count = 0
+        for (const cand of Object.values(state.units)) {
+          if (cand.zone !== u.zone) continue
+          if (op.per.other && cand.id === u.id) continue
+          if (op.per.color && defOf(state, cand.id).color !== op.per.color) continue
+          if (op.per.side === 'friendly' && cand.owner !== controller) continue
+          if (op.per.side === 'enemy' && cand.owner === controller) continue
+          count++
+        }
+        if (count > 0) {
+          u.mods.push({ p: op.p * count, ...(op.dur === 'round' ? { round: true } : {}) })
+          log(state, u.owner, `${name(state, u.id)} gets +${op.p * count} power (${count} in the pack)`)
+        }
         break
       }
       case 'grant': {

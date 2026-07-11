@@ -100,3 +100,80 @@ describe('conditional bonus — reads the target BEFORE the hit', () => {
     expect(s.units[hurt]).toBeUndefined()                  // 2 + (2+1) = exactly 5: bonus is the kill
   })
 })
+
+// ── V3-5b: upTo/sameZone targets · countBuff · filtered multi-round double ──
+import { endRound } from '../src/round.ts'
+import { effPower } from '../src/helpers.ts'
+function endRoundForTest(s: GameState) { endRound(s, s.actorSeat) }
+const V2: CardSet = {
+  ...T,
+  slam: { slug: 'slam', name: 'slam', color: 'red', type: 'action', cost: 3, text: '',
+    targets: [{ t: 'unit', side: 'any', count: 2, upTo: true, sameZone: true }],
+    onPlay: [{ op: 'damage', t: 'chosen0', n: 3 }, { op: 'damage', t: 'chosen1', n: 3 }] },
+  packbuff: { slug: 'packbuff', name: 'packbuff', color: 'red', type: 'action', cost: 1, text: '',
+    targets: [{ t: 'unit', side: 'friendly' }],
+    onPlay: [{ op: 'countBuff', t: 'chosen0', per: { color: 'red', side: 'all', zone: 'ofTarget', other: true }, p: 1, dur: 'round' }] },
+  rage2: { slug: 'rage2', name: 'rage2', color: 'red', type: 'action', cost: 7, text: '',
+    onPlay: [{ op: 'double', t: { side: 'friendly' }, rounds: 2 }] },
+}
+
+function g2(): GameState {
+  let s = createGame({
+    seed: 32,
+    rules: { ...V3_RULES, chooseStartingResources: false },
+    cardSet: V2,
+    players: [{ name: 'Ada', deck: toyDeck() }, { name: 'Bo', deck: toyDeck() }],
+  })
+  while (s.phase === 'bank') s = applyAction(s, { type: 'skipResource' }, s.actorSeat).state
+  return s
+}
+
+describe('upTo + sameZone targets (Volcanic Slam shape)', () => {
+  it('accepts one or two same-zone targets, rejects cross-zone pairs', () => {
+    let s = g2()
+    const me = s.actorSeat, them = (1 - me) as Seat
+    const x = put(s, them, 'wall', 1)   // 0/5: survives 3
+    const y = put(s, them, 'wall', 1)
+    const z = put(s, them, 'wall', 2)
+    const c1 = give(s, me, 'slam')
+    expect(() => applyAction(s, { type: 'play', card: c1, targets: [{ kind: 'unit', id: x }, { kind: 'unit', id: z }] }, me))
+      .toThrowError(/zone/i)
+    s = applyAction(s, { type: 'play', card: c1, targets: [{ kind: 'unit', id: x }, { kind: 'unit', id: y }] }, me).state
+    expect(s.units[x].damage).toBe(3)
+    expect(s.units[y].damage).toBe(3)
+    s.actorSeat = me
+    const c2 = give(s, me, 'slam')
+    s = applyAction(s, { type: 'play', card: c2, targets: [{ kind: 'unit', id: z }] }, me).state   // "up to": one is fine
+    expect(s.units[z].damage).toBe(3)
+  })
+})
+
+describe('countBuff (Reckless mode-B shape)', () => {
+  it('+1 per OTHER red unit in the target zone, both sides counted', () => {
+    let s = g2()
+    const me = s.actorSeat, them = (1 - me) as Seat
+    const target = put(s, me, 'soldier', 1)   // red 2/2
+    put(s, me, 'brute', 1)                    // other red, mine
+    put(s, them, 'pawn', 1)                   // other red, theirs — counts too
+    put(s, them, 'pawn', 2)                   // different zone — no
+    const card = give(s, me, 'packbuff')
+    s = applyAction(s, { type: 'play', card, targets: [{ kind: 'unit', id: target }] }, me).state
+    expect(effPower(s, s.units[target])).toBe(4)   // 2 + 2 others in zone
+  })
+})
+
+describe('filtered, multi-round double (Unchained Rage shape)', () => {
+  it('doubles ALL your units and survives exactly two round-ends', () => {
+    let s = g2()
+    const me = s.actorSeat
+    const u1 = put(s, me, 'brute', 1)     // 4 → 8
+    const u2 = put(s, me, 'soldier', 2)   // 2 → 4
+    const card = give(s, me, 'rage2')
+    for (let i = 0; i < 4; i++) { const r = `v${9900 + i}`; s.cardOf[r] = 'pawn'; s.sides[me].resources.push({ id: r, exhausted: false }) }
+    s = applyAction(s, { type: 'play', card }, me).state
+    expect(effPower(s, s.units[u1])).toBe(8)
+    expect(effPower(s, s.units[u2])).toBe(4)
+    endRoundForTest(s); expect(effPower(s, s.units[u1])).toBe(8)   // round 1 ends: still raging
+    endRoundForTest(s); expect(effPower(s, s.units[u1])).toBe(4)   // round 2 ends: spent
+  })
+})

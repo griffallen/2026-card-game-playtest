@@ -100,7 +100,11 @@ export function endRound(state: GameState, actorSeat: Seat) {
       u.overextendedBy = 0
     }
   }
-  for (const u of unitsOf(state)) u.mods = u.mods.filter(m => !m.round)
+  for (const u of unitsOf(state)) {
+    u.mods = u.mods.filter(m => !m.round)
+    for (const m of u.mods) if (m.rounds !== undefined) m.rounds--   // v3 multi-round mods tick at round end
+    u.mods = u.mods.filter(m => m.rounds === undefined || m.rounds > 0)
+  }
   state.preventBase = [0, 0]
   stateBasedCleanup(state, actorSeat)
   if (state.winner !== null) return

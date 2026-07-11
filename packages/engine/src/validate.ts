@@ -1,7 +1,7 @@
 import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 
 const KEYWORDS = new Set(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak'])
-const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'removeNegative', 'capture', 'clearDamage'])
+const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'removeNegative', 'capture', 'clearDamage', 'countBuff'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
 const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
@@ -111,6 +111,7 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
     case 'damage': checkTargetRef(op.t); if (op.n !== 'linked' && !isInt(op.n, 0)) err('bad n'); if (op.bonusIfDamaged !== undefined && !isInt(op.bonusIfDamaged, 1, 10)) err('bad bonusIfDamaged'); break
     case 'capture': checkTargetRef(op.t); break
     case 'clearDamage': checkTargetRef(op.t); break
+    case 'countBuff': checkTargetRef(op.t); if (!isInt(op.p, 1, 10)) err('bad countBuff p'); break
     case 'damageFilter': checkTargetRef(op.f); if (!isInt(op.n, 0)) err('bad n'); break
     case 'heal': if (op.t !== 'selfBase') checkTargetRef(op.t); if (!isInt(op.n, 0)) err('bad n'); break
     case 'draw': if (!isInt(op.n, 1, 10)) err('bad draw count'); break

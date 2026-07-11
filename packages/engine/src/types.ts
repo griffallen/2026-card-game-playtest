@@ -46,7 +46,7 @@ export type Op =
   | { op: 'influence'; n: number }                                // + toward controller
   | { op: 'imprison'; t: OpTarget | 'auto'; f?: UnitFilter; auto?: AutoPick }
   | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'round' | 'perm'; cond?: Cond }
-  | { op: 'double'; t: OpTarget }
+  | { op: 'double'; t: OpTarget | UnitFilter; rounds?: number }  // v3 (Unchained Rage): filter-wide, multi-round
   | { op: 'grant'; t: OpTarget | UnitFilter; kw: KeywordSpec; dur: 'round' | 'perm' }
   | { op: 'destroy'; t: OpTarget; mustBeDamaged?: boolean }
   | { op: 'destroyUpgrade' }                                      // target: chosen upgrade
@@ -54,7 +54,8 @@ export type Op =
   | { op: 'extraAction' }                                         // the same player immediately takes another action (decision 43)
   | { op: 'preventBase'; n: number }
   | { op: 'removeNegative'; t: OpTarget }
-  | { op: 'clearDamage'; t: OpTarget }                            // v3 (Blood Rush): remove ALL damage; the amount becomes the linked value
+  | { op: 'clearDamage'; t: OpTarget }
+  | { op: 'countBuff'; t: OpTarget; per: { color?: Color; side: 'all' | 'friendly' | 'enemy'; zone: 'ofTarget'; other?: boolean }; p: number; dur: 'round' | 'perm' }  // v3 (Reckless mode B): +p per matching unit                            // v3 (Blood Rush): remove ALL damage; the amount becomes the linked value
   | { op: 'capture'; t: OpTarget }                                // v3: take the enemy unit under the source unit (spec §2)
 
 export type Static =
@@ -71,6 +72,8 @@ export interface TargetSpec {
   withKw?: KeywordName
   mustBeDamaged?: boolean
   count?: number            // distinct targets sharing this spec (Collateral Damage: 2)
+  upTo?: boolean            // v3 (Volcanic Slam): 1..count targets acceptable instead of exactly count
+  sameZone?: boolean        // v3 (Volcanic Slam): all unit targets of this spec share one zone
 }
 
 // ─── Card definitions ────────────────────────────────────────────────────────
@@ -160,6 +163,7 @@ export interface Mod {
   kw?: KeywordSpec
   double?: boolean
   round?: boolean            // expires at end of round
+  rounds?: number            // v3: expires after this many round-ends (2 = survives one, dies at the second)
   cond?: Cond                // active only while condition holds (checked against owner)
 }
 

@@ -224,13 +224,22 @@ function payCost(state: GameState, seat: Seat, cost: number) {
 }
 
 function validateTargets(state: GameState, seat: Seat, specs: TargetSpec[], targets: TargetRef[], cardName: string) {
-  const expected = specs.reduce((s, spec) => s + (spec.count ?? 1), 0)
-  if (targets.length !== expected) fail('bad-targets', `${cardName} needs ${expected} target(s)`)
+  const maxExpected = specs.reduce((s, spec) => s + (spec.count ?? 1), 0)
+  const minExpected = specs.reduce((s, spec) => s + (spec.upTo ? 1 : (spec.count ?? 1)), 0)
+  if (targets.length < minExpected || targets.length > maxExpected)
+    fail('bad-targets', `${cardName} needs ${minExpected === maxExpected ? maxExpected : `${minExpected}-${maxExpected}`} target(s)`)
+  // v3 sameZone (Volcanic Slam): every unit target of a sameZone spec shares one zone
+  for (const spec of specs) {
+    if (!spec.sameZone) continue
+    const zones = new Set(targets.filter(t => t.kind === 'unit').map(t => state.units[t.id]?.zone))
+    if (zones.size > 1) fail('bad-targets', `${cardName}'s targets must share a zone`)
+  }
   let i = 0
   const seen = new Set<string>()
   for (const spec of specs) {
     for (let c = 0; c < (spec.count ?? 1); c++, i++) {
       const ref = targets[i]
+      if (!ref && spec.upTo) continue   // v3: unfilled upTo slots are fine
       if (spec.t === 'zone') {
         if (ref.kind !== 'zone') fail('bad-targets', 'expected a zone target')
         continue
