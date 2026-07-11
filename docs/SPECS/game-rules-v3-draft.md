@@ -84,6 +84,11 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
   ability payloads (reuse the existing op vocabulary as the ability body).
 - `thresholdMod`/`oppThreshold` unaffected. Auto-target defaults (decision 51) carry over to any
   capture/sneak auto-picks.
+- **Modal actions** ("choose one —"): the mode is declared at cast time alongside targets
+  (decision-24-compatible — no mid-resolution pause). First customer: Griff's Reckless Charge
+  rework (PR #13, held for this).
+- **Count-based pump op**: +N per unit matching a predicate (color/side/zone) — PR #13 needs
+  "+1 attack per other red unit in the same zone, either side's".
 
 ## 4. Migration sketch (for the build plan)
 1. Decisions 59–62 cut (done, 2026-07-10) → finalize this file → rename over `game-rules.md`
