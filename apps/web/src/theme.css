@@ -11,7 +11,7 @@
   --color-crimson: #b23a2c;
   --color-sun: #d9a91f;
   --color-body: #e8ddc6;
-  --color-dim: #b4a689;   /* was #9a8c72 — lifted for low-brightness phones (issue #17); ~7.5:1 on ink */
+  --color-dim: #c2b49a;   /* twice-lifted for low-brightness phones (issue #17); ~9:1 on ink */
   --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
 }
 

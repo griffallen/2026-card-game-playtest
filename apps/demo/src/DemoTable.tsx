@@ -391,7 +391,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       {setupPicks.length > 0 && (
         <button className="btn !py-1 text-xs" onClick={() => { setSetupPicks([]); setSetupBottoms([]) }}>Clear</button>
       )}
-      <span className="text-[11px] text-dim">
+      <span className="text-[12.5px] text-dim">
         {(() => {
           const owed = state.rules.mulliganStyle === 'london' ? state.mulligans[seat] * state.rules.mulliganPenalty : 0
           return owed > 0 && setupPicks.length === setupN
@@ -408,7 +408,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         <b>{pendingAttack ? refName(pendingAttack.target) : 'you'}</b>. Throw a ready unit in the way, or let the blow land.
       </p>
       <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-        <span className="text-[11px] text-dim">Tap a glowing unit to intercept{interceptorIds.length ? '' : ' — nothing eligible'}.</span>
+        <span className="text-[12.5px] text-dim">Tap a glowing unit to intercept{interceptorIds.length ? '' : ' — nothing eligible'}.</span>
         <button className="btn !py-0.5 text-xs" onClick={() => apply({ type: 'declineIntercept' }, seat)}>Let it through</button>
       </div>
     </div>
@@ -440,7 +440,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             </button>
           )}
           {whyUnplayable(selection.id) && (
-            <span className="w-full text-[11px] text-[#e5a99f]">Can't play: {whyUnplayable(selection.id)}.</span>
+            <span className="w-full text-[12.5px] text-[#e5a99f]">Can't play: {whyUnplayable(selection.id)}.</span>
           )}
           <button className="btn !py-1 text-xs" onClick={() => setInspect({ kind: 'card', slug: state.cardOf[selection.id] })}>ⓘ details</button>
           <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel</button>
@@ -475,7 +475,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       {selection?.kind === 'targeting' && targetingCard && (
         <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
           <span>Choose {selection.collected.length > 0 ? 'the next' : 'a'} target for <b>{targetingCard.name}</b>…</span>
-          <button className="btn !px-2 !py-0.5 text-[10px]" onClick={() => setSelection(null)}>cancel</button>
+          <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
         </div>
       )}
     </>
@@ -622,9 +622,9 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
 
         <div className="flex min-h-0 flex-col gap-2 border-t hairline p-2 lg:border-l lg:border-t-0">
           <div className="panel p-3">
-            <div className="text-[10px] uppercase tracking-widest text-dim">Round {view.round} — {names[view.actorSeat]}'s turn</div>
+            <div className="text-[11.5px] uppercase tracking-widest text-dim">Round {view.round} — {names[view.actorSeat]}'s turn</div>
             <div className={`mt-1 font-display text-parchment ${myWindow && !skipToMyWindow ? 'pulse-soft text-goldbright' : ''}`}>{statusLine}</div>
-            {hints.map((h, i) => <p key={i} className="mt-1.5 text-[11px] leading-relaxed text-dim">{h}</p>)}
+            {hints.map((h, i) => <p key={i} className="mt-1.5 text-[12.5px] leading-relaxed text-dim">{h}</p>)}
             {selectionControls && <div className="mt-2 border-t hairline pt-2 max-lg:hidden">{selectionControls}</div>}
             <div className="mt-2 flex flex-wrap gap-1.5">
               {config.mode === 'vs-ai' && myWindow && !isIntercept && !view.outOfRound[seat] && (
@@ -666,12 +666,12 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                     <option value="normal">normal</option>
                     <option value="fast">fast</option>
                   </select>
-                  <span className="text-[10px] text-dim">action {history.length}</span>
+                  <span className="text-[11.5px] text-dim">action {history.length}</span>
                 </div>
-                <p className="mt-1.5 text-[10px] text-dim">space = pause · ←/→ = step while paused</p>
+                <p className="mt-1.5 text-[11.5px] text-dim">space = pause · ←/→ = step while paused</p>
               </div>
             )}
-            <p className="mt-2 border-t hairline pt-1.5 text-[10px] text-dim">tip: right-click or long-press any card or unit to inspect it — a plain tap selects/targets. ♥ life, ⬢ resources, ✕ discard open on tap.</p>
+            <p className="mt-2 border-t hairline pt-1.5 text-[11.5px] text-dim">tip: right-click or long-press any card or unit to inspect it — a plain tap selects/targets. ♥ life, ⬢ resources, ✕ discard open on tap.</p>
           </div>
 
           <InfluenceTrack
@@ -683,7 +683,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           />
 
           <div className="panel flex min-h-0 flex-1 flex-col p-0 max-lg:min-h-[200px]">
-            <div className="border-b hairline px-3 py-1.5 text-[10px] uppercase tracking-widest text-dim">Chronicle</div>
+            <div className="border-b hairline px-3 py-1.5 text-[11.5px] uppercase tracking-widest text-dim">Chronicle</div>
             <div ref={logRef} className="min-h-0 flex-1 overflow-y-auto px-3 py-2 text-[11.5px] leading-relaxed max-lg:max-h-[240px]">
               {view.log.map((l, i) => (
                 <div key={i} className={l.msg.startsWith('—') ? 'mt-1.5 font-display text-goldbright/90' : 'text-body/85'}>{l.msg}</div>
@@ -790,7 +790,7 @@ function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, 
       className={`panel flex items-center gap-3 px-3 py-1.5 ${baseGlow ? 'glow-attack cursor-pointer' : ''}`}>
       <span className="min-w-0 truncate font-display font-semibold text-parchment">{name}</span>
       {hasInitiative && <span className="text-xs text-goldbright" title="holds the initiative">⚑</span>}
-      {outOfRound && <span className="rounded bg-goldbright/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-goldbright/90" title="claimed the initiative — acts first next round">claimed — done this round</span>}
+      {outOfRound && <span className="rounded bg-goldbright/15 px-1.5 py-0.5 text-[11.5px] uppercase tracking-wider text-goldbright/90" title="claimed the initiative — acts first next round">claimed — done this round</span>}
       <button
         className={`rounded px-1 font-display text-xl font-bold hover:bg-raised ${lifeFlash || (life <= 5 ? 'text-[#e5735f]' : 'text-parchment')}`}
         title="This is the base — tap for details"
@@ -807,7 +807,7 @@ function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, 
           onClick={e => { e.stopPropagation(); onPile('discard') }}>
           ✕ {discardCount}
         </button>
-        {baseGlow && <span className="text-[10px] uppercase tracking-widest text-[#e5735f]">strike the base!</span>}
+        {baseGlow && <span className="text-[11.5px] uppercase tracking-widest text-[#e5735f]">strike the base!</span>}
       </span>
     </div>
   )
