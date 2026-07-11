@@ -3,9 +3,12 @@
 **Phase:** **V3.0 BUILD (Blaine's order, #12) + live watch.** A **1-minute** loop checks GitHub,
 folds designer/builder activity, then **continues the build** — slices in
 `docs/DESIGN/03-BUILD-PLAN.md`. **DONE: V3-1 ✅ · V3-2 pips ✅ · V3-3 keywords ✅ · V3-4 combat
-core ✅ (851c3b8; engine ruling folded: declared target may self-block). 137 tests green.
-NEXT: V3-4 tail (legal enumeration for block/activate/release/infiltrate + v3 sim coverage) →
-V3-5 vocabulary → V3-6 card re-churn → V3-7 demo+ship.** Mobile UX hotfix deployed (#17).
++ sim proof ✅ · V3-5 vocabulary ✅ (attachOrphan deferred to re-churn's first upgrade) ·
+GRIFF'S FIVE REWORKS LIVE ON THE DEMO (PR #13 merged; modal Reckless, Blood Rush,
+Devastating Strike, Volcanic Slam, Unchained Rage — 7264550). 146 tests green.
+NEXT: V3-6 card re-churn (remaining ~115 cards: strip dead keywords, prison→Capture ladder,
+purple→Hidden/Sneak/Infiltrate, superlinear re-pricing, pips: lines from 06 baseline,
+attachOrphan with first upgrade) → V3-7 demo+ship.** Mobile UX + contrast hotfixes shipped (#17).
 Strict TDD; commit per slice; finish = deploy + GitHub release tag with exec summary to #12.
 
 ## THE WATCH (what the loop iteration does)
