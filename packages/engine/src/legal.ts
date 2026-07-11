@@ -135,6 +135,17 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
       }
     }
   }
+  // v3 (decision 67): salvage orphaned upgrades in reach
+  const readyRes = state.sides[seat].resources.filter(r => !r.exhausted).length
+  for (const up of Object.values(state.upgrades)) {
+    if (up.attachedTo !== null || up.orphanedIn === undefined) continue
+    const def = defOf(state, up.id)
+    if (def.cost > readyRes || !pipGateSatisfied(state, seat, def)) continue
+    for (const u of unitsInZone(state, up.orphanedIn, seat)) {
+      out.push({ type: 'attachOrphan', upgrade: up.id, unit: u.id })
+    }
+  }
+
   // v3 Capture: release a held captive (ready the capturer)
   for (const c of Object.values(state.captives)) {
     const holder = state.units[c.by]

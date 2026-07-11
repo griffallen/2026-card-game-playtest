@@ -56,7 +56,9 @@ export type Op =
   | { op: 'removeNegative'; t: OpTarget }
   | { op: 'clearDamage'; t: OpTarget }
   | { op: 'countBuff'; t: OpTarget; per: { color?: Color; side: 'all' | 'friendly' | 'enemy'; zone: 'ofTarget'; other?: boolean }; p: number; dur: 'round' | 'perm' }  // v3 (Reckless mode B): +p per matching unit                            // v3 (Blood Rush): remove ALL damage; the amount becomes the linked value
-  | { op: 'capture'; t: OpTarget }                                // v3: take the enemy unit under the source unit (spec §2)
+  | { op: 'capture'; t: OpTarget; by?: 'chosen0' }                // v3: take the enemy unit under the source unit — or under a chosen warden (yellow actions)
+  | { op: 'exhaust'; t: OpTarget | UnitFilter }                   // v3 yellow: order a unit to stand down
+  | { op: 'freeCaptives' }                                        // v3 yellow: your captured units return, exhausted
 
 export type Static =
   | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; armor?: number; kw?: KeywordSpec; cond?: Cond }
@@ -190,7 +192,8 @@ export interface UpgradeInstance {
   id: string
   slug: string
   owner: Seat
-  attachedTo: string
+  attachedTo: string | null   // null = orphaned in a zone (v3, decision 67)
+  orphanedIn?: ZoneId
 }
 
 export interface SideState {
@@ -253,6 +256,7 @@ export type GameAction =
   | { type: 'activate'; unit: string; targets?: TargetRef[] }             // v3 Sneak (decision 60)
   | { type: 'releaseCaptive'; unit: string }                              // v3 Capture: ready the capturer, captive returns exhausted
   | { type: 'block'; pairs: { blocker: string; onto: string }[] }         // v3 combat: defender pairs blockers (empty = let it through); pour order = pair order
+  | { type: 'attachOrphan'; upgrade: string; unit: string }               // v3 (decision 67): salvage an orphaned upgrade at full cost+pips
   | { type: 'attack'; attackers: string[]; target: TargetRef; overextend?: string[] } // decision 42: 1+ attackers, one zone; overextend: subset taking the gamble
   | { type: 'move'; unit: string; to: ZoneId }
   | { type: 'claimInitiative' }              // decision 40: take the token, leave the round

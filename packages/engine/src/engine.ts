@@ -167,6 +167,7 @@ function applyLoopPhase(state: GameState, action: GameAction, seat: Seat) {
     case 'play': playCard(state, action, seat); break
     case 'activate': activateSneak(state, action, seat); break
     case 'releaseCaptive': releaseCaptive(state, action.unit, seat); break
+    case 'attachOrphan': attachOrphan(state, action, seat); break
     case 'move': moveUnit(state, action.unit, action.to, seat); break
     case 'attack': attackDeclare(state, action, seat); return // declare→intercept/resolve advances the window itself
     default: fail('bad-phase', `${(action as GameAction).type} is not a loop action`)
@@ -213,6 +214,23 @@ function releaseCaptive(state: GameState, unitId: string, seat: Seat) {
     delete state.captives[cid]
     log(state, seat, `${defOf(state, cid).name} is released, dazed`)
   }
+}
+
+/** v3 (decision 67): salvage an orphaned upgrade onto your unit in its zone — full cost, pips included. */
+function attachOrphan(state: GameState, action: Extract<GameAction, { type: 'attachOrphan' }>, seat: Seat) {
+  const up = state.upgrades[action.upgrade] ?? fail('no-upgrade', 'no such upgrade')
+  if (up.attachedTo !== null || up.orphanedIn === undefined) fail('not-orphaned', 'that upgrade is not lying free')
+  const unit = state.units[action.unit] ?? fail('no-unit', 'no such unit')
+  if (unit.owner !== seat) fail('not-yours', 'attach to your own unit')
+  if (unit.zone !== up.orphanedIn) fail('bad-zone', 'salvage happens where it fell')
+  const def = defOf(state, up.id)
+  if (!pipGateSatisfied(state, seat, def)) fail('pip-gate', `${def.name} needs banked color sources for its pips (decision 69)`)
+  payCost(state, seat, def.cost)
+  up.owner = seat
+  up.attachedTo = unit.id
+  delete up.orphanedIn
+  unit.upgrades.push(up.id)
+  log(state, seat, `${state.sides[seat].name} salvages ${def.name} onto ${defOf(state, unit.id).name}`)
 }
 
 // ─── Playing cards ───────────────────────────────────────────────────────────

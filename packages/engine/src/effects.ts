@@ -173,6 +173,24 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         if (u && n > 0) damageUnit(state, u, n, '')
         break
       }
+      case 'exhaust': {
+        const targets = typeof op.t === 'string' ? [resolveUnitTarget(ctx, op.t)].filter(Boolean) as UnitInstance[] : filterUnits(ctx, op.t)
+        for (const u of targets) { u.exhausted = true; log(state, u.owner, `${name(state, u.id)} is ordered down`) }
+        break
+      }
+      case 'freeCaptives': {
+        for (const [cid, c] of Object.entries(state.captives)) {
+          if (c.unit.owner !== controller) continue
+          const holder = state.units[c.by]
+          c.unit.zone = holder ? holder.zone : c.unit.zone
+          c.unit.exhausted = true
+          c.unit.enteredRound = state.round
+          state.units[cid] = c.unit
+          delete state.captives[cid]
+          log(state, controller, `${name(state, cid)} is freed, dazed`)
+        }
+        break
+      }
       case 'clearDamage': {
         const u = resolveUnitTarget(ctx, op.t)
         if (!u) { ctx.linked = 0; break }
@@ -314,7 +332,9 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
       case 'capture': {
         const t = resolveUnitTarget(ctx, op.t)
         if (!t) break
-        const srcU = ctx.sourceUnit ? state.units[ctx.sourceUnit] : undefined
+        const srcU = op.by === 'chosen0'
+          ? (ctx.targets?.[0]?.kind === 'unit' ? state.units[ctx.targets[0].id] : undefined)
+          : ctx.sourceUnit ? state.units[ctx.sourceUnit] : undefined
         if (!srcU) break
         // v3 Capture: out of play, under the capturer, upgrades ride along
         delete state.units[t.id]
@@ -341,7 +361,12 @@ export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
   }
   for (const upId of unit.upgrades) {
     const up = state.upgrades[upId]
-    if (up) { state.sides[up.owner].discard.push(upId); delete state.upgrades[upId] }
+    if (!up) continue
+    if (state.rules.upgradesOrphan) {           // v3 (decision 67): the fallen's gear stays on the field
+      up.attachedTo = null
+      up.orphanedIn = unit.zone
+      log(state, up.owner, `${name(state, upId)} lies where ${name(state, unit.id)} fell`)
+    } else { state.sides[up.owner].discard.push(upId); delete state.upgrades[upId] }
   }
   unit.upgrades = []
   delete state.units[unit.id]

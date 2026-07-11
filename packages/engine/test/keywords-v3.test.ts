@@ -172,3 +172,87 @@ describe('Capture — the captive lifecycle (decisions 61, spec §2)', () => {
     expect(s2.units[victim].exhausted).toBe(true)
   })
 })
+
+// ── V3-6 engine tail: exhaust op · freeCaptives · warden capture · attachOrphan (decision 67) ──
+const K3: CardSet = {
+  ...T,
+  warrant: { slug: 'warrant', name: 'warrant', color: 'yellow', type: 'action', cost: 1, text: '',
+    targets: [{ t: 'unit', side: 'friendly' }, { t: 'unit', side: 'enemy' }],
+    onPlay: [{ op: 'capture', t: 'chosen1', by: 'chosen0' }] },
+  lullaby: { slug: 'lullaby', name: 'lullaby', color: 'yellow', type: 'action', cost: 2, text: '',
+    targets: [{ t: 'unit', side: 'enemy' }], onPlay: [{ op: 'exhaust', t: 'chosen0' }] },
+  jailbreak: { slug: 'jailbreak', name: 'jailbreak', color: 'yellow', type: 'action', cost: 3, text: '',
+    onPlay: [{ op: 'freeCaptives' }] },
+  charm: { slug: 'charm', name: 'charm', color: 'yellow', type: 'upgrade', cost: 2, text: '',
+    statics: [{ s: 'aura', scope: 'attached', armor: 1 }] },
+}
+
+function v3game3(): GameState {
+  let s = createGame({
+    seed: 13,
+    rules: { ...V3_RULES, chooseStartingResources: false },
+    cardSet: K3,
+    players: [{ name: 'Ada', deck: toyDeck() }, { name: 'Bo', deck: toyDeck() }],
+  })
+  while (s.phase === 'bank') s = applyAction(s, { type: 'skipResource' }, s.actorSeat).state
+  return s
+}
+function give3(s: GameState, seat: 0 | 1, slug: string): string {
+  const id = `q${m++}`
+  s.cardOf[id] = slug; s.sides[seat].hand.push(id)
+  for (let i = 0; i < 4; i++) { const r = `q${m++}`; s.cardOf[r] = 'pawn'; s.sides[seat].resources.push({ id: r, exhausted: false }) }
+  return id
+}
+
+describe('yellow-conversion vocabulary (V3-6)', () => {
+  it('exhaust op puts a unit to sleep; warden capture routes through chosen0', () => {
+    let s = v3game3()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const sleepy = put(s, them, 'brute', 1)
+    const c1 = give3(s, me, 'lullaby')
+    s = applyAction(s, { type: 'play', card: c1, targets: [{ kind: 'unit', id: sleepy }] }, me).state
+    expect(s.units[sleepy].exhausted).toBe(true)
+    s.actorSeat = me
+    const warden = put(s, me, 'guardian', 1)
+    const victim = put(s, them, 'soldier', 2)
+    const c2 = give3(s, me, 'warrant')
+    s = applyAction(s, { type: 'play', card: c2, targets: [{ kind: 'unit', id: warden }, { kind: 'unit', id: victim }] }, me).state
+    expect(s.captives[victim]?.by).toBe(warden)
+  })
+
+  it('freeCaptives returns YOUR captured units, exhausted', () => {
+    let s = v3game3()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const jailer = put(s, them, 'guardian', 1)
+    const mine = put(s, me, 'soldier', 1)
+    delete s.units[mine]
+    s.captives[mine] = { unit: { ...s.units[jailer], id: mine, slug: 'soldier', owner: me, zone: 1, damage: 0, exhausted: false } as never, by: jailer }
+    s.cardOf[mine] = 'soldier'
+    const card = give3(s, me, 'jailbreak')
+    s = applyAction(s, { type: 'play', card }, me).state
+    expect(s.captives[mine]).toBeUndefined()
+    expect(s.units[mine].exhausted).toBe(true)
+  })
+
+  it('attachOrphan: dead wearer orphans the upgrade; either side salvages at full cost (decision 67)', () => {
+    let s = v3game3()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const wearer = put(s, them, 'soldier', 1)
+    const up = `q${m++}`
+    s.cardOf[up] = 'charm'
+    s.upgrades[up] = { id: up, slug: 'charm', owner: them, attachedTo: wearer }
+    s.units[wearer].upgrades.push(up)
+    destroyUnit(s, s.units[wearer], 'slain')
+    expect(s.upgrades[up].attachedTo).toBeNull()          // orphaned, not discarded
+    expect(s.upgrades[up].orphanedIn).toBe(1)
+    // the OTHER side salvages it onto their own unit in that zone, paying cost 2
+    const scav = put(s, me, 'brute', 1)
+    s.actorSeat = me
+    for (let i = 0; i < 2; i++) { const r = `q${m++}`; s.cardOf[r] = 'pawn'; s.sides[me].resources.push({ id: r, exhausted: false }) }
+    const before = s.sides[me].resources.filter(r => !r.exhausted).length
+    s = applyAction(s, { type: 'attachOrphan', upgrade: up, unit: scav }, me).state
+    expect(s.upgrades[up].attachedTo).toBe(scav)
+    expect(s.upgrades[up].owner).toBe(me)                 // the sword changes hands
+    expect(before - s.sides[me].resources.filter(r => !r.exhausted).length).toBe(2)
+  })
+})
