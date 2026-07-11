@@ -1,7 +1,7 @@
 ---
 name: Reckless Charge
 type: action
-cost: 1
+cost: 0
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"grant","t":"chosen0","kw":{"k":"rush"},"dur":"round"}]}
