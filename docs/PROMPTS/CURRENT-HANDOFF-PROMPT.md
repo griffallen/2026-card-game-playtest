@@ -12,7 +12,9 @@ loop checks the repo; this file is the fresh context's whole briefing.
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
 3. Comment-count ledger as of 2026-07-11 ~00:30 (issue:comments, x = closed):
-   **12:5 · 11:5 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:7 · 3:1x · 2:2x · 1:5x.**
+   **12:5 · 11:5 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:9 · 3:1x · 2:2x · 1:5x.**
+   Decision 68 folded (superlinear cost curves; session-006 burn grammar retired — re-churn
+   re-prices red on a convex curve).
    Decision 67 folded (upgrade salvage, v3 §1.5). Scar/Overextend A-or-B still unanswered
    (re-nudged on #12).
    **⚠ lesson from tonight: Griff double-comments within seconds — after reading "the newest

@@ -17,6 +17,13 @@ card — designs against. Wording below preserves the designer's framing.
 | **BLUE** — Machines, Intelligence, Engineering | Control via systems | Controls through structure and repetition; doesn't stop everything — makes everything *inefficient* for the opponent. | Engine building; **incremental Influence gain**; out-valuing over time |
 | **GREEN** — Nature, Growth | Midrange; a little of everything | The anchor: builds a board, controls space, wins by becoming overwhelming. Balanced, board-centric inevitability. | Strong units and zone presence; stabilizes vs aggro, pressures control |
 
+## Costing principle (decision 68, issue #4)
+
+**Rates scale superlinearly with cost** — never 1-for-1 linear, never exponential. High-cost
+cards (5–7) must "do a lot": the premium compensates for card economy (one card played is one
+card spent) and is bought twice under pips (more resources *and* more color commitment). The
+session-006 linear burn grammar is superseded. Exact curves are re-churn + playtest work.
+
 ## Implications already on the record
 
 - **Influence mapping (decision 63, #6):** red and yellow are the least influence-interactive;

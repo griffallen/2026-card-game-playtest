@@ -104,6 +104,8 @@ Numbered, in the order they were made. Format: decision — reason.
 
 67. ✅ **Upgrades orphan on death and are salvageable by either side** (v3; issue #12). When the wearer dies its upgrades stay in that zone, orphaned; as a turn action any player may attach one to a unit they control in that zone by paying the upgrade's **full cost including pips** — can't pay, can't attach. Replaces v2.3's die-with-the-wearer behavior. — Upgrades become contested battlefield objects instead of sunk costs, and the pip payment keeps salvage inside the color economy.
 
+68. ✅ **Cost curves scale superlinearly** (issue #4): the designer explicitly rejects linear rates ("1-cost = 1 damage, 2-cost = 2 damage is what I DON'T want") — not exponential either, but 5/6/7-cost cards "should do a lot." This **supersedes the session-006 burn grammar** (face burn = cost, unit burn = cost+1 — linear by construction); Searing Bolt at 3-for-2 was its first designer override, this is its obituary. The v3 re-churn prices on a convex curve — exact rates are re-churn + playtest work, and the pip system compounds it (big cards also carry more pips, so the premium is bought with commitment, not just resources). — Card economy 101: playing a card is itself a cost, so big cards must over-deliver per resource or nobody ever banks up to them.
+
 ## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
 
 - **Red burn grammar:** unit-only burn = cost+1 damage (Devastating Strike became unit-only); face-capable burn = cost (Raging Inferno 5→6 dmg; Searing Bolt/Volcanic Slam/Rupture already conformed). Burn the Frontline 7-for-4 → 6-for-6 one-zone (the wall-breaker; friendly fire stays as red's visible cost).
