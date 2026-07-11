@@ -12,7 +12,12 @@ loop checks the repo; this file is the fresh context's whole briefing.
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
 3. Comment-count ledger as of 2026-07-11 ~00:30 (issue:comments, x = closed):
-   **15:1 · 12:6 · 11:6 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:11 · 3:1x · 2:2x · 1:5x.**
+   **16:1 · 15:1 · 12:8 · 11:7x · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:11 · 3:1x · 2:2x · 1:5x.**
+   **DECISION 70 (#12, "reading A"): Scar caps at remaining health — min(damage, health−damage).
+   THAT WAS THE LAST DESIGN GATE. The v3 spec has zero holes; the build is clear.**
+   #11 closed (Griff supplies art post-redesign, agent cuts). #16 = Blaine asks about a separate
+   Chronicler GitHub identity — answered: needs a machine account + PAT from Blaine
+   (`GH_TOKEN_CHRONICLER`); agent takes over from there.
    **DECISION 69 (#15): pips are now a PRESENCE GATE, not a payment** — exhaust any `cost`
    resources; bank must CONTAIN ≥ pip-count providing cards per color; banked cards provide 1
    presence per color they carry (never stacking). Spec §1.2 rewritten. Echoed with a worked

@@ -108,6 +108,8 @@ Numbered, in the order they were made. Format: decision — reason.
 
 69. ✅ **Pips are a presence requirement, not a payment** (issue #15, revising the #9 Q1–Q2 model before it was ever built). Playing a card: exhaust any `cost` resources (color-blind), AND your resource zone must contain, per color, at least as many providing cards as the card has pips of that color. A banked card provides 1 presence of each color in its own pips — multi-color cards provide all their colors at once, same-color pips never stack (4 red pips banked = 1 red source). Pips never exhaust anything. Enables 0-cost cards with pip gates (closing the PR-#14 splash-tax escape); moves the entire splash tax into deck-building and banking choices (cf. SWU aspects). Decision 66's assignment baseline carries over as presence numbers. — Simpler at the table (one payment currency), and the color commitment lives where the designer wants creativity: deck construction.
 
+70. ✅ **Scar's bonus caps at remaining health** (issue #12, "reading A"): bonus = min(damage marked, health − damage). A 3-health unit with 2 damage gets +1, not +2; Overextend stays cut. — The wound powers you, never past what you could survive; kills the degenerate case where a nearly-dead Scar unit hits hardest.
+
 ## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
 
 - **Red burn grammar:** unit-only burn = cost+1 damage (Devastating Strike became unit-only); face-capable burn = cost (Raging Inferno 5→6 dmg; Searing Bolt/Volcanic Slam/Rupture already conformed). Burn the Frontline 7-for-4 → 6-for-6 one-zone (the wall-breaker; friendly fire stays as red's visible cost).

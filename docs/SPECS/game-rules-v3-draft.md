@@ -92,7 +92,7 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
 | **Capture** | On its trigger, this unit takes an enemy unit **under itself** (out of play, no zone presence). The captive returns when the capturer leaves play — or when the capturer readies; its owner **may decline to ready the capturer** at their ready step to keep holding. | Prison's successor with a body-attached cost (the capturer stays exhausted = can't attack, and can't block under 1.3.2). **[Q9 ✓] The captive returns EXHAUSTED** — it readies at its owner's next ready step, so no same-turn revenge. |
 | **Infiltrate** | May be deployed to **any zone**, not just its owner's Home. | Clear; deploy-time zone choice in the play action. |
 | **Shielded** | Enters play with a shield token; the first instance of damage it would take is prevented entirely and the token is removed. | Clear. "Instance" = one damage event (combat hit, one effect op). |
-| **Scar** | This unit gets **+1 power for each damage marked on it**. | Clear; power derivation from `damage`. **Designer-confirmed as Overextend's successor** (red's identity). |
+| **Scar** | This unit gets **+1 power for each damage marked on it, up to its remaining health** (bonus = min(damage, health − damage)). | Power derivation from `damage`, capped **[decision 70 — designer's "reading A" on #12]**: a 3-health unit with 2 damage gets +1, not +2. The wound powers you, never past what you could survive. **Designer-confirmed as Overextend's successor** (red's identity). |
 
 ## 3. Effect-vocabulary deltas
 - Remove: `imprison`, `release` (reserved), `imprisonWatcher` static.
@@ -119,10 +119,8 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
 - **`double` over a UnitFilter + multi-round durations** (`dur: {rounds: N}`): the designer's
   Unchained Rage rework (issue #4) — "double all your units' attacks for the next 2 rounds".
   Today `double` is single-target and durations are round/perm only.
-- **[PENDING designer clarification, issue #12]** an Overextend/Scar cap: "can't overextend
-  beyond remaining health" (example given: 3 health, 2 damage → max +1). Overextend is cut in
-  v3, so this likely means **Scar's bonus caps at remaining health** — asked which before
-  folding.
+- **[RESOLVED — decision 70]** Scar's bonus caps at remaining health ("reading A", #12).
+  Overextend stays cut. Folded into the keyword table above.
 
 ## 4. Migration sketch (for the build plan)
 1. Decisions 59–62 cut (done, 2026-07-10) → finalize this file → rename over `game-rules.md`
