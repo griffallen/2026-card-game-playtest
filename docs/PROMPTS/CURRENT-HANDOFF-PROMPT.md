@@ -1,7 +1,9 @@
 # Current Hand-off
 
-**Phase:** Design (v3.0 intake) + live designer watch. **Griff is active on GitHub** — a 4-minute
-loop checks the repo; this file is the fresh context's whole briefing.
+**Phase:** **V3.0 BUILD (Blaine's order, #12) + live watch.** A **1-minute** loop checks GitHub,
+folds designer/builder activity, then **continues the build** — slices in
+`docs/DESIGN/03-BUILD-PLAN.md` (V3-1 ✅ 9eef3c2; next V3-2 pips presence). Strict TDD; commit
+per slice; finish = deploy + GitHub release tag with executive summary posted to #12.
 
 ## THE WATCH (what the loop iteration does)
 
@@ -99,7 +101,10 @@ loop checks the repo; this file is the fresh context's whole briefing.
 ## Working agreements (from Blaine, this session)
 
 - **Low token mode on idle loop iterations** — one line, no narration.
-- Agent signs GitHub as **⚜ The Chronicler**; Blaine signs `-BB`.
+- Agent signs GitHub as **⚜ The Chronicler**; Blaine signs `-BB`. **Every agent comment now
+  OPENS with an ASCII banner** (Blaine's directive, #16): fenced code block, ⚜ seal + "THE
+  CHRONICLER" + live state line (build phase/tests/progress); art varies with the moment.
+  Name stays The Chronicler (agent's own choice, offered by Blaine).
 - Deploy freely; issues are the designer channel; fold accepted rulings without re-asking.
 - Port 3000 belongs to another project — server smoke-tests use `PORT=3100`; kill by listener PID.
 
