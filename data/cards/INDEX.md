@@ -8,9 +8,9 @@
 
 | Card | Cost | Type | P/H | Keywords | Status | Text |
 |---|---|---|---|---|---|---|
+| [Reckless Charge](red/reckless-charge.md) | 0 | action | — |  | canon | Target unit gains Rush this round. |
 | [Cinder Initiate](red/cinder-initiate.md) | 1 | unit | 1/1 | rush, overextend 1 | canon | Rush. Overextend 1. |
 | [Devastating Strike](red/devastating-strike.md) | 1 | action | — |  | canon | Deal 2 damage to target unit. |
-| [Reckless Charge](red/reckless-charge.md) | 1 | action | — |  | canon | Target unit gains Rush this round. |
 | [Spark Hound](red/spark-hound.md) | 1 | unit | 2/1 | rush | canon | Rush. When this attacks, it gets +1 Power this round. |
 | [Berserker](red/berserker.md) | 2 | unit | 3/2 | rush, overextend 2 | canon | Rush. Overextend 2. |
 | [Blood Rush](red/blood-rush.md) | 2 | action | — |  | canon | Target unit gets +2 Power and Rush this round. |

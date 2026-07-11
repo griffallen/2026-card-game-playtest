@@ -1,4 +1,30 @@
 {
+ "reckless-charge": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "rush"
+    },
+    "dur": "round"
+   }
+  ],
+  "slug": "reckless-charge",
+  "name": "Reckless Charge",
+  "color": "red",
+  "type": "action",
+  "cost": 0,
+  "text": "Target unit gains Rush this round.",
+  "designerNote": "Session 006: was \"gains Rush\" permanently — dead text under decision 41 (Rush only matters the round a unit enters play, so a permanent grant on a veteran does nothing, ever). Now scoped to the round: the real play is on a unit you just dropped — its first move becomes free, so it can cross a zone and still fight.",
+  "artUrl": "/cards/reckless-charge.jpg"
+ },
  "cinder-initiate": {
   "slug": "cinder-initiate",
   "name": "Cinder Initiate",
@@ -42,32 +68,6 @@
   "text": "Deal 2 damage to target unit.",
   "designerNote": "Session 006: became unit-only. Red's burn grammar — unit-only burn deals cost+1, face-capable burn deals exactly cost (the reach is the tax). This is the efficient unit-killer; Searing Bolt is the flexible one.",
   "artUrl": "/cards/devastating-strike.jpg"
- },
- "reckless-charge": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "friendly"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "grant",
-    "t": "chosen0",
-    "kw": {
-     "k": "rush"
-    },
-    "dur": "round"
-   }
-  ],
-  "slug": "reckless-charge",
-  "name": "Reckless Charge",
-  "color": "red",
-  "type": "action",
-  "cost": 1,
-  "text": "Target unit gains Rush this round.",
-  "designerNote": "Session 006: was \"gains Rush\" permanently — dead text under decision 41 (Rush only matters the round a unit enters play, so a permanent grant on a veteran does nothing, ever). Now scoped to the round: the real play is on a unit you just dropped — its first move becomes free, so it can cross a zone and still fight.",
-  "artUrl": "/cards/reckless-charge.jpg"
  },
  "spark-hound": {
   "onAttack": [
