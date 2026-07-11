@@ -12,7 +12,7 @@ loop checks the repo; this file is the fresh context's whole briefing.
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
 3. Comment-count ledger as of 2026-07-11 ~00:30 (issue:comments, x = closed):
-   **11:2 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:0 · 3:1x · 2:2 · 1:5x — 0 open PRs.**
+   **11:4 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:0 · 3:1x · 2:2x · 1:5x — 0 open PRs.**
    A new issue number appearing is activity even when all counts match.
    Any number above these = new activity (my own replies are included in these counts).
 
@@ -49,7 +49,10 @@ loop checks the repo; this file is the fresh context's whole briefing.
   #4 (ratify redesigns), #5 (purple verdict),
   #10 (charter follow-ups), #11 (art: Griff posts one anchor image per color; purple filed at
   `docs/DESIGN/art-themes/`; agent owes SVG per-color frame templates; image-gen-API wiring =
-  Blaine's call, flagged).
+  Blaine's call, flagged). **Cardback + five pips landed (#11): Griff's cardback chopped into
+  `art-themes/pips/pip-<color>.png` — pips are SHAPE+color dual-coded (red circle · yellow
+  pentagon · blue square · green triangle · purple hexagon), shapes recorded as canonical; use
+  these as the cost symbols when the pip system is built.** Griff also closed #2 himself.
 
 ## Working agreements (from Blaine, this session)
 
