@@ -66,6 +66,8 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const aiWindow = state.winner === null && aiControls(config, state.actorSeat)
   const myWindow = state.winner === null && !aiWindow && view.actorSeat === seat
   const isIntercept = view.phase === 'intercept'
+  const isBlock = view.phase === 'block'
+  const [blockPairs, setBlockPairs] = useState<{ blocker: string; onto: string }[]>([])
 
   // v2 windows are keyed off the legal-action list, not the phase name (bullet 2).
   const actions = view.actions
@@ -109,18 +111,19 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   useEffect(() => { setSkipToMyWindow(false) }, [view.round]) // re-arm each round
   useEffect(() => {
     if (config.mode === 'hotseat') return
-    if (!myWindow || isIntercept || view.outOfRound[seat]) return
+    if (!myWindow || isIntercept || isBlock || view.outOfRound[seat]) return
     if (onlyPass && skipToMyWindow) {
       const t = setTimeout(() => apply({ type: 'pass' }, seat), 450)
       return () => clearTimeout(t)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, onlyPass, skipToMyWindow, isIntercept, config.mode])
+  }, [state, onlyPass, skipToMyWindow, isIntercept, isBlock, config.mode])
 
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight }, [view.log])
   useEffect(() => { setSetupPicks([]) }, [view.actorSeat, view.phase])
   useEffect(() => { setArmOverextend(false) }, [selection?.kind === 'unit' ? selection.ids.join(',') : null])
   useEffect(() => { if (isIntercept) { setSelection(null); setArmOverextend(false) } }, [isIntercept]) // intercept has its own UI — drop any attack-group selection
+  useEffect(() => { if (isBlock) setSelection(null); else setBlockPairs([]) }, [isBlock])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') { setSelection(null); setConfirming(null); setInspect(null); setLethalPlay(null) }
@@ -200,6 +203,22 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         : ref.kind === 'zone' ? 'that zone' : 'an upgrade'
 
   // Interceptors offered this window come straight from the legal-action list (bullet 5).
+  const blockerIds = useMemo(
+    () => (isBlock && myWindow
+      ? [...new Set(actions.flatMap(a => (a.type === 'block' && a.pairs.length === 1 ? [a.pairs[0].blocker] : [])))]
+      : []),
+    [actions, isBlock, myWindow])
+  const toggleBlocker = (id: string) => {
+    setBlockPairs(prev => {
+      if (prev.some(p => p.blocker === id)) return prev.filter(p => p.blocker !== id)
+      const attackers = (pendingAttack?.attackers ?? []).filter(a => view.zones.some(z => z.units.some(u => u.id === a)))
+      if (!attackers.length) return prev
+      const load = (a: string) => prev.filter(p => p.onto === a).length
+      const onto = attackers.slice().sort((x, y) => load(x) - load(y))[0]
+      return [...prev, { blocker: id, onto }]
+    })
+  }
+
   const interceptorIds = useMemo(
     () => (isIntercept && myWindow
       ? actions.flatMap(a => (a.type === 'intercept' ? [a.unit] : []))
@@ -271,6 +290,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     if (!def) return null
     if (view.phase === 'bank') return 'already banked this round — one per round (skip to begin the round)'
     if (view.phase === 'intercept') return 'an attack is incoming — answer the intercept first'
+    if (view.phase === 'block') return 'an attack is incoming — assign blockers or let it through'
     const ready = my.resources.filter(r => !r.exhausted).length
     if (def.cost > ready) return `costs ${def.cost}, you have ${ready} ready resource${ready === 1 ? '' : 's'}`
     if (def.type === 'upgrade') return 'needs one of your units in play to attach to'
@@ -399,6 +419,20 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             : `tap cards to bank (${setupPicks.length}/${setupN})`
         })()}
       </span>
+    </div>
+  ) : isBlock && myWindow ? (
+    <div className="rounded-md border border-[#c98a27] bg-[#c98a27]/10 p-2 text-xs">
+      <p className="text-goldbright">
+        ⚔ <b>{pendingAttack ? pendingAttack.attackers.map(unitName).join(', ') : 'The enemy'}</b>{' '}
+        attack{pendingAttack && pendingAttack.attackers.length === 1 ? 's' : ''}{' '}
+        <b>{pendingAttack ? refName(pendingAttack.target) : 'you'}</b>. Assign blockers — gangs allowed; blocking exhausts (Guards stay ready).
+      </p>
+      <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+        <span className="text-[12.5px] text-dim">Tap glowing units to toggle them in ({blockPairs.length} assigned).</span>
+        <button className="btn !py-0.5 text-xs" onClick={() => apply({ type: 'block', pairs: blockPairs }, seat)}>
+          {blockPairs.length ? `Block with ${blockPairs.length}` : 'Let it through'}
+        </button>
+      </div>
     </div>
   ) : isIntercept && myWindow ? (
     <div className="rounded-md border border-[#c98a27] bg-[#c98a27]/10 p-2 text-xs">
@@ -567,14 +601,17 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                       const ref: TargetRef = { kind: 'unit', id: u.id }
                       const mine = u.owner === seat
                       const isInterceptor = interceptorIds.includes(u.id)
+                      const isBlocker = blockerIds.includes(u.id)
                       const glow = selection?.kind === 'unit' && selection.ids.includes(u.id) ? 'selected'
-                        : isInterceptor ? 'target'
-                          : glowFor(ref)
+                        : isBlocker ? (blockPairs.some(p => p.blocker === u.id) ? 'selected' : 'target')
+                          : isInterceptor ? 'target'
+                            : glowFor(ref)
                       return (
                         <UnitChip key={u.id} unit={u} mine={mine} glow={glow}
                           actionable={mine && myWindow && unitActionable(u.id)}
                           onLongPress={() => setInspect({ kind: 'unit', id: u.id })}
                           onClick={() => {
+                            if (isBlocker) { toggleBlocker(u.id); return }
                             if (isInterceptor) { apply({ type: 'intercept', unit: u.id }, seat); return }
                             if (isHighlighted(ref)) clickTarget(ref)
                             else if (mine) clickMyUnit(u.id)

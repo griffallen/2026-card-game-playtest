@@ -22,6 +22,7 @@ export function Play() {
   const [deckB, setDeckB] = useState(DECKS[1].slug)
   const [seedText, setSeedText] = useState('')
   const [london, setLondon] = useState(false)
+  const [rulesV3, setRulesV3] = useState(true)   // v3.0 default; v2.3 selectable for A/B
   const [params, setParams] = useSearchParams()
 
   // Replay links from the Simulator: #/play?watch=1&seed=…&first=red|yellow&pa=…&pb=…
@@ -54,6 +55,7 @@ export function Play() {
       deckB,
       seed,
       londonMulligan: london,
+      rulesVersion: rulesV3 ? 'v3.0' as const : 'v2.3' as const,
       nameA: mode === 'watch' ? botName(deckA, 'heuristic') : mode === 'vs-ai' ? DECKS.find(d => d.slug === deckA)?.name ?? 'Player 1' : 'Player 1',
       nameB: mode === 'watch' ? botName(deckB, 'heuristic') : mode === 'vs-ai' ? 'The Machine' : 'Player 2',
       policyA: 'heuristic',
@@ -96,6 +98,10 @@ export function Play() {
           <label className="mt-2 flex cursor-pointer items-center gap-2 text-xs text-dim">
             <input type="checkbox" className="h-3.5 w-3.5" checked={london} onChange={e => setLondon(e.target.checked)} />
             London mulligans (A/B test — full redraw, then bottom one card per mulligan)
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-body">
+            <input type="checkbox" className="h-3.5 w-3.5" checked={rulesV3} onChange={e => setRulesV3(e.target.checked)} />
+            Rules v3.0 — pips, blocker combat, the new keywords (uncheck for classic v2.3)
           </label>
         </label>
       </div>
