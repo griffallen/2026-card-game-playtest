@@ -24,7 +24,8 @@ keeps pips readable for color-blind players and at small print sizes. Treat the 
 canonical alongside the colors.
 
 `pips/pip-<color>.png` — the five pips chopped from the cardback (agent, ImageMagick;
-`_contact-sheet.png` is the overview). They carry the dark backdrop baked in — fine as tiles;
+`_contact-sheet.png` is the overview). **Designer constraint (#11): cards must stay readable —
+size the pips accordingly when they become cost symbols.** They carry the dark backdrop baked in — fine as tiles;
 if transparent-background versions are ever needed for overlaying on light frames, either the
 designer regenerates each sigil on a plain background or the agent attempts a mask (glow edges
 make automated masking imperfect).

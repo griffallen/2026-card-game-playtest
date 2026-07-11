@@ -12,7 +12,7 @@ loop checks the repo; this file is the fresh context's whole briefing.
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
 3. Comment-count ledger as of 2026-07-11 ~00:30 (issue:comments, x = closed):
-   **11:4 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:0 · 3:1x · 2:2x · 1:5x — 0 open PRs.**
+   **12:1 · 11:5 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:0 · 3:1x · 2:2x · 1:5x — 0 open PRs.**
    A new issue number appearing is activity even when all counts match.
    Any number above these = new activity (my own replies are included in these counts).
 
@@ -29,6 +29,10 @@ loop checks the repo; this file is the fresh context's whole briefing.
   non-Guard blockers** (Guard's perk is vacuous otherwise). Griff also closed #3 (prison) himself.
   **NEXT ARC (session-scale, needs Blaine or a fresh session — not a watch tick): finalize the
   draft as game-rules v3.0 → build plan (pips → keywords → combat) → card re-churn → canon-v2.0.**
+  **⚠ THE DESIGNER IS NOW WAITING ON THE BUILD — Griff opened #12 ("Publishing Rules v3")
+  asking what's blocking; answered: nothing designer-side, build starts next session. #12 is
+  the v3 publishing tracker; it closes when v3 is live on the demo. The v3 build is the top
+  priority for the next working session.**
 - **Pip proposal APPROVED (decision 66, #9 closed):** the cost-tiered grammar + 13 deviations
   ship into the v3 build as-is; post-playtest tuning lens = per-card splash-hostility. **#9 is
   closed — nothing about v3 is designer-blocked anymore.** Blocking-exhausts (decision 62's
