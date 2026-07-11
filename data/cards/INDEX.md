@@ -20,7 +20,7 @@
 | [Smash Through](red/smash-through.md) | 2 | action | — |  | canon | Target unit with Rush gains Breakthrough 2 this round. |
 | [Warcry Leader](red/warcry-leader.md) | 2 | unit | 2/3 |  | canon | Other friendly units have Rush. |
 | [Warpath](red/warpath.md) | 2 | action | — |  | canon | Your units get +1 Power this round. |
-| [Bloodfrenzy](red/bloodfrenzy.md) | 3 | upgrade | — |  | canon | At the start of your round, if you have 10 or less life, attached unit gets +1 Power permanently. |
+| [Bloodfrenzy](red/bloodfrenzy.md) | 3 | upgrade | — |  | canon | Attached unit gets +1 Power and Armor 1. At the start of your round, if you have 10 or less life, attached unit gets +1 Power permanently. |
 | [Collateral Damage](red/collateral-damage.md) | 3 | action | — |  | canon | Deal 2 damage to two different target units. |
 | [Fiery Impaler](red/fiery-impaler.md) | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to the strongest other enemy unit in that zone. |
 | [Rageforged Brute](red/rageforged-brute.md) | 3 | unit | 4/3 | breakthrough 2, overextend 2 | canon | Breakthrough 2. Overextend 2. |

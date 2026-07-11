@@ -108,6 +108,9 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
   "3 damage to up to 2 units in the same zone". Today `count` means exactly-N, zones unlinked.
 - **`attachOrphan` turn action** (upgrades, §1.5) — attach an orphaned upgrade to your unit in
   its zone at full cost+pips.
+- **`double` over a UnitFilter + multi-round durations** (`dur: {rounds: N}`): the designer's
+  Unchained Rage rework (issue #4) — "double all your units' attacks for the next 2 rounds".
+  Today `double` is single-target and durations are round/perm only.
 - **[PENDING designer clarification, issue #12]** an Overextend/Scar cap: "can't overextend
   beyond remaining health" (example given: 3 health, 2 damage → max +1). Overextend is cut in
   v3, so this likely means **Scar's bonus caps at remaining health** — asked which before

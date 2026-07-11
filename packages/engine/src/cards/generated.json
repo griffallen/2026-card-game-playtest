@@ -277,6 +277,18 @@
   "artUrl": "/cards/warpath.jpg"
  },
  "bloodfrenzy": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "attached",
+    "p": 1
+   },
+   {
+    "s": "aura",
+    "scope": "attached",
+    "armor": 1
+   }
+  ],
   "startOfRound": {
    "cond": {
     "selfLifeAtMost": 10
@@ -295,8 +307,8 @@
   "color": "red",
   "type": "upgrade",
   "cost": 3,
-  "text": "At the start of your round, if you have 10 or less life, attached unit gets +1 Power permanently.",
-  "designerNote": "Session 006: threshold 5 → 10 life and cost 5 → 3. At ≤5 life the game is usually already decided; half-life is where red's desperation engine should start paying.",
+  "text": "Attached unit gets +1 Power and Armor 1. At the start of your round, if you have 10 or less life, attached unit gets +1 Power permanently.",
+  "designerNote": "Session 006: threshold 5 → 10 life and cost 5 → 3. At ≤5 life the game is usually already decided; half-life is where red's desperation engine should start paying.\n\n2026-07-11 (designer, issue #4): immediate +1 Power / Armor 1 on attach added; the ≤10-life\ndesperation engine unchanged. Threshold kept at \"10 or less\" (established) though the request\nsaid \"less than 10\" — flagged on the thread.",
   "artUrl": "/cards/bloodfrenzy.jpg"
  },
  "collateral-damage": {
