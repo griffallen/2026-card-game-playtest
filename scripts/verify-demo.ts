@@ -1,9 +1,13 @@
-/* Drive the static demo build under v2 rules: play vs AI (bank steps, loop, intercept windows),
-   run a simulation, open the audit. Proves the shipped bundle plays a full game with no errors. */
+/* Drive the static demo build: play vs AI (v3 block windows + v2 intercept/bank steps),
+   run a simulation, open the audit. Proves the shipped bundle plays a full game with no errors.
+   Deploy gate: deploy-demo.sh runs this against the freshly built dist and aborts on failure. */
+import { mkdirSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { chromium } from 'playwright-core'
 
 const BASE = process.env.DEMO_URL ?? 'http://localhost:4173'
-const SHOTS = '/private/tmp/claude-501/-Users-blaine-workspace-2026-card-game/ebeacc3f-5301-4623-9700-484a9d5aea64/scratchpad'
+const SHOTS = process.env.SHOTS_DIR ?? `${tmpdir()}/demo-verify-shots`
+mkdirSync(SHOTS, { recursive: true })
 
 async function main() {
   const browser = await chromium.launch({ channel: 'chrome', headless: true })
@@ -22,6 +26,9 @@ async function main() {
   await page.getByPlaceholder('random').fill('42')
   await page.screenshot({ path: `${SHOTS}/demo-setup.png` })
   await page.getByRole('button', { name: /Begin/ }).click()
+  // hard gate: the table must render (a crash here unmounts to a blank #root — issue #18)
+  await page.waitForSelector('text=/Round \\d+/', { timeout: 8_000 })
+    .catch(() => { throw new Error('game table never rendered after Begin — blank screen') })
   await page.waitForTimeout(600)
 
   // Drive the human seat: answer intercepts, clear the setup/bank steps, then act (play → target, else pass).

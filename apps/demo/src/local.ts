@@ -1,5 +1,5 @@
 import {
-  CARD_SET, DEFAULT_RULES, PREBUILT_DECKS, createGame, deckSlugs,
+  CARD_SET, DEFAULT_RULES, PREBUILT_DECKS, V3_RULES, createGame, deckSlugs,
   type CardSet, type GameState, type PolicyName, type Seat,
 } from '@newgame/engine'
 
