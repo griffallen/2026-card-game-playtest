@@ -11,10 +11,9 @@ loop checks the repo; this file is the fresh context's whole briefing.
 2. If Griff (@griffallen) posted: read it, **reply on the thread** (sign as **⚜ The Chronicler**),
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
-3. Comment-count ledger as of 2026-07-10 ~23:45 (issue:comments, x = closed):
-   **9:7 · 8:4x · 7:3x · 6:3 · 5:1 · 4:0 · 3:1x · 2:2 · 1:5x — 0 open PRs.**
-   Griff said he'll open a NEW issue (color identities ↔ play styles) — a new issue number
-   appearing is activity even if all counts match.
+3. Comment-count ledger as of 2026-07-11 ~00:30 (issue:comments, x = closed):
+   **10:1 · 9:7 · 8:4x · 7:3x · 6:4x · 5:1 · 4:0 · 3:1x · 2:2 · 1:5x — 0 open PRs.**
+   A new issue number appearing is activity even when all counts match.
    Any number above these = new activity (my own replies are included in these counts).
 
 ## State (2026-07-10 midday)
@@ -36,13 +35,17 @@ loop checks the repo; this file is the fresh context's whole briefing.
   Griff's play verdict picks the default.
 - Decisions 57–58 logged (naming stays; mulligan ruling). #8 closed. Audit tab = "The State of
   the Game" (current-only); original frozen at `/audit/archive`.
-- **#6 answered (decision 63):** matchup-dependent influence is by design; blue + purple get
-  pushed toward influence gameplay via the color-identity thread Griff is about to open (purple's
-  influence posture feeds the v3 card re-churn; blue is a blank slate). #6 stays open until that
-  thread lands. **#7 closed (decision 64):** claiming initiative stays (necessary for next-round
-  first-actor; alternatives welcome via v3 playtesting); intercept half was moot. Issues still
-  open for Griff: #4 (ratify redesigns), #5 (purple verdict), #9 (pip proposals slash-pass +
-  blocking-exhausts veto window).
+- **THE COLOR CHARTER LANDED (#10 → decision 65, `docs/DESIGN/07-COLOR-IDENTITIES.md`):**
+  five colors — red rage-burst, yellow efficient aggression, purple reactive control (trap/predict
+  shapes, NOT interrupts — engine never pauses mid-resolution), BLUE machines/engines = THE
+  influence color, GREEN nature/midrange anchor. Mono playable, multi encouraged (pips serve
+  this). Blue + green are unbuilt future colors. Awaiting Griff's word on: purple's reactive-
+  influence flavor, "Surge" momentum keyword (red, future), and the sequencing proposal
+  (churn red/yellow/purple → canon-v2.0 first; blue/green as first expansion).
+  **#6 closed into #10** (decision 63: matchup-dependent influence is by design). **#7 closed
+  (decision 64):** claiming initiative stays; intercept half moot. Issues still open for Griff:
+  #4 (ratify redesigns), #5 (purple verdict), #9 (pip slash-pass + blocking-exhausts veto),
+  #10 (charter follow-ups).
 
 ## Working agreements (from Blaine, this session)
 
