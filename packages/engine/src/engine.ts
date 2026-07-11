@@ -496,7 +496,8 @@ function applyBlockPhase(state: GameState, action: GameAction, seat: Seat) {
   const pa = state.pendingAttack ?? fail('bad-phase', 'no attack to answer')
   if (seat !== other(pa.seat)) fail('not-your-window', 'not your block window')
   if (action.type !== 'block') fail('bad-phase', 'assign blockers with a block action (empty pairs lets it through)')
-  const combatZone = pa.target.kind === 'unit' ? state.units[pa.target.id]?.zone : homeZone(pa.target.seat)
+  const combatZone = pa.target.kind === 'unit' ? state.units[pa.target.id]?.zone
+    : pa.target.kind === 'base' ? homeZone(pa.target.seat) : undefined  // attacks only ever target unit|base
   const seen = new Set<string>()
   for (const { blocker, onto } of action.pairs) {
     const b = state.units[blocker] ?? fail('no-unit', 'no such blocker')

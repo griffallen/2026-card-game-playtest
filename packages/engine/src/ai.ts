@@ -140,15 +140,18 @@ function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'p
       case 'draw': score += op.n * 3; break
       case 'ready': score += 6; break
       case 'damage': {
+        // n:'linked' (Blood Rush) deliberately stays unranked — the cast keeps the shipped
+        // bot's arithmetic (and the frozen sim baselines) bit-identical.
+        const dmg = op.n as number
         const i = chosenIdx(op.t)
-        if (i === null) { score += op.n; break }
+        if (i === null) { score += dmg; break }
         const r = ref(i)
-        if (r?.kind === 'base') { score += r.seat !== seat ? op.n * 3 : -25; break }
+        if (r?.kind === 'base') { score += r.seat !== seat ? dmg * 3 : -25; break }
         const u = unitAt(i)
         if (!u) break
         if (u.owner === seat) { score -= 25; break }
         const remaining = effHealth(state, u) - u.damage
-        const through = Math.max(0, op.n - effArmor(state, u))
+        const through = Math.max(0, dmg - effArmor(state, u))
         score += Math.min(through, remaining) * 2
         if (through >= remaining) score += stockValue(u) * 2 + jailerBonus(state, seat, u)
         break

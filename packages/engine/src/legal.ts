@@ -60,7 +60,8 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   if (state.phase === 'block') {
     const pa = state.pendingAttack
     if (!pa || seat !== other(pa.seat)) return []
-    const zone = pa.target.kind === 'unit' ? state.units[pa.target.id]?.zone : homeZone(pa.target.seat)
+    const zone = pa.target.kind === 'unit' ? state.units[pa.target.id]?.zone
+      : pa.target.kind === 'base' ? homeZone(pa.target.seat) : undefined  // attacks only ever target unit|base
     const candidates = unitsOf(state, seat).filter(u => u.zone === zone && !u.exhausted && !u.imprisoned)
     const out2: GameAction[] = [{ type: 'block', pairs: [] }]
     for (const b of candidates) for (const a of pa.attackers) {

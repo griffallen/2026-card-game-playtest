@@ -288,7 +288,7 @@ export interface SideView {
 export interface PlayerView {
   viewerSeat: Seat | null
   round: number
-  phase: 'setup' | 'bank' | 'loop' | 'intercept'
+  phase: 'setup' | 'bank' | 'loop' | 'intercept' | 'block'
   initiative: Seat
   actorSeat: Seat
   outOfRound: [boolean, boolean]

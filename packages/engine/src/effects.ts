@@ -18,13 +18,15 @@ export interface FxCtx {
   attackTarget?: TargetRef
   /** zone just entered, for onEnterZone */
   enteredZone?: ZoneId
+  /** v3 "that much" link: written by clearDamage, read by damage n:'linked' (spec §3) */
+  linked?: number
   actorSeat: Seat
 }
 
 const name = (state: GameState, id: string) => defOf(state, id).name
 
-function unitById(state: GameState, id: string): UnitInstance | undefined {
-  return state.units[id]
+function unitById(state: GameState, id: string | null): UnitInstance | undefined {
+  return id === null ? undefined : state.units[id]
 }
 
 /** Deterministic auto-pick: highest effective power, ties broken by lowest instance id. */
