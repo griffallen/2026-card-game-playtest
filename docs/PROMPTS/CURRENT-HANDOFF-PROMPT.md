@@ -12,7 +12,12 @@ loop checks the repo; this file is the fresh context's whole briefing.
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
 3. Comment-count ledger as of 2026-07-11 ~00:30 (issue:comments, x = closed):
-   **12:1 · 11:5 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:0 · 3:1x · 2:2x · 1:5x.**
+   **12:3 · 11:5 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:2 · 3:1x · 2:2x · 1:5x.**
+   **PENDING GRIFF: (1) #12 — is the "can't overextend beyond remaining health" cap for Scar
+   (reading A) or a returning Overextend (reading B)? Asked, awaiting one-word answer; staged
+   in draft spec §3 as pending. (2) #4 — Blood Rush rewrite ("remove damage from your unit,
+   deal that much to Home") staged for v3 linked-amount ops; fixed-number version offered if
+   he wants it live now.**
    PRs: **#13 OPEN (2 comments — Reckless Charge modal rework, HELD for v3 modal+count-pump
    ops, staged in the draft spec §3; merges when v3 vocabulary lands, or Griff drops the OR)
    · #14 merged (cost 1→0, deployed; note posted: 0-cost = automatically pip-free = splash-tax

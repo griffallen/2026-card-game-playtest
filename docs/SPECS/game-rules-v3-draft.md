@@ -89,6 +89,13 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
   rework (PR #13, held for this).
 - **Count-based pump op**: +N per unit matching a predicate (color/side/zone) — PR #13 needs
   "+1 attack per other red unit in the same zone, either side's".
+- **Linked-amount ops** ("X = the amount just healed/removed/dealt"): first customer is the
+  designer's Blood Rush rewrite (issue #4) — "remove all damage from a unit you control, deal
+  that much to your Home". Current ops take fixed `n` only.
+- **[PENDING designer clarification, issue #12]** an Overextend/Scar cap: "can't overextend
+  beyond remaining health" (example given: 3 health, 2 damage → max +1). Overextend is cut in
+  v3, so this likely means **Scar's bonus caps at remaining health** — asked which before
+  folding.
 
 ## 4. Migration sketch (for the build plan)
 1. Decisions 59–62 cut (done, 2026-07-10) → finalize this file → rename over `game-rules.md`
