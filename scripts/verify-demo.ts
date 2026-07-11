@@ -96,6 +96,21 @@ async function main() {
   const summary = await page.locator('.panel').nth(1).textContent()
   console.log('sim summary:', summary?.slice(0, 220))
 
+  // ── Card art (issue #19): every card must show its real art, zero procedural fallbacks ──
+  await page.goto(`${BASE}/#/cards`)
+  await page.waitForLoadState('networkidle')
+  await page.waitForTimeout(1500) // retry backoff window
+  const art = await page.evaluate(() => {
+    const imgs = [...document.querySelectorAll('img')].filter(i => (i as HTMLImageElement).src.includes('cards/')) as HTMLImageElement[]
+    return {
+      loaded: imgs.filter(i => i.complete && i.naturalWidth > 0).length,
+      broken: imgs.filter(i => i.complete && i.naturalWidth === 0).length,
+      fallbacks: document.querySelectorAll('[data-art="fallback"]').length,
+    }
+  })
+  console.log(`card art: ${art.loaded} loaded, ${art.broken} broken, ${art.fallbacks} fallbacks`)
+  if (art.loaded === 0 || art.broken > 0 || art.fallbacks > 0) errors.push(`card art regression: ${JSON.stringify(art)}`)
+
   // ── Audit ──
   await page.goto(`${BASE}/#/audit`)
   await page.waitForTimeout(400)

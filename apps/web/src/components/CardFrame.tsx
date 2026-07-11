@@ -72,7 +72,10 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
   /** long-press (mobile) opens details without disturbing the tap flow */
   onLongPress?: () => void
 }) {
+  // a mobile/CDN blip must not strip a card's art for the whole session (issue #19):
+  // retry twice with a cache-busting src before conceding to procedural art
   const [artBroken, setArtBroken] = useState(false)
+  const [artTry, setArtTry] = useState(0)
   const lp = useLongPress(onLongPress)
   const tint = frameTint[card.color] ?? frameTint.neutral
   const w = size === 'sm' ? 'w-[148px]' : 'w-[176px]'   // sm widened for phones (issue #17): fewer, bigger, readable
@@ -107,9 +110,17 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
       </div>
 
       {/* art + single type chip */}
-      <div className={`relative mt-1.5 overflow-hidden rounded ${artH} bg-black/40 ring-1 ring-black/30`}>
+      <div className={`relative mt-1.5 overflow-hidden rounded ${artH} bg-black/40 ring-1 ring-black/30`} {...(artBroken ? { 'data-art': 'fallback' } : {})}>
         {card.artUrl && !artBroken
-          ? <img src={card.artUrl} alt="" draggable={false} onError={() => setArtBroken(true)} className="h-full w-full object-cover" />
+          ? <img
+              src={artTry === 0 ? card.artUrl : `${card.artUrl}${card.artUrl.includes('?') ? '&' : '?'}retry=${artTry}`}
+              alt="" draggable={false}
+              onError={() => {
+                if (artTry < 2) setTimeout(() => setArtTry(t => t + 1), 350 * (artTry + 1))
+                else setArtBroken(true)
+              }}
+              className="h-full w-full object-cover"
+            />
           : <ProceduralArt slug={card.slug} color={card.color} type={card.type} className="h-full w-full [&>svg]:h-full [&>svg]:w-full" />}
         <span className={`absolute left-1 top-1 rounded-full px-1.5 py-0.5 text-[8.5px] font-bold uppercase tracking-wide shadow ring-1 ${meta.chip}`}>
           {meta.icon} {meta.label}
