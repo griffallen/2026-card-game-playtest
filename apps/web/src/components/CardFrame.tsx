@@ -45,6 +45,8 @@ export interface CardLike {
   text: string
   artUrl?: string | null
   designerNote?: string | null
+  /** v3 presence pips (decision 69) — one sigil rendered per entry, e.g. ['red','red'] */
+  pips?: string[] | null
 }
 
 const frameTint: Record<string, string> = {
@@ -104,6 +106,22 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
           title={`Cost ${card.cost}`}
           className={`grid ${size === 'sm' ? 'h-[22px] w-[22px] text-[13px]' : 'h-6 w-6 text-[14px]'} shrink-0 place-items-center rounded-full bg-gradient-to-b from-[#eaf0f8] to-[#a8b6c9] font-display font-bold leading-none text-[#15202f] shadow-sm ring-1 ring-black/50`}
         >{card.cost}</span>
+        {card.pips && card.pips.length > 0 && (
+          <span
+            className="flex shrink-0 -space-x-[3px]"
+            title={`Requires banked color: ${card.pips.join(', ')}`}
+          >
+            {card.pips.map((c, i) => (
+              <img
+                key={i}
+                src={`${import.meta.env.BASE_URL}pips/pip-${c}.png`}
+                alt={c}
+                draggable={false}
+                className={`${size === 'sm' ? 'h-[13px] w-[13px]' : 'h-[15px] w-[15px]'} rounded-full object-cover ring-1 ring-black/50`}
+              />
+            ))}
+          </span>
+        )}
         <span className={`min-w-0 flex-1 truncate font-display font-semibold ${size === 'sm' ? 'text-[12.5px]' : 'text-[13px]'}`}>{card.name}</span>
         {card.designerNote && <span className="shrink-0 text-[11px] text-goldbright" aria-label="designer flag">⚑</span>}
         {badge && <span className="shrink-0 rounded bg-black/45 px-1 text-[10px] font-bold leading-tight text-goldbright ring-1 ring-black/30">{badge}</span>}
