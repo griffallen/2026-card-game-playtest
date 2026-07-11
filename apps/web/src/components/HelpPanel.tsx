@@ -7,8 +7,126 @@ const Row = ({ icon, title, children }: { icon: string; title: string; children:
   </div>
 )
 
-/** Compact rules companion — one screen, opened from the ? button on any table. */
-export function HelpPanel({ onClose }: { onClose: () => void }) {
+const H = ({ children }: { children: ReactNode }) => (
+  <h3 className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-goldbright">{children}</h3>
+)
+
+/** The v3.0 edition — the deployed default. Phrasing mirrors the Rulebook tab (issue #23). */
+function V3Content() {
+  return (
+    <>
+      <H>Winning</H>
+      <div className="mt-2 flex flex-col gap-2">
+        <Row icon="⚔" title="Life">Drop your opponent to 0 life (both start at 20).</Row>
+        <Row icon="☯" title="Influence">One shared tug-of-war track. Reach +15 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (Guards pay when they defend); purple profits from kills; red mostly ignores it.</Row>
+      </div>
+
+      <H>Your round</H>
+      <div className="mt-2 flex flex-col gap-2">
+        <Row icon="🃏" title="Setup">Each player draws 7 and may <b>mulligan as often as they dare — redrawing one fewer card each time</b> — then <b>chooses 2 cards to bank</b> as starting resources, initiative-holder first. Banked cards are gone for good.</Row>
+        <Row icon="1️⃣" title="Round 1 opens cold">There is <b>no start step in round 1</b> — no ready, no draw, no banking. Your opening hand and starting bank are the whole arsenal; the action loop opens immediately.</Row>
+        <Row icon="🔄" title="Start of round (round 2 on)">Both players, in turn, ready all their cards, <b>draw 2</b>, and may <b>bank one card</b> face-up as a resource (permanent — each pays 1 toward costs, forever).</Row>
+        <Row icon="⏳" title="Empty deck">Every card you fail to draw costs you <b>1 life and 1 influence</b>. Slow decks own a real clock.</Row>
+        <Row icon="⬡" title="Pips and colors">Paying a cost is <b>colorblind</b> — exhaust any resources. A card's <b>pips</b> are a residency requirement instead: one red pip needs a red-providing card <i>living in your bank</i>, ready or spent. Multi-color cards provide every color they show.</Row>
+        <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, attack, <b>use a Sneak ability</b>, <b>salvage an orphaned upgrade</b>, release a captive, or pass. <b>Two passes in a row end the round.</b> Passing is soft: if they act after you passed, you can act again.</Row>
+        <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
+        <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives one free move the round it arrives.</Row>
+        <Row icon="⚔" title="Attack — blockers answer">Exhaust <b>one or more ready units in a zone</b> and name one target. The defender then <b>pairs ready units onto your attackers as blockers</b> — one-on-one or ganging up — and <b>blocking exhausts</b> (Guards block free). Pairs trade blows all at once; gang damage pours in pair order. Attackers <b>nobody blocked</b> hit the declared target full-force — and a target that didn't block <b>doesn't strike back</b>. Bases can only be struck from inside <i>their</i> Home; cross-zone Ranged shots open no block window.</Row>
+      </div>
+
+      <H>Reading the board</H>
+      <div className="mt-2 flex flex-col gap-2">
+        <Row icon="⟳" title="Exhausted">Dimmed with a ⟳ — already acted; readies at the start of its owner's next round.</Row>
+        <Row icon="💨" title="Rush ready">Its <b>one free move</b> the round it arrived — move <i>without</i> exhausting, then it can still fight.</Row>
+        <Row icon="⛨" title="Shielded">Carries its shield token: the <b>first</b> hit is prevented entirely, then the ⛨ disappears — what you see is what's live.</Row>
+        <Row icon="⛓" title="Captives">A ⛓ on a unit means it holds an enemy unit <b>under it</b>, off the board. Select the capturer and <b>Release</b> to hand it back — the captive returns exhausted.</Row>
+        <Row icon="⬥" title="Orphaned upgrades">When a unit dies, its upgrades stay <b>lying in the zone</b> as dashed ⬥ tokens. Either player may tap one to <b>salvage</b> it onto their own unit there — paying its full cost and pips, as if played.</Row>
+        <Row icon="🛡" title="Guard">Blocks <b>without exhausting</b> — it can block again this round and still take its own turn. ◈ is armor: every hit is reduced by that much.</Row>
+        <Row icon="⚑" title="Flagged card">A prototype ruling was needed for this card's printed text — hover/long-press to read it.</Row>
+      </div>
+
+      <H>Keywords in one line</H>
+      <p className="mt-2 text-[13px] leading-relaxed text-body/90">
+        <b>Rush</b> one free move on arrival · <b>Breakthrough</b> kills its blocker → <i>all</i> excess pushes to the original target ·
+        <b> Ranged</b> shoots adjacent zones (no block, no counter), never bases · <b>Guard</b> blocks free ·
+        <b> Hidden</b> while ready it can't be targeted or attacked; exhausting reveals it · <b>Infiltrate</b> deploys to any zone ·
+        <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under; it returns exhausted ·
+        <b> Shielded</b> first hit prevented · <b>Scar</b> +1 power per damage marked, capped at remaining health.
+      </p>
+
+      <H>Strategy starters</H>
+      <div className="mt-2 flex flex-col gap-2">
+        <Row icon="🔴" title="Playing Crimson (red)">
+          Go <i>wide</i> and force bad blocks — every blocker they commit exhausts, and <b>Breakthrough spills everything</b> through a chump block. Unblocked damage is full damage: make every pairing hurt.
+        </Row>
+        <Row icon="🟡" title="Playing Radiant (yellow)">
+          Guards block free — stand them where red must swing and <b>earn influence on every defense</b>. Capture removes the key threat while your grip holds; Shielded walls waste their best hit.
+        </Row>
+        <Row icon="🟣" title="Playing the Veiled (purple)">
+          The rhythm is <b>strike, vanish, repeat</b>: Hidden units can't be touched while ready, and a Sneak exhausts (reveals) you until you ready again. Pick the moment; profit from the kill.
+        </Row>
+      </div>
+    </>
+  )
+}
+
+/** The classic v2.3 edition — the A/B checkbox and the pre-port multiplayer table. */
+function V2Content() {
+  return (
+    <>
+      <H>Winning</H>
+      <div className="mt-2 flex flex-col gap-2">
+        <Row icon="⚔" title="Life">Drop your opponent to 0 life (both start at 20).</Row>
+        <Row icon="☯" title="Influence">One shared tug-of-war track. Reach +15 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (guards pay when they defend, Exemplar when it kills); red mostly ignores it. Its <b>Overextend</b> is a combat gamble now — self-damage, not an influence cost.</Row>
+      </div>
+
+      <H>Your round</H>
+      <div className="mt-2 flex flex-col gap-2">
+        <Row icon="🃏" title="Setup">Each player draws 7 and may <b>mulligan as often as they dare — redrawing one fewer card each time</b> — then <b>chooses 2 cards to bank</b> as starting resources, initiative-holder first. Banked cards are gone for good.</Row>
+        <Row icon="⏳" title="Empty deck">Every card you fail to draw costs you <b>1 life and 1 influence</b>. Slow decks own a real clock.</Row>
+        <Row icon="🔄" title="Start of round">Both players, in turn, ready all their cards, <b>draw 2</b>, and may <b>bank one card</b> face-up as a resource (permanent — each pays 1 toward costs, forever). Then the action loop opens.</Row>
+        <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, or attack, one action each. <b>Two passes in a row end the round.</b> Passing is soft: if they take a turn after you passed, you can act again.</Row>
+        <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
+        <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives a unit one free move the round it arrives.</Row>
+        <Row icon="⚔" title="Attack">Pick <b>one or more ready units in the same zone</b> — they strike together as one combined hit. Then the defender chooses: <b>intercept</b> (throw a ready unit in front — free if it's a Guard) or let it through. You can only strike the enemy <b>base</b> from inside <i>their</i> Home zone. Massing attackers is the answer to armor — armor is subtracted once from the whole hit.</Row>
+      </div>
+
+      <H>Reading the board</H>
+      <div className="mt-2 flex flex-col gap-2">
+        <Row icon="⟳" title="Exhausted">Dimmed with a ⟳ — already acted; readies at the start of its owner's next round.</Row>
+        <Row icon="💨" title="Rush ready">Its <b>one free move</b> the round it arrived — move <i>without</i> exhausting, then it can still fight.</Row>
+        <Row icon="⛓" title="Imprisoned">Can't attack, move, intercept, or use abilities. Prisons cost the jailer 1 influence at the start of each round and shatter if the jailer's influence goes negative.</Row>
+        <Row icon="🛡" title="Guard">Can <b>intercept an attack in its zone without exhausting</b> — step in front of a targeted ally or the base. ◈ is armor: every hit is reduced by that much.</Row>
+        <Row icon="⚑" title="Flagged card">A prototype ruling was needed for this card's printed text — hover/long-press to read it.</Row>
+      </div>
+
+      <H>Keywords in one line</H>
+      <p className="mt-2 text-[13px] leading-relaxed text-body/90">
+        <b>Rush</b> one free move the round it arrives · <b>Breakthrough N</b> spills up to N excess damage onto the owner when it kills ·
+        <b> Overextend N</b>: an optional gamble when attacking — +N power now, N self-damage at end of round ·
+        <b> Ranged</b> shoots adjacent zones, never bases · <b>Reach</b> attacks adjacent zones normally · <b>Guard</b> intercepts free.
+      </p>
+
+      <H>Strategy starters</H>
+      <div className="mt-2 flex flex-col gap-2">
+        <Row icon="🔴" title="Playing Crimson (red)">
+          Go <i>wide</i> and swing <b>together</b> — a pile of cheap bodies combines into one hit that overwhelms armor and outraces a single blocker's interception. <b>Overextend only when it converts a kill</b> — the end-of-round bill is real.
+        </Row>
+        <Row icon="🟡" title="Playing Radiant (yellow)">
+          Walls, armor, prisons — but Guard no longer stops an assault by decree; you must <b>choose</b> to intercept (free for guards). Mind the jail upkeep: <b>every prisoner costs you 1 influence per round</b>.
+        </Row>
+        <Row icon="⛓" title="The prison economy cuts both ways">
+          Imprisoned units draw no counter-damage — but a flooded jail taxes the jailer every round. If you're red and they love prisons: feed them cheap bodies and bleed the track.
+        </Row>
+      </div>
+    </>
+  )
+}
+
+/** Compact rules companion — one screen, opened from the ? button on any table.
+ *  Edition follows the rules the table is actually running (issue #23: the help must
+ *  describe the game on screen, not a remembered one). */
+export function HelpPanel({ onClose, edition = 'v2.3' }: { onClose: () => void; edition?: 'v2.3' | 'v3' }) {
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-3" onClick={onClose}>
       <div
@@ -16,58 +134,10 @@ export function HelpPanel({ onClose }: { onClose: () => void }) {
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-baseline justify-between">
-          <h2 className="font-display text-xl font-bold text-parchment">How to play</h2>
+          <h2 className="font-display text-xl font-bold text-parchment">How to play <span className="text-[12px] font-normal text-dim">· rules {edition === 'v3' ? 'v3.0' : 'v2.3 (classic)'}</span></h2>
           <button className="text-dim hover:text-body" onClick={onClose}>✕</button>
         </div>
-
-        <h3 className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-goldbright">Winning</h3>
-        <div className="mt-2 flex flex-col gap-2">
-          <Row icon="⚔" title="Life">Drop your opponent to 0 life (both start at 20).</Row>
-          <Row icon="☯" title="Influence">One shared tug-of-war track. Reach +15 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (guards pay when they defend, Exemplar when it kills); red mostly ignores it. Its <b>Overextend</b> is a combat gamble now — self-damage, not an influence cost.</Row>
-        </div>
-
-        <h3 className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-goldbright">Your round</h3>
-        <div className="mt-2 flex flex-col gap-2">
-          <Row icon="🃏" title="Setup">Each player draws 7 and may <b>mulligan as often as they dare — redrawing one fewer card each time</b> — then <b>chooses 2 cards to bank</b> as starting resources, initiative-holder first. Banked cards are gone for good.</Row>
-          <Row icon="⏳" title="Empty deck">Every card you fail to draw costs you <b>1 life and 1 influence</b>. Slow decks own a real clock.</Row>
-          <Row icon="🔄" title="Start of round">Both players, in turn, ready all their cards, <b>draw 2</b>, and may <b>bank one card</b> face-up as a resource (permanent — each pays 1 toward costs, forever). Then the action loop opens.</Row>
-          <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, or attack, one action each. <b>Two passes in a row end the round.</b> Passing is soft: if they take a turn after you passed, you can act again. Leaving resources unspent keeps response plays open on their turns.</Row>
-          <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Bail early to seize next round's opening move. Once per round.</Row>
-          <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it, so a unit marches <i>or</i> fights. Units enter play <b>ready</b> (no waiting a round); <b>Rush</b> gives a unit one free move (no exhaust) the round it arrives — reposition and still fight.</Row>
-          <Row icon="⚔" title="Attack">Pick <b>one or more ready units in the same zone</b> — they strike together as one combined hit. Then the defender chooses: <b>intercept</b> (throw a ready unit in front — free if it's a Guard) or let it through. You can only strike the enemy <b>base</b> from inside <i>their</i> Home zone. Massing attackers is the answer to armor — armor is subtracted once from the whole hit.</Row>
-        </div>
-
-        <h3 className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-goldbright">Reading the board</h3>
-        <div className="mt-2 flex flex-col gap-2">
-          <Row icon="⟳" title="Exhausted">Dimmed with a ⟳ — already acted; readies at the start of its owner's next round.</Row>
-          <Row icon="💨" title="Rush ready">Its <b>one free move</b> the round it arrived — move <i>without</i> exhausting, then it can still fight. The 💨 clears once it moves.</Row>
-          <Row icon="⛓" title="Imprisoned">Can't attack, move, intercept, or use abilities. Prisons cost the jailer 1 influence at the start of each round and shatter if the jailer's influence goes negative.</Row>
-          <Row icon="🛡" title="Guard">Can <b>intercept an attack in its zone without exhausting</b> — step in front of a targeted ally or the base. (It no longer <i>forces</i> attackers onto it — interception is the defender's choice.) ◈ is armor: every hit is reduced by that much.</Row>
-          <Row icon="⚑" title="Flagged card">A prototype ruling was needed for this card's printed text — hover/long-press to read it.</Row>
-        </div>
-
-        <h3 className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-goldbright">Keywords in one line</h3>
-        <p className="mt-2 text-[13px] leading-relaxed text-body/90">
-          <b>Rush</b> one free move the round it arrives · <b>Breakthrough N</b> spills up to N excess damage onto the owner when it kills ·
-          <b> Overextend N</b>: an optional gamble when attacking — +N power now, N self-damage at end of round ·
-          <b> Ranged</b> shoots adjacent zones, never bases · <b>Reach</b> attacks adjacent zones normally · <b>Guard</b> intercepts free.
-        </p>
-
-        <h3 className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-goldbright">Strategy starters</h3>
-        <div className="mt-2 flex flex-col gap-2">
-          <Row icon="🔴" title="Playing Crimson (red)">
-            Go <i>wide</i> and swing <b>together</b> — a pile of cheap bodies now combines into one hit that overwhelms armor and outraces a single blocker's interception.
-            <b> Breakthrough is base damage from any zone</b>: killing their units spills onto their life.
-            <b> Overextend only when it converts a kill</b> — the end-of-round bill is real.
-          </Row>
-          <Row icon="🟡" title="Playing Radiant (yellow)">
-            Walls, armor, prisons — but Guard no longer stops an assault by decree; you must <b>choose</b> to intercept (free for guards). <b>Your influence is earned, not given</b>: guards pay out when they defend, so stand where red must swing. Mind the jail upkeep: <b>every prisoner costs you 1 influence per round</b>.
-          </Row>
-          <Row icon="⛓" title="The prison economy cuts both ways">
-            Imprisoned units draw no counter-damage — but a flooded jail taxes the jailer every round. If you're red and they love prisons: feed them cheap bodies and bleed the track.
-          </Row>
-        </div>
-
+        {edition === 'v3' ? <V3Content /> : <V2Content />}
         <button className="btn btn-primary mt-5 w-full" onClick={onClose}>Back to the table</button>
       </div>
     </div>

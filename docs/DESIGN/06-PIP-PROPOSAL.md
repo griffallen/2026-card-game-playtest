@@ -67,7 +67,7 @@ interaction taxes lighter so future multi-color decks have splash targets.
 | The Unseen Court | purple | 8 | **PPP** (3) | — |
 | Cinder Initiate | red | 1 | **R** (1) | — |
 | Devastating Strike | red | 1 | **R** (1) | kept at 1 despite being a workhorse: cheap interaction should splash |
-| Reckless Charge | red | 1 | **R** (1) | cheap trick, low identity |
+| Reckless Charge | red | 0 | **R** (1) | cheap trick, low identity — cost 0 signed on PRs #13/#14; the pip is the whole tax (decision 69) |
 | Spark Hound | red | 1 | **R** (1) | — |
 | Berserker | red | 2 | **R** (1) | — |
 | Blood Rush | red | 2 | **R** (1) | — |

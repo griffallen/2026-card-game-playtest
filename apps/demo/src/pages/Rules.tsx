@@ -11,9 +11,9 @@ const Card = ({ children }: { children: ReactNode }) => <div className="panel mt
 
 const KEYWORDS: [string, string][] = [
   ['Guard', 'Doesn’t exhaust when it blocks. Everyone else spends their readiness to step in front of an attack; a Guard does it for free — it can block again this round and is still ready for its own turn.'],
-  ['Armor N', 'Every hit this unit takes is reduced by N — and combat resolves in separate pairings, so N comes off each attacker’s blow individually. (Blockers ganging up on one attacker strike back together, as one combined hit.)'],
+  ['Armor N', 'Every hit this unit takes is reduced by N — and combat resolves in separate pairings, so N comes off each attacker’s blow individually. Two exceptions arrive as one combined hit, shrunk by N once: a gang of blockers striking back at their attacker, and multiple unblocked attackers landing on the same target.'],
   ['Rush', 'The round it’s played, its first move is free — that one move doesn’t exhaust it, so it can reposition and still fight. Just the one, though: a second move the same round exhausts it like any unit. (Every unit can otherwise act the round it arrives; Rush frees that first move.)'],
-  ['Ranged', 'May attack a unit one zone away — a sniper shot: no block window opens, and nothing strikes back. In its own zone it fights like anyone else (its attacks can be blocked and hit back as normal). Bases are safe from afar — reaching one still means standing in the enemy’s Home.'],
+  ['Ranged', 'May attack a unit one zone away — a sniper shot: no block window opens, and nothing strikes back. In its own zone it fights like anyone else (its attacks can be blocked and hit back as normal). Bases are beyond it entirely: a Ranged unit never attacks a base, even standing in the enemy’s Home.'],
   ['Breakthrough', 'When this attacker kills its blocker, all the leftover damage pushes through to whatever it was originally attacking — unit or base. No number, no cap: everything spills.'],
   ['Can’t attack', 'A defensive body — it can hold a zone and block, but never attacks.'],
   ['Hidden', 'While this unit is ready, enemy actions can’t target it and enemy attacks can’t be declared at it. It can still block — blocking isn’t being targeted — but anything that exhausts it (attacking, blocking, a Sneak) reveals it until it readies again. Strike, vanish, repeat.'],

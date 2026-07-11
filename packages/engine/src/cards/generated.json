@@ -3041,7 +3041,7 @@
   "cost": 5,
   "power": 4,
   "health": 4,
-  "text": "Flying. When this enters play, draw a card.",
+  "text": "Hidden. When this enters play, draw a card. Sneak — gain 2 Influence.",
   "kw": [
    {
     "k": "hidden"
@@ -3054,7 +3054,7 @@
    "purple",
    "purple"
   ],
-  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): purple's influence is REACTIVE (decision 63/#10 thread): the thief steals standing, not ground — Sneak gains 2 Influence. Draw stays.",
+  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): purple's influence is REACTIVE (decision 63/#10 thread): the thief steals standing, not ground — Sneak gains 2 Influence. Draw stays.\n\n2026-07-11 (#23 consistency sweep): printed text was stale v2.3 (\"Flying\", a retired keyword) while frontmatter/effects were already v3 (hidden, sneak). Rewritten to match the effects, following the \"Hidden. … Sneak — …\" convention of its siblings. Flagged in the open-questions ledger for Griff's blessing on the wording.",
   "artUrl": "/cards/dream-thief.svg"
  },
  "nocturne-sniper": {

@@ -126,7 +126,7 @@
 | [Rain of Quarrels](purple/rain-of-quarrels.md) | 4 | action | — |  | draft | Choose a zone. Deal 2 damage to every enemy unit there. |
 | [Shade of the Bazaar](purple/shade-of-the-bazaar.md) | 4 | unit | 3/4 |  | draft | When this enters play, draw a card. |
 | [Silence the Song](purple/silence-the-song.md) | 4 | action | — |  | draft | Target enemy unit gets -2 Power permanently. Draw a card. |
-| [Dream Thief](purple/dream-thief.md) | 5 | unit | 4/4 | hidden, sneak | draft | Flying. When this enters play, draw a card. |
+| [Dream Thief](purple/dream-thief.md) | 5 | unit | 4/4 | hidden, sneak | draft | Hidden. When this enters play, draw a card. Sneak — gain 2 Influence. |
 | [Nocturne Sniper](purple/nocturne-sniper.md) | 5 | unit | 4/3 | ranged | draft | Ranged. When this defeats a unit, gain 1 Influence. |
 | [Second Shadow](purple/second-shadow.md) | 5 | action | — |  | draft | Ready one of your units. Draw a card. |
 | [Veilmaster](purple/veilmaster.md) | 5 | unit | 3/5 |  | draft | Your other units have Ranged. |

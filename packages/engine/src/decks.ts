@@ -41,7 +41,7 @@ export function buildPrebuiltDecks(set: CardSet): PrebuiltDeck[] {
       slug: 'radiant-order',
       name: 'Radiant Order',
       color: 'yellow',
-      description: 'Wall up, imprison the threats, and let Influence carry you to an inevitable victory.',
+      description: 'Wall up, capture the threats, and let Influence carry you to an inevitable victory.',
       cards: yellow.map(c => ({ slug: c.slug, count: 1 })),
     },
   ]
