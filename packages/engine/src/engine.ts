@@ -212,6 +212,8 @@ function validateTargets(state: GameState, seat: Seat, specs: TargetSpec[], targ
       if (spec.mustBeDamaged && u.damage <= 0) fail('bad-targets', 'target must be damaged')
       // Chain of Law: enemy units with `untargetable` can't be chosen by enemy card effects
       if (u.owner !== seat && hasKw(state, u, 'untargetable')) fail('bad-targets', `${defOf(state, u.id).name} cannot be targeted`)
+      // v3 Hidden (decision 59): while READY it can't be targeted by enemy actions
+      if (u.owner !== seat && !u.exhausted && hasKw(state, u, 'hidden')) fail('bad-targets', `${defOf(state, u.id).name} is hidden`)
     }
   }
 }
@@ -255,6 +257,7 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     state.units[action.card] = {
       id: action.card, slug: def.slug, owner: seat, zone,
       damage: 0, exhausted: false, enteredRound: state.round, movedThisRound: false,
+      shielded: (def.kw ?? []).some(k => k.k === 'shielded'),
       imprisoned: null, upgrades: [], mods: [], overextendedBy: 0,
     }
     log(state, seat, `${side.name} deploys ${def.name}`)
@@ -339,6 +342,8 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
   } else if (action.target.kind === 'unit') {
     const defender = state.units[action.target.id] ?? fail('no-unit', 'no such defender')
     if (defender.owner === seat) fail('bad-target', 'cannot attack your own unit')
+    // v3 Hidden (decision 59): a READY hidden unit can't be declared as the attack target
+    if (!defender.exhausted && hasKw(state, defender, 'hidden')) fail('bad-target', `${defOf(state, defender.id).name} is hidden`)
     const sameZone = defender.zone === zone
     if (!sameZone && !(allRangedOrReach && adjacent(defender.zone, zone)))
       fail('bad-zone', allRangedOrReach ? 'target is out of range' : 'combat happens within one zone')

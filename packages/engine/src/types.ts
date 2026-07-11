@@ -13,6 +13,8 @@ export const adjacent = (a: ZoneId, b: ZoneId) => Math.abs(a - b) === 1
 export type KeywordName =
   | 'guard' | 'armor' | 'rush' | 'ranged' | 'reach' | 'flying'
   | 'breakthrough' | 'overextend' | 'cantAttack' | 'untargetable'
+  // v3 suite (game-rules-v3-draft §2, decisions 59-61, 70)
+  | 'scar' | 'shielded' | 'hidden' | 'infiltrate' | 'capture' | 'sneak'
 export interface KeywordSpec { k: KeywordName; n?: number }
 
 // ─── Effect DSL ──────────────────────────────────────────────────────────────
@@ -170,6 +172,8 @@ export interface UnitInstance {
   mods: Mod[]
   /** decision 35: damage owed at end of round from overextending this round */
   overextendedBy: number
+  /** v3 Shielded: entered with a shield token; first damage instance is prevented and this flips */
+  shielded: boolean
 }
 
 export interface UpgradeInstance {

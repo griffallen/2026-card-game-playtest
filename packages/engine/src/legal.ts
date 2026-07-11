@@ -123,7 +123,11 @@ function attackTargets(state: GameState, attacker: UnitInstance): TargetRef[] {
   if (ranged || reach) for (const z of ZONES) if (adjacent(z, attacker.zone)) zonesInReach.push(z)
 
   for (const zone of zonesInReach) {
-    for (const d of unitsInZone(state, zone, enemy)) out.push({ kind: 'unit', id: d.id })
+    for (const d of unitsInZone(state, zone, enemy)) {
+      // v3 Hidden (decision 59): ready hidden units aren't legal attack targets
+      if (!d.exhausted && hasKw(state, d, 'hidden')) continue
+      out.push({ kind: 'unit', id: d.id })
+    }
   }
 
   // base: melee/reach only, standing in the enemy home zone (protection is now the intercept window, decision 42)

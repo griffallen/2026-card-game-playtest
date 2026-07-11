@@ -59,6 +59,7 @@ export function put(state: GameState, seat: Seat, slug: string, zone: ZoneId, op
     exhausted: opts.exhausted ?? false,
     enteredRound: opts.enteredRound ?? 0,
     movedThisRound: false,
+    shielded: (state.cardSet[slug]?.kw ?? []).some(k => k.k === 'shielded'),
     imprisoned: opts.imprisonedBy !== undefined ? { by: opts.imprisonedBy, source: null } : null,
     upgrades: [],
     mods: [],

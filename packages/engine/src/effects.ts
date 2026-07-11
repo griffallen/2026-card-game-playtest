@@ -73,6 +73,12 @@ function resolveUnitTarget(ctx: FxCtx, t: string): UnitInstance | undefined {
 }
 
 export function damageUnit(state: GameState, unit: UnitInstance, n: number, source: string) {
+  // v3 Shielded: the first damage instance is prevented entirely (one event, one token)
+  if (unit.shielded && n > 0) {
+    unit.shielded = false
+    log(state, unit.owner, `${defOf(state, unit.id).name}'s shield absorbs the blow`)
+    return
+  }
   const dealt = Math.max(0, n - effArmor(state, unit))
   if (dealt <= 0) { log(state, unit.owner, `${name(state, unit.id)} shrugs off the damage (armor)`); return }
   unit.damage += dealt

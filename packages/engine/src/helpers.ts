@@ -104,6 +104,11 @@ export function effPower(state: GameState, unit: UnitInstance): number {
   const up = upgradeGrants(state, unit)
   const aura = aurasFor(state, unit)
   let p = base + add + up.p + aura.p
+  // v3 Scar (decision 70): +1 per damage marked, capped at remaining health
+  if (hasKw(state, unit, 'scar')) {
+    const remaining = effHealth(state, unit) - unit.damage
+    p += Math.max(0, Math.min(unit.damage, remaining))
+  }
   if (mods.some(m => m.double)) p *= 2
   return Math.max(0, p)
 }
