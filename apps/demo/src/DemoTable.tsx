@@ -22,6 +22,8 @@ type Selection =
   | { kind: 'hand'; id: string }
   | { kind: 'unit'; ids: string[] }           // one or more attackers in a single zone (attack group)
   | { kind: 'targeting'; card: string; collected: TargetRef[] }
+  | { kind: 'sneaking'; unit: string }        // v3 Sneak: choosing the ability's target
+  | { kind: 'orphan'; id: string }            // v3 salvage: choosing which unit picks the orphan up
   | null
 
 /** Mobile browser chrome (Chrome's bottom bar, the keyboard) can overlay the layout
@@ -204,6 +206,11 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const playActionsFor = (cardId: string) =>
     actions.filter((a): a is Extract<GameAction, { type: 'play' }> => a.type === 'play' && a.card === cardId)
   const resourceActionFor = (cardId: string) => actions.find(a => a.type === 'resource' && a.card === cardId)
+  const activateActionsFor = (unitId: string) =>
+    actions.filter((a): a is Extract<GameAction, { type: 'activate' }> => a.type === 'activate' && a.unit === unitId)
+  const releaseActionFor = (unitId: string) => actions.find(a => a.type === 'releaseCaptive' && a.unit === unitId)
+  const salvageActionsFor = (upgradeId: string) =>
+    actions.filter((a): a is Extract<GameAction, { type: 'attachOrphan' }> => a.type === 'attachOrphan' && a.upgrade === upgradeId)
 
   // ── unit lookups off the view (id → view / zone / display) ──
   const unitViewOf = (id: string) => view.zones.flatMap(z => z.units).find(u => u.id === id)
@@ -272,6 +279,17 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       }
       return refs
     }
+    if (selection.kind === 'sneaking') {
+      const refs: TargetRef[] = []
+      for (const a of activateActionsFor(selection.unit)) {
+        const ref = (a.targets ?? [])[0]
+        if (ref && !refs.some(r => sameRef(r, ref))) refs.push(ref)
+      }
+      return refs
+    }
+    if (selection.kind === 'orphan') {
+      return salvageActionsFor(selection.id).map(a => ({ kind: 'unit', id: a.unit }) as TargetRef)
+    }
     return []
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection, view, myWindow])
@@ -299,6 +317,14 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       const needed = candidates[0]?.targets?.length ?? collected.length
       if (collected.length >= needed) apply({ type: 'play', card: selection.card, targets: collected }, seat)
       else setSelection({ kind: 'targeting', card: selection.card, collected })
+      return
+    }
+    if (selection.kind === 'sneaking') {
+      apply({ type: 'activate', unit: selection.unit, targets: [ref] }, seat)
+      return
+    }
+    if (selection.kind === 'orphan' && ref.kind === 'unit') {
+      apply({ type: 'attachOrphan', upgrade: selection.id, unit: ref.id }, seat)
     }
   }
 
@@ -370,7 +396,8 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   }
 
   const unitActionable = (unitId: string) =>
-    actions.some(a => (a.type === 'move' && a.unit === unitId) || (a.type === 'attack' && a.attackers.includes(unitId)))
+    actions.some(a => (a.type === 'move' && a.unit === unitId) || (a.type === 'attack' && a.attackers.includes(unitId))
+      || (a.type === 'activate' && a.unit === unitId) || (a.type === 'releaseCaptive' && a.unit === unitId))
   const unitCanAttack = (unitId: string) =>
     actions.some(a => a.type === 'attack' && a.attackers.includes(unitId))
 
@@ -519,6 +546,19 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
               </label>
             )
           })()}
+          {selection.ids.length === 1 && activateActionsFor(selection.ids[0]).length > 0 && (
+            <button className="btn btn-primary !py-1 text-xs" onClick={() => {
+              const acts = activateActionsFor(selection.ids[0])
+              if (acts.some(a => !a.targets?.length)) apply({ type: 'activate', unit: selection.ids[0] }, seat)
+              else setSelection({ kind: 'sneaking', unit: selection.ids[0] })
+            }}>✦ Use Sneak</button>
+          )}
+          {selection.ids.length === 1 && releaseActionFor(selection.ids[0]) && (
+            <button className="btn btn-primary !py-1 text-xs"
+              onClick={() => apply({ type: 'releaseCaptive', unit: selection.ids[0] }, seat)}>
+              ⛓ Release {unitViewOf(selection.ids[0])?.captives[0]?.name ?? 'captive'}
+            </button>
+          )}
           {selection.ids.length === 1 && (
             <button className="btn !py-1 text-xs" onClick={() => setInspect({ kind: 'unit', id: selection.ids[0] })}>ⓘ details</button>
           )}
@@ -528,6 +568,18 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       {selection?.kind === 'targeting' && targetingCard && (
         <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
           <span>Choose {selection.collected.length > 0 ? 'the next' : 'a'} target for <b>{targetingCard.name}</b>…</span>
+          <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
+        </div>
+      )}
+      {selection?.kind === 'sneaking' && (
+        <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
+          <span>Choose a target for <b>{unitName(selection.unit)}</b>'s Sneak ability — using it exhausts (and reveals) the unit…</span>
+          <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
+        </div>
+      )}
+      {selection?.kind === 'orphan' && (
+        <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
+          <span>Salvage <b>{DEMO_CARDS[state.cardOf[selection.id]]?.name}</b> — tap one of your glowing units in that zone (full cost and pips, as if played).</span>
           <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
         </div>
       )}
@@ -566,10 +618,16 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       const playable = new Set(view.actions.filter(a => a.type === 'play').map(a => a.card)).size
       const attackers = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'attack' }> => a.type === 'attack').flatMap(a => a.attackers)).size
       const movers = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'move' }> => a.type === 'move').map(a => a.unit)).size
+      const sneaks = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'activate' }> => a.type === 'activate').map(a => a.unit)).size
+      const salvables = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'attachOrphan' }> => a.type === 'attachOrphan').map(a => a.upgrade)).size
+      const captors = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'releaseCaptive' }> => a.type === 'releaseCaptive').map(a => a.unit)).size
       const bits = [
         playable && `play ${playable} card${playable > 1 ? 's' : ''}`,
         attackers && `attack with ${attackers} unit${attackers > 1 ? 's' : ''}`,
         movers && `move ${movers} unit${movers > 1 ? 's' : ''}`,
+        sneaks && `use ${sneaks} Sneak abilit${sneaks > 1 ? 'ies' : 'y'}`,
+        salvables && `salvage ${salvables} orphaned upgrade${salvables > 1 ? 's' : ''}`,
+        captors && `release a captive`,
       ].filter(Boolean)
       if (bits.length) hints.push(`Right now you can ${bits.join(' · ')} — or pass. ${ready} resource${ready === 1 ? '' : 's'} ready.`)
       if (canClaim) hints.push('You can claim the initiative: it spends your round, but you act first next round (and locks the token to you).')
@@ -638,7 +696,24 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                           }} />
                       )
                     })}
-                    {!units.length && <span className="text-xs text-dim/50">—</span>}
+                    {view.zones[z].orphans.map(o => {
+                      const salvages = myWindow ? salvageActionsFor(o.id) : []
+                      const active = selection?.kind === 'orphan' && selection.id === o.id
+                      return (
+                        <button key={o.id}
+                          className={`shrink-0 rounded-md border border-dashed px-1.5 py-1 text-left text-[10px] leading-tight ${active ? 'glow-selected border-goldbright text-goldbright' : salvages.length ? 'border-goldbright/60 text-goldbright hover:border-goldbright' : 'hairline text-dim'}`}
+                          title={`${o.name} — an orphaned upgrade. Either player may salvage it onto their unit in this zone, paying its full cost and pips (decision 67).`}
+                          onClick={e => {
+                            e.stopPropagation()
+                            if (salvages.length) setSelection(active ? null : { kind: 'orphan', id: o.id })
+                            else setInspect({ kind: 'card', slug: o.slug })
+                          }}>
+                          ⬥ {o.name}
+                          <span className="block text-[8.5px] uppercase tracking-wide opacity-70">orphaned</span>
+                        </button>
+                      )
+                    })}
+                    {!units.length && !view.zones[z].orphans.length && <span className="text-xs text-dim/50">—</span>}
                   </div>
                 </div>
               )
@@ -818,7 +893,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         />
       )}
 
-      {showHelp && <HelpPanel onClose={() => setShowHelp(false)} />}
+      {showHelp && <HelpPanel edition={state.rules.combatModel === 'blockerPairing' ? 'v3' : 'v2.3'} onClose={() => setShowHelp(false)} />}
 
       {view.winner !== null && !overlayDismissed && (
         <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4">

@@ -59,6 +59,12 @@ export function UnitInspector({ unit, card, upgradeCards, onClose, sleeve }: {
               ))}
             </div>
           )}
+          {unit.captives.length > 0 && (
+            <div className="mt-2 border-t hairline pt-2">
+              <p className="text-goldbright">⛓ Holding captive: <b>{unit.captives.map(c => c.name).join(', ')}</b>
+                <span className="text-body/80"> — select this unit and Release to return it to its owner, exhausted.</span></p>
+            </div>
+          )}
           {card.designerNote && (
             <p className="mt-2 border-t hairline pt-2 text-xs text-goldbright">⚑ Prototype ruling: <span className="text-body/80">{card.designerNote}</span></p>
           )}

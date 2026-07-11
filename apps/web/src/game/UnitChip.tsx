@@ -23,8 +23,13 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }:
   if (unit.armor > 0) chips.push(`◈${unit.armor}`)
   if (unit.rushFreeMove) chips.push('💨')
   if (unit.overextendedBy > 0) chips.push(`🔥${unit.overextendedBy}`)
-  const tooltip = [`${unit.name}`, unit.keywords.join(', '), unit.upgrades.length ? `Upgrades: ${unit.upgrades.map(u => u.name).join(', ')}` : '']
-    .filter(Boolean).join('\n')
+  if (unit.shielded) chips.push('⛨')
+  if (unit.captives.length > 0) chips.push(`⛓${unit.captives.length}`)
+  const tooltip = [
+    `${unit.name}`, unit.keywords.join(', '),
+    unit.upgrades.length ? `Upgrades: ${unit.upgrades.map(u => u.name).join(', ')}` : '',
+    unit.captives.length ? `Holding captive: ${unit.captives.map(c => c.name).join(', ')}` : '',
+  ].filter(Boolean).join('\n')
 
   return (
     <div
