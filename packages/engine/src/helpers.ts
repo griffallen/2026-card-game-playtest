@@ -218,6 +218,7 @@ export function assertConservation(state: GameState) {
   })
   Object.values(state.units).forEach(u => put(u.id, 'play'))
   Object.values(state.upgrades).forEach(u => put(u.id, 'play'))
+  Object.keys(state.captives).forEach(id => put(id, 'captive'))   // v3: under a capturer is still a place
   if (seen.size !== Object.keys(state.cardOf).length)
     throw new EngineError('conservation', `${seen.size} placed vs ${Object.keys(state.cardOf).length} known`)
 }

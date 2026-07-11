@@ -57,6 +57,22 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     return out
   }
 
+  if (state.phase === 'block') {
+    const pa = state.pendingAttack
+    if (!pa || seat !== other(pa.seat)) return []
+    const zone = pa.target.kind === 'unit' ? state.units[pa.target.id]?.zone : homeZone(pa.target.seat)
+    const candidates = unitsOf(state, seat).filter(u => u.zone === zone && !u.exhausted && !u.imprisoned)
+    const out2: GameAction[] = [{ type: 'block', pairs: [] }]
+    for (const b of candidates) for (const a of pa.attackers) {
+      if (state.units[a]) out2.push({ type: 'block', pairs: [{ blocker: b.id, onto: a }] })
+    }
+    if (candidates.length > 1 && pa.attackers.length) {
+      const first = pa.attackers.find(a => state.units[a])
+      if (first) out2.push({ type: 'block', pairs: candidates.map(b => ({ blocker: b.id, onto: first })) })
+    }
+    return out2
+  }
+
   if (state.phase === 'intercept') {
     const pa = state.pendingAttack
     if (!pa || seat !== other(pa.seat)) return []
@@ -74,8 +90,13 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     const def = defOf(state, card)
     if (def.cost > ready) continue
     if (!pipGateSatisfied(state, seat, def)) continue
+    const infiltrates = def.type === 'unit' && (def.kw ?? []).some(k => k.k === 'infiltrate')
     for (const targets of enumerateTargets(state, seat, card)) {
       out.push(targets.length ? { type: 'play', card, targets } : { type: 'play', card })
+      if (infiltrates) for (const z of ZONES) {
+        if (z === homeZone(seat)) continue   // the default deploy, already emitted
+        out.push(targets.length ? { type: 'play', card, targets, zone: z } : { type: 'play', card, zone: z })
+      }
     }
   }
 
@@ -85,6 +106,31 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     const zones = hasKw(state, unit, 'flying') ? ZONES.filter(z => z !== unit.zone)
       : ZONES.filter(z => adjacent(z, unit.zone))
     for (const to of zones) out.push({ type: 'move', unit: unit.id, to })
+  }
+
+  // v3 Sneak: exhaust-activated abilities (decision 60)
+  for (const u of unitsOf(state, seat)) {
+    if (u.exhausted || u.imprisoned) continue
+    const def = defOf(state, u.id)
+    if (!def.sneak || !(def.kw ?? []).some(k => k.k === 'sneak')) continue
+    const specs = def.sneak.targets ?? []
+    if (!specs.length) { out.push({ type: 'activate', unit: u.id }); continue }
+    const spec = specs[0]
+    if (spec.t === 'unit' || spec.t === 'unitOrBase') {
+      const sides: Seat[] = spec.side === 'friendly' ? [seat] : spec.side === 'any' ? [seat, other(seat)] : [other(seat)]
+      for (const sd of sides) for (const t of unitsInZone(state, u.zone, sd)) {
+        if (t.owner !== seat && !t.exhausted && hasKw(state, t, 'hidden')) continue
+        out.push({ type: 'activate', unit: u.id, targets: [{ kind: 'unit', id: t.id }] })
+      }
+      if (spec.t === 'unitOrBase' && u.zone === homeZone(other(seat))) {
+        out.push({ type: 'activate', unit: u.id, targets: [{ kind: 'base', seat: other(seat) }] })
+      }
+    }
+  }
+  // v3 Capture: release a held captive (ready the capturer)
+  for (const c of Object.values(state.captives)) {
+    const holder = state.units[c.by]
+    if (holder && holder.owner === seat) out.push({ type: 'releaseCaptive', unit: holder.id })
   }
 
   // attacks (decision 42): each ready unit alone, plus one full-group per (zone, shared target). No guard-forcing.
@@ -98,13 +144,13 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
       const able = group.filter(u => attackTargets(state, u).some(x => JSON.stringify(x) === JSON.stringify(t)))
       for (const u of able) {
         out.push({ type: 'attack', attackers: [u.id], target: t })
-        if (typeof kwOf(state, u, 'overextend') === 'number')
+        if (state.rules.combatModel !== 'blockerPairing' && typeof kwOf(state, u, 'overextend') === 'number')
           out.push({ type: 'attack', attackers: [u.id], target: t, overextend: [u.id] })
       }
       if (able.length > 1) {
         const ids = able.map(u => u.id)
         out.push({ type: 'attack', attackers: ids, target: t })
-        const oe = able.filter(u => typeof kwOf(state, u, 'overextend') === 'number').map(u => u.id)
+        const oe = state.rules.combatModel === 'blockerPairing' ? [] : able.filter(u => typeof kwOf(state, u, 'overextend') === 'number').map(u => u.id)
         if (oe.length) out.push({ type: 'attack', attackers: ids, target: t, overextend: oe })
       }
     }
@@ -200,6 +246,7 @@ function candidatesFor(state: GameState, seat: Seat, spec: TargetSpec): TargetRe
     if (spec.withKw && !hasKw(state, u, spec.withKw)) continue
     if (spec.mustBeDamaged && u.damage <= 0) continue
     if (u.owner !== seat && hasKw(state, u, 'untargetable')) continue
+    if (u.owner !== seat && !u.exhausted && hasKw(state, u, 'hidden')) continue   // v3 (decision 59)
     out.push({ kind: 'unit', id: u.id })
   }
   if (spec.t === 'unitOrBase') {
