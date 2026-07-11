@@ -3,6 +3,7 @@ name: Prison Warrant
 type: action
 cost: 1
 influenceTrigger: onPlay
+pips: yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"enemy","maxPower":2}],"onPlay":[{"op":"imprison","t":"chosen0"},{"op":"influence","n":1}]}

@@ -2,6 +2,7 @@
 name: Second Shadow
 type: action
 cost: 5
+pips: purple, purple
 status: draft
 art: /cards/second-shadow.svg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

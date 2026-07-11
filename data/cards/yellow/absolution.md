@@ -3,6 +3,7 @@ name: Absolution
 type: action
 cost: 4
 influenceTrigger: onPlay
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"removeNegative","t":"chosen0"},{"op":"influence","n":1}]}

@@ -3,6 +3,7 @@ name: Iron Discipline
 type: upgrade
 cost: 1
 influenceTrigger: onPlay
+pips: yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"aura","scope":"attached","armor":1}],"onPlay":[{"op":"influence","n":1}]}

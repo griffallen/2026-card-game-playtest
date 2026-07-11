@@ -5,6 +5,7 @@ cost: 1
 power: 1
 health: 1
 keywords: rush, overextend 1
+pips: red
 status: canon
 ---
 Rush. Overextend 1.

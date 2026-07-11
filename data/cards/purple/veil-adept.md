@@ -5,6 +5,7 @@ cost: 1
 power: 1
 health: 1
 keywords: ranged
+pips: purple
 status: draft
 art: /cards/veil-adept.svg
 ---

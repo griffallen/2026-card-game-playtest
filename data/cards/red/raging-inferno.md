@@ -2,6 +2,7 @@
 name: Raging Inferno
 type: action
 cost: 6
+pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unitOrBase","side":"any","baseSide":"enemy"}],"onPlay":[{"op":"damage","t":"chosen0","n":6}]}

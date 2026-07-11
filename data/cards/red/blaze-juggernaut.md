@@ -5,6 +5,7 @@ cost: 4
 power: 4
 health: 4
 keywords: rush, reach
+pips: red, red
 status: canon
 ---
 Rush. Reach.

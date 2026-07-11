@@ -3,6 +3,7 @@ name: Subjugate
 type: action
 cost: 3
 influenceTrigger: onPlay
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"imprison","t":"chosen0"},{"op":"buff","t":"chosen0","p":-1,"dur":"perm"},{"op":"influence","n":1}]}

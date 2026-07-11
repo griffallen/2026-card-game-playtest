@@ -3,6 +3,7 @@ name: Radiant Aegis
 type: action
 cost: 2
 influenceTrigger: onPlay
+pips: yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"buff","t":"chosen0","armor":2,"dur":"perm"},{"op":"influence","n":1}]}

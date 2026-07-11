@@ -2,6 +2,7 @@
 name: Final Onslaught
 type: action
 cost: 8
+pips: red, red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"ready","side":"friendly","t":"chosen0"},{"op":"extraAction"}]}

@@ -2,6 +2,7 @@
 name: Fog of Knives
 type: action
 cost: 6
+pips: purple, purple
 status: draft
 art: /cards/fog-of-knives.svg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

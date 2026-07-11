@@ -6,6 +6,7 @@ power: 4
 health: 6
 keywords: guard
 influenceTrigger: onDefend
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onDefend":[{"op":"influence","n":2}]}

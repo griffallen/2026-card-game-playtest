@@ -3,6 +3,7 @@ name: Mobilize the Faithful
 type: action
 cost: 6
 influenceTrigger: onPlay
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"buff","t":{"side":"friendly"},"p":1,"dur":"perm"},{"op":"grant","t":{"side":"friendly"},"kw":{"k":"guard"},"dur":"perm"},{"op":"influence","n":1}]}

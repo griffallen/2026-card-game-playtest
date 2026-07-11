@@ -2,6 +2,7 @@
 name: Blood Rush
 type: action
 cost: 2
+pips: red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"clearDamage","t":"chosen0"},{"op":"damage","t":"selfBase","n":"linked"}]}

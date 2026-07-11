@@ -2,6 +2,7 @@
 name: Bloodfrenzy
 type: upgrade
 cost: 3
+pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"aura","scope":"attached","p":1},{"s":"aura","scope":"attached","armor":1}],"startOfRound":{"cond":{"selfLifeAtMost":10},"ops":[{"op":"buff","t":"attached","p":1,"dur":"perm"}]}}

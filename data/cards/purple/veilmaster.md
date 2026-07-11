@@ -4,6 +4,7 @@ type: unit
 cost: 5
 power: 3
 health: 5
+pips: purple, purple, purple
 status: draft
 art: /cards/veilmaster.svg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

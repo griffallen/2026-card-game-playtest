@@ -5,6 +5,7 @@ cost: 7
 power: 0
 health: 8
 keywords: cantAttack
+pips: yellow, yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"oppThreshold","n":2}]}

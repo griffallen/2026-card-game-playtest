@@ -2,6 +2,7 @@
 name: Volcanic Slam
 type: action
 cost: 3
+pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"any","count":2,"upTo":true,"sameZone":true}],"onPlay":[{"op":"damage","t":"chosen0","n":3},{"op":"damage","t":"chosen1","n":3}]}

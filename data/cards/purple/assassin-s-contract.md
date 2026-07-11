@@ -3,6 +3,7 @@ name: Assassin's Contract
 type: upgrade
 cost: 4
 influenceTrigger: onKill
+pips: purple, purple
 status: draft
 art: /cards/assassin-s-contract.svg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

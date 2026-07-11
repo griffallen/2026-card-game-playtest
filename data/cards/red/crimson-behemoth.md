@@ -4,6 +4,7 @@ type: unit
 cost: 5
 power: 6
 health: 5
+pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onAttackBase":[{"op":"damageFilter","f":{"side":"all","zone":"sameAsSelf","other":true},"n":2}]}

@@ -2,6 +2,7 @@
 name: Glimpse
 type: action
 cost: 1
+pips: purple
 status: draft
 art: /cards/glimpse.svg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

@@ -2,6 +2,7 @@
 name: Reckless Charge
 type: action
 cost: 0
+pips: red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"modes":[{"label":"Rush","targets":[{"t":"unit","side":"friendly"}],"ops":[{"op":"grant","t":"chosen0","kw":{"k":"rush"},"dur":"round"}]},{"label":"Pack fury","targets":[{"t":"unit","side":"friendly"}],"ops":[{"op":"countBuff","t":"chosen0","per":{"color":"red","side":"all","zone":"ofTarget","other":true},"p":1,"dur":"round"}]}]}

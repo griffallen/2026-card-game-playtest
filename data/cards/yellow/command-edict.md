@@ -3,6 +3,7 @@ name: Command Edict
 type: action
 cost: 7
 influenceTrigger: onPlay
+pips: yellow, yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"buff","t":{"side":"friendly"},"armor":1,"dur":"perm"},{"op":"influence","n":2}]}

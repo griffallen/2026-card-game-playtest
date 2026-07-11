@@ -2,6 +2,7 @@
 name: Binding Light
 type: action
 cost: 2
+pips: yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"enemy","maxPower":4}],"onPlay":[{"op":"imprison","t":"chosen0"}]}

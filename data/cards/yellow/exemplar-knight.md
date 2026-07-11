@@ -5,6 +5,7 @@ cost: 4
 power: 4
 health: 4
 influenceTrigger: onKill
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onAttack":[{"op":"buff","t":"self","p":2,"dur":"round"}],"onKill":[{"op":"influence","n":1}]}

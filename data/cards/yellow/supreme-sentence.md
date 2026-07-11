@@ -2,6 +2,7 @@
 name: Supreme Sentence
 type: action
 cost: 7
+pips: yellow, yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"enemy","count":2}],"onPlay":[{"op":"imprison","t":"chosen0"},{"op":"imprison","t":"chosen1"}]}

@@ -2,6 +2,7 @@
 name: Sentence
 type: action
 cost: 4
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"imprison","t":"chosen0"},{"op":"draw","n":1}]}

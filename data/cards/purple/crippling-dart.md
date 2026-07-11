@@ -2,6 +2,7 @@
 name: Crippling Dart
 type: action
 cost: 2
+pips: purple
 status: draft
 art: /cards/crippling-dart.svg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

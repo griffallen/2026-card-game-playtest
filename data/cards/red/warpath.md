@@ -2,6 +2,7 @@
 name: Warpath
 type: action
 cost: 2
+pips: red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"buff","t":{"side":"friendly"},"p":1,"dur":"round"}]}

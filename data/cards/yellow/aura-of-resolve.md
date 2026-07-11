@@ -3,6 +3,7 @@ name: Aura of Resolve
 type: upgrade
 cost: 3
 influenceTrigger: onDefend
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onDefend":[{"op":"influence","n":2}]}

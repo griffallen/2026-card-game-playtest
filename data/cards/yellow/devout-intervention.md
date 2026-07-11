@@ -3,6 +3,7 @@ name: Devout Intervention
 type: action
 cost: 4
 influenceTrigger: onPlay
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"preventBase","n":3},{"op":"influence","n":1}]}

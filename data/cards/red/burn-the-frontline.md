@@ -2,6 +2,7 @@
 name: Burn the Frontline
 type: action
 cost: 6
+pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"zone"}],"onPlay":[{"op":"damageFilter","f":{"side":"all","zone":"chosenZone"},"n":6}]}

@@ -5,6 +5,7 @@ cost: 4
 power: 5
 health: 4
 keywords: breakthrough 3, overextend 3
+pips: red, red
 status: canon
 ---
 Breakthrough 3. Overextend 3.

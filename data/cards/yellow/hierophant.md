@@ -4,6 +4,7 @@ type: unit
 cost: 6
 power: 3
 health: 7
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"aura","scope":"otherFriendly","p":1,"cond":{"influenceAtLeast":10}}]}

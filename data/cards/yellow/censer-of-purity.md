@@ -4,6 +4,7 @@ type: unit
 cost: 5
 power: 3
 health: 6
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"startOfRound":{"ops":[{"op":"influence","n":-1},{"op":"heal","t":"selfBase","n":2}]}}

@@ -2,6 +2,7 @@
 name: Silence the Song
 type: action
 cost: 4
+pips: purple, purple
 status: draft
 art: /cards/silence-the-song.svg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

@@ -2,6 +2,7 @@
 name: Wither
 type: action
 cost: 2
+pips: purple, purple
 status: draft
 art: /cards/wither.svg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

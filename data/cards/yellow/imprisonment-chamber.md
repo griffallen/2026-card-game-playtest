@@ -3,6 +3,7 @@ name: Imprisonment Chamber
 type: action
 cost: 5
 influenceTrigger: onPlay
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"imprison","t":"chosen0"},{"op":"influence","n":2}]}

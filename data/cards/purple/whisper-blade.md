@@ -5,6 +5,7 @@ cost: 1
 power: 2
 health: 1
 influenceTrigger: onKill
+pips: purple
 status: draft
 art: /cards/whisper-blade.svg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

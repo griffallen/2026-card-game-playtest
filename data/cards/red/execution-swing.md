@@ -2,6 +2,7 @@
 name: Execution Swing
 type: action
 cost: 4
+pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"any","mustBeDamaged":true}],"onPlay":[{"op":"destroy","t":"chosen0"}]}

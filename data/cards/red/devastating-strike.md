@@ -2,6 +2,7 @@
 name: Devastating Strike
 type: action
 cost: 1
+pips: red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"any"}],"onPlay":[{"op":"damage","t":"chosen0","n":2,"bonusIfDamaged":1}]}

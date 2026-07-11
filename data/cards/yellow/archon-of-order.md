@@ -4,6 +4,7 @@ type: unit
 cost: 7
 power: 7
 health: 7
+pips: yellow, yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"startOfRound":{"ops":[{"op":"imprison","t":"auto","auto":{"scope":"eachZone"}}]}}

@@ -2,6 +2,7 @@
 name: Veil of Silence
 type: action
 cost: 6
+pips: purple, purple
 status: draft
 art: /cards/veil-of-silence.svg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

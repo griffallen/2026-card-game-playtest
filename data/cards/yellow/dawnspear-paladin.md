@@ -5,6 +5,7 @@ cost: 5
 power: 5
 health: 5
 influenceTrigger: onAttack
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onAttack":[{"op":"influence","n":2}]}

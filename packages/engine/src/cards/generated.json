@@ -50,6 +50,9 @@
   "type": "action",
   "cost": 0,
   "text": "Choose one — target unit gains Rush this round; OR target unit gets +1 Power this round for each other red unit in its zone (either side's).",
+  "pips": [
+   "red"
+  ],
   "designerNote": "Session 006: was \"gains Rush\" permanently — dead text under decision 41 (Rush only matters the round a unit enters play, so a permanent grant on a veteran does nothing, ever). Now scoped to the round: the real play is on a unit you just dropped — its first move becomes free, so it can cross a zone and still fight.\n\n2026-07-11 (designer, PR #13 + #14): cost 1 → 0 and became modal — the second mode is the pack-fury\npump counting ALL red units in the zone, enemy red included (rage recognizes rage). First modal card\nin the game; the mode is declared when you cast.",
   "artUrl": "/cards/reckless-charge.jpg"
  },
@@ -70,6 +73,9 @@
     "k": "overextend",
     "n": 1
    }
+  ],
+  "pips": [
+   "red"
   ],
   "designerNote": "Decision 35: when attacking you MAY overextend for +N power; the unit takes N damage at end of round. A gamble, not a given.",
   "artUrl": "/cards/cinder-initiate.jpg"
@@ -95,6 +101,9 @@
   "type": "action",
   "cost": 1,
   "text": "Deal 2 damage to target unit — 3 instead if it's already damaged.",
+  "pips": [
+   "red"
+  ],
   "designerNote": "Session 006: became unit-only. Red's burn grammar — unit-only burn deals cost+1, face-capable burn deals exactly cost (the reach is the tax). This is the efficient unit-killer; Searing Bolt is the flexible one.\n\n2026-07-11 (designer, issue #4): finish-the-wounded clause added (2, or 3 to a damaged unit) —\nfirst conditional-bonus card. Pairs with red's chip damage; the executioner rewards setup.",
   "artUrl": "/cards/devastating-strike.jpg"
  },
@@ -120,6 +129,9 @@
     "k": "rush"
    }
   ],
+  "pips": [
+   "red"
+  ],
   "artUrl": "/cards/spark-hound.jpg"
  },
  "berserker": {
@@ -139,6 +151,9 @@
     "k": "overextend",
     "n": 2
    }
+  ],
+  "pips": [
+   "red"
   ],
   "artUrl": "/cards/berserker.jpg"
  },
@@ -166,6 +181,9 @@
   "type": "action",
   "cost": 2,
   "text": "Remove all damage from a unit you control; deal that much damage to your Home.",
+  "pips": [
+   "red"
+  ],
   "designerNote": "2026-07-11 (designer, issue #4): full rework — the wound comes home. Red's healing is a\nmortgage: your champion fights on, your Home bleeds for it. First linked-amount card.",
   "artUrl": "/cards/blood-rush.jpg"
  },
@@ -187,6 +205,9 @@
     "n": 1
    }
   ],
+  "pips": [
+   "red"
+  ],
   "artUrl": "/cards/flameblade-raider.jpg"
  },
  "pillage": {
@@ -207,6 +228,9 @@
   "type": "action",
   "cost": 2,
   "text": "Destroy target enemy upgrade.",
+  "pips": [
+   "red"
+  ],
   "designerNote": "Session 006: 4 mana → 2. Utility removal was priced like a threat; yellow runs seven upgrades and red needs a real answer at a price it can pay mid-assault.",
   "artUrl": "/cards/pillage.jpg"
  },
@@ -231,6 +255,9 @@
   "type": "action",
   "cost": 2,
   "text": "Deal 3 damage to any target.",
+  "pips": [
+   "red"
+  ],
   "designerNote": "2026-07-11 (designer, issue #4): 2 → 3 damage at unchanged cost 2. This runs ABOVE the\nsession-006 burn grammar (face-capable burn = cost) — designer's call on his ratify pass;\nflagged on the thread in case cost 3 was intended.",
   "artUrl": "/cards/searing-bolt.jpg"
  },
@@ -259,6 +286,9 @@
   "type": "action",
   "cost": 2,
   "text": "Target unit with Rush gains Breakthrough 2 this round.",
+  "pips": [
+   "red"
+  ],
   "artUrl": "/cards/smash-through.jpg"
  },
  "warcry-leader": {
@@ -279,6 +309,10 @@
   "power": 2,
   "health": 3,
   "text": "Other friendly units have Rush.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "artUrl": "/cards/warcry-leader.jpg"
  },
  "warpath": {
@@ -298,6 +332,9 @@
   "type": "action",
   "cost": 2,
   "text": "Your units get +1 Power this round.",
+  "pips": [
+   "red"
+  ],
   "designerNote": "Session 006 redesign: was \"all friendly units gain Rush\" permanently — dead text under decision 41 (see Reckless Charge). Rebuilt as the go-wide pump: 2 mana, +1 Power to the whole board for the round. Last Stand (+2 and a blood price) is its big sibling.",
   "artUrl": "/cards/warpath.jpg"
  },
@@ -333,6 +370,10 @@
   "type": "upgrade",
   "cost": 3,
   "text": "Attached unit gets +1 Power and Armor 1. At the start of your round, if you have 10 or less life, attached unit gets +1 Power permanently.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "designerNote": "Session 006: threshold 5 → 10 life and cost 5 → 3. At ≤5 life the game is usually already decided; half-life is where red's desperation engine should start paying.\n\n2026-07-11 (designer, issue #4): immediate +1 Power / Armor 1 on attach added; the ≤10-life\ndesperation engine unchanged. Threshold kept at \"10 or less\" (established) though the request\nsaid \"less than 10\" — flagged on the thread.",
   "artUrl": "/cards/bloodfrenzy.jpg"
  },
@@ -362,6 +403,10 @@
   "type": "action",
   "cost": 3,
   "text": "Deal 2 damage to two different target units.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "artUrl": "/cards/collateral-damage.jpg"
  },
  "fiery-impaler": {
@@ -380,6 +425,10 @@
   "power": 3,
   "health": 3,
   "text": "When this attacks a unit, it also deals 1 damage to the strongest other enemy unit in that zone.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "designerNote": "Session 006: text now states the deterministic pick (decision 51) instead of the vague \"an adjacent unit\".",
   "artUrl": "/cards/fiery-impaler.jpg"
  },
@@ -401,6 +450,10 @@
     "k": "overextend",
     "n": 2
    }
+  ],
+  "pips": [
+   "red",
+   "red"
   ],
   "artUrl": "/cards/rageforged-brute.jpg"
  },
@@ -432,6 +485,10 @@
   "type": "action",
   "cost": 3,
   "text": "Deal 3 damage to up to two units in the same zone.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "designerNote": "2026-07-11 (designer, issue #4): one eruption, one zone — trades face-reach for a second body.\nFirst upTo/sameZone card. Under decision 68's curve a 3-cost dealing up to 6 across two bodies\nis the convex rate red wants.",
   "artUrl": "/cards/volcanic-slam.jpg"
  },
@@ -451,6 +508,10 @@
    {
     "k": "reach"
    }
+  ],
+  "pips": [
+   "red",
+   "red"
   ],
   "designerNote": "Reach (canon since v2.0 audit): may attack into an adjacent zone like Ranged, but unlike Ranged it can assault bases and does take counter-damage.",
   "artUrl": "/cards/blaze-juggernaut.jpg"
@@ -477,6 +538,10 @@
   "type": "upgrade",
   "cost": 4,
   "text": "Attached unit gets +2 Power and Breakthrough 2.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "designerNote": "Session 006 redesign: was +2 Power and Rush — the Rush half was dead text on any unit already in play (decision 41). Breakthrough keeps the oath aggressive and permanent.",
   "artUrl": "/cards/burning-oath.jpg"
  },
@@ -510,6 +575,10 @@
   "type": "action",
   "cost": 4,
   "text": "Target unit gets +3 Power and Breakthrough 3 this round.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "designerNote": "Session 006 redesign: was 6 mana for +3 Power and Rush this round — overcosted (Blood Rush gives +2 and Rush for 2) and the Rush rider was near-dead text on veterans. Now the single-target alpha strike: the Breakthrough rider makes the pump land on the base, not just the wall.",
   "artUrl": "/cards/cataclysmic-charge.jpg"
  },
@@ -530,6 +599,10 @@
     "k": "breakthrough",
     "n": 3
    }
+  ],
+  "pips": [
+   "red",
+   "red"
   ],
   "designerNote": "Session 006 balance pass: 5 → 4 mana (sim-guided red curve compression; a hot statline for the cost — watch it in play).",
   "artUrl": "/cards/doombringer.jpg"
@@ -554,6 +627,10 @@
   "type": "action",
   "cost": 4,
   "text": "Destroy target damaged unit.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "designerNote": "Session 006: 6 mana → 4. Legal under the red charter as the \"finish the fight\" execute — it requires combat to have happened first (damaged-only); red still never gets unconditional destroy.",
   "artUrl": "/cards/execution-swing.jpg"
  },
@@ -575,6 +652,10 @@
     "k": "overextend",
     "n": 3
    }
+  ],
+  "pips": [
+   "red",
+   "red"
   ],
   "designerNote": "Session 006: 6/5 → 5/4. It beat the statline grammar by +3 while carrying two keywords — the pool's most undercosted body.",
   "artUrl": "/cards/inferno-titan.jpg"
@@ -600,6 +681,10 @@
   "type": "action",
   "cost": 4,
   "text": "Deal 4 damage to target unit or base.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "artUrl": "/cards/rupture.jpg"
  },
  "crimson-behemoth": {
@@ -622,6 +707,10 @@
   "power": 6,
   "health": 5,
   "text": "When this attacks a base, it deals 2 damage to every other unit in that zone — yours included.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "designerNote": "Re-ruled after playtest 004: the assault splashes the defended Home zone, both sides (the original \"adjacent zones\" reading only ever hit Neutral — dead text during a siege). Session 006: 6/6 → 6/5 to sit on the statline grammar, and the text now says what actually happens.",
   "artUrl": "/cards/crimson-behemoth.jpg"
  },
@@ -638,6 +727,10 @@
   "type": "action",
   "cost": 5,
   "text": "Ready all your units.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "designerNote": "Session 006: retexted from \"take an extra combat phase\" (a phase that no longer exists — decision 40 dissolved the phase ladder). The effect was already ready-all; now the card says so.",
   "artUrl": "/cards/relentless-assault.jpg"
  },
@@ -657,6 +750,10 @@
   "type": "action",
   "cost": 5,
   "text": "Deal 3 damage to all units.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "artUrl": "/cards/scorching-howl.jpg"
  },
  "warlord-garok": {
@@ -679,6 +776,10 @@
    {
     "k": "rush"
    }
+  ],
+  "pips": [
+   "red",
+   "red"
   ],
   "designerNote": "Session 006 balance pass: 6 → 5 mana (sim-guided red curve compression).",
   "artUrl": "/cards/warlord-garok.jpg"
@@ -705,6 +806,10 @@
   "type": "action",
   "cost": 6,
   "text": "Choose a zone. Deal 6 damage to every unit there — yours included.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "designerNote": "Session 006: was 7 mana for 4 damage in one zone — strictly worse than Scorching Howl (5 mana, 3 damage everywhere). Now the wall-breaker: 6 mana, 6 damage to one zone, both sides. Kills almost every yellow wall through the fortress plan; the friendly-fire is the red cost made visible.",
   "artUrl": "/cards/burn-the-frontline.jpg"
  },
@@ -726,6 +831,10 @@
     "k": "overextend",
     "n": 3
    }
+  ],
+  "pips": [
+   "red",
+   "red"
   ],
   "artUrl": "/cards/earthshaker.jpg"
  },
@@ -750,6 +859,10 @@
   "type": "action",
   "cost": 6,
   "text": "Deal 6 damage to target unit or base.",
+  "pips": [
+   "red",
+   "red"
+  ],
   "designerNote": "Session 006: 5 damage → 6, matching the face-capable burn grammar (damage = cost): Searing Bolt 2@2, Volcanic Slam 3@3, Rupture 4@4, Raging Inferno 6@6.",
   "artUrl": "/cards/raging-inferno.jpg"
  },
@@ -771,6 +884,11 @@
     "k": "overextend",
     "n": 4
    }
+  ],
+  "pips": [
+   "red",
+   "red",
+   "red"
   ],
   "artUrl": "/cards/apocalypse-engine.jpg"
  },
@@ -796,6 +914,11 @@
   "type": "action",
   "cost": 7,
   "text": "Your units gain +2 Power this round. You lose 2 life.",
+  "pips": [
+   "red",
+   "red",
+   "red"
+  ],
   "artUrl": "/cards/last-stand.jpg"
  },
  "unchained-rage": {
@@ -814,6 +937,11 @@
   "type": "action",
   "cost": 7,
   "text": "Double the Power of all your units for the next 2 rounds.",
+  "pips": [
+   "red",
+   "red",
+   "red"
+  ],
   "designerNote": "2026-07-11 (designer, issue #4): from one unit, one round — to YOUR WHOLE ARMY, TWO ROUNDS.\nThe poster child of decision 68 (superlinear curves): this is what a 7-cost feels like.\nFirst multi-round, board-wide effect.",
   "artUrl": "/cards/unchained-rage.jpg"
  },
@@ -840,6 +968,11 @@
   "type": "action",
   "cost": 8,
   "text": "Ready one of your units, then immediately take an extra action.",
+  "pips": [
+   "red",
+   "red",
+   "red"
+  ],
   "designerNote": "Decision 43: rounds have no extra turns — \"extra turn\" became ready one of your units + an extra action. Unplayable with no friendly unit to ready, by design.",
   "artUrl": "/cards/final-onslaught.jpg"
  },
@@ -861,6 +994,11 @@
     "k": "overextend",
     "n": 5
    }
+  ],
+  "pips": [
+   "red",
+   "red",
+   "red"
   ],
   "artUrl": "/cards/worldrender.jpg"
  },
@@ -884,6 +1022,9 @@
   "type": "upgrade",
   "cost": 1,
   "text": "Attach to unit. This unit gets Armor 1. Gain 1 Influence.",
+  "pips": [
+   "yellow"
+  ],
   "designerNote": "Session 006: 2 → 1 mana. As an upgrade it can be Pillaged and feeds the upgrade-pressure rule — it should undercut the action version (Radiant Aegis).",
   "artUrl": "/cards/iron-discipline.jpg"
  },
@@ -908,6 +1049,9 @@
   "type": "upgrade",
   "cost": 1,
   "text": "Attach to unit. This unit gets +1 Power and Guard.",
+  "pips": [
+   "yellow"
+  ],
   "artUrl": "/cards/oath-of-order.jpg"
  },
  "prison-warrant": {
@@ -934,6 +1078,9 @@
   "type": "action",
   "cost": 1,
   "text": "Imprison target enemy unit with 2 or less Power. Gain 1 Influence.",
+  "pips": [
+   "yellow"
+  ],
   "designerNote": "Session 006, the prison ladder (each imprison action now has one job): Warrant 1 = small fry. The old \"in this zone\" was meaningless from hand (decision 52 context) and an unrestricted 1-mana imprison embarrassed Detain at 6.",
   "artUrl": "/cards/prison-warrant.jpg"
  },
@@ -956,6 +1103,9 @@
    {
     "k": "guard"
    }
+  ],
+  "pips": [
+   "yellow"
   ],
   "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
   "artUrl": "/cards/vanguard-sentinel.jpg"
@@ -980,6 +1130,9 @@
   "type": "action",
   "cost": 2,
   "text": "Imprison target enemy unit with 4 or less Power.",
+  "pips": [
+   "yellow"
+  ],
   "designerNote": "Session 006, prison ladder: Binding Light 2 = midweight lockup, pure tempo (no influence rider). The old 10+ rider was dead text — prisoners already can't attack anything (decision 50 spirit).",
   "artUrl": "/cards/binding-light.jpg"
  },
@@ -1001,6 +1154,9 @@
   "power": 2,
   "health": 3,
   "text": "When this enters a zone, imprison the strongest enemy unit there.",
+  "pips": [
+   "yellow"
+  ],
   "designerNote": "Decision 51: the pick is deterministic (strongest eligible; ties go to the earliest arrival) and the text says so. Fires on deploy and on every move.",
   "artUrl": "/cards/containment-priest.jpg"
  },
@@ -1024,6 +1180,9 @@
   "type": "upgrade",
   "cost": 2,
   "text": "Attach to unit. This unit gets Armor 1. Draw a card.",
+  "pips": [
+   "yellow"
+  ],
   "designerNote": "Session 006: 4 → 2 mana (armor ladder).",
   "artUrl": "/cards/disciplined-mind.jpg"
  },
@@ -1056,6 +1215,9 @@
   "type": "action",
   "cost": 2,
   "text": "Choose a zone. Your units there gain Guard. Gain 1 Influence.",
+  "pips": [
+   "yellow"
+  ],
   "designerNote": "Decision 52: \"this zone\" on an action means \"choose a zone\" — the text now says so.",
   "artUrl": "/cards/hold-the-line.jpg"
  },
@@ -1084,6 +1246,9 @@
   "type": "action",
   "cost": 2,
   "text": "Target unit gets Armor 2, permanently. Gain 1 Influence.",
+  "pips": [
+   "yellow"
+  ],
   "designerNote": "Session 006: 1 → 2 mana. Armor 2 blanks red's whole cheap-burn suite; at 1 mana it was the best card in the pool. The armor ladder: Aegis 2 (Armor 2, one unit), Radiant Wall 5 (Armor 3), Command Edict 7 (Armor 1, everyone).",
   "artUrl": "/cards/radiant-aegis.jpg"
  },
@@ -1107,6 +1272,9 @@
     "k": "guard"
    }
   ],
+  "pips": [
+   "yellow"
+  ],
   "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
   "artUrl": "/cards/sunguard-defender.jpg"
  },
@@ -1123,6 +1291,10 @@
   "type": "upgrade",
   "cost": 3,
   "text": "Attach to unit. When this unit defends, gain 2 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006 redesign: was \"at the start of your round, gain 1 Influence\" — passive income, illegal under the yellow charter (influence is event-earned, decision 34). Now it pays when the wearer defends: put it on a Guard and get paid for every intercept.",
   "artUrl": "/cards/aura-of-resolve.jpg"
  },
@@ -1145,6 +1317,10 @@
    {
     "k": "guard"
    }
+  ],
+  "pips": [
+   "yellow",
+   "yellow"
   ],
   "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
   "artUrl": "/cards/bulwark-protector.jpg"
@@ -1171,6 +1347,10 @@
   "type": "upgrade",
   "cost": 3,
   "text": "Attach to unit. This unit can't be the target of enemy actions. Influence: +1.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "artUrl": "/cards/chain-of-law.jpg"
  },
  "justicar-enforcer": {
@@ -1193,6 +1373,10 @@
     "k": "guard"
    }
   ],
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006 balance pass: payout restored to 2 — this is yellow's dedicated influence-engine guard (the vanilla walls pay 1). Sims: without real influence payouts yellow's second win axis never fires.",
   "artUrl": "/cards/justicar-enforcer.jpg"
  },
@@ -1214,6 +1398,10 @@
   "power": 3,
   "health": 3,
   "text": "When this attacks, imprison the strongest enemy unit in the defending zone.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Decision 51 text (deterministic pick — it may be the attack target itself, which cancels the counter-punch).",
   "artUrl": "/cards/noble-purifier.jpg"
  },
@@ -1237,6 +1425,10 @@
    {
     "k": "cantAttack"
    }
+  ],
+  "pips": [
+   "yellow",
+   "yellow"
   ],
   "designerNote": "Session 006: the aura is now zone-local (was board-wide — a 3-mana wall quietly armoring the whole army from home). Walls protect what stands behind them.",
   "artUrl": "/cards/sanctified-bastion.jpg"
@@ -1270,6 +1462,10 @@
   "type": "action",
   "cost": 3,
   "text": "Imprison target unit. It gets -1 Power permanently. Gain 1 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006, prison ladder: Subjugate 3 = unrestricted imprison that leaves a mark — the prisoner comes back weaker. The old \"if your Influence is 5 or less\" condition was noise; the rider is now unconditional.",
   "artUrl": "/cards/subjugate.jpg"
  },
@@ -1297,6 +1493,10 @@
   "type": "action",
   "cost": 3,
   "text": "Heal 3 damage from target unit. Gain 1 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006: became unit-only. The old targeting technically allowed healing the enemy base — the engine can't say \"any unit or YOUR base\" in one target, and the flexible version was dishonest text.",
   "artUrl": "/cards/unwavering-faith.jpg"
  },
@@ -1323,6 +1523,10 @@
   "type": "action",
   "cost": 4,
   "text": "Free target friendly unit from imprisonment and remove its negative effects. Gain 1 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006: 7 → 3 mana and the text now says what removeNegative actually does (it is primarily a jailbreak). A situational cleanse was priced like a bomb.",
   "artUrl": "/cards/absolution.jpg"
  },
@@ -1343,6 +1547,10 @@
   "type": "action",
   "cost": 4,
   "text": "Prevent the next 3 damage to your base this round. Gain 1 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006: 6 → 3 mana. A one-round shield priced like a wall.",
   "artUrl": "/cards/devout-intervention.jpg"
  },
@@ -1373,6 +1581,10 @@
   "type": "action",
   "cost": 4,
   "text": "Target unit can't attack this round. Draw a card.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006: 5 → 3 mana. A one-round pacify plus a card is a trick, not a threat.",
   "artUrl": "/cards/disarming-order.jpg"
  },
@@ -1399,6 +1611,10 @@
   "power": 4,
   "health": 4,
   "text": "When this attacks, it gets +2 Power this round. When it defeats a unit, gain 1 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Decision 34: influence pays on the kill, not for existing. (Session 006: fixed a copy-paste note that claimed this was an on-defend card.)",
   "artUrl": "/cards/exemplar-knight.jpg"
  },
@@ -1425,6 +1641,10 @@
     "k": "cantAttack"
    }
   ],
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "artUrl": "/cards/fortress-keeper.jpg"
  },
  "high-justiciar": {
@@ -1447,6 +1667,10 @@
   "power": 3,
   "health": 5,
   "text": "At the start of your round, imprison the strongest enemy unit outside this unit's zone.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Decision 51 text (deterministic pick, stated on the card).",
   "artUrl": "/cards/high-justiciar.jpg"
  },
@@ -1468,6 +1692,10 @@
   "power": 4,
   "health": 4,
   "text": "When this enters a zone, imprison the strongest enemy unit there.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Decision 51 text. Containment Priest's big sibling: full statline plus the same arrest, two mana later.",
   "artUrl": "/cards/lawbringer.jpg"
  },
@@ -1496,6 +1724,10 @@
   "type": "action",
   "cost": 4,
   "text": "Target unit gets +3 Power this round. Gain 1 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006: 6 → 3 mana (red's Cataclysmic Charge gives +3 AND Breakthrough 3 at 4 — yellow's pump can cost less because it converts defense, not kills).",
   "artUrl": "/cards/light-of-authority.jpg"
  },
@@ -1513,6 +1745,10 @@
   "type": "upgrade",
   "cost": 4,
   "text": "Attach to unit. Other friendly units in this zone get +1 Power.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006: 6 → 4 mana (red gets the same aura board-wide ON a 5/5 body for 6 — Warlord Garok).",
   "artUrl": "/cards/resolve-banner.jpg"
  },
@@ -1539,6 +1775,10 @@
   "type": "action",
   "cost": 4,
   "text": "Imprison target unit. Draw a card.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006, prison ladder: Sentence 4 = imprison that replaces itself. The old 10+ rider duplicated what imprisonment already does.",
   "artUrl": "/cards/sentence.jpg"
  },
@@ -1564,6 +1804,10 @@
   "power": 3,
   "health": 6,
   "text": "At the start of your round, lose 1 Influence and heal 2 damage from your base.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Charter-legal: this is influence *spent*, not earned — trading the track for life. Session 006: text made unconditional to match the effects (the old \"if you do\" implied a choice that never existed).",
   "artUrl": "/cards/censer-of-purity.jpg"
  },
@@ -1587,6 +1831,10 @@
     "k": "guard"
    }
   ],
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
   "artUrl": "/cards/custodian-of-law.jpg"
  },
@@ -1605,6 +1853,10 @@
   "power": 5,
   "health": 5,
   "text": "When this attacks, gain 2 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006: dropped the \"may\" — strictly-beneficial effects auto-apply (decision 24), so the card now says what happens.",
   "artUrl": "/cards/dawnspear-paladin.jpg"
  },
@@ -1631,6 +1883,10 @@
   "type": "action",
   "cost": 5,
   "text": "Imprison target unit. Gain 2 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006, prison ladder: Chamber 5 = the political win — imprison plus the pool's biggest single influence payout. The old text restated the global decay rule (§1.11) as if it were a card effect; the ledger stopped lying.",
   "artUrl": "/cards/imprisonment-chamber.jpg"
  },
@@ -1655,6 +1911,10 @@
   "type": "action",
   "cost": 5,
   "text": "Imprison all enemy units with 3 Power or less. Influence: +2.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "artUrl": "/cards/radiant-judgment.jpg"
  },
  "radiant-wall": {
@@ -1682,6 +1942,10 @@
   "type": "action",
   "cost": 5,
   "text": "Target unit gets Armor 3, permanently. Gain 1 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006: 4 → 5 mana (armor ladder — see Radiant Aegis).",
   "artUrl": "/cards/radiant-wall.jpg"
  },
@@ -1703,6 +1967,10 @@
   "type": "action",
   "cost": 5,
   "text": "Heal 4 damage from your base. Gain 1 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006: 6 → 4 mana, influence 2 → 1 (life-gain shouldn't also be the biggest influence payout — that belongs to the prison ladder's Chamber).",
   "artUrl": "/cards/sanctify.jpg"
  },
@@ -1727,6 +1995,10 @@
   "type": "upgrade",
   "cost": 5,
   "text": "Attach to unit. This unit gets +2 Armor and Guard.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "artUrl": "/cards/unshakable-wall.jpg"
  },
  "detain": {
@@ -1757,6 +2029,10 @@
   "type": "action",
   "cost": 6,
   "text": "Imprison target unit. Heal 3 damage from your base. Gain 1 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006, prison ladder: Detain 6 = the stabilizer — lock the threat away and bind the wound it left. Was a plain imprison+1 at 6 mana, strictly worse than the cheaper rungs.",
   "artUrl": "/cards/detain.jpg"
  },
@@ -1780,6 +2056,11 @@
     "k": "cantAttack"
    }
   ],
+  "pips": [
+   "yellow",
+   "yellow",
+   "yellow"
+  ],
   "artUrl": "/cards/gateward-colossus.jpg"
  },
  "hierophant": {
@@ -1801,6 +2082,10 @@
   "power": 3,
   "health": 7,
   "text": "Other friendly units get +1 Power while your Influence is 10 or more.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006: 2/6 → 3/7. It paid a four-point statline tax for an aura that only works when you are already winning; now it pays two.",
   "artUrl": "/cards/hierophant.jpg"
  },
@@ -1826,6 +2111,10 @@
   "power": 4,
   "health": 5,
   "text": "When this enters a zone, imprison the strongest enemy unit there with 4 or less Power.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Decision 51 text (deterministic pick within the power cap).",
   "artUrl": "/cards/inquisitor.jpg"
  },
@@ -1860,6 +2149,10 @@
   "type": "action",
   "cost": 6,
   "text": "Your units get +1 Power and gain Guard, permanently. Gain 1 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006: 4 → 6 mana. A permanent board-wide pump plus mass Guard was priced like a trick; it is a haymaker (red's Warpath gives +1 for one round at 2).",
   "artUrl": "/cards/mobilize-the-faithful.jpg"
  },
@@ -1883,6 +2176,11 @@
   "power": 7,
   "health": 7,
   "text": "At the start of your round, imprison the strongest enemy unit in each zone.",
+  "pips": [
+   "yellow",
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Decision 51 text (deterministic pick per zone; zones with no eligible enemies are skipped). The mass-jailer — remember each prisoner costs 1 Influence per round.",
   "artUrl": "/cards/archon-of-order.jpg"
  },
@@ -1901,6 +2199,11 @@
   "power": 7,
   "health": 7,
   "text": "When this attacks, gain 1 Influence.",
+  "pips": [
+   "yellow",
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006: 6/6 → 7/7 (it paid a two-point statline tax for a one-influence trigger — Archon gets a bigger trigger at the same cost with a full body). Text now says \"gain\" — one shared track, \"opponent loses 1\" was the same thing said confusingly (decision 15).",
   "artUrl": "/cards/champion-of-the-faith.jpg"
  },
@@ -1925,6 +2228,11 @@
   "type": "action",
   "cost": 7,
   "text": "Your units get Armor 1, permanently. Gain 2 Influence.",
+  "pips": [
+   "yellow",
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006 redesign: was +2 Armor for one round at 7 — a fog effect priced like a finisher. Now the fortress decree: permanent board-wide Armor 1.",
   "artUrl": "/cards/command-edict.jpg"
  },
@@ -1950,6 +2258,11 @@
   "type": "action",
   "cost": 7,
   "text": "Choose a zone. Imprison every enemy unit there.",
+  "pips": [
+   "yellow",
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006, prison ladder: Prison of Light 7 = the zone-wide haymaker. Remember the mortgage: every prisoner costs you 1 Influence per round, so caging an army is a serious bet.",
   "artUrl": "/cards/prison-of-light.jpg"
  },
@@ -1972,6 +2285,11 @@
    {
     "k": "cantAttack"
    }
+  ],
+  "pips": [
+   "yellow",
+   "yellow",
+   "yellow"
   ],
   "designerNote": "Decision 49: the card now says exactly what the static does (the old \"maximum Influence\" text meant nothing on a shared track).",
   "artUrl": "/cards/radiant-citadel.jpg"
@@ -2000,6 +2318,11 @@
   "type": "action",
   "cost": 7,
   "text": "Imprison two target enemy units.",
+  "pips": [
+   "yellow",
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Session 006 redesign under decision 50 (no dead thresholds): the old \"if your Influence is 15 or more\" could never fire — 15 is the win. Now it simply passes two sentences anywhere on the board.",
   "artUrl": "/cards/supreme-sentence.jpg"
  },
@@ -2026,6 +2349,11 @@
     "k": "guard"
    }
   ],
+  "pips": [
+   "yellow",
+   "yellow",
+   "yellow"
+  ],
   "designerNote": "Flying is canon (decision 48): may move to any zone, ignoring adjacency.",
   "artUrl": "/cards/light-s-vanguard.jpg"
  },
@@ -2042,6 +2370,9 @@
   "type": "action",
   "cost": 1,
   "text": "Draw a card.",
+  "pips": [
+   "purple"
+  ],
   "artUrl": "/cards/glimpse.svg"
  },
  "veil-adept": {
@@ -2057,6 +2388,9 @@
    {
     "k": "ranged"
    }
+  ],
+  "pips": [
+   "purple"
   ],
   "designerNote": "Session 006 proposal: The statline pays the ranged tax: shooting without taking counter-damage is worth a stat.",
   "artUrl": "/cards/veil-adept.svg"
@@ -2076,6 +2410,9 @@
   "power": 2,
   "health": 1,
   "text": "When this defeats a unit, gain 1 Influence.",
+  "pips": [
+   "purple"
+  ],
   "designerNote": "Session 006 proposal: Purple's influence law: the track moves only on kills.",
   "artUrl": "/cards/whisper-blade.svg"
  },
@@ -2095,6 +2432,9 @@
   "type": "upgrade",
   "cost": 2,
   "text": "Attached unit has Flying.",
+  "pips": [
+   "purple"
+  ],
   "artUrl": "/cards/cloak-of-haze.svg"
  },
  "crippling-dart": {
@@ -2123,6 +2463,9 @@
   "type": "action",
   "cost": 2,
   "text": "Deal 2 damage to target enemy unit. It gets -1 Power permanently.",
+  "pips": [
+   "purple"
+  ],
   "artUrl": "/cards/crippling-dart.svg"
  },
  "dusk-archer": {
@@ -2138,6 +2481,9 @@
    {
     "k": "ranged"
    }
+  ],
+  "pips": [
+   "purple"
   ],
   "artUrl": "/cards/dusk-archer.svg"
  },
@@ -2156,6 +2502,9 @@
   "power": 2,
   "health": 2,
   "text": "When this defeats a unit, gain 1 Influence.",
+  "pips": [
+   "purple"
+  ],
   "artUrl": "/cards/mist-stalker.svg"
  },
  "pacify": {
@@ -2181,6 +2530,9 @@
   "type": "action",
   "cost": 2,
   "text": "Target enemy unit can't attack this round.",
+  "pips": [
+   "purple"
+  ],
   "artUrl": "/cards/pacify.svg"
  },
  "shadowstep": {
@@ -2210,6 +2562,9 @@
   "type": "action",
   "cost": 2,
   "text": "Target friendly unit gains Flying this round. Draw a card.",
+  "pips": [
+   "purple"
+  ],
   "artUrl": "/cards/shadowstep.svg"
  },
  "twilight-scout": {
@@ -2225,6 +2580,9 @@
    {
     "k": "flying"
    }
+  ],
+  "pips": [
+   "purple"
   ],
   "artUrl": "/cards/twilight-scout.svg"
  },
@@ -2243,6 +2601,9 @@
   "power": 1,
   "health": 3,
   "text": "When this enters play, draw a card.",
+  "pips": [
+   "purple"
+  ],
   "artUrl": "/cards/veiled-messenger.svg"
  },
  "wither": {
@@ -2266,6 +2627,10 @@
   "type": "action",
   "cost": 2,
   "text": "Target enemy unit gets -2 Power permanently.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "designerNote": "Session 006 proposal: The signature removal: purple weakens instead of burning (red) or walling (yellow). Power floors at 0.\nFirst sims: 1 mana was a permanent answer to any attacker — 2 respects red.",
   "artUrl": "/cards/wither.svg"
  },
@@ -2282,6 +2647,10 @@
    {
     "k": "ranged"
    }
+  ],
+  "pips": [
+   "purple",
+   "purple"
   ],
   "artUrl": "/cards/gloom-piercer.svg"
  },
@@ -2308,6 +2677,10 @@
   "power": 3,
   "health": 3,
   "text": "When this enters play, target enemy unit gets -1 Power permanently.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/nightweaver.svg"
  },
  "obscure": {
@@ -2327,6 +2700,10 @@
   "type": "action",
   "cost": 3,
   "text": "Prevent the next 2 damage to your base this round. Draw a card.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/obscure.svg"
  },
  "veil-assassin": {
@@ -2344,6 +2721,10 @@
   "power": 4,
   "health": 2,
   "text": "When this defeats a unit, gain 1 Influence.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/veil-assassin.svg"
  },
  "assassin-s-contract": {
@@ -2366,6 +2747,10 @@
   "type": "upgrade",
   "cost": 4,
   "text": "Attached unit gets +2 Power. When it defeats a unit, gain 1 Influence.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/assassin-s-contract.svg"
  },
  "blackout": {
@@ -2393,6 +2778,10 @@
   "type": "action",
   "cost": 4,
   "text": "Choose a zone. Enemy units there can't attack this round.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/blackout.svg"
  },
  "cull-the-weak": {
@@ -2415,6 +2804,10 @@
   "type": "action",
   "cost": 4,
   "text": "Deal 1 damage to every enemy unit. Draw a card.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/cull-the-weak.svg"
  },
  "duskwing-tyrant": {
@@ -2431,6 +2824,10 @@
     "k": "flying"
    }
   ],
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/duskwing-tyrant.svg"
  },
  "phantom-duelist": {
@@ -2446,6 +2843,10 @@
    {
     "k": "untargetable"
    }
+  ],
+  "pips": [
+   "purple",
+   "purple"
   ],
   "artUrl": "/cards/phantom-duelist.svg"
  },
@@ -2471,6 +2872,10 @@
   "type": "action",
   "cost": 4,
   "text": "Choose a zone. Deal 2 damage to every enemy unit there.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "designerNote": "Session 006 proposal: Purple sweeps are precise — enemies only. Red pays for its bigger zone nuke in friendly fire.",
   "artUrl": "/cards/rain-of-quarrels.svg"
  },
@@ -2489,6 +2894,10 @@
   "power": 3,
   "health": 4,
   "text": "When this enters play, draw a card.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/shade-of-the-bazaar.svg"
  },
  "silence-the-song": {
@@ -2516,6 +2925,10 @@
   "type": "action",
   "cost": 4,
   "text": "Target enemy unit gets -2 Power permanently. Draw a card.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/silence-the-song.svg"
  },
  "dream-thief": {
@@ -2538,6 +2951,10 @@
     "k": "flying"
    }
   ],
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/dream-thief.svg"
  },
  "nocturne-sniper": {
@@ -2559,6 +2976,10 @@
    {
     "k": "ranged"
    }
+  ],
+  "pips": [
+   "purple",
+   "purple"
   ],
   "artUrl": "/cards/nocturne-sniper.svg"
  },
@@ -2586,6 +3007,10 @@
   "type": "action",
   "cost": 5,
   "text": "Ready one of your units. Draw a card.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/second-shadow.svg"
  },
  "veilmaster": {
@@ -2606,6 +3031,11 @@
   "power": 3,
   "health": 5,
   "text": "Your other units have Ranged.",
+  "pips": [
+   "purple",
+   "purple",
+   "purple"
+  ],
   "designerNote": "Session 006 proposal: The lord of the color: the whole court starts shooting across zones.",
   "artUrl": "/cards/veilmaster.svg"
  },
@@ -2624,6 +3054,10 @@
   "power": 4,
   "health": 6,
   "text": "When this enters play, draw 2 cards.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/duskweaver-oracle.svg"
  },
  "fog-of-knives": {
@@ -2648,6 +3082,10 @@
   "type": "action",
   "cost": 6,
   "text": "Choose a zone. Deal 3 damage to every enemy unit there.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/fog-of-knives.svg"
  },
  "umbral-colossus": {
@@ -2663,6 +3101,10 @@
    {
     "k": "untargetable"
    }
+  ],
+  "pips": [
+   "purple",
+   "purple"
   ],
   "artUrl": "/cards/umbral-colossus.svg"
  },
@@ -2685,6 +3127,10 @@
   "type": "action",
   "cost": 6,
   "text": "Enemy units can't attack this round.",
+  "pips": [
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/veil-of-silence.svg"
  },
  "eclipse": {
@@ -2704,6 +3150,11 @@
   "type": "action",
   "cost": 7,
   "text": "Every enemy unit gets -2 Power permanently.",
+  "pips": [
+   "purple",
+   "purple",
+   "purple"
+  ],
   "designerNote": "Session 006 proposal: The wither bomb — the whole board fades.\nFirst sims: at 6 it deleted yellow's whole plan; 7 makes it the finisher it reads as.",
   "artUrl": "/cards/eclipse.svg"
  },
@@ -2727,6 +3178,11 @@
   "type": "action",
   "cost": 7,
   "text": "Deal 3 damage to every enemy unit. Draw a card.",
+  "pips": [
+   "purple",
+   "purple",
+   "purple"
+  ],
   "artUrl": "/cards/midnight-reckoning.svg"
  },
  "sovereign-of-the-veil": {
@@ -2745,6 +3201,11 @@
    {
     "k": "untargetable"
    }
+  ],
+  "pips": [
+   "purple",
+   "purple",
+   "purple"
   ],
   "artUrl": "/cards/sovereign-of-the-veil.svg"
  },
@@ -2767,6 +3228,11 @@
    {
     "k": "ranged"
    }
+  ],
+  "pips": [
+   "purple",
+   "purple",
+   "purple"
   ],
   "artUrl": "/cards/the-unseen-court.svg"
  }

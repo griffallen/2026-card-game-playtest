@@ -4,6 +4,7 @@ type: unit
 cost: 4
 power: 3
 health: 4
+pips: purple, purple
 status: draft
 art: /cards/shade-of-the-bazaar.svg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

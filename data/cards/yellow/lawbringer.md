@@ -4,6 +4,7 @@ type: unit
 cost: 4
 power: 4
 health: 4
+pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onEnterZone":[{"op":"imprison","t":"auto","auto":{"scope":"enteredZone"}}]}
