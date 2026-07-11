@@ -12,7 +12,11 @@ loop checks the repo; this file is the fresh context's whole briefing.
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
 3. Comment-count ledger as of 2026-07-11 ~00:30 (issue:comments, x = closed):
-   **12:5 · 11:5 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:11 · 3:1x · 2:2x · 1:5x.**
+   **12:6 · 11:6 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:11 · 3:1x · 2:2x · 1:5x.**
+   **BLAINE IS ENGAGED ON THE THREADS (02:12–02:15): art pipeline ruled (#11 — Griff generates
+   card sheets via ChatGPT, attaches, agent parses; NO image-gen API) and build confirmed for
+   TONIGHT (#12) pending Griff's Overextend-vs-Scar clarification.** Watch for that answer —
+   it's the last gate before the build session.
    Decision 68 folded (superlinear cost curves; session-006 burn grammar retired — re-churn
    re-prices red on a convex curve).
    **⚠ PROTOCOL UPGRADE (twice bitten): Griff machine-guns comments — on ANY count change,

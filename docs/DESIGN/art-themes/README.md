@@ -7,8 +7,10 @@ style, palette, era (the designer's stated base: **1977 Rankin/Bass Hobbit cel a
 
 ## Pipeline reality (agreed on the thread)
 
-- The agent **cannot generate raster images** — art comes from the designer's generation tool
-  (or a future image service wired in by the builder; that's a stack/cost decision, flagged).
+- The agent **cannot generate raster images** — art comes from the designer's generation tool.
+  **Builder's ruling (#11, 2026-07-11): no image-gen API wiring — Griff uses ChatGPT (a running
+  saved chat, free or pro) to generate thematic card sheets and attaches them to issues; the
+  agent parses, crops, and files them.** The pip chop-out is the template for that flow.
 - The agent **can**: file and organize art, build per-color **SVG frame templates** (borders,
   pip icons, color styling) so cards look dressed before unique art exists, add an art slot to
   the per-card files, and make the demo render whatever art a card carries.
