@@ -278,9 +278,16 @@ export interface UnitView {
   basePower: number; baseHealth: number; armor: number
   exhausted: boolean; rushFreeMove: boolean; imprisoned: boolean
   overextendedBy: number
+  /** v3 Shielded: live token — false once spent (keywords list tracks this too) */
+  shielded: boolean
   keywords: string[]
   upgrades: { id: string; slug: string; name: string }[]
+  /** v3 Capture: units held under this one — visible to everyone (#23: nothing hidden) */
+  captives: CaptiveView[]
 }
+export interface CaptiveView { id: string; slug: string; name: string; owner: Seat }
+/** v3 (decision 67): an upgrade lying free in a zone, salvageable by either side */
+export interface OrphanView { id: string; slug: string; name: string; owner: Seat }
 export interface HandCardView { id: string; slug: string }
 export interface SideView {
   name: string; life: number; handCount: number; deckCount: number
@@ -299,7 +306,7 @@ export interface PlayerView {
   influence: number                    // + toward seat 0 (client flips for display)
   thresholds: [number, number]         // win threshold per seat (statics applied)
   sides: [SideView, SideView]
-  zones: { units: UnitView[] }[]       // absolute order: [seat0 home, neutral, seat1 home]
+  zones: { units: UnitView[]; orphans: OrphanView[] }[]   // absolute order: [seat0 home, neutral, seat1 home]
   hand: HandCardView[]                 // viewer's own hand
   actions: GameAction[]                // viewer's legal actions right now
   winner: Seat | null

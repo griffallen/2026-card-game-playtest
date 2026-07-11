@@ -12,6 +12,7 @@ function unitView(state: GameState, id: string): UnitView {
   for (const k of KW_LIST) {
     const v = kwOf(state, u, k)
     if (v === false) continue
+    if (k === 'shielded' && !u.shielded) continue   // token spent: the view stops claiming it (#23)
     keywords.push(v === true ? k : `${k} ${v}`)
   }
   return {
@@ -22,8 +23,13 @@ function unitView(state: GameState, id: string): UnitView {
     rushFreeMove: u.enteredRound === state.round && !u.movedThisRound && hasKw(state, u, 'rush') && !u.exhausted,
     imprisoned: !!u.imprisoned,
     overextendedBy: u.overextendedBy,
+    shielded: u.shielded,
     keywords,
     upgrades: u.upgrades.map(upId => ({ id: upId, slug: state.cardOf[upId], name: defOf(state, upId).name })),
+    captives: Object.entries(state.captives)
+      .filter(([, c]) => c.by === id)
+      .sort(([a], [b]) => (a < b ? -1 : 1))
+      .map(([cid, c]) => ({ id: cid, slug: c.unit.slug, name: state.cardSet[c.unit.slug]?.name ?? c.unit.slug, owner: c.unit.owner })),
   }
 }
 
@@ -55,7 +61,13 @@ export function viewFor(state: GameState, seat: Seat | null): PlayerView {
     influence: state.influence,
     thresholds: thresholds(state),
     sides: [sideView(state, 0), sideView(state, 1)],
-    zones: ZONES.map(z => ({ units: unitsInZone(state, z).map(u => unitView(state, u.id)) })),
+    zones: ZONES.map(z => ({
+      units: unitsInZone(state, z).map(u => unitView(state, u.id)),
+      orphans: Object.values(state.upgrades)
+        .filter(up => up.attachedTo === null && up.orphanedIn === z)
+        .sort((a, b) => (a.id < b.id ? -1 : 1))
+        .map(up => ({ id: up.id, slug: up.slug, name: state.cardSet[up.slug]?.name ?? up.slug, owner: up.owner })),
+    })),
     hand: seat === null ? [] : state.sides[seat].hand.map(id => ({ id, slug: state.cardOf[id] })),
     actions: seat === null ? [] : getLegalActions(state, seat),
     winner: state.winner,

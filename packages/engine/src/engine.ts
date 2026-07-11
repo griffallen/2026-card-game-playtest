@@ -226,6 +226,11 @@ function attachOrphan(state: GameState, action: Extract<GameAction, { type: 'att
   const def = defOf(state, up.id)
   if (!pipGateSatisfied(state, seat, def)) fail('pip-gate', `${def.name} needs banked color sources for its pips (decision 69)`)
   payCost(state, seat, def.cost)
+  // upgrade pressure applies to salvage too — the greed tax doesn't care how the second upgrade arrived (#23 sweep)
+  if (unit.upgrades.length >= 1 && state.rules.upgradePressureInfluence > 0) {
+    runOps({ state, controller: other(seat), actorSeat: seat }, [{ op: 'influence', n: state.rules.upgradePressureInfluence }])
+    log(state, other(seat), `upgrade pressure: ${state.sides[other(seat)].name} gains ${state.rules.upgradePressureInfluence} influence`)
+  }
   up.owner = seat
   up.attachedTo = unit.id
   delete up.orphanedIn
@@ -412,6 +417,8 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
   if (units.some(u => u.zone !== zone)) fail('bad-attack', 'attackers must share a zone')
 
   const oeIds = action.overextend ?? []
+  if (oeIds.length && state.rules.combatModel !== 'intercept')
+    fail('cant-overextend', 'overextend retired with the intercept window — blocker combat has no gamble')
   for (const id of oeIds) {
     if (!ids.includes(id)) fail('bad-attack', 'overextend lists a non-attacker')
     if (typeof kwOf(state, state.units[id], 'overextend') !== 'number') fail('cant-overextend', `${defOf(state, id).name} has no Overextend value`)
