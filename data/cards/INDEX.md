@@ -25,7 +25,7 @@
 | [Fiery Impaler](red/fiery-impaler.md) | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to the strongest other enemy unit in that zone. |
 | [Rageforged Brute](red/rageforged-brute.md) | 3 | unit | 4/4 | breakthrough 2 | canon | Breakthrough 2. |
 | [Volcanic Slam](red/volcanic-slam.md) | 3 | action | — |  | canon | Deal 3 damage to up to two units in the same zone. |
-| [Blaze Juggernaut](red/blaze-juggernaut.md) | 4 | unit | 4/4 | rush, reach | canon | Rush. Reach. |
+| [Blaze Juggernaut](red/blaze-juggernaut.md) | 4 | unit | 4/4 | rush, breakthrough 2 | canon | Rush. Breakthrough 2. |
 | [Burning Oath](red/burning-oath.md) | 4 | upgrade | — |  | canon | Attached unit gets +2 Power and Breakthrough 2. |
 | [Cataclysmic Charge](red/cataclysmic-charge.md) | 4 | action | — |  | canon | Target unit gets +3 Power and Breakthrough 3 this round. |
 | [Doombringer](red/doombringer.md) | 4 | unit | 5/4 | rush, breakthrough 3 | canon | Rush. Breakthrough 3. |
@@ -96,7 +96,7 @@
 | [Prison of Light](yellow/prison-of-light.md) | 7 | action | — |  | canon | Choose a zone: exhaust all enemy units there. Gain 2 Influence. |
 | [Radiant Citadel](yellow/radiant-citadel.md) | 7 | unit | 0/8 | cantAttack | canon | This can't attack. While this is in play, your opponent's Influence win threshold is increased by 2. |
 | [Supreme Sentence](yellow/supreme-sentence.md) | 7 | action | — |  | canon | Up to two target enemy units anywhere are exhausted and take 2 damage each. |
-| [Light's Vanguard](yellow/light-s-vanguard.md) | 8 | unit | 6/8 | flying, guard | canon | Flying, Guard. When this defends, gain 2 Influence. |
+| [Light's Vanguard](yellow/light-s-vanguard.md) | 8 | unit | 7/8 | guard, armor 1, shielded | canon | Guard. Armor 1. Shielded. When this defends, gain 2 Influence. |
 
 ## Purple (36)
 

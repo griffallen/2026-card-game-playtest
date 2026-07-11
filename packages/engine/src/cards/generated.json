@@ -493,20 +493,21 @@
   "cost": 4,
   "power": 4,
   "health": 4,
-  "text": "Rush. Reach.",
+  "text": "Rush. Breakthrough 2.",
   "kw": [
    {
     "k": "rush"
    },
    {
-    "k": "reach"
+    "k": "breakthrough",
+    "n": 2
    }
   ],
   "pips": [
    "red",
    "red"
   ],
-  "designerNote": "Reach (canon since v2.0 audit): may attack into an adjacent zone like Ranged, but unlike Ranged it can assault bases and does take counter-damage.",
+  "designerNote": "Reach (canon since v2.0 audit): may attack into an adjacent zone like Ranged, but unlike Ranged it can assault bases and does take counter-damage.\n\n2026-07-11 (v3 churn pass 4): Reach is cut (#8, designer-confirmed). The juggernaut stops poking over walls and starts going through them: Rush + Breakthrough 2.",
   "artUrl": "/cards/blaze-juggernaut.jpg"
  },
  "burning-oath": {
@@ -2398,15 +2399,19 @@
   "color": "yellow",
   "type": "unit",
   "cost": 8,
-  "power": 6,
+  "power": 7,
   "health": 8,
-  "text": "Flying, Guard. When this defends, gain 2 Influence.",
+  "text": "Guard. Armor 1. Shielded. When this defends, gain 2 Influence.",
   "kw": [
    {
-    "k": "flying"
+    "k": "guard"
    },
    {
-    "k": "guard"
+    "k": "armor",
+    "n": 1
+   },
+   {
+    "k": "shielded"
    }
   ],
   "pips": [
@@ -2414,7 +2419,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Flying is canon (decision 48): may move to any zone, ignoring adjacency.",
+  "designerNote": "Flying is canon (decision 48): may move to any zone, ignoring adjacency.\n\n2026-07-11 (v3 churn pass 4): flying is cut — the Vanguard lands and becomes the great shield: 7/8 Guard (free blocks in v3), Armor 1, Shielded, and the court pays 2 when it holds the line. An 8-cost that does a lot (decision 68).",
   "artUrl": "/cards/light-s-vanguard.jpg"
  },
  "glimpse": {
