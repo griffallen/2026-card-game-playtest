@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import type { LogLine, UnitView } from '@newgame/engine'
 import { CardFrame, type CardLike } from '../components/CardFrame.tsx'
 import { STATUS_GLOSS, glossFor } from './gloss.ts'
+import type { Sleeve } from './sleeves.ts'
 
 /** Bottom sheet on phones, centered dialog on desktop. */
 export function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
@@ -23,18 +24,19 @@ export function Sheet({ title, onClose, children }: { title: string; onClose: ()
 }
 
 /** Tap-to-inspect: the full story of one unit on the board. */
-export function UnitInspector({ unit, card, upgradeCards, onClose }: {
+export function UnitInspector({ unit, card, upgradeCards, onClose, sleeve }: {
   unit: UnitView
   card: CardLike | undefined
   upgradeCards: CardLike[]
   onClose: () => void
+  sleeve?: Sleeve
 }) {
   if (!card) return null
   const statChanged = unit.power !== unit.basePower || unit.health !== unit.baseHealth
   return (
     <Sheet title={card.name} onClose={onClose}>
       <div className="flex flex-wrap gap-4">
-        <CardFrame card={card} />
+        <CardFrame card={card} sleeve={sleeve} />
         <div className="min-w-0 flex-1 text-[13px] leading-relaxed">
           <p>
             <b className="font-display text-xl text-parchment">{unit.power} / {unit.health - unit.damage}</b>
@@ -66,7 +68,7 @@ export function UnitInspector({ unit, card, upgradeCards, onClose }: {
         <div className="mt-4 border-t hairline pt-3">
           <p className="mb-2 text-xs uppercase tracking-widest text-dim">Attached upgrades</p>
           <div className="flex flex-wrap gap-2">
-            {upgradeCards.map((u, i) => <CardFrame key={i} card={u} size="sm" />)}
+            {upgradeCards.map((u, i) => <CardFrame key={i} card={u} size="sm" sleeve={sleeve} />)}
           </div>
         </div>
       )}
@@ -109,12 +111,12 @@ export function BaseSheet({ name, life, mine, handCount, deckCount, discardCount
 }
 
 /** A card on its own — for hand long-press and pile items. */
-export function CardSheet({ card, onClose }: { card: CardLike; onClose: () => void }) {
+export function CardSheet({ card, onClose, sleeve }: { card: CardLike; onClose: () => void; sleeve?: Sleeve }) {
   const kws = (card as CardLike & { kw?: { k: string; n?: number }[] }).kw ?? []
   return (
     <Sheet title={card.name} onClose={onClose}>
       <div className="flex flex-wrap gap-4">
-        <CardFrame card={card} />
+        <CardFrame card={card} sleeve={sleeve} />
         <div className="min-w-0 flex-1 text-[13px] leading-relaxed">
           <p className="text-dim">cost {card.cost} · {card.type}{card.type === 'unit' ? ` · ${card.power}/${card.health}` : ''}</p>
           <p className="mt-2 text-body/90">{card.text}</p>
@@ -135,17 +137,18 @@ export function CardSheet({ card, onClose }: { card: CardLike; onClose: () => vo
 }
 
 /** Public pile browser — banked resources and discards are open information. */
-export function PileSheet({ title, cards, note, onClose }: {
+export function PileSheet({ title, cards, note, onClose, sleeve }: {
   title: string
   cards: CardLike[]
   note?: string
   onClose: () => void
+  sleeve?: Sleeve
 }) {
   return (
     <Sheet title={`${title} (${cards.length})`} onClose={onClose}>
       {note && <p className="mb-3 text-xs text-dim">{note}</p>}
       <div className="flex flex-wrap gap-2">
-        {cards.map((c, i) => <CardFrame key={i} card={c} size="sm" />)}
+        {cards.map((c, i) => <CardFrame key={i} card={c} size="sm" sleeve={sleeve} />)}
         {!cards.length && <p className="text-sm text-dim">Empty.</p>}
       </div>
     </Sheet>

@@ -1,5 +1,6 @@
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { ProceduralArt } from './ProceduralArt.tsx'
+import { SLEEVE_EDGE, SLEEVE_TAB, type Sleeve } from '../game/sleeves.ts'
 
 /** Long-press (450ms, cancels on drag) that also swallows the click it would otherwise trigger.
  *  Right-click fires the same inspect path — the desktop mirror of the mobile long-press. */
@@ -64,7 +65,7 @@ const typeMeta: Record<string, { icon: string; label: string; chip: string }> = 
 }
 
 /** One component renders any card at any size — hand, browser, admin preview. */
-export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge, onLongPress }: {
+export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge, onLongPress, sleeve }: {
   card: CardLike
   size?: 'sm' | 'md'
   onClick?: () => void
@@ -73,6 +74,8 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
   badge?: string
   /** long-press (mobile) opens details without disturbing the tap flow */
   onLongPress?: () => void
+  /** ownership sleeve (issue #22) — omit where the card has no owner (browser, rules pages) */
+  sleeve?: Sleeve
 }) {
   // a mobile/CDN blip must not strip a card's art for the whole session (issue #19):
   // retry twice with a cache-busting src before conceding to procedural art
@@ -98,8 +101,12 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
         onClick ? 'cursor-pointer transition-transform hover:-translate-y-0.5' : '',
         selected ? 'glow-selected' : '',
         dimmed ? 'opacity-45 saturate-50' : '',
+        sleeve ? SLEEVE_EDGE[sleeve] : '',
       ].join(' ')}
     >
+      {sleeve && (
+        <span aria-hidden className={`pointer-events-none absolute left-1/2 top-0 z-10 h-[5px] w-8 -translate-x-1/2 rounded-b-md shadow-[0_1px_2px_rgba(0,0,0,0.5)] ${SLEEVE_TAB[sleeve]}`} />
+      )}
       {/* header: cost gem (cool = clearly the cost, distinct from the warm stats) · name · flag · count */}
       <div className="flex items-center gap-1.5">
         <span

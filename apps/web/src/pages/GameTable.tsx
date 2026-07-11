@@ -353,7 +353,7 @@ export function GameTable() {
                 const canResource = !!resourceActionFor(h.id)
                 return (
                   <CardFrame
-                    key={h.id} card={def} size="sm"
+                    key={h.id} card={def} size="sm" sleeve="ivory"
                     selected={view.phase === 'setup' ? setupPicks.includes(h.id) : (selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id))}
                     dimmed={view.phase !== 'setup' && myWindow && !canPlay && !canResource}
                     onLongPress={() => setInspect({ kind: 'card', slug: h.slug })}

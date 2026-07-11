@@ -8,6 +8,7 @@ import { HelpPanel } from '@ui/components/HelpPanel.tsx'
 import { UnitChip } from '@ui/game/UnitChip.tsx'
 import { InfluenceTrack } from '@ui/game/InfluenceTrack.tsx'
 import { BaseSheet, CardSheet, EventTicker, PileSheet, UnitInspector, useValueFlash } from '@ui/game/Sheets.tsx'
+import { sleeveFor } from '@ui/game/sleeves.ts'
 import { DEMO_CARDS, aiControls, newLocalGame, type DemoConfig } from './local.ts'
 
 type Inspect =
@@ -663,7 +664,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
               const def = DEMO_CARDS[h.slug]
               const canAct = playActionsFor(h.id).length > 0 || !!resourceActionFor(h.id)
               return (
-                <CardFrame key={h.id} card={def} size="sm"
+                <CardFrame key={h.id} card={def} size="sm" sleeve="ivory"
                   selected={view.phase === 'setup' ? setupPicks.includes(h.id) : (selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id))}
                   badge={view.phase === 'setup' && setupBottoms.includes(h.id) ? '⤓ bottom' : undefined}
                   dimmed={view.phase !== 'setup' && myWindow && !canAct}
@@ -773,6 +774,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             unit={uv}
             card={DEMO_CARDS[uv.slug]}
             upgradeCards={uv.upgrades.map(up => DEMO_CARDS[up.slug]).filter(Boolean)}
+            sleeve={sleeveFor(uv.owner === seat)}
             onClose={() => setInspect(null)}
           />
         )
@@ -799,7 +801,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         )
       })()}
       {inspect?.kind === 'card' && DEMO_CARDS[inspect.slug] && (
-        <CardSheet card={DEMO_CARDS[inspect.slug]} onClose={() => setInspect(null)} />
+        <CardSheet card={DEMO_CARDS[inspect.slug]} sleeve="ivory" onClose={() => setInspect(null)} />
       )}
       {inspect?.kind === 'pile' && (
         <PileSheet
@@ -811,6 +813,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             ? view.sides[inspect.seat].resources.map(r => DEMO_CARDS[r.slug])
             : view.sides[inspect.seat].discard.map(d => DEMO_CARDS[d.slug])
           ).filter(Boolean)}
+          sleeve={sleeveFor(inspect.seat === seat)}
           onClose={() => setInspect(null)}
         />
       )}

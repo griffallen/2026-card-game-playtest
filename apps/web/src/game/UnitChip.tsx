@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { UnitView } from '@newgame/engine'
 import { ProceduralArt } from '../components/ProceduralArt.tsx'
 import { useLongPress } from '../components/CardFrame.tsx'
+import { SLEEVE_EDGE, SLEEVE_TAB, sleeveFor } from './sleeves.ts'
 
 export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }: {
   unit: UnitView
@@ -15,6 +16,7 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }:
 }) {
   const [artBroken, setArtBroken] = useState(false)
   const lp = useLongPress(onLongPress)
+  const sleeve = sleeveFor(mine)
   const hurt = unit.damage > 0
   const chips: string[] = []
   if (unit.keywords.some(k => k.startsWith('guard'))) chips.push('🛡')
@@ -31,13 +33,14 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }:
       onClick={() => { if (lp.fired.current) { lp.fired.current = false; return } onClick?.() }}
       title={tooltip}
       className={[
-        'relative w-[84px] shrink-0 select-none rounded-md border bg-raised p-0.5 transition-transform',
-        mine ? 'border-[#5a4a28]' : 'border-[#4a2a24]',
+        'relative w-[84px] shrink-0 select-none rounded-md border border-black/50 bg-raised p-0.5 transition-transform',
+        SLEEVE_EDGE[sleeve],
         onClick ? 'cursor-pointer hover:-translate-y-0.5' : '',
         glow === 'selected' ? 'glow-selected' : glow === 'target' ? 'glow-target' : glow === 'attack' ? 'glow-attack' : '',
         unit.imprisoned ? 'saturate-[0.25] opacity-80' : unit.exhausted ? 'opacity-60' : '',
       ].join(' ')}
     >
+      <span aria-hidden className={`pointer-events-none absolute left-1/2 top-0 z-10 h-[4px] w-6 -translate-x-1/2 rounded-b shadow-[0_1px_2px_rgba(0,0,0,0.5)] ${SLEEVE_TAB[sleeve]}`} />
       {actionable && glow === 'none' && (
         <span className="pulse-soft absolute -right-1 -top-1 z-10 h-2.5 w-2.5 rounded-full bg-goldbright shadow-[0_0_6px_rgba(232,193,74,0.9)]" title="can act" />
       )}
