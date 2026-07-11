@@ -62,22 +62,18 @@
   "color": "red",
   "type": "unit",
   "cost": 1,
-  "power": 1,
+  "power": 2,
   "health": 1,
-  "text": "Rush. Overextend 1.",
+  "text": "Rush.",
   "kw": [
    {
     "k": "rush"
-   },
-   {
-    "k": "overextend",
-    "n": 1
    }
   ],
   "pips": [
    "red"
   ],
-  "designerNote": "Decision 35: when attacking you MAY overextend for +N power; the unit takes N damage at end of round. A gamble, not a given.",
+  "designerNote": "Decision 35: when attacking you MAY overextend for +N power; the unit takes N damage at end of round. A gamble, not a given.\n\n2026-07-11 (v3 churn pass 1): Overextend is cut (#9); the gamble is priced in — 1/1 becomes 2/1. Red's opening jab.",
   "artUrl": "/cards/cinder-initiate.jpg"
  },
  "devastating-strike": {
@@ -142,19 +138,19 @@
   "cost": 2,
   "power": 3,
   "health": 2,
-  "text": "Rush. Overextend 2.",
+  "text": "Rush. Scar.",
   "kw": [
    {
     "k": "rush"
    },
    {
-    "k": "overextend",
-    "n": 2
+    "k": "scar"
    }
   ],
   "pips": [
    "red"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 1): Overextend is cut (#9); THE Scar bearer — the wound-powered berserker is the keyword's face (decision 70 cap applies).",
   "artUrl": "/cards/berserker.jpg"
  },
  "blood-rush": {
@@ -439,15 +435,11 @@
   "type": "unit",
   "cost": 3,
   "power": 4,
-  "health": 3,
-  "text": "Breakthrough 2. Overextend 2.",
+  "health": 4,
+  "text": "Breakthrough 2.",
   "kw": [
    {
     "k": "breakthrough",
-    "n": 2
-   },
-   {
-    "k": "overextend",
     "n": 2
    }
   ],
@@ -455,6 +447,7 @@
    "red",
    "red"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 1): Overextend is cut (#9); stat comp instead of a second keyword — 4/3 becomes 4/4.",
   "artUrl": "/cards/rageforged-brute.jpg"
  },
  "volcanic-slam": {
@@ -642,22 +635,21 @@
   "cost": 4,
   "power": 5,
   "health": 4,
-  "text": "Breakthrough 3. Overextend 3.",
+  "text": "Breakthrough 3. Scar.",
   "kw": [
    {
     "k": "breakthrough",
     "n": 3
    },
    {
-    "k": "overextend",
-    "n": 3
+    "k": "scar"
    }
   ],
   "pips": [
    "red",
    "red"
   ],
-  "designerNote": "Session 006: 6/5 → 5/4. It beat the statline grammar by +3 while carrying two keywords — the pool's most undercosted body.",
+  "designerNote": "Session 006: 6/5 → 5/4. It beat the statline grammar by +3 while carrying two keywords — the pool's most undercosted body.\n\n2026-07-11 (v3 churn pass 1): Overextend is cut (#9); Scar replaces the gamble: a 5/4 that grows angrier as it burns (max +2 at 2 damage).",
   "artUrl": "/cards/inferno-titan.jpg"
  },
  "rupture": {
@@ -819,23 +811,23 @@
   "color": "red",
   "type": "unit",
   "cost": 6,
-  "power": 6,
+  "power": 7,
   "health": 5,
-  "text": "Breakthrough 3. Overextend 3.",
+  "text": "Breakthrough 3. Scar.",
   "kw": [
    {
     "k": "breakthrough",
     "n": 3
    },
    {
-    "k": "overextend",
-    "n": 3
+    "k": "scar"
    }
   ],
   "pips": [
    "red",
    "red"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 1): Overextend is cut (#9); decision-68 curve: a 6-cost should do a lot — 6/5 becomes 7/5, plus Scar.",
   "artUrl": "/cards/earthshaker.jpg"
  },
  "raging-inferno": {
@@ -872,16 +864,12 @@
   "color": "red",
   "type": "unit",
   "cost": 7,
-  "power": 7,
+  "power": 8,
   "health": 7,
-  "text": "Breakthrough 4. Overextend 4.",
+  "text": "Breakthrough 4.",
   "kw": [
    {
     "k": "breakthrough",
-    "n": 4
-   },
-   {
-    "k": "overextend",
     "n": 4
    }
   ],
@@ -890,6 +878,7 @@
    "red",
    "red"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 1): Overextend is cut (#9); stays the pure breakthrough bomb; 7/7 becomes 8/7 (decision-68 curve).",
   "artUrl": "/cards/apocalypse-engine.jpg"
  },
  "last-stand": {
@@ -982,17 +971,16 @@
   "color": "red",
   "type": "unit",
   "cost": 8,
-  "power": 8,
+  "power": 9,
   "health": 8,
-  "text": "Breakthrough 5. Overextend 5.",
+  "text": "Breakthrough 5. Scar.",
   "kw": [
    {
     "k": "breakthrough",
     "n": 5
    },
    {
-    "k": "overextend",
-    "n": 5
+    "k": "scar"
    }
   ],
   "pips": [
@@ -1000,6 +988,7 @@
    "red",
    "red"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 1): Overextend is cut (#9); the apex predator: 9/8, Breakthrough, Scar — a wounded god hits harder (to a survivor's limit).",
   "artUrl": "/cards/worldrender.jpg"
  },
  "iron-discipline": {

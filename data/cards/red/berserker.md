@@ -4,8 +4,12 @@ type: unit
 cost: 2
 power: 3
 health: 2
-keywords: rush, overextend 2
+keywords: rush, scar
 pips: red
 status: canon
 ---
-Rush. Overextend 2.
+Rush. Scar.
+
+## Design notes
+
+2026-07-11 (v3 churn pass 1): Overextend is cut (#9); THE Scar bearer — the wound-powered berserker is the keyword's face (decision 70 cap applies).

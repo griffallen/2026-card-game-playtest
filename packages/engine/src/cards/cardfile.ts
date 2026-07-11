@@ -16,7 +16,7 @@ export interface CardFile { def: CardDef; status: CardStatus }
 
 const FIELD_KEYS = ['name', 'type', 'cost', 'power', 'health', 'keywords', 'pips', 'influenceTrigger', 'status', 'art', 'effects'] as const
 type FieldKey = (typeof FIELD_KEYS)[number]
-const KW_NAMES = new Set<string>(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable'])
+const KW_NAMES = new Set<string>(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak'])
 const INFLUENCE_TRIGGERS = ['onPlay', 'onDefend', 'onKill', 'onAttack'] as const
 type InfluenceTrigger = (typeof INFLUENCE_TRIGGERS)[number]
 

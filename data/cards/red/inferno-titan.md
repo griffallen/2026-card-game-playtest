@@ -4,12 +4,14 @@ type: unit
 cost: 4
 power: 5
 health: 4
-keywords: breakthrough 3, overextend 3
+keywords: breakthrough 3, scar
 pips: red, red
 status: canon
 ---
-Breakthrough 3. Overextend 3.
+Breakthrough 3. Scar.
 
 ## Design notes
 
 Session 006: 6/5 → 5/4. It beat the statline grammar by +3 while carrying two keywords — the pool's most undercosted body.
+
+2026-07-11 (v3 churn pass 1): Overextend is cut (#9); Scar replaces the gamble: a 5/4 that grows angrier as it burns (max +2 at 2 damage).

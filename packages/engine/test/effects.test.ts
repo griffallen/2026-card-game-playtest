@@ -158,9 +158,9 @@ describe('prison', () => {
 describe('auras and upgrades', () => {
   it('Warlord Garok pumps other friendlies; Hierophant only at 10+ influence', () => {
     let { s, p1, p2 } = arena()
-    const grunt = put(s, p1, 'cinder-initiate', 1)         // 1 power
+    const grunt = put(s, p1, 'cinder-initiate', 1)         // 2 power since the v3 churn
     put(s, p1, 'warlord-garok', 1)
-    expect(effPower(s, s.units[grunt])).toBe(2)
+    expect(effPower(s, s.units[grunt])).toBe(3)
     const hiero = put(s, p2, 'hierophant', 2)
     const wall = put(s, p2, 'bulwark-protector', 2)        // 2 power
     expect(effPower(s, s.units[wall])).toBe(2)             // influence < 10 → no buff
@@ -222,15 +222,15 @@ describe('tempo and timing', () => {
 
   it('Unchained Rage doubles ALL friendlies for two rounds (2026-07-11 rework, issue #4)', () => {
     let { s, p1 } = arena()
-    const engine = put(s, p1, 'apocalypse-engine', 1)  // 7/7
+    const engine = put(s, p1, 'apocalypse-engine', 1)  // 8/7 since the v3 churn
     const zerk = put(s, p1, 'berserker', 2)            // 3/2
     const rage = toHand(s, p1, 'unchained-rage')
     s = act(s, p1, { type: 'play', card: rage })
-    expect(effPower(s, s.units[engine])).toBe(14)
+    expect(effPower(s, s.units[engine])).toBe(16)
     expect(effPower(s, s.units[zerk])).toBe(6)
     s = act(s, (1 - p1) as Seat, { type: 'pass' })
     s = act(s, p1, { type: 'pass' })                   // round ends once: still doubled
-    expect(effPower(s, s.units[engine])).toBe(14)
+    expect(effPower(s, s.units[engine])).toBe(16)
   })
 
   it('Relentless Assault readies all; Final Onslaught readies one unit + extra action (decision 43)', () => {
