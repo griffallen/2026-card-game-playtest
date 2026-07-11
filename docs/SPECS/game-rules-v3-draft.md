@@ -40,10 +40,15 @@ Cost and color are now two separate checks:
 1. **Declare:** attacker exhausts a group of ready units in one zone and declares **one target:
    an enemy unit there, or the enemy's Home** (Home only while standing in that zone, as today).
 2. **Block:** the defender assigns any of their ready units in that zone as blockers, pairing
-   them onto attackers — 1v1 or several blockers ganging one attacker. **Blocking exhausts the
-   blocker** (Guard excepted, see 1.3.6) **[derived from Q10 ✓ — "Guards don't exhaust to
-   defend" is only a perk if everyone else does; echoed on the issue for veto]**. The earlier
-   draft assumption (blocking is free) is dead.
+   them onto attackers — 1v1 or several blockers ganging one attacker. **The declared target
+   may itself block its attacker** (self-defense is a block like any other — engine ruling
+   during the build; without it a lone ready unit takes free hits with no reply). **Blocking
+   exhausts the blocker** (Guard excepted, see 1.3.6) **[derived from Q10 ✓ — "Guards don't
+   exhaust to defend" is only a perk if everyone else does; echoed on the issue for veto]**.
+   The earlier draft assumption (blocking is free) is dead. In a gang block the defender's
+   **pair order is the pour order** — the attacker's damage fills each blocker in sequence
+   (deterministic split under the defender's control, decision Q5). Cross-zone Ranged attacks
+   open no block window (the sniper shot: unblockable, unretaliated).
 3. **Resolve simultaneously, per pairing:** each attacker fights its blocker(s); **[Q5 ✓] in a
    gang-block the DEFENDER divides the attacker's damage** among the blockers; blockers' combined
    power hits the attacker back.

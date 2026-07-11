@@ -37,6 +37,8 @@ export function applyAction(prev: GameState, action: GameAction, actorSeat: Seat
     applyBankPhase(state, action, actorSeat)
   } else if (state.phase === 'intercept') {
     applyInterceptPhase(state, action, actorSeat)
+  } else if (state.phase === 'block') {
+    applyBlockPhase(state, action, actorSeat)
   } else {
     applyLoopPhase(state, action, actorSeat)
   }
@@ -418,6 +420,21 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
   }
 
   state.pendingAttack = { seat, attackers: ids.filter(id => state.units[id]), target: action.target, overextend: oeIds }
+  if (state.rules.combatModel === 'blockerPairing') {
+    const combatZone = action.target.kind === 'unit' ? state.units[action.target.id]!.zone : homeZone(action.target.seat)
+    const defSeat = other(seat)
+    const crossZone = combatZone !== zone   // v3 ranged sniping: unblockable, unretaliated
+    const candidates = unitsInZone(state, combatZone, defSeat).filter(u => !u.imprisoned && !u.exhausted)
+    // the declared target may block its own attacker — self-defense costs the exhaust like any block
+    if (!crossZone && candidates.length) {
+      state.phase = 'block'
+      state.actorSeat = defSeat
+      log(state, defSeat, `${state.sides[defSeat].name} may assign blockers`)
+      return
+    }
+    resolveBlockedAttack(state, [])
+    return
+  }
   if (interceptCandidates(state, state.pendingAttack).length) {
     state.phase = 'intercept'
     state.actorSeat = other(seat)
@@ -440,6 +457,103 @@ function applyInterceptPhase(state: GameState, action: GameAction, seat: Seat) {
   } else if (action.type === 'declineIntercept') {
     resolveAttack(state, null)
   } else fail('bad-phase', 'answer the intercept window: intercept or declineIntercept')
+}
+
+/** v3 (spec §1.3): the defender answers the block window by pairing blockers onto attackers. */
+function applyBlockPhase(state: GameState, action: GameAction, seat: Seat) {
+  const pa = state.pendingAttack ?? fail('bad-phase', 'no attack to answer')
+  if (seat !== other(pa.seat)) fail('not-your-window', 'not your block window')
+  if (action.type !== 'block') fail('bad-phase', 'assign blockers with a block action (empty pairs lets it through)')
+  const combatZone = pa.target.kind === 'unit' ? state.units[pa.target.id]?.zone : homeZone(pa.target.seat)
+  const seen = new Set<string>()
+  for (const { blocker, onto } of action.pairs) {
+    const b = state.units[blocker] ?? fail('no-unit', 'no such blocker')
+    if (b.owner !== seat) fail('not-yours', 'not your unit')
+    if (b.exhausted) fail('exhausted', 'exhausted units cannot block')
+    if (b.imprisoned) fail('imprisoned', 'imprisoned units cannot block')
+    if (b.zone !== combatZone) fail('bad-zone', 'blockers must stand in the combat zone')
+    if (seen.has(blocker)) fail('bad-block', 'a unit blocks at most one attacker')
+    seen.add(blocker)
+    if (!pa.attackers.includes(onto)) fail('bad-block', 'that is not an attacker in this combat')
+  }
+  for (const { blocker } of action.pairs) {
+    const b = state.units[blocker]!
+    if (state.rules.blockingExhausts && !hasKw(state, b, 'guard')) b.exhausted = true
+    log(state, seat, `${defOf(state, b.id).name} blocks${hasKw(state, b, 'guard') ? ' (guard — stays ready)' : ''}`)
+  }
+  resolveBlockedAttack(state, action.pairs)
+}
+
+/** v3 (spec §1.3): paired simultaneous resolution — pour-order gang splits, breakthrough spill to the
+ *  ORIGINAL declared target, unblocked attackers hit the target, blockers alone strike back. */
+function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: string }[]) {
+  const pa = state.pendingAttack!
+  state.pendingAttack = null
+  state.phase = 'loop'
+  const seat = pa.seat
+  const byAttacker = new Map<string, string[]>()
+  for (const p of pairs) byAttacker.set(p.onto, [...(byAttacker.get(p.onto) ?? []), p.blocker])
+  const attackers = pa.attackers.map(id => state.units[id]).filter(Boolean) as UnitInstance[]
+
+  // snapshot the plan first — everything resolves simultaneously
+  const plans = attackers.map(a => {
+    const blockers = (byAttacker.get(a.id) ?? []).map(id => state.units[id]).filter(Boolean) as UnitInstance[]
+    return { a, blockers, aPower: effPower(state, a), counter: blockers.reduce((s, b) => s + effPower(state, b), 0) }
+  })
+  for (const p of plans) for (const b of p.blockers) {
+    fireTrigger({ state, attackTarget: { kind: 'unit', id: p.a.id }, actorSeat: seat }, b, 'onDefend')
+  }
+
+  const unitHits: [UnitInstance, number, string][] = []
+  let targetSpill = 0
+  let unblockedTotal = 0
+  const unblockedNames: string[] = []
+  for (const p of plans) {
+    if (!p.blockers.length) {
+      unblockedTotal += p.aPower
+      unblockedNames.push(defOf(state, p.a.id).name)
+      continue
+    }
+    // pour the attacker's damage over its blockers in pair order (the defender chose the order)
+    let dmg = p.aPower
+    for (const b of p.blockers) {
+      if (dmg <= 0) break
+      const gross = Math.max(0, effHealth(state, b) - b.damage) + effArmor(state, b)  // what it takes to fell it through armor
+      const chunk = Math.min(dmg, gross)
+      if (chunk > 0) unitHits.push([b, chunk, defOf(state, p.a.id).name])
+      dmg -= chunk
+    }
+    if (dmg > 0 && hasKw(state, p.a, 'breakthrough')) targetSpill += dmg   // v3: no N — all excess pushes through
+    if (p.counter > 0) unitHits.push([p.a, p.counter, 'the blockers'])
+  }
+
+  const targetUnit = pa.target.kind === 'unit' ? state.units[pa.target.id] : undefined
+  if (pa.target.kind === 'unit' && targetUnit && (unblockedTotal > 0 || targetSpill > 0)) {
+    fireTrigger({ state, attackTarget: { kind: 'unit', id: attackers[0]?.id ?? '' }, actorSeat: seat }, targetUnit, 'onDefend')
+  }
+
+  // apply everything at once
+  for (const [u, n, src] of unitHits) if (state.units[u.id]) damageUnit(state, u, n, src)
+  const toTarget = unblockedTotal + targetSpill
+  if (toTarget > 0) {
+    if (pa.target.kind === 'base') {
+      damageBase(state, pa.target.seat, toTarget, unblockedNames.join(', ') || 'breakthrough')
+      for (const p of plans) if (!p.blockers.length && state.units[p.a.id]) {
+        fireTrigger({ state, attackTarget: pa.target, actorSeat: seat }, p.a, 'onAttackBase')
+      }
+    } else if (targetUnit && state.units[targetUnit.id]) {
+      damageUnit(state, targetUnit, toTarget, unblockedNames.join(', ') || 'breakthrough')
+      if (targetUnit.damage >= effHealth(state, targetUnit)) {
+        for (const p of plans) if (state.units[p.a.id]) {
+          fireTrigger({ state, attackTarget: pa.target, actorSeat: seat }, p.a, 'onKill')
+        }
+      }
+    }
+  }
+
+  stateBasedCleanup(state, seat)
+  if (state.winner !== null) return
+  advanceWindow(state, seat)
 }
 
 /** Resolve the pending attack against the final target: combined power, armor once, one counter, breakthrough (spec §1.7). */

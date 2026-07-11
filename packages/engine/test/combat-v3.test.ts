@@ -1,0 +1,91 @@
+import { describe, it, expect } from 'vitest'
+import type { GameState } from '../src/types.ts'
+import { createGame } from '../src/setup.ts'
+import { applyAction } from '../src/engine.ts'
+import { V3_RULES } from '../src/rules.ts'
+import { T, toyDeck, put } from './util.ts'
+
+// Slice V3-4 — blocker-pairing combat (spec game-rules-v3-draft §1.3, decisions from #9 Q4-Q6 + 62).
+function g(): GameState {
+  let s = createGame({
+    seed: 21,
+    rules: { ...V3_RULES, chooseStartingResources: false },
+    cardSet: T,
+    players: [{ name: 'Ada', deck: toyDeck() }, { name: 'Bo', deck: toyDeck() }],
+  })
+  while (s.phase === 'bank') s = applyAction(s, { type: 'skipResource' }, s.actorSeat).state
+  return s
+}
+
+describe('blocker-pairing combat (v3)', () => {
+  it('declare → block window → paired simultaneous damage; unblocked attackers hit the target', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const a1 = put(s, me, 'brute', 1)     // 4/3
+    const a2 = put(s, me, 'soldier', 1)   // 2/2
+    const victim = put(s, them, 'wall', 1)     // 0/5 declared target
+    const blocker = put(s, them, 'brute', 1)   // 4/3 will block a1
+    s = applyAction(s, { type: 'attack', attackers: [a1, a2], target: { kind: 'unit', id: victim } }, me).state
+    expect(s.phase).toBe('block')
+    expect(s.actorSeat).toBe(them)
+    s = applyAction(s, { type: 'block', pairs: [{ blocker, onto: a1 }] }, them).state
+    // a1 (4) vs blocker (4/3): blocker dies, a1 takes 4 and dies — simultaneous
+    expect(s.units[a1]).toBeUndefined()
+    expect(s.units[blocker]).toBeUndefined()
+    // a2 was unblocked: full 2 damage to the declared wall; the wall never counter-hits
+    expect(s.units[victim].damage).toBe(2)
+    expect(s.units[a2].damage).toBe(0)
+    expect(s.phase).toBe('loop')
+  })
+
+  it('gang block: defender pour order splits the attacker damage; combined counter kills', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const big = put(s, me, 'crusher', 1)      // 3/3 breakthrough (kw n ignored in v3 resolve)
+    const b1 = put(s, them, 'soldier', 1)     // 2/2 listed first: eats 2
+    const b2 = put(s, them, 'brute', 1)       // 4/3 second: eats overflow 1
+    s = applyAction(s, { type: 'attack', attackers: [big], target: { kind: 'unit', id: b2 } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: b1, onto: big }, { blocker: b2, onto: big }] }, them).state
+    expect(s.units[b1]).toBeUndefined()       // 2 damage kills the 2/2
+    expect(s.units[b2].damage).toBe(1)        // pour overflow
+    expect(s.units[big]).toBeUndefined()      // 2+4 combined counter kills the 3-health crusher
+  })
+
+  it('breakthrough spills leftover damage to the ORIGINAL declared target', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const big = put(s, me, 'crusher', 1)      // 3 power, breakthrough
+    const chump = put(s, them, 'pawn', 1)     // 1/1 blocker
+    const victim = put(s, them, 'wall', 1)    // 0/5 declared target
+    s = applyAction(s, { type: 'attack', attackers: [big], target: { kind: 'unit', id: victim } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: chump, onto: big }] }, them).state
+    expect(s.units[chump]).toBeUndefined()
+    expect(s.units[victim].damage).toBe(2)    // 3 power − 1 to kill the pawn = 2 spilled
+  })
+
+  it('blocking exhausts non-Guards; Guards block and stay ready (decision 62)', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const a1 = put(s, me, 'pawn', 1)
+    const a2 = put(s, me, 'pawn', 1)
+    const victim = put(s, them, 'wall', 1)
+    const plain = put(s, them, 'brute', 1)
+    const guard = put(s, them, 'guardian', 1)   // 1/3 guard
+    s = applyAction(s, { type: 'attack', attackers: [a1, a2], target: { kind: 'unit', id: victim } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: plain, onto: a1 }, { blocker: guard, onto: a2 }] }, them).state
+    expect(s.units[plain].exhausted).toBe(true)
+    expect(s.units[guard].exhausted).toBe(false)
+  })
+
+  it('no ready defenders → no block window; cross-zone ranged is unblockable', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const archer = put(s, me, 'archer', 1)          // ranged 2/2
+    const victim = put(s, them, 'brute', 2)         // adjacent zone
+    put(s, them, 'brute', 2, { exhausted: true })   // exhausted: cannot block anyway
+    s = applyAction(s, { type: 'attack', attackers: [archer], target: { kind: 'unit', id: victim } }, me).state
+    expect(s.phase).toBe('loop')                    // resolved immediately
+    expect(s.units[victim].damage).toBe(2)
+    expect(s.units[archer].damage).toBe(0)          // sniper shot: no retaliation
+  })
+})

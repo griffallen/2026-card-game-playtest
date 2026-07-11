@@ -204,7 +204,7 @@ export interface GameState {
   cardOf: Record<string, string>      // instance id → slug
   round: number                       // global, increments once per full round
   initiative: Seat                    // holder acts first each round; carries over unless claimed
-  phase: 'setup' | 'bank' | 'loop' | 'intercept'
+  phase: 'setup' | 'bank' | 'loop' | 'intercept' | 'block'
   actorSeat: Seat                     // whose action window it is
   startStep: Seat | null              // phase 'bank': whose start step is paused at its bank choice
   bankedThisStep: number              // resources banked in the current start step
@@ -245,6 +245,7 @@ export type GameAction =
   | { type: 'play'; card: string; targets?: TargetRef[]; zone?: ZoneId }  // zone: v3 Infiltrate deploy choice
   | { type: 'activate'; unit: string; targets?: TargetRef[] }             // v3 Sneak (decision 60)
   | { type: 'releaseCaptive'; unit: string }                              // v3 Capture: ready the capturer, captive returns exhausted
+  | { type: 'block'; pairs: { blocker: string; onto: string }[] }         // v3 combat: defender pairs blockers (empty = let it through); pour order = pair order
   | { type: 'attack'; attackers: string[]; target: TargetRef; overextend?: string[] } // decision 42: 1+ attackers, one zone; overextend: subset taking the gamble
   | { type: 'move'; unit: string; to: ZoneId }
   | { type: 'claimInitiative' }              // decision 40: take the token, leave the round
