@@ -12,18 +12,21 @@ loop checks the repo; this file is the fresh context's whole briefing.
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
 3. Comment-count ledger as of 2026-07-11 ~00:30 (issue:comments, x = closed):
-   **12:5 · 11:5 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:9 · 3:1x · 2:2x · 1:5x.**
+   **12:5 · 11:5 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:11 · 3:1x · 2:2x · 1:5x.**
    Decision 68 folded (superlinear cost curves; session-006 burn grammar retired — re-churn
    re-prices red on a convex curve).
+   **⚠ PROTOCOL UPGRADE (twice bitten): Griff machine-guns comments — on ANY count change,
+   list the FULL thread (authors+timestamps) and handle every unaddressed designer comment,
+   not just [-1].** Two were nearly lost this way (Bloodfrenzy, Unchained Rage).
    Decision 67 folded (upgrade salvage, v3 §1.5). Scar/Overextend A-or-B still unanswered
    (re-nudged on #12).
    **⚠ lesson from tonight: Griff double-comments within seconds — after reading "the newest
    comment", re-check the count before updating the ledger (a Searing Bolt request hid behind
    a Blood Rush one and was nearly missed).**
-   Card rework tally: Reckless cost-0 ✅ live · Searing Bolt 3-any ✅ live (above burn grammar
-   at cost 2, designer's call, flagged) · PR #13 modal 🕐v3 · Blood Rush linked-amount 🕐v3 ·
-   Devastating Strike conditional 🕐v3 · Volcanic Slam upTo+sameZone targets 🕐v3 (interim
-   exactly-2-any-zone offered).
+   Card rework tally: Reckless cost-0 ✅ · Searing Bolt 3-any ✅ · Bloodfrenzy +1P/Armor1 ✅
+   (threshold kept ≤10, "less than 10" boundary flagged) · PR #13 modal 🕐v3 · Blood Rush
+   linked-amount 🕐v3 · Devastating Strike conditional 🕐v3 · Volcanic Slam upTo+sameZone 🕐v3
+   (interim offered) · Unchained Rage double-filter+2-round-dur 🕐v3.
    **PENDING GRIFF: (1) #12 — is the "can't overextend beyond remaining health" cap for Scar
    (reading A) or a returning Overextend (reading B)? Asked, awaiting one-word answer; staged
    in draft spec §3 as pending. (2) #4 — Blood Rush rewrite ("remove damage from your unit,
