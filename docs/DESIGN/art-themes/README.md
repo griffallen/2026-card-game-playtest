@@ -15,6 +15,20 @@ style, palette, era (the designer's stated base: **1977 Rankin/Bass Hobbit cel a
 - Per-card art, when it starts, is named by card slug and lands in the card asset pipeline
   (exact home decided in the v3 build plan).
 
+## The cardback & the pip set (2026-07-11)
+
+`cardback.png` — the designer's card back: night(purple)/day(gold) split scene with the five
+color pips down the spine. **Each pip has a distinct shape AND color** (red circle · yellow
+pentagon · blue square · green triangle · purple hexagon) — shape+color dual coding, which
+keeps pips readable for color-blind players and at small print sizes. Treat the shapes as
+canonical alongside the colors.
+
+`pips/pip-<color>.png` — the five pips chopped from the cardback (agent, ImageMagick;
+`_contact-sheet.png` is the overview). They carry the dark backdrop baked in — fine as tiles;
+if transparent-background versions are ever needed for overlaying on light frames, either the
+designer regenerates each sigil on a plain background or the agent attempts a mask (glow edges
+make automated masking imperfect).
+
 ## Anchors received
 
 | Color | File | Notes |
