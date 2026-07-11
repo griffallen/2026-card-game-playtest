@@ -7,10 +7,12 @@ health: 3
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onAttack":[{"op":"imprison","t":"auto","auto":{"scope":"targetZone"}}]}
+effects: {"onKill":[{"op":"influence","n":2}]}
 ---
-When this attacks, imprison the strongest enemy unit in the defending zone.
+When this kills a unit, gain 2 Influence.
 
 ## Design notes
 
 Decision 51 text (deterministic pick — it may be the attack target itself, which cancels the counter-punch).
+
+2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Purification through victory — righteous kills win the crowd (was auto-imprison on attack).

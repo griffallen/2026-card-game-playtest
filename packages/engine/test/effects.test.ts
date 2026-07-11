@@ -66,9 +66,10 @@ describe('influence effects', () => {
     let { s, p1, p2 } = arena()
     s.influence = p2 === 0 ? 13 : -13
     const detain = toHand(s, p2, 'detain')
+    const warden = put(s, p2, 'bulwark-protector', 1)
     const target = put(s, p1, 'berserker', 1)
     s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'play', card: detain, targets: [{ kind: 'unit', id: target }] })
+    s = act(s, p2, { type: 'play', card: detain, targets: [{ kind: 'unit', id: warden }, { kind: 'unit', id: target }] })
     // +1 (detain) → 14, not a win yet
     expect(s.winner).toBeNull()
     expect(influenceFor(s, p2)).toBe(14)
@@ -93,65 +94,56 @@ describe('influence effects', () => {
   })
 })
 
-describe('prison', () => {
-  it('imprisoned units release when the jailer dips below the threshold; decay charges each round', () => {
+describe('the capture era (v3 churn pass 3 — prison is gone from canon)', () => {
+  it('Prison Warrant: a warden takes a small prisoner; the captive vanishes from play', () => {
     let { s, p1, p2 } = arena()
-    const jailerHand = toHand(s, p2, 'prison-warrant')
-    const captive = put(s, p1, 'flameblade-raider', 1)     // 2 power — inside Warrant's ≤2 cap (session 006)
+    const warden = put(s, p2, 'bulwark-protector', 1)
+    const small = put(s, p1, 'flameblade-raider', 1)     // 2 power — inside the warrant's cap
+    const warrant = toHand(s, p2, 'prison-warrant')
     s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'play', card: jailerHand, targets: [{ kind: 'unit', id: captive }] })
-    expect(s.units[captive].imprisoned?.by).toBe(p2)
+    s = act(s, p2, { type: 'play', card: warrant, targets: [{ kind: 'unit', id: warden }, { kind: 'unit', id: small }] })
+    expect(s.units[small]).toBeUndefined()
+    expect(s.captives[small]?.by).toBe(warden)
     expect(influenceFor(s, p2)).toBe(1)
-    // p2's next start step → decay −1 → back to 0: exactly AT the threshold, the prison HOLDS
-    s = toStartStepOf(s, p2)
-    expect(influenceFor(s, p2)).toBe(0)
-    expect(s.units[captive].imprisoned).toBeTruthy()
-    // another round without income → second decay drops p2 to −1 → release
-    s = toStartStepOf(s, p2)
-    expect(influenceFor(s, p2)).toBe(-1)
-    expect(s.units[captive].imprisoned).toBeNull()
   })
 
-  it('unit-sourced prisons end when the source dies; Gateward Colossus pays on every imprisonment', () => {
+  it('Radiant Judgment exhausts exactly the ≤3-power enemies, everywhere', () => {
     let { s, p1, p2 } = arena()
-    put(s, p2, 'gateward-colossus', homeZone(p2))
-    const priest = toHand(s, p2, 'containment-priest')
-    const victim = put(s, p1, 'worldrender', homeZone(p2))
-    s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'play', card: priest })
-    // priest enters p2 home → auto-imprisons strongest enemy there (worldrender); colossus +2 (session 006)
-    expect(s.units[victim].imprisoned?.by).toBe(p2)
-    expect(influenceFor(s, p2)).toBe(2)
-    // kill the priest → release
-    const priestUnit = Object.values(s.units).find(u => u.slug === 'containment-priest')!
-    const slam = toHand(s, p1, 'volcanic-slam')
-    s = act(s, p1, { type: 'play', card: slam, targets: [{ kind: 'unit', id: priestUnit.id }] })
-    expect(s.units[priestUnit.id]).toBeUndefined()
-    expect(s.units[victim].imprisoned).toBeNull()
-  })
-
-  it('Radiant Judgment imprisons exactly the ≤3-power enemies', () => {
-    let { s, p1, p2 } = arena()
-    const small = put(s, p1, 'cinder-initiate', 1)   // 1 power
+    const small = put(s, p1, 'cinder-initiate', 1)   // 2 power (churned)
     const mid = put(s, p1, 'berserker', 0)           // 3 power
-    const big = put(s, p1, 'worldrender', 2)         // 8 power
+    const big = put(s, p1, 'worldrender', 2)         // 9 power (churned)
     const judgment = toHand(s, p2, 'radiant-judgment')
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: judgment })
-    expect(s.units[small].imprisoned).toBeTruthy()
-    expect(s.units[mid].imprisoned).toBeTruthy()
-    expect(s.units[big].imprisoned).toBeNull()
+    expect(s.units[small].exhausted).toBe(true)
+    expect(s.units[mid].exhausted).toBe(true)
+    expect(s.units[big].exhausted).toBe(false)
     expect(influenceFor(s, p2)).toBe(2)
   })
 
-  it('start-of-round auto-imprisons: High Justiciar picks from another zone', () => {
+  it('Absolution frees your captured units, dazed', () => {
     let { s, p1, p2 } = arena()
-    put(s, p2, 'high-justiciar', homeZone(p2))
-    const nearby = put(s, p1, 'berserker', homeZone(p2))   // same zone as justiciar — NOT eligible
-    const afar = put(s, p1, 'doombringer', 1)              // other zone — eligible
-    s = toStartStepOf(s, p2)                               // p2's start step → SOR fires
-    expect(s.units[afar].imprisoned?.by).toBe(p2)
-    expect(s.units[nearby].imprisoned).toBeNull()
+    const jailer = put(s, p1, 'bulwark-protector', 1)
+    const mine = put(s, p2, 'berserker', 1)
+    // p1 captures p2's berserker (test owns the setup)
+    delete s.units[mine]
+    s.captives[mine] = { unit: { id: mine, slug: 'berserker', owner: p2, zone: 1, damage: 0, exhausted: false, enteredRound: 0, movedThisRound: false, shielded: false, imprisoned: null, upgrades: [], mods: [], overextendedBy: 0 }, by: jailer }
+    const hero = put(s, p2, 'sunguard-defender', 2)
+    const abso = toHand(s, p2, 'absolution')
+    s = act(s, p1, { type: 'pass' })
+    s = act(s, p2, { type: 'play', card: abso, targets: [{ kind: 'unit', id: hero }] })
+    expect(s.captives[mine]).toBeUndefined()
+    expect(s.units[mine].exhausted).toBe(true)
+  })
+
+  it('Lawbringer stills a room every time it marches in', () => {
+    let { s, p1, p2 } = arena()
+    const victim = put(s, p1, 'berserker', 1)
+    const law = toHand(s, p2, 'lawbringer')
+    s = act(s, p1, { type: 'pass' })
+    s = act(s, p2, { type: 'play', card: law, targets: [{ kind: 'unit', id: victim }] })
+    // enters p2's home; targeted exhaust fires on the chosen enemy anywhere? — onEnterZone targets resolve at play
+    expect(s.units[victim].exhausted).toBe(true)
   })
 })
 
@@ -191,21 +183,15 @@ describe('auras and upgrades', () => {
     expect(s.units[knight].upgrades.length).toBe(1)
   })
 
-  it('Chain of Law blocks enemy targeting but not your own', () => {
+  it('Chain of Law deputizes: attached unit gains Guard and Armor 1 (v3 churn)', () => {
     let { s, p1, p2 } = arena()
-    const wall = put(s, p2, 'bulwark-protector', 1)
+    const wearer = put(s, p2, 'berserker', 1)
     const chain = toHand(s, p2, 'chain-of-law')
     s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'play', card: chain, targets: [{ kind: 'unit', id: wall }] })
-    const bolt = toHand(s, p1, 'searing-bolt')
-    expect(() => act(s, p1, { type: 'play', card: bolt, targets: [{ kind: 'unit', id: wall }] }))
-      .toThrow(/targeted/i)
-    // friendly heal still fine
-    s.units[wall].damage = 2
-    const faith = toHand(s, p2, 'unwavering-faith')
-    s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'play', card: faith, targets: [{ kind: 'unit', id: wall }] })
-    expect(s.units[wall].damage).toBe(0)
+    s = act(s, p2, { type: 'play', card: chain, targets: [{ kind: 'unit', id: wearer }] })
+    expect(hasKw(s, s.units[wearer], 'guard')).toBe(true)
+    expect(effArmor(s, s.units[wearer])).toBe(1)
+    expect(influenceFor(s, p2)).toBe(1)
   })
 })
 
@@ -323,15 +309,14 @@ describe('base-assault splash (Crimson Behemoth, re-ruled playtest 004)', () => 
 })
 
 describe('zone-entry triggers on movement', () => {
-  it('Containment Priest imprisons again when it marches into a new zone', () => {
+  it('Containment Priest captures a small enemy on entry (v3 churn)', () => {
     let { s, p1, p2 } = arena()
-    const priest = put(s, p2, 'containment-priest', 1, { enteredRound: 0 })
-    const victim = put(s, p1, 'berserker', 1)
-    const target2 = put(s, p1, 'doombringer', homeZone(p1))
-    s = act(s, p1, { type: 'pass' })          // hand the window to p2
-    s = act(s, p2, { type: 'move', unit: priest, to: homeZone(p1) })
-    // priest left neutral (victim there stays free) and imprisoned the strongest in p1 home
-    expect(s.units[victim].imprisoned).toBeNull()
-    expect(s.units[target2].imprisoned?.by).toBe(p2)
+    const small = put(s, p1, 'flameblade-raider', homeZone(p2))   // 2 power
+    const priest = toHand(s, p2, 'containment-priest')
+    s = act(s, p1, { type: 'pass' })
+    s = act(s, p2, { type: 'play', card: priest, targets: [{ kind: 'unit', id: small }] })
+    expect(s.units[small]).toBeUndefined()
+    const priestUnit = Object.values(s.units).find(u => u.slug === 'containment-priest')!
+    expect(s.captives[small]?.by).toBe(priestUnit.id)
   })
 })

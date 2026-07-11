@@ -1047,14 +1047,19 @@
   "targets": [
    {
     "t": "unit",
+    "side": "friendly"
+   },
+   {
+    "t": "unit",
     "side": "enemy",
     "maxPower": 2
    }
   ],
   "onPlay": [
    {
-    "op": "imprison",
-    "t": "chosen0"
+    "op": "capture",
+    "t": "chosen1",
+    "by": "chosen0"
    },
    {
     "op": "influence",
@@ -1066,11 +1071,11 @@
   "color": "yellow",
   "type": "action",
   "cost": 1,
-  "text": "Imprison target enemy unit with 2 or less Power. Gain 1 Influence.",
+  "text": "Target unit you control captures target enemy unit with 2 or less Power. Gain 1 Influence.",
   "pips": [
    "yellow"
   ],
-  "designerNote": "Session 006, the prison ladder (each imprison action now has one job): Warrant 1 = small fry. The old \"in this zone\" was meaningless from hand (decision 52 context) and an unrestricted 1-mana imprison embarrassed Detain at 6.",
+  "designerNote": "Session 006, the prison ladder (each imprison action now has one job): Warrant 1 = small fry. The old \"in this zone\" was meaningless from hand (decision 52 context) and an unrestricted 1-mana imprison embarrassed Detain at 6.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 1: the small warrant — a warden order (first by-capture card). The captive is held until your warden readies or falls.",
   "artUrl": "/cards/prison-warrant.jpg"
  },
  "vanguard-sentinel": {
@@ -1109,7 +1114,7 @@
   ],
   "onPlay": [
    {
-    "op": "imprison",
+    "op": "exhaust",
     "t": "chosen0"
    }
   ],
@@ -1118,21 +1123,25 @@
   "color": "yellow",
   "type": "action",
   "cost": 2,
-  "text": "Imprison target enemy unit with 4 or less Power.",
+  "text": "Exhaust target enemy unit with 4 or less Power.",
   "pips": [
    "yellow"
   ],
-  "designerNote": "Session 006, prison ladder: Binding Light 2 = midweight lockup, pure tempo (no influence rider). The old 10+ rider was dead text — prisoners already can't attack anything (decision 50 spirit).",
+  "designerNote": "Session 006, prison ladder: Binding Light 2 = midweight lockup, pure tempo (no influence rider). The old 10+ rider was dead text — prisoners already can't attack anything (decision 50 spirit).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 2: the verdict of stillness — exhaustion is the new soft lock (blocking costs ready units in v3, so this bites twice).",
   "artUrl": "/cards/binding-light.jpg"
  },
  "containment-priest": {
-  "onEnterZone": [
+  "targets": [
    {
-    "op": "imprison",
-    "t": "auto",
-    "auto": {
-     "scope": "enteredZone"
-    }
+    "t": "unit",
+    "side": "enemy",
+    "maxPower": 2
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "capture",
+    "t": "chosen0"
    }
   ],
   "slug": "containment-priest",
@@ -1142,11 +1151,16 @@
   "cost": 2,
   "power": 2,
   "health": 3,
-  "text": "When this enters a zone, imprison the strongest enemy unit there.",
+  "text": "When this enters play, it captures target enemy unit with 2 or less Power.",
+  "kw": [
+   {
+    "k": "capture"
+   }
+  ],
   "pips": [
    "yellow"
   ],
-  "designerNote": "Decision 51: the pick is deterministic (strongest eligible; ties go to the earliest arrival) and the text says so. Fires on deploy and on every move.",
+  "designerNote": "Decision 51: the pick is deterministic (strongest eligible; ties go to the earliest arrival) and the text says so. Fires on deploy and on every move.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The priest carries its own cell now — a targeted capture on entry (was auto-imprison).",
   "artUrl": "/cards/containment-priest.jpg"
  },
  "disciplined-mind": {
@@ -1320,8 +1334,13 @@
     "s": "aura",
     "scope": "attached",
     "kw": {
-     "k": "untargetable"
+     "k": "guard"
     }
+   },
+   {
+    "s": "aura",
+    "scope": "attached",
+    "armor": 1
    }
   ],
   "onPlay": [
@@ -1335,11 +1354,12 @@
   "color": "yellow",
   "type": "upgrade",
   "cost": 3,
-  "text": "Attach to unit. This unit can't be the target of enemy actions. Influence: +1.",
+  "text": "Attached unit has Guard and Armor 1. Gain 1 Influence.",
   "pips": [
    "yellow",
    "yellow"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Untargetable is purple's (as Hidden) now; the chain deputizes instead — Guard + Armor 1, and in v3 orphaned chains are salvageable (decision 67).",
   "artUrl": "/cards/chain-of-law.jpg"
  },
  "justicar-enforcer": {
@@ -1370,13 +1390,10 @@
   "artUrl": "/cards/justicar-enforcer.jpg"
  },
  "noble-purifier": {
-  "onAttack": [
+  "onKill": [
    {
-    "op": "imprison",
-    "t": "auto",
-    "auto": {
-     "scope": "targetZone"
-    }
+    "op": "influence",
+    "n": 2
    }
   ],
   "slug": "noble-purifier",
@@ -1386,12 +1403,12 @@
   "cost": 3,
   "power": 3,
   "health": 3,
-  "text": "When this attacks, imprison the strongest enemy unit in the defending zone.",
+  "text": "When this kills a unit, gain 2 Influence.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 51 text (deterministic pick — it may be the attack target itself, which cancels the counter-punch).",
+  "designerNote": "Decision 51 text (deterministic pick — it may be the attack target itself, which cancels the counter-punch).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Purification through victory — righteous kills win the crowd (was auto-imprison on attack).",
   "artUrl": "/cards/noble-purifier.jpg"
  },
  "sanctified-bastion": {
@@ -1431,13 +1448,9 @@
   ],
   "onPlay": [
    {
-    "op": "imprison",
-    "t": "chosen0"
-   },
-   {
     "op": "buff",
     "t": "chosen0",
-    "p": -1,
+    "p": -2,
     "dur": "perm"
    },
    {
@@ -1450,12 +1463,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 3,
-  "text": "Imprison target unit. It gets -1 Power permanently. Gain 1 Influence.",
+  "text": "Target enemy unit gets −2 Power permanently. Gain 1 Influence.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006, prison ladder: Subjugate 3 = unrestricted imprison that leaves a mark — the prisoner comes back weaker. The old \"if your Influence is 5 or less\" condition was noise; the rider is now unconditional.",
+  "designerNote": "Session 006, prison ladder: Subjugate 3 = unrestricted imprison that leaves a mark — the prisoner comes back weaker. The old \"if your Influence is 5 or less\" condition was noise; the rider is now unconditional.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 3: the breaking — permanent humiliation instead of walls.",
   "artUrl": "/cards/subjugate.jpg"
  },
  "unwavering-faith": {
@@ -1502,6 +1515,9 @@
     "t": "chosen0"
    },
    {
+    "op": "freeCaptives"
+   },
+   {
     "op": "influence",
     "n": 1
    }
@@ -1511,12 +1527,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 4,
-  "text": "Free target friendly unit from imprisonment and remove its negative effects. Gain 1 Influence.",
+  "text": "Remove all negative effects from target unit you control. Free all your captured units. Gain 1 Influence.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006: 7 → 3 mana and the text now says what removeNegative actually does (it is primarily a jailbreak). A situational cleanse was priced like a bomb.",
+  "designerNote": "Session 006: 7 → 3 mana and the text now says what removeNegative actually does (it is primarily a jailbreak). A situational cleanse was priced like a bomb.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The jailbreak: the first freeCaptives card — your people come home (dazed).",
   "artUrl": "/cards/absolution.jpg"
  },
  "devout-intervention": {
@@ -1637,17 +1653,12 @@
   "artUrl": "/cards/fortress-keeper.jpg"
  },
  "high-justiciar": {
-  "startOfRound": {
-   "ops": [
-    {
-     "op": "imprison",
-     "t": "auto",
-     "auto": {
-      "scope": "otherZone"
-     }
-    }
-   ]
-  },
+  "onDefend": [
+   {
+    "op": "influence",
+    "n": 2
+   }
+  ],
   "slug": "high-justiciar",
   "name": "High Justiciar",
   "color": "yellow",
@@ -1655,22 +1666,30 @@
   "cost": 4,
   "power": 3,
   "health": 5,
-  "text": "At the start of your round, imprison the strongest enemy unit outside this unit's zone.",
+  "text": "Guard. When this defends, gain 2 Influence.",
+  "kw": [
+   {
+    "k": "guard"
+   }
+  ],
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 51 text (deterministic pick, stated on the card).",
+  "designerNote": "Decision 51 text (deterministic pick, stated on the card).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Guard is free blocking in v3 — the Justiciar holds the line and the court pays it.",
   "artUrl": "/cards/high-justiciar.jpg"
  },
  "lawbringer": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
   "onEnterZone": [
    {
-    "op": "imprison",
-    "t": "auto",
-    "auto": {
-     "scope": "enteredZone"
-    }
+    "op": "exhaust",
+    "t": "chosen0"
    }
   ],
   "slug": "lawbringer",
@@ -1680,12 +1699,12 @@
   "cost": 4,
   "power": 4,
   "health": 4,
-  "text": "When this enters a zone, imprison the strongest enemy unit there.",
+  "text": "Whenever this enters a zone, exhaust target enemy unit.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 51 text. Containment Priest's big sibling: full statline plus the same arrest, two mana later.",
+  "designerNote": "Decision 51 text. Containment Priest's big sibling: full statline plus the same arrest, two mana later.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The law arrives and the room goes quiet — repeatable discipline on every march.",
   "artUrl": "/cards/lawbringer.jpg"
  },
  "light-of-authority": {
@@ -1745,13 +1764,18 @@
   "targets": [
    {
     "t": "unit",
+    "side": "friendly"
+   },
+   {
+    "t": "unit",
     "side": "enemy"
    }
   ],
   "onPlay": [
    {
-    "op": "imprison",
-    "t": "chosen0"
+    "op": "capture",
+    "t": "chosen1",
+    "by": "chosen0"
    },
    {
     "op": "draw",
@@ -1763,12 +1787,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 4,
-  "text": "Imprison target unit. Draw a card.",
+  "text": "Target unit you control captures target enemy unit. Draw a card.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006, prison ladder: Sentence 4 = imprison that replaces itself. The old 10+ rider duplicated what imprisonment already does.",
+  "designerNote": "Session 006, prison ladder: Sentence 4 = imprison that replaces itself. The old 10+ rider duplicated what imprisonment already does.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 4: the full sentence — any prisoner, plus the paperwork (draw).",
   "artUrl": "/cards/sentence.jpg"
  },
  "censer-of-purity": {
@@ -1853,13 +1877,18 @@
   "targets": [
    {
     "t": "unit",
+    "side": "friendly"
+   },
+   {
+    "t": "unit",
     "side": "enemy"
    }
   ],
   "onPlay": [
    {
-    "op": "imprison",
-    "t": "chosen0"
+    "op": "capture",
+    "t": "chosen1",
+    "by": "chosen0"
    },
    {
     "op": "influence",
@@ -1871,20 +1900,19 @@
   "color": "yellow",
   "type": "action",
   "cost": 5,
-  "text": "Imprison target unit. Gain 2 Influence.",
+  "text": "Target unit you control captures target enemy unit. Gain 2 Influence.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006, prison ladder: Chamber 5 = the political win — imprison plus the pool's biggest single influence payout. The old text restated the global decay rule (§1.11) as if it were a card effect; the ledger stopped lying.",
+  "designerNote": "Session 006, prison ladder: Chamber 5 = the political win — imprison plus the pool's biggest single influence payout. The old text restated the global decay rule (§1.11) as if it were a card effect; the ledger stopped lying.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 5: the chamber — capture as civic spectacle.",
   "artUrl": "/cards/imprisonment-chamber.jpg"
  },
  "radiant-judgment": {
   "onPlay": [
    {
-    "op": "imprison",
-    "t": "auto",
-    "f": {
+    "op": "exhaust",
+    "t": {
      "side": "enemy",
      "maxPower": 3
     }
@@ -1899,11 +1927,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 5,
-  "text": "Imprison all enemy units with 3 Power or less. Influence: +2.",
+  "text": "Exhaust every enemy unit with 3 or less Power. Gain 2 Influence.",
   "pips": [
    "yellow",
    "yellow"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Mass judgment: the small are stilled everywhere.",
   "artUrl": "/cards/radiant-judgment.jpg"
  },
  "radiant-wall": {
@@ -1994,13 +2023,18 @@
   "targets": [
    {
     "t": "unit",
+    "side": "friendly"
+   },
+   {
+    "t": "unit",
     "side": "enemy"
    }
   ],
   "onPlay": [
    {
-    "op": "imprison",
-    "t": "chosen0"
+    "op": "capture",
+    "t": "chosen1",
+    "by": "chosen0"
    },
    {
     "op": "heal",
@@ -2017,19 +2051,19 @@
   "color": "yellow",
   "type": "action",
   "cost": 6,
-  "text": "Imprison target unit. Heal 3 damage from your base. Gain 1 Influence.",
+  "text": "Target unit you control captures target enemy unit. Your Home heals 3. Gain 1 Influence.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006, prison ladder: Detain 6 = the stabilizer — lock the threat away and bind the wound it left. Was a plain imprison+1 at 6 mana, strictly worse than the cheaper rungs.",
+  "designerNote": "Session 006, prison ladder: Detain 6 = the stabilizer — lock the threat away and bind the wound it left. Was a plain imprison+1 at 6 mana, strictly worse than the cheaper rungs.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 6: order restored — the arrest, the healing, the standing.",
   "artUrl": "/cards/detain.jpg"
  },
  "gateward-colossus": {
-  "statics": [
+  "onDefend": [
    {
-    "s": "imprisonWatcher",
-    "n": 2
+    "op": "influence",
+    "n": 1
    }
   ],
   "slug": "gateward-colossus",
@@ -2039,8 +2073,15 @@
   "cost": 6,
   "power": 3,
   "health": 9,
-  "text": "This can't attack. Whenever a unit is imprisoned, gain 2 Influence.",
+  "text": "Guard. Armor 2. Can't attack. When this defends, gain 1 Influence.",
   "kw": [
+   {
+    "k": "guard"
+   },
+   {
+    "k": "armor",
+    "n": 2
+   },
    {
     "k": "cantAttack"
    }
@@ -2050,6 +2091,7 @@
    "yellow",
    "yellow"
   ],
+  "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The wall keeps its post; imprisonWatcher dies with prison. Armor 2 + free blocks = the gate that holds.",
   "artUrl": "/cards/gateward-colossus.jpg"
  },
  "hierophant": {
@@ -2079,17 +2121,17 @@
   "artUrl": "/cards/hierophant.jpg"
  },
  "inquisitor": {
-  "onEnterZone": [
+  "targets": [
    {
-    "op": "imprison",
-    "t": "auto",
-    "auto": {
-     "scope": "enteredZone"
-    },
-    "f": {
-     "side": "enemy",
-     "maxPower": 4
-    }
+    "t": "unit",
+    "side": "enemy",
+    "maxPower": 4
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "capture",
+    "t": "chosen0"
    }
   ],
   "slug": "inquisitor",
@@ -2099,12 +2141,17 @@
   "cost": 6,
   "power": 4,
   "health": 5,
-  "text": "When this enters a zone, imprison the strongest enemy unit there with 4 or less Power.",
+  "text": "When this enters play, it captures target enemy unit with 4 or less Power.",
+  "kw": [
+   {
+    "k": "capture"
+   }
+  ],
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 51 text (deterministic pick within the power cap).",
+  "designerNote": "Decision 51 text (deterministic pick within the power cap).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The senior arrest: bigger writ, bigger body.",
   "artUrl": "/cards/inquisitor.jpg"
  },
  "mobilize-the-faithful": {
@@ -2146,17 +2193,22 @@
   "artUrl": "/cards/mobilize-the-faithful.jpg"
  },
  "archon-of-order": {
-  "startOfRound": {
-   "ops": [
-    {
-     "op": "imprison",
-     "t": "auto",
-     "auto": {
-      "scope": "eachZone"
-     }
-    }
-   ]
-  },
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "capture",
+    "t": "chosen0"
+   },
+   {
+    "op": "influence",
+    "n": 2
+   }
+  ],
   "slug": "archon-of-order",
   "name": "Archon of Order",
   "color": "yellow",
@@ -2164,13 +2216,18 @@
   "cost": 7,
   "power": 7,
   "health": 7,
-  "text": "At the start of your round, imprison the strongest enemy unit in each zone.",
+  "text": "When this enters play, it captures target enemy unit. Gain 2 Influence.",
+  "kw": [
+   {
+    "k": "capture"
+   }
+  ],
   "pips": [
    "yellow",
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 51 text (deterministic pick per zone; zones with no eligible enemies are skipped). The mass-jailer — remember each prisoner costs 1 Influence per round.",
+  "designerNote": "Decision 51 text (deterministic pick per zone; zones with no eligible enemies are skipped). The mass-jailer — remember each prisoner costs 1 Influence per round.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The 7-cost does a lot (decision 68): a 7/7 that arrests anyone on arrival, publicly.",
   "artUrl": "/cards/archon-of-order.jpg"
  },
  "champion-of-the-faith": {
@@ -2233,12 +2290,15 @@
   ],
   "onPlay": [
    {
-    "op": "imprison",
-    "t": "auto",
-    "f": {
+    "op": "exhaust",
+    "t": {
      "side": "enemy",
      "zone": "chosenZone"
     }
+   },
+   {
+    "op": "influence",
+    "n": 2
    }
   ],
   "slug": "prison-of-light",
@@ -2246,13 +2306,13 @@
   "color": "yellow",
   "type": "action",
   "cost": 7,
-  "text": "Choose a zone. Imprison every enemy unit there.",
+  "text": "Choose a zone: exhaust all enemy units there. Gain 2 Influence.",
   "pips": [
    "yellow",
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006, prison ladder: Prison of Light 7 = the zone-wide haymaker. Remember the mortgage: every prisoner costs you 1 Influence per round, so caging an army is a serious bet.",
+  "designerNote": "Session 006, prison ladder: Prison of Light 7 = the zone-wide haymaker. Remember the mortgage: every prisoner costs you 1 Influence per round, so caging an army is a serious bet.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 7: the light holds a whole district still for a round — and in v3 a stilled zone cannot block.",
   "artUrl": "/cards/prison-of-light.jpg"
  },
  "radiant-citadel": {
@@ -2288,17 +2348,28 @@
    {
     "t": "unit",
     "side": "enemy",
-    "count": 2
+    "count": 2,
+    "upTo": true
    }
   ],
   "onPlay": [
    {
-    "op": "imprison",
+    "op": "exhaust",
     "t": "chosen0"
    },
    {
-    "op": "imprison",
+    "op": "damage",
+    "t": "chosen0",
+    "n": 2
+   },
+   {
+    "op": "exhaust",
     "t": "chosen1"
+   },
+   {
+    "op": "damage",
+    "t": "chosen1",
+    "n": 2
    }
   ],
   "slug": "supreme-sentence",
@@ -2306,13 +2377,13 @@
   "color": "yellow",
   "type": "action",
   "cost": 7,
-  "text": "Imprison two target enemy units.",
+  "text": "Up to two target enemy units anywhere are exhausted and take 2 damage each.",
   "pips": [
    "yellow",
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006 redesign under decision 50 (no dead thresholds): the old \"if your Influence is 15 or more\" could never fire — 15 is the win. Now it simply passes two sentences anywhere on the board.",
+  "designerNote": "Session 006 redesign under decision 50 (no dead thresholds): the old \"if your Influence is 15 or more\" could never fire — 15 is the win. Now it simply passes two sentences anywhere on the board.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 8: the highest court — two verdicts, anywhere, with teeth.",
   "artUrl": "/cards/supreme-sentence.jpg"
  },
  "light-s-vanguard": {
