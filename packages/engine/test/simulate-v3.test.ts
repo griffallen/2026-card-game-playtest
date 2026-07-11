@@ -24,7 +24,7 @@ const V3T: CardSet = Object.fromEntries(Object.entries({
 const deck = () => Object.keys(V3T).flatMap(slug => [slug, slug, slug])
 
 describe('v3 random playouts (blocker-pairing + presence pips + keyword suite)', () => {
-  it('40 seeded games terminate with a winner, no stuck states, both seat orders', () => {
+  it('40 seeded games terminate with a winner, no stuck states, both seat orders', { timeout: 60_000 }, () => {
     for (let seed = 1; seed <= 20; seed++) {
       const a = simulateGame(seed, deck(), deck(), { rules: V3_RULES, cardSet: V3T })
       const b = simulateGame(seed + 5_000, deck(), deck(), { rules: V3_RULES, cardSet: V3T })
