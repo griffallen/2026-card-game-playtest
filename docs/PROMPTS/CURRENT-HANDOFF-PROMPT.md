@@ -12,7 +12,12 @@ loop checks the repo; this file is the fresh context's whole briefing.
    and fold rulings through the loop: DECISIONS.md → the affected spec/cards/docs → tests →
    deploy (`./scripts/deploy-demo.sh`) when player-facing. Commit + push everything.
 3. Comment-count ledger as of 2026-07-11 ~00:30 (issue:comments, x = closed):
-   **12:6 · 11:6 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:11 · 3:1x · 2:2x · 1:5x.**
+   **15:1 · 12:6 · 11:6 · 10:1 · 9:9x · 8:4x · 7:3x · 6:4x · 5:1 · 4:11 · 3:1x · 2:2x · 1:5x.**
+   **DECISION 69 (#15): pips are now a PRESENCE GATE, not a payment** — exhaust any `cost`
+   resources; bank must CONTAIN ≥ pip-count providing cards per color; banked cards provide 1
+   presence per color they carry (never stacking). Spec §1.2 rewritten. Echoed with a worked
+   example (3 red pips = 3 distinct red banked cards); silence = confirmed, build implements
+   this. Supersedes the #9 Q1–Q2 payment model — THE BUILD MUST USE THE PRESENCE MODEL.
    **BLAINE IS ENGAGED ON THE THREADS (02:12–02:15): art pipeline ruled (#11 — Griff generates
    card sheets via ChatGPT, attaches, agent parses; NO image-gen API) and build confirmed for
    TONIGHT (#12) pending Griff's Overextend-vs-Scar clarification.** Watch for that answer —

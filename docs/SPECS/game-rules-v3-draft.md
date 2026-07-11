@@ -15,18 +15,26 @@ slash-pass). `game-rules.md` (v2.3) remains the engine's contract until this rep
 Round 1 skips the ready step by construction (nothing is in play, resources were just banked);
 the rules text now says so instead of implying a phantom step.
 
-### 1.2 Colored resource pips — NEW ECONOMY *(Q1–Q3 answered)*
-A card's cost is `cost` total, of which `pips` (0..cost) are colored. Paying requires exhausting
-one matching-color resource per pip; the remainder takes any resources.
-- **[Q1 ✓]** A banked card provides the colors of **its own cost pips** (MTG-style: a card costing
-  1UW banks as Blue *or* White). Pip-less cards bank as colorless (pay generic only).
-- **[Q2 ✓]** Multi-pip resources choose their color **at spend time**; one card = one resource.
-- **[Q3 ✓]** `pips` is a designer-owned card-file field. Initial policy: mono-color pips only;
-  **stronger cards carry more pips of their own color** — the splash tax is a deliberate balance
-  lever for big/good cards (cf. MTG CC costs, SWU aspects). Agent drafts proposals
-  (`docs/DESIGN/06-PIP-PROPOSAL.md`); playtesting tunes.
-- Engine: `CardDef.pips?: Color[]`; resource row entries carry a color set; payment validation in
-  `playCard`; deck legality unchanged (pips constrain play, not deckbuilding).
+### 1.2 Colored resource pips — PRESENCE MODEL *(Q1–Q3 answered; REVISED by issue #15, decision 69)*
+Cost and color are now two separate checks:
+- **Cost (payment):** exhaust any `cost` resources — color-blind, unchanged from v2.3.
+- **Pips (presence requirement):** to play a card, your resource zone must **contain** enough
+  color sources — for each color, at least as many providing cards as the card has pips of that
+  color. **Pips never exhaust anything.** (SWU-aspect-style gate, not MTG-style payment —
+  revision of the original Q1–Q3 payment model, designer's call on #15 after the 0-cost ruling.)
+- **What a banked card provides:** 1 presence of **each** color in its own cost pips —
+  a red+blue card provides 1 red AND 1 blue; a card with 4 red pips still provides only
+  **1 red** (same-color pips never stack on the providing side). Pip-less cards provide nothing
+  (colorless).
+- **Consequences:** 0-cost cards can carry pip requirements (no payment needed, gate still
+  applies — closes the splash-tax escape flagged on PR #14). Heavy same-color pip costs (RRR)
+  demand that many *distinct* banked red cards — the splash tax moves entirely into
+  deck-building/banking choices; turn-to-turn payment stays simple.
+- **[Q3 ✓ still stands]** `pips` is a designer-owned card-file field; the approved assignment
+  baseline (`docs/DESIGN/06-PIP-PROPOSAL.md`, decision 66) carries over — the numbers now read
+  as presence requirements.
+- Engine: `CardDef.pips?: Color[]`; banked entries expose a color set; `playCard` validates
+  presence (count providing cards per color ≥ pip count), then exhausts any `cost` resources.
 
 ### 1.3 Combat — target-declared, blocker-paired *(Q4–Q6 answered; replaces combined-hit + intercept)*
 1. **Declare:** attacker exhausts a group of ready units in one zone and declares **one target:
