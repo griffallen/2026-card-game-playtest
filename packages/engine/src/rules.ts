@@ -27,6 +27,18 @@ export const DEFAULT_RULES: RulesConfig = {
   armorPerAttack: 'once',
   maxAttackers: 0,
   simultaneousLifeTiebreak: 'actor',
+  combatModel: 'intercept',
+  pipModel: 'none',
+  upgradesOrphan: false,
+  blockingExhausts: true,   // inert under 'intercept'; v3 combat reads it (decision 62)
+}
+
+/** The v3.0 preset (game-rules-v3-draft): flips the structural switches, inherits the rest. */
+export const V3_RULES: RulesConfig = {
+  ...DEFAULT_RULES,
+  combatModel: 'blockerPairing',
+  pipModel: 'presence',
+  upgradesOrphan: true,
 }
 
 /** Merge a stored (possibly partial/older) config over current defaults, mapping legacy v1 keys. */

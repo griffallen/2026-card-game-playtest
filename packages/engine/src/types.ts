@@ -131,6 +131,14 @@ export interface RulesConfig {
   armorPerAttack: 'once' | 'perAttacker'
   /** cap on attackers per attack action (0 = unlimited) */
   maxAttackers: number
+  /** v3 (decision Q4-Q6/#9): 'blockerPairing' replaces the intercept window entirely */
+  combatModel: 'intercept' | 'blockerPairing'
+  /** v3 (decision 69): 'presence' gates plays on banked color sources; pips never exhaust */
+  pipModel: 'none' | 'presence'
+  /** v3 (decision 67): dead units' upgrades orphan in the zone and are salvageable by either side */
+  upgradesOrphan: boolean
+  /** v3 (decision 62): assigning a non-Guard blocker exhausts it; inert under 'intercept' */
+  blockingExhausts: boolean
   simultaneousLifeTiebreak: 'actor' | 'active' | 'draw'
 }
 
