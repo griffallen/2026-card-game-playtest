@@ -102,6 +102,8 @@ Numbered, in the order they were made. Format: decision — reason.
 
 66. ✅ **The pip proposal is the approved baseline** (issue #9, 2026-07-11): the cost-tiered grammar (1 pip ≤2 / 2 pips 3–6 / 3 pips 7+) and its 13 deviations ship into the v3 build as-is; tuning happens after playtesting. The designer's recorded tuning lens: with mono-color pips, ask per card *"how well would this work in another color's deck — and do we hinder that with a higher pip count?"* — splash-hostility is the dial, card by card. Closes #9 entirely (Q1–Q10 + pips); the blocking-exhausts derived default (decision 62) stays vetoable until the combat build lands. — The economy layer is now designer-signed before a line of engine code, which is the loop working as designed.
 
+67. ✅ **Upgrades orphan on death and are salvageable by either side** (v3; issue #12). When the wearer dies its upgrades stay in that zone, orphaned; as a turn action any player may attach one to a unit they control in that zone by paying the upgrade's **full cost including pips** — can't pay, can't attach. Replaces v2.3's die-with-the-wearer behavior. — Upgrades become contested battlefield objects instead of sunk costs, and the pip payment keeps salvage inside the color economy.
+
 ## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
 
 - **Red burn grammar:** unit-only burn = cost+1 damage (Devastating Strike became unit-only); face-capable burn = cost (Raging Inferno 5→6 dmg; Searing Bolt/Volcanic Slam/Rupture already conformed). Burn the Frontline 7-for-4 → 6-for-6 one-zone (the wall-breaker; friendly fire stays as red's visible cost).

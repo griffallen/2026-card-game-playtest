@@ -50,6 +50,14 @@ one matching-color resource per pip; the remainder takes any resources.
 ### 1.4 Moving — unchanged, minus Flying
 Adjacent-zone move, exhausts the unit (Rush's first-move waiver unchanged). All flying text gone.
 
+### 1.5 Upgrades — orphaned, salvageable, stealable *(NEW — designer, issue #12; decision 67)*
+When a unit dies, its upgrades **stay in that zone, orphaned** (they no longer die with the
+wearer). As a **turn action, either player** may attach an orphaned upgrade in a zone to a unit
+they control **in that zone**, paying the upgrade's full cost — resources *and* pips. Can't
+pay → can't attach. Battlefield salvage: your dead champion's sword is anyone's prize.
+Engine: upgrade gains an `orphanedIn: ZoneId` state; new `attachOrphan` turn action; cost check
+identical to playing the card.
+
 ## 2. Keyword set v3
 
 ### Removed
@@ -95,6 +103,11 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
 - **Conditional amounts** (target-state predicates): "2 damage to a unit, or 3 if it's already
   damaged" — the designer's Devastating Strike rework (issue #4). Wants a `bonus-if` clause
   (predicate: damaged/exhausted/keyword) rather than a full modal.
+- **Target-spec extensions**: `upTo` (optional targets — choose 0..count) and `sameZone`
+  (all chosen targets share one zone) — the designer's Volcanic Slam rework (issue #4):
+  "3 damage to up to 2 units in the same zone". Today `count` means exactly-N, zones unlinked.
+- **`attachOrphan` turn action** (upgrades, §1.5) — attach an orphaned upgrade to your unit in
+  its zone at full cost+pips.
 - **[PENDING designer clarification, issue #12]** an Overextend/Scar cap: "can't overextend
   beyond remaining health" (example given: 3 health, 2 damage → max +1). Overextend is cut in
   v3, so this likely means **Scar's bonus caps at remaining health** — asked which before
