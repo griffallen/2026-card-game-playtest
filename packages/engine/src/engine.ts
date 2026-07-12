@@ -558,9 +558,12 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   let unblockedTotal = 0
   const unblockedNames: string[] = []
   // #25 experiment: under 'always', the declared target strikes every unblocked attacker at its
-  // full snapshot power, exhausted or not (cross-zone ranged never reaches this path — structural exemption)
+  // full snapshot power, exhausted or not; under 'ready', only while un-exhausted (the timing game
+  // survives). Cross-zone ranged never reaches this path — structural exemption.
   const preTarget = pa.target.kind === 'unit' ? state.units[pa.target.id] : undefined
-  const retaliatePower = state.rules.retaliation === 'always' && preTarget ? effPower(state, preTarget) : 0
+  const retaliates = state.rules.retaliation === 'always'
+    || (state.rules.retaliation === 'ready' && !!preTarget && !preTarget.exhausted)
+  const retaliatePower = retaliates && preTarget ? effPower(state, preTarget) : 0
   for (const p of plans) {
     if (!p.blockers.length) {
       unblockedTotal += p.aPower

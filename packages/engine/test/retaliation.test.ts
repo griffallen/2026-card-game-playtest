@@ -9,7 +9,7 @@ import { T, toyDeck, put } from './util.ts'
 // whether it's exhausted or not." Experiment knob: rules.retaliation 'blockers' (current
 // law — fighting back IS blocking) vs 'always' (the declared target strikes every
 // unblocked attacker at full power, exhausted included). Off by default everywhere.
-function game(retaliation: 'blockers' | 'always'): GameState {
+function game(retaliation: 'blockers' | 'ready' | 'always'): GameState {
   let s = createGame({
     seed: 31,
     rules: { ...V3_RULES, retaliation, chooseStartingResources: false },
@@ -49,6 +49,24 @@ describe('retaliation experiment (#25)', () => {
     expect(after.units[sleepy]).toBeUndefined()      // 2+2 ≥ 3 health: the brute falls
     expect(after.units[r1]).toBeUndefined()          // but its 4 power fells each 2-health attacker
     expect(after.units[r2]).toBeUndefined()
+  })
+
+  it("'ready': a ready target strikes back unbidden; an exhausted one stays defenseless", () => {
+    const s1 = game('ready')
+    const me1 = s1.actorSeat, them1 = (1 - me1) as 0 | 1
+    const r1 = put(s1, me1, 'soldier', 1)                     // 2/2
+    const standing = put(s1, them1, 'brute', 1)               // 4/3, ready
+    const a1 = swing(s1, me1, [r1], standing)
+    expect(a1.units[standing].damage).toBe(2)
+    expect(a1.units[r1]).toBeUndefined()                      // 4 power felled the 2-health raider
+
+    const s2 = game('ready')
+    const me2 = s2.actorSeat, them2 = (1 - me2) as 0 | 1
+    const r2 = put(s2, me2, 'soldier', 1)
+    const sleepy = put(s2, them2, 'brute', 1, { exhausted: true })
+    const a2 = swing(s2, me2, [r2], sleepy)
+    expect(a2.units[sleepy].damage).toBe(2)
+    expect(a2.units[r2].damage).toBe(0)                       // caught exhausted: the timing game survives
   })
 
   it("'always': blocked attackers take only their pair counter — no double dip", () => {

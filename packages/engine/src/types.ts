@@ -159,8 +159,9 @@ export interface RulesConfig {
   /** v3 (decision 62): assigning a non-Guard blocker exhausts it; inert under 'intercept' */
   blockingExhausts: boolean
   /** #25 experiment (Griff): 'blockers' = fighting back IS blocking (current law);
+   *  'ready' = a READY declared target strikes every unblocked attacker (exhausted stays defenseless);
    *  'always' = the declared target strikes every unblocked attacker at full power, exhausted included */
-  retaliation: 'blockers' | 'always'
+  retaliation: 'blockers' | 'ready' | 'always'
   simultaneousLifeTiebreak: 'actor' | 'active' | 'draw'
 }
 
