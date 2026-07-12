@@ -37,7 +37,7 @@
 | [Scorching Howl](red/scorching-howl.md) | 5 | action | — |  | canon | Deal 3 damage to all units. |
 | [Warlord Garok](red/warlord-garok.md) | 5 | unit | 5/5 | rush | canon | Rush. Your other units have +1 Power. |
 | [Burn the Frontline](red/burn-the-frontline.md) | 6 | action | — |  | canon | Choose a zone. Deal 6 damage to every unit there — yours included. |
-| [Earthshaker](red/earthshaker.md) | 6 | unit | 7/5 | breakthrough, scar | canon | Breakthrough. Scar. |
+| [Earthshaker](red/earthshaker.md) | 6 | unit | 4/7 | breakthrough, scar | canon | Breakthrough. Scar. |
 | [Raging Inferno](red/raging-inferno.md) | 6 | action | — |  | canon | Deal 6 damage to target unit or base. |
 | [Apocalypse Engine](red/apocalypse-engine.md) | 7 | unit | 8/7 | breakthrough | canon | Breakthrough. |
 | [Last Stand](red/last-stand.md) | 7 | action | — |  | canon | Your units gain +2 Power this round. You lose 2 life. |

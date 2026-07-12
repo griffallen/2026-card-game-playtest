@@ -809,8 +809,8 @@
   "color": "red",
   "type": "unit",
   "cost": 6,
-  "power": 7,
-  "health": 5,
+  "power": 4,
+  "health": 7,
   "text": "Breakthrough. Scar.",
   "kw": [
    {
