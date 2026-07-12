@@ -82,9 +82,16 @@ export function Audit() {
     <div className="mx-auto max-w-3xl px-6 pb-24 pt-10 text-[15px]">
       <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · Design Audit · canon-v1.0 (rules v2.3) · 2026-07-10</p>
       <h1 className="mt-2 font-display text-4xl font-bold text-parchment">The State of the Game</h1>
+      <div className="mt-4 rounded-md border-2 border-goldbright/60 bg-goldbright/10 p-4 text-[14px] leading-relaxed">
+        <b className="text-goldbright">⚑ This page is now an archive.</b> It describes the game as it stood on
+        2026-07-10, at the close of the v2.3 era. Since then <b>v3.0 shipped and kept moving</b> — decisions
+        59–85 rewrote combat (blockers, retaliation), pips, Capture, Ranged and more, and <b>every open question
+        listed below has since been answered</b> (the rulings live in DECISIONS.md and the Rulebook tab).
+        Read on for history; read the <b>Rulebook</b> for the game.
+      </div>
       <P>
-        This page is the <b>current truth only</b>: what's locked (the canon), what the simulations say
-        about it <i>today</i>, and what's proposed next (your v3.0 rules pass). Every number on this page
+        This page was the <b>current truth</b> of its day: what was locked (the canon), what the simulations said
+        about it <i>then</i>, and what was proposed next (the v3.0 rules pass). Every number on this page
         was measured against the rules version in the title. The original prototype audit — three eras of
         history, older sim tables, superseded proposals — is preserved unchanged in the{' '}
         <Link className="text-goldbright underline" to="/audit/archive">historical archive</Link>.

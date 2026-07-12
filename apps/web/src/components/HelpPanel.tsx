@@ -39,7 +39,7 @@ function V3Content() {
         <Row icon="⟳" title="Exhausted">Dimmed with a ⟳ — already acted; readies at the start of its owner's next round.</Row>
         <Row icon="💨" title="Rush ready">Its <b>one free move</b> the round it arrived — move <i>without</i> exhausting, then it can still fight.</Row>
         <Row icon="⛨" title="Shielded">Carries its shield token: the <b>first</b> hit is prevented entirely, then the ⛨ disappears — what you see is what's live.</Row>
-        <Row icon="⛓" title="Captives">A ⛓ on a unit means it holds an enemy unit <b>under it</b>, off the board. Select the capturer and <b>Release</b> to hand it back — the captive returns <b>ready</b>, and the release readies your capturer too.</Row>
+        <Row icon="⛓" title="Captives">A ⛓ on a unit means it holds an enemy unit <b>under it</b>, off the board. The grip has a price: <b>a holder skips the ready step</b> — once spent, it stays spent until it lets go. Select the capturer and <b>Release</b> to hand the captive back — it returns <b>ready</b>, and the release readies your capturer too.</Row>
         <Row icon="⬥" title="Orphaned upgrades">When a unit dies, its upgrades stay <b>lying in the zone</b> as dashed ⬥ tokens. Either player may tap one to <b>salvage</b> it onto their own unit there — paying its full cost and pips, as if played.</Row>
         <Row icon="🛡" title="Guard">Blocks <b>without exhausting</b> — it can block again this round and still take its own turn. ◈ is armor: every hit is reduced by that much.</Row>
         <Row icon="⚑" title="Flagged card">A prototype ruling was needed for this card's printed text — hover/long-press to read it.</Row>
@@ -50,7 +50,7 @@ function V3Content() {
         <b>Rush</b> one free move on arrival · <b>Breakthrough</b> kills its blocker → <i>all</i> excess pushes to the original target ·
         <b> Ranged N</b> exhaust to volley N at any enemy unit, any zone (its attacks are ordinary) · <b>Guard</b> blocks free ·
         <b> Hidden</b> while ready it can't be targeted or attacked; exhausting reveals it · <b>Infiltrate</b> deploys to any zone ·
-        <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under; it returns ready ·
+        <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under (the holder skips readying); it returns ready ·
         <b> Shielded</b> first hit prevented · <b>Scar</b> +1 power per damage marked, capped at remaining health.
       </p>
 
@@ -88,7 +88,8 @@ function V2Content() {
         <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, or attack, one action each. <b>Two passes in a row end the round.</b> Passing is soft: if they take a turn after you passed, you can act again.</Row>
         <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
         <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives a unit one free move the round it arrives.</Row>
-        <Row icon="⚔" title="Attack">Pick <b>one or more ready units in the same zone</b> — they strike together as one combined hit. Then the defender chooses: <b>intercept</b> (throw a ready unit in front — free if it's a Guard) or let it through. You can only strike the enemy <b>base</b> from inside <i>their</i> Home zone. Massing attackers is the answer to armor — armor is subtracted once from the whole hit.</Row>
+        <Row icon="⚔" title="Attack">Pick <b>one or more ready units in the same zone</b> — they strike together as one combined hit. Then the defender chooses: <b>intercept</b> (throw a ready unit in front — free if it's a Guard) or let it through. In a multi-attack, the counter lands on the <b>highest-power attacker</b>. You can only strike the enemy <b>base</b> from inside <i>their</i> Home zone. Massing attackers is the answer to armor — armor is subtracted once from the whole hit.</Row>
+        <Row icon="⬥" title="Upgrade pressure">A classic-only tax: whenever a unit gains its <b>second (or later) upgrade</b>, your opponent gains 1 Influence. Greed is noticed.</Row>
       </div>
 
       <H>Reading the board</H>

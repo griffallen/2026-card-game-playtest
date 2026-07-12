@@ -1,6 +1,8 @@
-# How the Game Plays — Rules v2.3 (canon-v1.0)
+# How the Game Plays — Rules v2.3 (canon-v1.0) · ARCHIVED
 
-*Written for the designer. This is the game as it exists at the table right now — every rule here is live in the prototype (turn-structure v2.0: shared rounds, claimable initiative, multi-unit attacks with a defender's intercept). Where the printed rules were silent or contradictory, the prototype makes a call and flags it with ⚑; the full list (with reasons) is in `docs/DESIGN/DECISIONS.md`, and every affected card shows a small ⚑ flag in the Cards page with the ruling on hover. Nothing flagged is sacred — each one is a conversation starter.*
+*Archived 2026-07-12: this walkthrough describes the **v2.3 era** — the live game is **v3.0** (blocker-paired combat with retaliation, pips, Capture, decisions 59–85); see the demo's Rulebook tab. Kept unchanged as the record of that table.*
+
+*Written for the designer. This was the game as it existed at the table then — every rule here was live in the prototype (turn-structure v2.0: shared rounds, claimable initiative, multi-unit attacks with a defender's intercept). Where the printed rules were silent or contradictory, the prototype makes a call and flags it with ⚑; the full list (with reasons) is in `docs/DESIGN/DECISIONS.md`, and every affected card shows a small ⚑ flag in the Cards page with the ruling on hover. Nothing flagged is sacred — each one is a conversation starter.*
 
 ---
 

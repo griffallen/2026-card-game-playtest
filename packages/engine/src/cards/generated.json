@@ -504,7 +504,7 @@
    "red",
    "red"
   ],
-  "designerNote": "Reach (canon since v2.0 audit): may attack into an adjacent zone like Ranged, but unlike Ranged it can assault bases and does take counter-damage.\n\n2026-07-11 (v3 churn pass 4): Reach is cut (#8, designer-confirmed). The juggernaut stops poking over walls and starts going through them: Rush + Breakthrough 2.",
+  "designerNote": "Reach (canon since v2.0 audit): may attack into an adjacent zone like Ranged, but unlike Ranged it can assault bases and does take counter-damage.\n\n2026-07-11 (v3 churn pass 4): Reach is cut (#8, designer-confirmed). The juggernaut stops poking over walls and starts going through them: Rush + Breakthrough (the printed 2 died with decision 75 — all excess spills).",
   "artUrl": "/cards/blaze-juggernaut.jpg"
  },
  "burning-oath": {
@@ -1523,7 +1523,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006: 7 → 3 mana and the text now says what removeNegative actually does (it is primarily a jailbreak). A situational cleanse was priced like a bomb.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The jailbreak: the first freeCaptives card — your people come home (dazed).",
+  "designerNote": "Session 006: 7 → 3 mana and the text now says what removeNegative actually does (it is primarily a jailbreak). A situational cleanse was priced like a bomb.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The jailbreak: the first freeCaptives card — your people come home (originally dazed; ready since decision 73).",
   "artUrl": "/cards/absolution.jpg"
  },
  "devout-intervention": {

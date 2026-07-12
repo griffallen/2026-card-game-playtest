@@ -152,7 +152,7 @@ describe('Capture — the captive lifecycle (decisions 61, spec §2)', () => {
     expect(s.units[victim]).toBeUndefined()            // out of play, no zone presence
     expect(s.captives[victim]?.by).toBe(card)
     expect(s.units[card].exhausted).toBe(false)
-    // release: capturer readies (it already is), captive returns EXHAUSTED to the zone
+    // release: capturer readies (it already is), captive returns READY to the zone (decision 73)
     s.actorSeat = me   // tests own the window
     s = applyAction(s, { type: 'releaseCaptive', unit: card }, me).state
     expect(s.captives[victim]).toBeUndefined()

@@ -494,7 +494,7 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
   if (state.rules.combatModel === 'blockerPairing') {
     const combatZone = action.target.kind === 'unit' ? state.units[action.target.id]!.zone : homeZone(action.target.seat)
     const defSeat = other(seat)
-    const crossZone = combatZone !== zone   // v3 ranged sniping: unblockable, unretaliated
+    const crossZone = combatZone !== zone   // unreachable under v3 since decision 80 (no cross-zone attacks); v2.3-only path
     const candidates = unitsInZone(state, combatZone, defSeat).filter(u => !u.imprisoned && !u.exhausted)
     // the declared target may block its own attacker — self-defense costs the exhaust like any block
     if (!crossZone && candidates.length) {
@@ -557,7 +557,8 @@ function applyBlockPhase(state: GameState, action: GameAction, seat: Seat) {
 }
 
 /** v3 (spec §1.3): paired simultaneous resolution — pour-order gang splits, breakthrough spill to the
- *  ORIGINAL declared target, unblocked attackers hit the target, blockers alone strike back. */
+ *  ORIGINAL declared target, unblocked attackers hit the target; blockers strike back, and under
+ *  retaliation 'always' (decision 84) so does the declared target, exhausted or not. */
 function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: string }[]) {
   const pa = state.pendingAttack!
   state.pendingAttack = null

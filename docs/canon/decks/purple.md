@@ -8,17 +8,19 @@ yellow.*
 ## Identity
 
 **Purple is the Veiled Court: precision, patience, and the unanswered shot.** It wins by killing
-from where you can't reply — Ranged snipers across zone lines, Flying flankers, permanent
+from where you can't reply — Hidden blades that can't be answered while ready, Sneak payloads
+delivered as your turn, Infiltrators arriving where they're least wanted, permanent
 "-Power" withering that makes enemy armies fade rather than die — and by out-drawing the
 opponent while their board grows old. Red spends blood; yellow builds law; purple simply refuses
 the fair fight. Its weakness is a body: purple statlines are glass, and anything that closes the
-distance hits hard.
+distance hits hard. *(Decision 80 rewrote the reach: Ranged is now a volley ability reserved for
+Blue's future identity — purple keeps exactly two archers, Dusk Archer and Nocturne Sniper.)*
 
 ## Keywords purple may print
 
 | Keyword | What it means for purple | Limits |
 |---|---|---|
-| **Ranged** | The signature: shoot into an adjacent zone, never bases, no counter-damage. | Purple-first (red's Reach is the melee exception; any yellow ranged is ratify-first). |
+| **Ranged N** | An ability action (decision 80): exhaust to volley N at one enemy unit, any zone; attacks are ordinary, statlines low. | **Reserved for Blue** — purple keeps exactly two carriers (Dusk Archer, Nocturne Sniper); new purple Ranged is ratify-first. |
 | **Flying** | Position is the argument — arrive anywhere. | Common at mid-cost; taxed a statline point. |
 | **Untargetable** | The court cannot be subpoenaed. | On bodies, not granted en masse. |
 

@@ -14,6 +14,8 @@ const K: CardSet = {
   charge: { slug: 'charge', name: 'charge', color: 'red', type: 'action', cost: 0, text: '',
     targets: [{ t: 'unit', side: 'friendly' }, { t: 'zone', adjacentToFirst: true }],
     onPlay: [{ op: 'move', t: 'chosen0', to: 'chosenZone' }] },
+  herald: { slug: 'herald', name: 'herald', color: 'red', type: 'unit', cost: 2, power: 1, health: 3, text: '',
+    onEnterZone: [{ op: 'influence', n: 1 }] },
 }
 
 function v3game(): GameState {
@@ -52,6 +54,18 @@ describe('the lunge (decision 72)', () => {
     s = applyAction(s, { type: 'play', card, targets: [{ kind: 'unit', id: fresh }, { kind: 'zone', zone: 0 }] }, me).state
     expect(s.units[fresh].zone).toBe(0)
     expect(s.units[fresh].exhausted).toBe(false)
+  })
+
+  it('a lunge is an entrance: "enters a zone" triggers fire (post-storm audit U2)', () => {
+    let s = v3game()
+    const me = s.actorSeat
+    const herald = put(s, me, 'herald', 1)
+    const card = give(s, me, 'charge')
+    const before = me === 0 ? s.influence : -s.influence
+    s = applyAction(s, { type: 'play', card, targets: [{ kind: 'unit', id: herald }, { kind: 'zone', zone: 0 }] }, me).state
+    const after = me === 0 ? s.influence : -s.influence
+    expect(s.units[herald].zone).toBe(0)
+    expect(after - before).toBe(1)   // the herald announces itself wherever it arrives
   })
 
   it('rejects a non-adjacent zone, and never offers one', () => {

@@ -188,6 +188,8 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         if (u && z && z.kind === 'zone' && u.zone !== z.zone) {
           u.zone = z.zone
           log(state, controller, `${name(state, u.id)} charges to ${z.zone === 1 ? 'the Neutral zone' : `${state.sides[z.zone === 0 ? 0 : 1].name}'s Home`}`)
+          // a lunge is an entrance — "enters a zone" triggers fire, same as a normal move
+          fireTrigger({ state, enteredZone: z.zone, actorSeat: ctx.actorSeat }, u, 'onEnterZone')
         }
         break
       }

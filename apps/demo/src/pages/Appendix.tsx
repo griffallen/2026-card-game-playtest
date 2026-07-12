@@ -14,7 +14,7 @@ const DOCS = [
   { key: 'colors', title: 'Colors Roadmap', blurb: 'Dreaming ahead — Green, Blue, and Purple factions.', src: colors },
   { key: 'playtests', title: 'Playtest Log', blurb: 'What real games at the table taught us.', src: playtests },
   { key: 'ux', title: 'UX Audit', blurb: 'The "can a player always tell what’s happening?" pass.', src: uxAudit },
-  { key: 'spec', title: 'Full Rules Spec', blurb: 'The technical contract the engine implements (v2.0-proto).', src: rulesSpec },
+  { key: 'spec', title: 'Full Rules Spec', blurb: 'The technical contract the engine implements (v3.0).', src: rulesSpec },
 ] as const
 
 // ── minimal markdown → JSX (no dependency): headings, lists, tables, code, hr, inline ──
