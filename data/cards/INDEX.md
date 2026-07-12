@@ -8,7 +8,7 @@
 
 | Card | Cost | Type | P/H | Keywords | Status | Text |
 |---|---|---|---|---|---|---|
-| [Reckless Charge](red/reckless-charge.md) | 0 | action | — |  | canon | Choose one — target unit gains Rush this round; OR target unit gets +1 Power this round for each other red unit in its zone (either side's). |
+| [Reckless Charge](red/reckless-charge.md) | 0 | action | — |  | canon | Choose one — move one of your units one zone, even if exhausted (this doesn't exhaust it); OR target unit gets +1 Power this round for each other red unit in its zone (either side's). |
 | [Cinder Initiate](red/cinder-initiate.md) | 1 | unit | 2/1 | rush | canon | Rush. |
 | [Devastating Strike](red/devastating-strike.md) | 1 | action | — |  | canon | Deal 2 damage to target unit — 3 instead if it's already damaged. |
 | [Spark Hound](red/spark-hound.md) | 1 | unit | 2/1 | rush | canon | Rush. When this attacks, it gets +1 Power this round. |

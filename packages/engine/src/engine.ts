@@ -257,6 +257,15 @@ function validateTargets(state: GameState, seat: Seat, specs: TargetSpec[], targ
     const zones = new Set(targets.filter(t => t.kind === 'unit').map(t => state.units[t.id]?.zone))
     if (zones.size > 1) fail('bad-targets', `${cardName}'s targets must share a zone`)
   }
+  // decision 72 (adjacentToFirst): a constrained zone target must hug the first chosen unit's zone
+  if (specs.some(s => s.adjacentToFirst)) {
+    const first = targets.find(t => t.kind === 'unit')
+    const u = first && first.kind === 'unit' ? state.units[first.id] : undefined
+    for (const ref of targets) {
+      if (ref.kind === 'zone' && (!u || !adjacent(ref.zone, u.zone)))
+        fail('bad-targets', `${cardName} reaches only a zone adjacent to its unit`)
+    }
+  }
   let i = 0
   const seen = new Set<string>()
   for (const spec of specs) {

@@ -59,6 +59,7 @@ export type Op =
   | { op: 'capture'; t: OpTarget; by?: 'chosen0' }                // v3: take the enemy unit under the source unit — or under a chosen warden (yellow actions)
   | { op: 'exhaust'; t: OpTarget | UnitFilter }                   // v3 yellow: order a unit to stand down
   | { op: 'freeCaptives' }                                        // v3 yellow: your captured units return, exhausted
+  | { op: 'move'; t: OpTarget; to: 'chosenZone' }                 // decision 72: relocate the unit — exhausted or not, exhausting nothing
 
 export type Static =
   | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; armor?: number; kw?: KeywordSpec; cond?: Cond }
@@ -76,6 +77,7 @@ export interface TargetSpec {
   count?: number            // distinct targets sharing this spec (Collateral Damage: 2)
   upTo?: boolean            // v3 (Volcanic Slam): 1..count targets acceptable instead of exactly count
   sameZone?: boolean        // v3 (Volcanic Slam): all unit targets of this spec share one zone
+  adjacentToFirst?: boolean // decision 72 (Reckless Charge): this zone must sit adjacent to the first chosen unit's zone
 }
 
 // ─── Card definitions ────────────────────────────────────────────────────────

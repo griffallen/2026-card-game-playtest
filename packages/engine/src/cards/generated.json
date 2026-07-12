@@ -2,21 +2,22 @@
  "reckless-charge": {
   "modes": [
    {
-    "label": "Rush",
+    "label": "Charge",
     "targets": [
      {
       "t": "unit",
       "side": "friendly"
+     },
+     {
+      "t": "zone",
+      "adjacentToFirst": true
      }
     ],
     "ops": [
      {
-      "op": "grant",
+      "op": "move",
       "t": "chosen0",
-      "kw": {
-       "k": "rush"
-      },
-      "dur": "round"
+      "to": "chosenZone"
      }
     ]
    },
@@ -49,11 +50,11 @@
   "color": "red",
   "type": "action",
   "cost": 0,
-  "text": "Choose one — target unit gains Rush this round; OR target unit gets +1 Power this round for each other red unit in its zone (either side's).",
+  "text": "Choose one — move one of your units one zone, even if exhausted (this doesn't exhaust it); OR target unit gets +1 Power this round for each other red unit in its zone (either side's).",
   "pips": [
    "red"
   ],
-  "designerNote": "Session 006: was \"gains Rush\" permanently — dead text under decision 41 (Rush only matters the round a unit enters play, so a permanent grant on a veteran does nothing, ever). Now scoped to the round: the real play is on a unit you just dropped — its first move becomes free, so it can cross a zone and still fight.\n\n2026-07-11 (designer, PR #13 + #14): cost 1 → 0 and became modal — the second mode is the pack-fury\npump counting ALL red units in the zone, enemy red included (rage recognizes rage). First modal card\nin the game; the mode is declared when you cast.",
+  "designerNote": "Session 006: was \"gains Rush\" permanently — dead text under decision 41 (Rush only matters the round a unit enters play, so a permanent grant on a veteran does nothing, ever). Now scoped to the round: the real play is on a unit you just dropped — its first move becomes free, so it can cross a zone and still fight.\n\n2026-07-11 (designer, PR #13 + #14): cost 1 → 0 and became modal — the second mode is the pack-fury\npump counting ALL red units in the zone, enemy red included (rage recognizes rage). First modal card\nin the game; the mode is declared when you cast.\n\n2026-07-12 (designer, issue #26 → decision 72): the round-scoped Rush grant was STILL dead on any\nunit from an earlier round (the free move only exists the round a unit entered) and useless on an\nexhausted unit (it can't move at all). Mode rebuilt in the designer's own words: an immediate\none-zone lunge, exhausted or not, exhausting nothing. New vocabulary: op `move` + zone target\n`adjacentToFirst`. A genuinely *reckless* charge — hurl a spent soldier forward.",
   "artUrl": "/cards/reckless-charge.jpg"
  },
  "cinder-initiate": {

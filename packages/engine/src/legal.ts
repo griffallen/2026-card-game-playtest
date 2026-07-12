@@ -227,6 +227,17 @@ function multiCombos(state: GameState, spec: TargetSpec, candidates: TargetRef[]
 }
 
 /** v3 modal support: enumerate target combinations for a bare spec list (no card def involved). */
+/** Decision 72 (adjacentToFirst): every zone ref must hug the first chosen unit's zone.
+ *  (Applied whenever any spec carries the flag — no card mixes constrained and free zone targets.) */
+function passesAdjacency(state: GameState, specs: TargetSpec[], combo: TargetRef[]): boolean {
+  if (!specs.some(s => s.adjacentToFirst)) return true
+  const first = combo.find(r => r.kind === 'unit')
+  if (!first || first.kind !== 'unit') return false
+  const u = state.units[first.id]
+  if (!u) return false
+  return combo.every(r => r.kind !== 'zone' || adjacent(r.zone, u.zone))
+}
+
 function enumerateTargetSpecs(state: GameState, seat: Seat, specs: TargetSpec[]): TargetRef[][] {
   if (!specs.length) return [[]]
   const slotChoices: TargetRef[][][] = []
@@ -243,7 +254,7 @@ function enumerateTargetSpecs(state: GameState, seat: Seat, specs: TargetSpec[])
     for (const a of acc) for (const c of choices) next.push([...a, ...c])
     acc = next
   }
-  return acc
+  return acc.filter(c => passesAdjacency(state, specs, c))
 }
 
 function enumerateTargets(state: GameState, seat: Seat, card: string): TargetRef[][] {
@@ -279,7 +290,7 @@ function enumerateTargets(state: GameState, seat: Seat, card: string): TargetRef
     }
     combos = next
   }
-  return combos
+  return combos.filter(c => passesAdjacency(state, def.targets ?? [], c))
 }
 
 function candidatesFor(state: GameState, seat: Seat, spec: TargetSpec): TargetRef[] {

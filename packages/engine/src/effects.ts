@@ -180,6 +180,17 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         for (const u of targets) { u.exhausted = true; log(state, u.owner, `${name(state, u.id)} is ordered down`) }
         break
       }
+      case 'move': {
+        // decision 72 (Reckless Charge): relocate the unit to the chosen zone — exhausted or
+        // not, exhausting nothing. Adjacency is the target spec's job (adjacentToFirst).
+        const u = resolveUnitTarget(ctx, op.t)
+        const z = ctx.targets?.find(t => t.kind === 'zone')
+        if (u && z && z.kind === 'zone' && u.zone !== z.zone) {
+          u.zone = z.zone
+          log(state, controller, `${name(state, u.id)} charges to ${z.zone === 1 ? 'the Neutral zone' : `${state.sides[z.zone === 0 ? 0 : 1].name}'s Home`}`)
+        }
+        break
+      }
       case 'freeCaptives': {
         for (const [cid, c] of Object.entries(state.captives)) {
           if (c.unit.owner !== controller) continue
