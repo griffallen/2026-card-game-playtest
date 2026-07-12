@@ -704,6 +704,41 @@
   "designerNote": "Re-ruled after playtest 004: the assault splashes the defended Home zone, both sides (the original \"adjacent zones\" reading only ever hit Neutral — dead text during a siege). Session 006: 6/6 → 6/5 to sit on the statline grammar, and the text now says what actually happens.",
   "artUrl": "/cards/crimson-behemoth.jpg"
  },
+ "final-onslaught": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "ready",
+    "side": "friendly",
+    "t": "chosen0"
+   },
+   {
+    "op": "extraAction"
+   },
+   {
+    "op": "doom",
+    "t": "chosen0"
+   }
+  ],
+  "slug": "final-onslaught",
+  "name": "Final Onslaught",
+  "color": "red",
+  "type": "action",
+  "cost": 5,
+  "text": "Ready one of your units, then immediately take an extra action. After the action, kill this unit and any unit damaged by this unit's attack.",
+  "pips": [
+   "red",
+   "red",
+   "red"
+  ],
+  "designerNote": "Decision 43: rounds have no extra turns — \"extra turn\" became ready one of your units + an extra action. Unplayable with no friendly unit to ready, by design.",
+  "artUrl": "/cards/final-onslaught.jpg"
+ },
  "relentless-assault": {
   "onPlay": [
    {
@@ -855,6 +890,36 @@
   "designerNote": "Session 006: 5 damage → 6, matching the face-capable burn grammar (damage = cost): Searing Bolt 2@2, Volcanic Slam 3@3, Rupture 4@4, Raging Inferno 6@6.",
   "artUrl": "/cards/raging-inferno.jpg"
  },
+ "unchained-rage": {
+  "onPlay": [
+   {
+    "op": "double",
+    "t": {
+     "side": "friendly"
+    },
+    "rounds": 2
+   },
+   {
+    "op": "attackTax",
+    "n": 2,
+    "rounds": 2
+   }
+  ],
+  "slug": "unchained-rage",
+  "name": "Unchained Rage",
+  "color": "red",
+  "type": "action",
+  "cost": 6,
+  "text": "Double the Power of all your units for the next 2 rounds. For each unit of yours that attacks, lose 2 influence.",
+  "pips": [
+   "red",
+   "red",
+   "red",
+   "red"
+  ],
+  "designerNote": "2026-07-11 (designer, issue #4): from one unit, one round — to YOUR WHOLE ARMY, TWO ROUNDS.\nThe poster child of decision 68 (superlinear curves): this is what a 7-cost feels like.\nFirst multi-round, board-wide effect.",
+  "artUrl": "/cards/unchained-rage.jpg"
+ },
  "apocalypse-engine": {
   "slug": "apocalypse-engine",
   "name": "Apocalypse Engine",
@@ -906,69 +971,14 @@
   ],
   "artUrl": "/cards/last-stand.jpg"
  },
- "unchained-rage": {
-  "onPlay": [
-   {
-    "op": "double",
-    "t": {
-     "side": "friendly"
-    },
-    "rounds": 2
-   }
-  ],
-  "slug": "unchained-rage",
-  "name": "Unchained Rage",
-  "color": "red",
-  "type": "action",
-  "cost": 7,
-  "text": "Double the Power of all your units for the next 2 rounds.",
-  "pips": [
-   "red",
-   "red",
-   "red"
-  ],
-  "designerNote": "2026-07-11 (designer, issue #4): from one unit, one round — to YOUR WHOLE ARMY, TWO ROUNDS.\nThe poster child of decision 68 (superlinear curves): this is what a 7-cost feels like.\nFirst multi-round, board-wide effect.",
-  "artUrl": "/cards/unchained-rage.jpg"
- },
- "final-onslaught": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "friendly"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "ready",
-    "side": "friendly",
-    "t": "chosen0"
-   },
-   {
-    "op": "extraAction"
-   }
-  ],
-  "slug": "final-onslaught",
-  "name": "Final Onslaught",
-  "color": "red",
-  "type": "action",
-  "cost": 8,
-  "text": "Ready one of your units, then immediately take an extra action.",
-  "pips": [
-   "red",
-   "red",
-   "red"
-  ],
-  "designerNote": "Decision 43: rounds have no extra turns — \"extra turn\" became ready one of your units + an extra action. Unplayable with no friendly unit to ready, by design.",
-  "artUrl": "/cards/final-onslaught.jpg"
- },
  "worldrender": {
   "slug": "worldrender",
   "name": "Worldrender",
   "color": "red",
   "type": "unit",
   "cost": 8,
-  "power": 9,
-  "health": 8,
+  "power": 5,
+  "health": 10,
   "text": "Breakthrough. Scar.",
   "kw": [
    {

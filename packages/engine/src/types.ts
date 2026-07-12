@@ -62,6 +62,8 @@ export type Op =
   | { op: 'exhaust'; t: OpTarget | UnitFilter }                   // v3 yellow: order a unit to stand down
   | { op: 'freeCaptives' }                                        // v3 yellow: your captured units return, READY (decision 73)
   | { op: 'move'; t: OpTarget; to: 'chosenZone' }                 // decision 72: relocate the unit — exhausted or not, exhausting nothing
+  | { op: 'attackTax'; n: number; rounds: number }                // PR #39 (Unchained Rage): each of your attacking units cedes n influence
+  | { op: 'doom'; t: 'chosen0' }                                  // PR #38 (Final Onslaught): after the extra action, the unit and its attack's victims die
 
 export type Static =
   | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; armor?: number; kw?: KeywordSpec; cond?: Cond }
@@ -233,6 +235,13 @@ export interface GameState {
   setupBanked: [boolean, boolean]     // per-seat: starting resources chosen (setup phase)
   /** v3 Capture: captive unit id → its frozen instance + the capturer's unit id */
   captives: Record<string, { unit: UnitInstance; by: string }>
+  /** Unchained Rage (PR #39): while active, each of the seat's attacking units costs n influence */
+  attackTaxes: { seat: Seat; n: number; rounds: number }[]
+  /** Final Onslaught (PR #38): after the granted extra action resolves, this unit and everything
+   *  its attack damaged die. stage: fresh (created this action) → waiting → spent (execute when no attack pends) */
+  doom: { unit: string; seat: Seat; stage: 'fresh' | 'waiting' | 'spent' } | null
+  /** transient, per-action: units damaged by the doomed unit's attack (cleared each action) */
+  doomVictims: string[]
   mulligans: [number, number]         // per-seat mulligan count (setup phase, decision 32)
   passStreak: number
   pendingExtraAction: Seat | null     // decision 43: this seat takes another action after the current resolves

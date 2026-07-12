@@ -4,9 +4,9 @@ import type {
 import { EngineError, adjacent, homeZone } from './types.ts'
 import { shuffle } from './rng.ts'
 import {
-  defOf, effArmor, effHealth, effPower, hasKw, idNum, isSick, kwOf, log, other, pipGateSatisfied, unitsInZone,
+  addInfluence, defOf, effArmor, effHealth, effPower, hasKw, idNum, isSick, kwOf, log, other, pipGateSatisfied, unitsInZone,
 } from './helpers.ts'
-import { damageBase, damageUnit, fireTrigger, runOps, stateBasedCleanup } from './effects.ts'
+import { damageBase, damageUnit, destroyUnit, fireTrigger, runOps, stateBasedCleanup } from './effects.ts'
 import { startRound, endRound, finishBankStep } from './round.ts'
 
 export interface ApplyResult { state: GameState; events: LogLine[] }
@@ -43,6 +43,26 @@ export function applyAction(prev: GameState, action: GameAction, actorSeat: Seat
     applyLoopPhase(state, action, actorSeat)
   }
 
+  // Final Onslaught (PR #38): fresh → waiting on the creating action; the seat's next action
+  // spends it; once no attack pends, the doomed unit and its attack's victims all die.
+  if (state.doom && state.winner === null) {
+    if (state.doom.stage === 'fresh') state.doom.stage = 'waiting'
+    else if (state.doom.stage === 'waiting' && actorSeat === state.doom.seat) state.doom.stage = 'spent'
+    if (state.doom.stage === 'spent' && !state.pendingAttack) {
+      const doomed = state.units[state.doom.unit]
+      const victims = state.doomVictims.filter(id => state.units[id])
+      if (doomed) {
+        log(state, state.doom.seat, `${defOf(state, doomed.id).name}'s onslaught ends — it falls${victims.length ? ', taking the wounded with it' : ''}`)
+        destroyUnit(state, doomed, 'its final onslaught')
+      }
+      for (const id of victims) {
+        const v = state.units[id]
+        if (v) destroyUnit(state, v, 'the final onslaught')
+      }
+      state.doom = null
+      state.doomVictims = []
+    }
+  }
   stateBasedCleanup(state, actorSeat)
   return { state, events: state.log.slice(logStart) }
 }
@@ -471,6 +491,13 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
       fail('bad-zone', allRangedOrReach ? 'target is out of range' : 'combat happens within one zone')
   } else fail('bad-target', 'attack a unit or a base')
 
+  // Unchained Rage (PR #39): each attacking unit cedes influence while the rage lasts
+  for (const tax of state.attackTaxes) {
+    if (tax.seat !== seat) continue
+    addInfluence(state, seat, -tax.n * units.length)
+    log(state, seat, `the rage collects: ${state.sides[seat].name} cedes ${tax.n * units.length} influence for ${units.length} attacker${units.length > 1 ? 's' : ''}`)
+  }
+
   // commit: overextend bonuses, exhaust, declaration triggers
   for (const id of oeIds) {
     const oe = kwOf(state, state.units[id], 'overextend') as number
@@ -581,6 +608,11 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   let targetSpill = 0
   let unblockedTotal = 0
   const unblockedNames: string[] = []
+  // Final Onslaught (PR #38): if the doomed unit is attacking, remember who its blows reach —
+  // "any unit damaged by this unit's attack" dies with it. Candidates now, wounds verified below.
+  const doomId = state.doom?.unit
+  const doomCandidates = new Set<string>()
+  let doomToTarget = 0
   // #25 experiment: under 'always', the declared target strikes every unblocked attacker at its
   // full snapshot power, exhausted or not; under 'ready', only while un-exhausted (the timing game
   // survives). Cross-zone ranged never reaches this path — structural exemption.
@@ -592,6 +624,7 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
     if (!p.blockers.length) {
       unblockedTotal += p.aPower
       unblockedNames.push(defOf(state, p.a.id).name)
+      if (p.a.id === doomId) doomToTarget += p.aPower
       if (retaliatePower > 0 && preTarget && p.a.id !== preTarget.id)
         unitHits.push([p.a, retaliatePower, defOf(state, preTarget.id).name])
       continue
@@ -603,9 +636,13 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       const gross = Math.max(0, effHealth(state, b) - b.damage) + effArmor(state, b)  // what it takes to fell it through armor
       const chunk = Math.min(dmg, gross)
       if (chunk > 0) unitHits.push([b, chunk, defOf(state, p.a.id).name])
+      if (chunk > 0 && p.a.id === doomId) doomCandidates.add(b.id)
       dmg -= chunk
     }
-    if (dmg > 0 && hasKw(state, p.a, 'breakthrough')) { targetSpill += dmg; p.spilled = true }   // v3: no N — all excess pushes through
+    if (dmg > 0 && hasKw(state, p.a, 'breakthrough')) {
+      targetSpill += dmg; p.spilled = true   // v3: no N — all excess pushes through
+      if (p.a.id === doomId) doomToTarget += dmg
+    }
     if (p.counter > 0) unitHits.push([p.a, p.counter, 'the blockers'])
   }
 
@@ -616,6 +653,10 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   if (targetUnit && !pairs.some(p => p.blocker === targetUnit.id)) {
     fireTrigger({ state, attackTarget: { kind: 'unit', id: attackers[0]?.id ?? '' }, actorSeat: seat }, targetUnit, 'onDefend')
   }
+
+  if (targetUnit && doomToTarget > 0) doomCandidates.add(targetUnit.id)
+  // snapshot before the blows land — armor and shields decide who was truly wounded
+  const doomPreDamage = new Map([...doomCandidates].map(id => [id, state.units[id]?.damage ?? 0]))
 
   // apply everything at once
   for (const [u, n, src] of unitHits) if (state.units[u.id]) damageUnit(state, u, n, src)
@@ -659,6 +700,11 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
         fireTrigger({ state, attackTarget: { kind: 'unit', id: p.a.id }, actorSeat: seat }, preTarget, 'onKill')
       }
     }
+  }
+  // Final Onslaught: a candidate whose damage actually rose was wounded by the doomed unit
+  for (const [id, before] of doomPreDamage) {
+    const u = state.units[id]
+    if (u && u.damage > before) state.doomVictims.push(id)
   }
 
   stateBasedCleanup(state, seat)

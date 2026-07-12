@@ -5,7 +5,7 @@ cost: 6
 pips: red, red, red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"double","t":{"side":"friendly"},"rounds":2}]}
+effects: {"onPlay":[{"op":"double","t":{"side":"friendly"},"rounds":2},{"op":"attackTax","n":2,"rounds":2}]}
 ---
 Double the Power of all your units for the next 2 rounds. For each unit of yours that attacks, lose 2 influence.
 

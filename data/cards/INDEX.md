@@ -33,17 +33,17 @@
 | [Inferno Titan](red/inferno-titan.md) | 4 | unit | 5/4 | breakthrough, scar | canon | Breakthrough. Scar. |
 | [Rupture](red/rupture.md) | 4 | action | — |  | canon | Deal 4 damage to target unit or base. |
 | [Crimson Behemoth](red/crimson-behemoth.md) | 5 | unit | 6/5 |  | canon | When this attacks a base, it deals 2 damage to every other unit in that zone — yours included. |
+| [Final Onslaught](red/final-onslaught.md) | 5 | action | — |  | canon | Ready one of your units, then immediately take an extra action. After the action, kill this unit and any unit damaged by this unit's attack. |
 | [Relentless Assault](red/relentless-assault.md) | 5 | action | — |  | canon | Ready all your units. |
 | [Scorching Howl](red/scorching-howl.md) | 5 | action | — |  | canon | Deal 3 damage to all units. |
 | [Warlord Garok](red/warlord-garok.md) | 5 | unit | 5/5 | rush | canon | Rush. Your other units have +1 Power. |
 | [Burn the Frontline](red/burn-the-frontline.md) | 6 | action | — |  | canon | Choose a zone. Deal 6 damage to every unit there — yours included. |
 | [Earthshaker](red/earthshaker.md) | 6 | unit | 4/7 | breakthrough, scar | canon | Breakthrough. Scar. |
 | [Raging Inferno](red/raging-inferno.md) | 6 | action | — |  | canon | Deal 6 damage to target unit or base. |
+| [Unchained Rage](red/unchained-rage.md) | 6 | action | — |  | canon | Double the Power of all your units for the next 2 rounds. For each unit of yours that attacks, lose 2 influence. |
 | [Apocalypse Engine](red/apocalypse-engine.md) | 7 | unit | 8/7 | breakthrough | canon | Breakthrough. |
 | [Last Stand](red/last-stand.md) | 7 | action | — |  | canon | Your units gain +2 Power this round. You lose 2 life. |
-| [Unchained Rage](red/unchained-rage.md) | 7 | action | — |  | canon | Double the Power of all your units for the next 2 rounds. |
-| [Final Onslaught](red/final-onslaught.md) | 8 | action | — |  | canon | Ready one of your units, then immediately take an extra action. |
-| [Worldrender](red/worldrender.md) | 8 | unit | 9/8 | breakthrough, scar | canon | Breakthrough. Scar. |
+| [Worldrender](red/worldrender.md) | 8 | unit | 5/10 | breakthrough, scar | canon | Breakthrough. Scar. |
 
 ## Yellow (48)
 

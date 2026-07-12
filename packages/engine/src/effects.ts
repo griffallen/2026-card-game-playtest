@@ -193,6 +193,21 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         }
         break
       }
+      case 'attackTax': {
+        // PR #39 (Unchained Rage): the fury has a price — each attacking unit cedes influence
+        state.attackTaxes.push({ seat: controller, n: op.n, rounds: op.rounds })
+        log(state, controller, `${state.sides[controller].name}'s rage is unchained — each attacking unit will cede ${op.n} influence for ${op.rounds} rounds`)
+        break
+      }
+      case 'doom': {
+        // PR #38 (Final Onslaught): mark the readied unit — after the extra action, it dies
+        const u = resolveUnitTarget(ctx, op.t)
+        if (u) {
+          state.doom = { unit: u.id, seat: controller, stage: 'fresh' }
+          log(state, controller, `${name(state, u.id)} charges into its final onslaught`)
+        }
+        break
+      }
       case 'freeCaptives': {
         for (const [cid, c] of Object.entries(state.captives)) {
           if (c.unit.owner !== controller) continue

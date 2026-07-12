@@ -113,6 +113,8 @@ export function endRound(state: GameState, actorSeat: Seat) {
     for (const m of u.mods) if (m.rounds !== undefined) m.rounds--   // v3 multi-round mods tick at round end
     u.mods = u.mods.filter(m => m.rounds === undefined || m.rounds > 0)
   }
+  for (const t of state.attackTaxes) t.rounds--   // Unchained Rage's tax expires with its doubling
+  state.attackTaxes = state.attackTaxes.filter(t => t.rounds > 0)
   state.preventBase = [0, 0]
 
   // decision 88 (Politician, #29): at round end, a seat with a Politician standing in Neutral
