@@ -611,8 +611,9 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
 
   const targetUnit = pa.target.kind === 'unit' ? state.units[pa.target.id] : undefined
   // decision 85: being the declared target IS defending — the trigger fires whether the attack
-  // got through or its blockers ate everything ("no matter if it's targeted or if it defends")
-  if (targetUnit) {
+  // got through or its blockers ate everything ("no matter if it's targeted or if it defends").
+  // decision 86: but only ONCE — a self-blocking target already fired as a blocker.
+  if (targetUnit && !pairs.some(p => p.blocker === targetUnit.id)) {
     fireTrigger({ state, attackTarget: { kind: 'unit', id: attackers[0]?.id ?? '' }, actorSeat: seat }, targetUnit, 'onDefend')
   }
 
@@ -620,13 +621,17 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   for (const [u, n, src] of unitHits) if (state.units[u.id]) damageUnit(state, u, n, src)
   // decision 74: "a kill is a kill" — deaths haven't cleaned up yet, so lethality is the test
   const felled = (id: string) => { const u = state.units[id]; return !!u && u.damage >= effHealth(state, u) }
+  // decision 87: the declaration counts — an unblocked base attack fires "attacks a base"
+  // even if every point of damage is prevented (or the attacker's power is zero)
+  if (pa.target.kind === 'base') {
+    for (const p of plans) if (!p.blockers.length && state.units[p.a.id]) {
+      fireTrigger({ state, attackTarget: pa.target, actorSeat: seat }, p.a, 'onAttackBase')
+    }
+  }
   const toTarget = unblockedTotal + targetSpill
   if (toTarget > 0) {
     if (pa.target.kind === 'base') {
       damageBase(state, pa.target.seat, toTarget, unblockedNames.join(', ') || 'breakthrough')
-      for (const p of plans) if (!p.blockers.length && state.units[p.a.id]) {
-        fireTrigger({ state, attackTarget: pa.target, actorSeat: seat }, p.a, 'onAttackBase')
-      }
     } else if (targetUnit && state.units[targetUnit.id]) {
       damageUnit(state, targetUnit, toTarget, unblockedNames.join(', ') || 'breakthrough')
       if (felled(targetUnit.id)) {

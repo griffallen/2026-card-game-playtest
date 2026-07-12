@@ -59,7 +59,8 @@ Cost and color are now two separate checks:
    or not**, simultaneously. Being attacked is never free for the attacker; exhaustion costs you
    the *choice* of defense (blocking for others), not self-defense. Bases never strike back.
    Being the declared target also fires "when this defends" triggers whether or not damage got
-   through (decision 85), and yellow's guard-payout ladder and wall statlines moved up a notch
+   through (decision 85) — but **only once**: a self-blocking target's blocker-fire is its
+   target-fire (decision 86). Yellow's guard-payout ladder and wall statlines moved up a notch
    in the same ruling.]**
 5. **[Q6 ✓] Breakthrough** (no number): excess damage from a killed blocker pushes through **to
    the original declared target**. No choices; fully deterministic. *(Decision 75: the eleven red
@@ -73,9 +74,11 @@ Cost and color are now two separate checks:
    ally's kill. Simultaneous trades credit both sides.
 7. **[Decision 78 — base-trigger vocabulary (issue #24 Q7, designer)]** "When this **attacks**
    a base" fires only for a declared, unblocked attack reaching the base — Breakthrough spill
-   is aftermath, not an attack. A second trigger, "when this **damages** a base" (any base
-   damage, spill included), is **reserved vocabulary**: the engine implements it with the
-   first card that prints it.
+   is aftermath, not an attack. **[Decision 87]: the declaration counts** — it fires even when
+   every point of damage is prevented ("it attacked the base, unsuccessfully"). A second
+   trigger, "when this **damages** a base" (any base damage, spill included), is **reserved
+   vocabulary**: the engine implements it with the first card that prints it — and it would
+   NOT fire on a fully-prevented attack.
 6. **[Q10 ✓] Guard: "does not exhaust to defend."** A Guard blocks without exhausting — it can
    block again this round and is still ready on its own turn. Designer's framing: start simple,
    give Guards a defending bonus later **only if playtesting shows they need it** (candidate

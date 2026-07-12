@@ -57,7 +57,8 @@ function attackScore(state: GameState, action: GameAction & { type: 'attack' }):
   const groupMiss = -3 * (n - 1)  // over-committing into a wall is bad
 
   if (action.target.kind === 'base') {
-    let s = 90 + combined * 4 + groupKill
+    // designer doctrine (#25): "always favor damage to a base, then unit removal"
+    let s = 120 + combined * 5 + groupKill
     if (oeTotal) s -= oeTotal
     return s
   }
@@ -68,6 +69,26 @@ function attackScore(state: GameState, action: GameAction & { type: 'attack' }):
   const dealtPlain = Math.max(0, combined - oeTotal - effArmor(state, defender))
   const defRemaining = effHealth(state, defender) - defender.damage
   const kills = dealt >= defRemaining
+  const defValueV3 = defOf(state, defender.id).cost + effPower(state, defender)
+
+  if (state.rules.combatModel === 'blockerPairing') {
+    // v3 costing (decision 84): the target strikes EVERY unblocked attacker back at full
+    // power — cost the swing by the attackers retaliation would fell (blocks are the
+    // defender's unknown; assume the worst honest case: nobody blocks, everyone bleeds)
+    const retaliates = !defender.imprisoned
+      && (state.rules.retaliation === 'always' || (state.rules.retaliation === 'ready' && !defender.exhausted))
+    const tPow = retaliates ? effPower(state, defender) : 0
+    let lostValue = 0
+    for (const u of units) {
+      if (Math.max(0, tPow - effArmor(state, u)) >= effHealth(state, u) - u.damage) {
+        lostValue += defOf(state, u.id).cost + effPower(state, u)
+      }
+    }
+    if (kills && lostValue === 0) return 70 + defValueV3 * 3 + groupKill
+    if (kills) return 40 + defValueV3 * 3 - lostValue * 2.5 + groupKill
+    if (dealt > 0) return 12 + dealt - lostValue * 2 + groupMiss
+    return groupMiss
+  }
   // counter lands on the highest-power attacker (ties → lowest id) — mirror the engine
   const counterTarget = units.slice().sort((x, y) => pw(y) - pw(x) || idNum(x.id) - idNum(y.id))[0]
   const ctRemaining = effHealth(state, counterTarget) - counterTarget.damage
@@ -117,6 +138,86 @@ function interceptScore(state: GameState, action: GameAction & { type: 'intercep
     saved = combined * 3 // preventing base damage is worth stepping in
   }
   return saved - (interceptorDies ? interceptorValue * 3 : 0) - (guard ? 0 : 6) + 12
+}
+
+/** Answer a v3 block window: attackers our counters fell + damage kept off the target/base,
+ *  minus blockers we lose — and letting it through is priced with retaliation in mind. */
+function blockScore(state: GameState, seat: Seat, action: GameAction & { type: 'block' }): number {
+  const pa = state.pendingAttack
+  if (!pa) return 0
+  const val = (u: UnitInstance) => defOf(state, u.id).cost + effPower(state, u)
+  const target = pa.target.kind === 'unit' ? state.units[pa.target.id] : undefined
+  const byAttacker = new Map<string, UnitInstance[]>()
+  for (const p of action.pairs) {
+    const b = state.units[p.blocker]
+    if (b) byAttacker.set(p.onto, [...(byAttacker.get(p.onto) ?? []), b])
+  }
+  let score = 8
+  let unblockedPow = 0
+  let totalPow = 0
+  for (const aid of pa.attackers) {
+    const a = state.units[aid]
+    if (!a) continue
+    const aPow = effPower(state, a)
+    totalPow += aPow
+    const blockers = byAttacker.get(aid) ?? []
+    if (!blockers.length) { unblockedPow += aPow; continue }
+    const counter = blockers.reduce((s2, b) => s2 + effPower(state, b), 0)
+    if (Math.max(0, counter - effArmor(state, a)) >= effHealth(state, a) - a.damage) score += val(a) * 2.5
+    let dmg = aPow
+    for (const b of blockers) {
+      const gross = Math.max(0, effHealth(state, b) - b.damage) + effArmor(state, b)
+      const chunk = Math.min(dmg, gross)
+      if (gross > 0 && chunk >= gross) score -= val(b) * (hasKw(state, b, 'guard') ? 1.6 : 2)
+      dmg -= chunk
+      if (!hasKw(state, b, 'guard')) score -= 2   // the readiness spent
+    }
+    if (dmg > 0 && hasKw(state, a, 'breakthrough')) unblockedPow += dmg
+  }
+  if (pa.target.kind === 'base') {
+    score += (totalPow - unblockedPow) * 3        // damage kept off our face
+  } else if (target) {
+    const remaining = effHealth(state, target) - target.damage
+    const through = Math.max(0, unblockedPow - effArmor(state, target))
+    if (through >= remaining) score -= val(target) * 2.5
+    else score -= through * 1.5
+    // decision 84: whatever we DON'T block, our target punches back — count its kills as gain
+    const retaliates = state.rules.retaliation === 'always' || (state.rules.retaliation === 'ready' && !target.exhausted)
+    if (retaliates && through < remaining) {
+      const tPow = effPower(state, target)
+      for (const aid of pa.attackers) {
+        const a = state.units[aid]
+        if (!a || (byAttacker.get(aid) ?? []).length) continue
+        if (Math.max(0, tPow - effArmor(state, a)) >= effHealth(state, a) - a.damage) score += val(a) * 2
+      }
+    }
+  }
+  return score
+}
+
+/** Score an exhaust-activated ability: a volley's damage or a Sneak payload, against its chosen target. */
+function activateScore(state: GameState, seat: Seat, action: GameAction & { type: 'activate' }): number {
+  const unit = state.units[action.unit]
+  if (!unit) return 0
+  const def = defOf(state, unit.id)
+  const ref = action.targets?.[0]
+  const tgt = ref && ref.kind === 'unit' ? state.units[ref.id] : undefined
+  const rangedN = kwOf(state, unit, 'ranged')
+  const ops: { op: string; n?: number | string }[] = def.sneak?.ops
+    ?? (typeof rangedN === 'number' ? [{ op: 'damage', n: rangedN }] : [])
+  let score = 6
+  for (const op of ops) {
+    if (op.op === 'damage' && typeof op.n === 'number') {
+      if (ref?.kind === 'base') { score += op.n * 3; continue }
+      if (!tgt) continue
+      const remaining = effHealth(state, tgt) - tgt.damage
+      const through = Math.max(0, op.n - effArmor(state, tgt))
+      score += Math.min(through, remaining) * 2
+      if (through >= remaining) score += (defOf(state, tgt.id).cost + effPower(state, tgt)) * 2
+    } else if (op.op === 'influence' && typeof op.n === 'number') score += op.n * 4
+    else score += 4
+  }
+  return score
 }
 
 function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'play' }): number {
@@ -266,6 +367,10 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
       case 'claimInitiative': score = legal.some(x => x.type === 'attack' || x.type === 'play') ? 2 : 8; break
       case 'intercept':
       case 'declineIntercept': score = interceptScore(state, action); break
+      case 'block': score = blockScore(state, seat, action); break
+      case 'activate': score = activateScore(state, seat, action); break
+      case 'releaseCaptive': score = 2; break
+      case 'attachOrphan': score = 10; break
       case 'concede': score = -Infinity; break
     }
     let jitter: number
