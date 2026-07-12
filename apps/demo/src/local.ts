@@ -29,6 +29,8 @@ export interface DemoConfig {
   /** decision 58 A/B: full-redraw mulligans that owe cards to the deck bottom */
   londonMulligan?: boolean
   rulesVersion?: 'v2.3' | 'v3.0'
+  /** #29 door-1 experiment: end of round, more ready units in Neutral → +1 influence */
+  neutralControl?: boolean
 }
 
 export function newLocalGame(cfg: DemoConfig): GameState {
@@ -37,7 +39,11 @@ export function newLocalGame(cfg: DemoConfig): GameState {
   const b = pool.find(d => d.slug === cfg.deckB) ?? DECKS[1]
   return createGame({
     seed: cfg.seed,
-    rules: { ...(cfg.rulesVersion === 'v3.0' ? V3_RULES : DEFAULT_RULES), ...(cfg.londonMulligan ? { mulliganStyle: 'london' as const } : {}) },
+    rules: {
+      ...(cfg.rulesVersion === 'v3.0' ? V3_RULES : DEFAULT_RULES),
+      ...(cfg.londonMulligan ? { mulliganStyle: 'london' as const } : {}),
+      ...(cfg.neutralControl ? { neutralControlInfluence: 1 } : {}),
+    },
     cardSet: DEMO_CARDS,
     players: [
       { name: cfg.nameA, deck: deckSlugs(a) },

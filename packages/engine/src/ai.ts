@@ -329,10 +329,20 @@ function moveScore(state: GameState, seat: Seat, action: GameAction & { type: 'm
   const enemyHome = homeZone(other(seat))
   const toward = Math.abs(action.to - enemyHome) < Math.abs(unit.zone - enemyHome)
   const power = effPower(state, unit)
-  if (hasKw(state, unit, 'cantAttack')) return toward ? 2 : 1 // walls mostly hold home
-  const enemiesAtDest = unitsInZone(state, action.to, other(seat)).length
-  let score = toward ? 18 + power : 3
-  if (action.to === enemyHome && enemiesAtDest === 0) score += 10 // open lane to the base
+  let score: number
+  if (hasKw(state, unit, 'cantAttack')) score = toward ? 2 : 1 // walls mostly hold home
+  else {
+    const enemiesAtDest = unitsInZone(state, action.to, other(seat)).length
+    score = toward ? 18 + power : 3
+    if (action.to === enemyHome && enemiesAtDest === 0) score += 10 // open lane to the base
+  }
+  // #29 door-1 experiment: when the middle pays, contest it — bonus for stepping into Neutral
+  // while we don't already outnumber them there
+  if (state.rules.neutralControlInfluence > 0 && action.to === 1) {
+    const mine = unitsInZone(state, 1, seat).filter(u => !u.exhausted).length
+    const theirs = unitsInZone(state, 1, other(seat)).filter(u => !u.exhausted).length
+    if (mine <= theirs) score += 8 + state.rules.neutralControlInfluence * 4
+  }
   return score
 }
 

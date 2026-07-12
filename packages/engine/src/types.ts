@@ -162,6 +162,8 @@ export interface RulesConfig {
    *  'ready' = a READY declared target strikes every unblocked attacker (exhausted stays defenseless);
    *  'always' = the declared target strikes every unblocked attacker at full power, exhausted included */
   retaliation: 'blockers' | 'ready' | 'always'
+  /** #29 door-1 experiment: end of round, more READY units in Neutral than the opponent → gain this much influence (0 = off) */
+  neutralControlInfluence: number
   simultaneousLifeTiebreak: 'actor' | 'active' | 'draw'
 }
 

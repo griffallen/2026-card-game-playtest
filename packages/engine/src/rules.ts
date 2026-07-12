@@ -33,6 +33,7 @@ export const DEFAULT_RULES: RulesConfig = {
   upgradesOrphan: false,
   blockingExhausts: true,   // inert under 'intercept'; v3 combat reads it (decision 62)
   retaliation: 'blockers',  // v2.3 law; 'always' is the v3 DEFAULT since decision 84 (targets strike back even exhausted)
+  neutralControlInfluence: 0,  // #29 door-1 experiment knob: holding the middle pays influence (off everywhere)
 }
 
 /** The v3.0 preset (game-rules-v3-draft): flips the structural switches, inherits the rest. */

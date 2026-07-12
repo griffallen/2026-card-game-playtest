@@ -114,6 +114,17 @@ export function endRound(state: GameState, actorSeat: Seat) {
     u.mods = u.mods.filter(m => m.rounds === undefined || m.rounds > 0)
   }
   state.preventBase = [0, 0]
+
+  // #29 door-1 experiment: whoever holds more READY units in the Neutral zone collects
+  if (state.rules.neutralControlInfluence > 0) {
+    const ready = (seat: Seat) => unitsOf(state, seat).filter(u => u.zone === 1 && !u.exhausted && !u.imprisoned).length
+    const [a, b] = [ready(0), ready(1)]
+    if (a !== b) {
+      const holder: Seat = a > b ? 0 : 1
+      addInfluence(state, holder, state.rules.neutralControlInfluence)
+      log(state, holder, `${state.sides[holder].name} holds the middle (+${state.rules.neutralControlInfluence} influence)`)
+    }
+  }
   stateBasedCleanup(state, actorSeat)
   if (state.winner !== null) return
 
