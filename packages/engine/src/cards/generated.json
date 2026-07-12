@@ -215,6 +215,42 @@
   "designerNote": "2026-07-11 (designer, issue #4): full rework — the wound comes home. Red's healing is a\nmortgage: your champion fights on, your Home bleeds for it. First linked-amount card.",
   "artUrl": "/cards/blood-rush.jpg"
  },
+ "cataclysmic-charge": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": "chosen0",
+    "p": 3,
+    "dur": "round"
+   },
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "breakthrough"
+    },
+    "dur": "round"
+   }
+  ],
+  "slug": "cataclysmic-charge",
+  "name": "Cataclysmic Charge",
+  "color": "red",
+  "type": "action",
+  "cost": 2,
+  "text": "Target unit gets +3 Power and Breakthrough this round.",
+  "pips": [
+   "red",
+   "red"
+  ],
+  "designerNote": "Session 006 redesign: was 6 mana for +3 Power and Rush this round — overcosted (Blood Rush gives +2 and Rush for 2) and the Rush rider was near-dead text on veterans. Now the single-target alpha strike: the Breakthrough rider makes the pump land on the base, not just the wall.",
+  "artUrl": "/cards/cataclysmic-charge.jpg"
+ },
  "flameblade-raider": {
   "slug": "flameblade-raider",
   "name": "Flameblade Raider",
@@ -538,42 +574,6 @@
   ],
   "designerNote": "Session 006 redesign: was +2 Power and Rush — the Rush half was dead text on any unit already in play (decision 41). Breakthrough keeps the oath aggressive and permanent.",
   "artUrl": "/cards/burning-oath.jpg"
- },
- "cataclysmic-charge": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "friendly"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "buff",
-    "t": "chosen0",
-    "p": 3,
-    "dur": "round"
-   },
-   {
-    "op": "grant",
-    "t": "chosen0",
-    "kw": {
-     "k": "breakthrough"
-    },
-    "dur": "round"
-   }
-  ],
-  "slug": "cataclysmic-charge",
-  "name": "Cataclysmic Charge",
-  "color": "red",
-  "type": "action",
-  "cost": 4,
-  "text": "Target unit gets +3 Power and Breakthrough this round.",
-  "pips": [
-   "red",
-   "red"
-  ],
-  "designerNote": "Session 006 redesign: was 6 mana for +3 Power and Rush this round — overcosted (Blood Rush gives +2 and Rush for 2) and the Rush rider was near-dead text on veterans. Now the single-target alpha strike: the Breakthrough rider makes the pump land on the base, not just the wall.",
-  "artUrl": "/cards/cataclysmic-charge.jpg"
  },
  "doombringer": {
   "slug": "doombringer",

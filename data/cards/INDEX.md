@@ -15,6 +15,7 @@
 | [Spark Hound](red/spark-hound.md) | 1 | unit | 2/1 | rush, guard | canon | Rush. Guard. When this attacks, it gets +1 Power this round. |
 | [Berserker](red/berserker.md) | 2 | unit | 1/4 | rush, scar | canon | Rush. Scar. |
 | [Blood Rush](red/blood-rush.md) | 2 | action | — |  | canon | Remove all damage from a unit you control; deal that much damage to your Home. |
+| [Cataclysmic Charge](red/cataclysmic-charge.md) | 2 | action | — |  | canon | Target unit gets +3 Power and Breakthrough this round. |
 | [Flameblade Raider](red/flameblade-raider.md) | 2 | unit | 4/1 | rush, breakthrough | canon | Rush. Breakthrough. |
 | [Pillage](red/pillage.md) | 2 | action | — |  | canon | Destroy target enemy upgrade. |
 | [Smash Through](red/smash-through.md) | 2 | action | — |  | canon | Target unit with Rush gains Breakthrough this round. |
@@ -27,7 +28,6 @@
 | [Volcanic Slam](red/volcanic-slam.md) | 3 | action | — |  | canon | Deal 3 damage to up to two units in the same zone. |
 | [Blaze Juggernaut](red/blaze-juggernaut.md) | 4 | unit | 4/4 | rush, breakthrough | canon | Rush. Breakthrough. |
 | [Burning Oath](red/burning-oath.md) | 4 | upgrade | — |  | canon | Attached unit gets +2 Power and Breakthrough. |
-| [Cataclysmic Charge](red/cataclysmic-charge.md) | 4 | action | — |  | canon | Target unit gets +3 Power and Breakthrough this round. |
 | [Doombringer](red/doombringer.md) | 4 | unit | 5/4 | rush, breakthrough | canon | Rush. Breakthrough. |
 | [Execution Swing](red/execution-swing.md) | 4 | action | — |  | canon | Destroy target damaged unit. |
 | [Inferno Titan](red/inferno-titan.md) | 4 | unit | 5/4 | breakthrough, scar | canon | Breakthrough. Scar. |

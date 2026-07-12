@@ -26,6 +26,9 @@ export function buildPrebuiltDecks(set: CardSet): PrebuiltDeck[] {
   const redDoubles = new Set(red.filter(c => c.cost <= 2).map(c => c.slug))
   redDoubles.delete('warpath')
   redDoubles.delete('pillage')
+  // PR #35 dropped Cataclysmic Charge to 2 — single copy keeps the deck at 48 and the
+  // +3P/Breakthrough alpha strike un-doubled at its new rate (⚑ swap-in-something-else freely)
+  redDoubles.delete('cataclysmic-charge')
   redDoubles.add('rageforged-brute')
   redDoubles.add('volcanic-slam')
 
