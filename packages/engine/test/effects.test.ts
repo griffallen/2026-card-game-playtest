@@ -50,11 +50,11 @@ describe('influence effects', () => {
     expect(influenceFor(s, p2)).toBe(0)                    // entering play pays nothing now
     // red spells no longer cede influence (decision 35 removed the artifact reading)
     const bolt = toHand(s, p1, 'searing-bolt')
-    // Bulwark Protector (2/5 guard): survives the bolt — Searing Bolt deals 3 since issue #4
+    // Bulwark Protector (2/5 guard): survives the bolt — Searing Bolt deals 2 since PR #34
     const victim = put(s, p2, 'bulwark-protector', 2)
     s = act(s, p1, { type: 'play', card: bolt, targets: [{ kind: 'unit', id: victim }] })
     expect(influenceFor(s, p2)).toBe(0)
-    expect(s.units[victim].damage).toBe(3)
+    expect(s.units[victim].damage).toBe(2)
     // but being ATTACKED triggers the guard's influence
     const raider = put(s, p1, 'berserker', 2)
     s = act(s, p2, { type: 'pass' })
@@ -98,7 +98,7 @@ describe('the capture era (v3 churn pass 3 — prison is gone from canon)', () =
   it('Prison Warrant: a warden takes a small prisoner; the captive vanishes from play', () => {
     let { s, p1, p2 } = arena()
     const warden = put(s, p2, 'bulwark-protector', 1)
-    const small = put(s, p1, 'flameblade-raider', 1)     // 2 power — inside the warrant's cap
+    const small = put(s, p1, 'spark-hound', 1)     // 2 power — inside the warrant's cap (raider is 4/1 since PR #33)
     const warrant = toHand(s, p2, 'prison-warrant')
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: warrant, targets: [{ kind: 'unit', id: warden }, { kind: 'unit', id: small }] })
@@ -311,7 +311,7 @@ describe('base-assault splash (Crimson Behemoth, re-ruled playtest 004)', () => 
 describe('zone-entry triggers on movement', () => {
   it('Containment Priest captures a small enemy on entry (v3 churn)', () => {
     let { s, p1, p2 } = arena()
-    const small = put(s, p1, 'flameblade-raider', homeZone(p2))   // 2 power
+    const small = put(s, p1, 'spark-hound', homeZone(p2))   // 2 power (raider is 4/1 since PR #33)
     const priest = toHand(s, p2, 'containment-priest')
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: priest, targets: [{ kind: 'unit', id: small }] })
