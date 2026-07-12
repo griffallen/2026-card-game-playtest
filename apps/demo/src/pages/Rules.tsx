@@ -22,6 +22,7 @@ const KEYWORDS: [string, string][] = [
   ['Capture', 'On its trigger, this unit takes an enemy unit under itself — off the board entirely. Capturing costs nothing up front, but the grip has a price: while it holds a captive, the capturer skips the ready step — once spent, it stays spent until it releases or falls. The captive returns when the capturer leaves play, or when its owner spends a turn action to release it (which readies both). The freed captive comes back ready — capture is temporary custody, not a wound.'],
   ['Shielded', 'Arrives with a shield token. The first time it would take damage, the whole hit is prevented and the token is spent.'],
   ['Scar', 'Gets +1 Power for each damage marked on it, capped at its remaining Health — a 3-Health unit with 2 damage gets +1, not +2. The wound powers you, never past what you could survive.'],
+  ['Politician', 'At the end of each round, if this unit stands in the Neutral zone and its owner holds more units there than the opponent, its owner gains 1 Influence — once per round, however many politicians. The middle finally has a constituency: campaign there, hold the crowd, sway the track.'],
 ]
 
 export function Rules() {

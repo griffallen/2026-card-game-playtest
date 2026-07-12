@@ -87,7 +87,7 @@
 | [Unshakable Wall](yellow/unshakable-wall.md) | 5 | upgrade | — |  | canon | Attach to unit. This unit gets +2 Armor and Guard. |
 | [Detain](yellow/detain.md) | 6 | action | — |  | canon | Target unit you control captures target enemy unit. Your Home heals 3. Gain 1 Influence. |
 | [Gateward Colossus](yellow/gateward-colossus.md) | 6 | unit | 3/9 | guard, armor 2, cantAttack | canon | Guard. Armor 2. Can't attack. When this defends, gain 2 Influence. |
-| [Hierophant](yellow/hierophant.md) | 6 | unit | 3/7 |  | canon | Other friendly units get +1 Power while your Influence is 10 or more. |
+| [Hierophant](yellow/hierophant.md) | 6 | unit | 3/7 | politician | canon | Politician. Other friendly units get +1 Power while your Influence is 10 or more. |
 | [Inquisitor](yellow/inquisitor.md) | 6 | unit | 4/5 | capture | canon | When this enters play, it captures target enemy unit with 4 or less Power. |
 | [Mobilize the Faithful](yellow/mobilize-the-faithful.md) | 6 | action | — |  | canon | Your units get +1 Power and gain Guard, permanently. Gain 1 Influence. |
 | [Archon of Order](yellow/archon-of-order.md) | 7 | unit | 7/7 | capture | canon | When this enters play, it captures target enemy unit. Gain 2 Influence. |
@@ -112,7 +112,7 @@
 | [Pacify](purple/pacify.md) | 2 | action | — |  | draft | Target enemy unit can't attack this round. |
 | [Shadowstep](purple/shadowstep.md) | 2 | action | — |  | draft | Target friendly unit gains Hidden this round. Draw a card. |
 | [Twilight Scout](purple/twilight-scout.md) | 2 | unit | 2/3 | infiltrate | draft | Infiltrate. (Deploy this to any zone.) |
-| [Veiled Messenger](purple/veiled-messenger.md) | 2 | unit | 1/3 |  | draft | When this enters play, draw a card. |
+| [Veiled Messenger](purple/veiled-messenger.md) | 2 | unit | 1/3 | politician | draft | Politician. When this enters play, draw a card. |
 | [Wither](purple/wither.md) | 2 | action | — |  | draft | Target enemy unit gets -2 Power permanently. |
 | [Gloom Piercer](purple/gloom-piercer.md) | 3 | unit | 3/2 | infiltrate | draft | Infiltrate. |
 | [Nightweaver](purple/nightweaver.md) | 3 | unit | 3/3 |  | draft | When this enters play, target enemy unit gets -1 Power permanently. |

@@ -1,5 +1,5 @@
 import type { GameState, Seat } from './types.ts'
-import { addInfluence, condHolds, defOf, draw, log, other, unitsOf } from './helpers.ts'
+import { addInfluence, condHolds, defOf, draw, hasKw, log, other, unitsOf } from './helpers.ts'
 import { runOps, stateBasedCleanup } from './effects.ts'
 // (draw handles decision-33 penalties internally; endRound settles decision-35 overextension)
 
@@ -115,14 +115,17 @@ export function endRound(state: GameState, actorSeat: Seat) {
   }
   state.preventBase = [0, 0]
 
-  // #29 door-1 experiment: whoever holds more READY units in the Neutral zone collects
-  if (state.rules.neutralControlInfluence > 0) {
-    const ready = (seat: Seat) => unitsOf(state, seat).filter(u => u.zone === 1 && !u.exhausted && !u.imprisoned).length
-    const [a, b] = [ready(0), ready(1)]
-    if (a !== b) {
-      const holder: Seat = a > b ? 0 : 1
-      addInfluence(state, holder, state.rules.neutralControlInfluence)
-      log(state, holder, `${state.sides[holder].name} holds the middle (+${state.rules.neutralControlInfluence} influence)`)
+  // decision 88 (Politician, #29): at round end, a seat with a Politician standing in Neutral
+  // AND more units there than the opponent gains 1 influence — once, however many politicians
+  {
+    const inMiddle = (seat: Seat) => unitsOf(state, seat).filter(u => u.zone === 1).length
+    const [ca, cb] = [inMiddle(0), inMiddle(1)]
+    for (const seat of [0, 1] as const) {
+      const majority = seat === 0 ? ca > cb : cb > ca
+      if (!majority) continue
+      if (!unitsOf(state, seat).some(u => u.zone === 1 && !u.imprisoned && hasKw(state, u, 'politician'))) continue
+      addInfluence(state, seat, 1)
+      log(state, seat, `${state.sides[seat].name}'s politician sways the middle (+1 influence)`)
     }
   }
   stateBasedCleanup(state, actorSeat)

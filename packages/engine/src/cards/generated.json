@@ -2108,12 +2108,17 @@
   "cost": 6,
   "power": 3,
   "health": 7,
-  "text": "Other friendly units get +1 Power while your Influence is 10 or more.",
+  "text": "Politician. Other friendly units get +1 Power while your Influence is 10 or more.",
+  "kw": [
+   {
+    "k": "politician"
+   }
+  ],
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006: 2/6 → 3/7. It paid a four-point statline tax for an aura that only works when you are already winning; now it pays two.",
+  "designerNote": "Session 006: 2/6 → 3/7. It paid a four-point statline tax for an aura that only works when you are already winning; now it pays two.\n\n\n2026-07-12 (decision 88, issue #29 — agent pick ⚑ ratify/veto): first Politician carrier.\nAt round end, a Politician standing in Neutral whose owner holds the majority there sways the\ntrack (+1 influence, once per round). The middle finally has a constituency.",
   "artUrl": "/cards/hierophant.jpg"
  },
  "inquisitor": {
@@ -2665,10 +2670,16 @@
   "cost": 2,
   "power": 1,
   "health": 3,
-  "text": "When this enters play, draw a card.",
+  "text": "Politician. When this enters play, draw a card.",
+  "kw": [
+   {
+    "k": "politician"
+   }
+  ],
   "pips": [
    "purple"
   ],
+  "designerNote": "2026-07-12 (decision 88, issue #29 — agent pick ⚑ ratify/veto): first Politician carrier.\nAt round end, a Politician standing in Neutral whose owner holds the majority there sways the\ntrack (+1 influence, once per round). The middle finally has a constituency.",
   "artUrl": "/cards/veiled-messenger.svg"
  },
  "wither": {

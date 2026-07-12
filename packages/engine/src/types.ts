@@ -15,6 +15,8 @@ export type KeywordName =
   | 'breakthrough' | 'overextend' | 'cantAttack' | 'untargetable'
   // v3 suite (game-rules-v3-draft §2, decisions 59-61, 70)
   | 'scar' | 'shielded' | 'hidden' | 'infiltrate' | 'capture' | 'sneak'
+  // decision 88 (#29): standing in Neutral with the majority sways the influence track
+  | 'politician'
 export interface KeywordSpec { k: KeywordName; n?: number }
 
 // ─── Effect DSL ──────────────────────────────────────────────────────────────
@@ -162,8 +164,6 @@ export interface RulesConfig {
    *  'ready' = a READY declared target strikes every unblocked attacker (exhausted stays defenseless);
    *  'always' = the declared target strikes every unblocked attacker at full power, exhausted included */
   retaliation: 'blockers' | 'ready' | 'always'
-  /** #29 door-1 experiment: end of round, more READY units in Neutral than the opponent → gain this much influence (0 = off) */
-  neutralControlInfluence: number
   simultaneousLifeTiebreak: 'actor' | 'active' | 'draw'
 }
 

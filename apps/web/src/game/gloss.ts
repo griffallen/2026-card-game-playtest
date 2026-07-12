@@ -18,6 +18,7 @@ export const KEYWORD_GLOSS: Record<string, string> = {
   capture: 'Takes an enemy unit under this one, off the board entirely. Nothing exhausts up front, but while holding a captive this unit skips the ready step — once spent it stays spent until it releases (a turn action, readying both) or falls. The captive returns ready.',
   shielded: 'Arrives with a shield token: the first time it would take damage, the whole hit is prevented and the token is spent.',
   scar: 'Gets +1 Power for each damage marked on it, capped at its remaining Health — the wound powers it, never past what it can survive.',
+  politician: 'At the end of each round, if this unit stands in the Neutral zone and its owner has more units there than the opponent, its owner gains 1 Influence (once per round, however many politicians).',
 }
 
 export function glossFor(keyword: string): string {
