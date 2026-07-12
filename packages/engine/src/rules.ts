@@ -32,6 +32,7 @@ export const DEFAULT_RULES: RulesConfig = {
   pipModel: 'none',
   upgradesOrphan: false,
   blockingExhausts: true,   // inert under 'intercept'; v3 combat reads it (decision 62)
+  retaliation: 'blockers',  // #25 experiment knob: 'always' = targets strike back even exhausted (not default anywhere)
 }
 
 /** The v3.0 preset (game-rules-v3-draft): flips the structural switches, inherits the rest. */

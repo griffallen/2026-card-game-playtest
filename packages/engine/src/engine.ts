@@ -548,10 +548,16 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   let targetSpill = 0
   let unblockedTotal = 0
   const unblockedNames: string[] = []
+  // #25 experiment: under 'always', the declared target strikes every unblocked attacker at its
+  // full snapshot power, exhausted or not (cross-zone ranged never reaches this path — structural exemption)
+  const preTarget = pa.target.kind === 'unit' ? state.units[pa.target.id] : undefined
+  const retaliatePower = state.rules.retaliation === 'always' && preTarget ? effPower(state, preTarget) : 0
   for (const p of plans) {
     if (!p.blockers.length) {
       unblockedTotal += p.aPower
       unblockedNames.push(defOf(state, p.a.id).name)
+      if (retaliatePower > 0 && preTarget && p.a.id !== preTarget.id)
+        unitHits.push([p.a, retaliatePower, defOf(state, preTarget.id).name])
       continue
     }
     // pour the attacker's damage over its blockers in pair order (the defender chose the order)
