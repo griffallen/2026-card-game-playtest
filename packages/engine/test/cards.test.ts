@@ -38,11 +38,11 @@ describe('card set', () => {
 })
 
 describe('prebuilt decks', () => {
-  it('all prebuilt decks are legal 48-card lists', () => {
+  it('all prebuilt decks are legal, min-48 lists (issue #30: larger is allowed)', () => {
     expect(PREBUILT_DECKS.length).toBe(3)
     for (const deck of PREBUILT_DECKS) {
       const slugs = deckSlugs(deck)
-      expect(slugs.length).toBe(48)
+      expect(slugs.length).toBeGreaterThanOrEqual(48)
       expect(validateDeck(slugs, CARD_SET, DEFAULT_RULES)).toEqual([])
     }
   })

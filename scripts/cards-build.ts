@@ -41,8 +41,8 @@ errors.push(...validateCardSet(set))
 // deck-legality gate: a cost edit can silently move a card in/out of a doubles rule
 for (const deck of buildPrebuiltDecks(set)) {
   const slugs = deckSlugs(deck)
-  if (slugs.length !== DEFAULT_RULES.deckMinSize) {
-    errors.push(`${deck.name}: prebuilt deck has ${slugs.length} cards, needs exactly ${DEFAULT_RULES.deckMinSize} — a cost change probably moved a card across the doubles threshold (see the charter's curve section)`)
+  if (slugs.length < DEFAULT_RULES.deckMinSize) {
+    errors.push(`${deck.name}: prebuilt deck has ${slugs.length} cards, needs at least ${DEFAULT_RULES.deckMinSize} — a cost change probably moved a card out of a doubles rule (see the charter's curve section)`)
   }
   errors.push(...validateDeck(slugs, set, DEFAULT_RULES).map(e => `${deck.name}: ${e}`))
 }

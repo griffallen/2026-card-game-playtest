@@ -50,13 +50,15 @@ describe('influence effects', () => {
     expect(influenceFor(s, p2)).toBe(0)                    // entering play pays nothing now
     // red spells no longer cede influence (decision 35 removed the artifact reading)
     const bolt = toHand(s, p1, 'searing-bolt')
-    // Bulwark Protector (2/5 guard): survives the bolt — Searing Bolt deals 2 since PR #34
-    const victim = put(s, p2, 'bulwark-protector', 2)
+    // Bulwark Protector (2/5 guard): survives the bolt — Searing Bolt deals 2 since PR #34.
+    // The duel lives in the NEUTRAL zone so no home-zone ally can open an intercept window
+    // (deck sizes shift the seeded initiative — issue #30 made red 49 cards).
+    const victim = put(s, p2, 'bulwark-protector', 1)
     s = act(s, p1, { type: 'play', card: bolt, targets: [{ kind: 'unit', id: victim }] })
     expect(influenceFor(s, p2)).toBe(0)
     expect(s.units[victim].damage).toBe(2)
     // but being ATTACKED triggers the guard's influence
-    const raider = put(s, p1, 'berserker', 2)
+    const raider = put(s, p1, 'berserker', 1)
     s = act(s, p2, { type: 'pass' })
     s = act(s, p1, { type: 'attack', attackers: [raider], target: { kind: 'unit', id: victim } })
     expect(influenceFor(s, p2)).toBe(2)                    // Bulwark defended → +2 (decision 85 ladder)
