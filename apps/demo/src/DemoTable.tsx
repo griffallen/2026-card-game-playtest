@@ -826,6 +826,8 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
               return (
                 <CardFrame key={h.id} card={def} size="sm" sleeve="ivory"
                   selected={view.phase === 'setup' ? setupPicks.includes(h.id) : (selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id))}
+                  stamp={(view.phase === 'setup' && setupPicks.includes(h.id))
+                    || (view.phase === 'bank' && selection?.kind === 'hand' && selection.id === h.id) ? 'Resource' : undefined}
                   badge={view.phase === 'setup' && setupBottoms.includes(h.id) ? '⤓ bottom' : undefined}
                   dimmed={view.phase !== 'setup' && myWindow && !canAct}
                   onLongPress={() => setInspect({ kind: 'card', slug: h.slug })}

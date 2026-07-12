@@ -55,7 +55,8 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }:
         SLEEVE_EDGE[sleeve],
         onClick ? 'cursor-pointer hover:-translate-y-0.5' : '',
         glow === 'selected' ? 'glow-selected' : glow === 'target' ? 'glow-target' : glow === 'attack' ? 'glow-attack' : '',
-        unit.imprisoned ? 'saturate-[0.25] opacity-80' : unit.exhausted ? 'opacity-60' : '',
+        // #28: exhausted units turn sideways, like cards tapped at a real table
+        unit.imprisoned ? 'saturate-[0.25] opacity-80' : unit.exhausted ? 'rotate-90 scale-90 opacity-60' : '',
       ].join(' ')}
     >
       <span aria-hidden className={`pointer-events-none absolute left-1/2 top-0 z-10 h-[4px] w-6 -translate-x-1/2 rounded-b shadow-[0_1px_2px_rgba(0,0,0,0.5)] ${SLEEVE_TAB[sleeve]}`} />

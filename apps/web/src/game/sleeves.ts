@@ -6,10 +6,11 @@ export type Sleeve = 'ivory' | 'gunmetal'
 
 export const sleeveFor = (mine: boolean): Sleeve => (mine ? 'ivory' : 'gunmetal')
 
-/** Edge trim uses `outline` (not ring/box-shadow) so sleeves never fight the .glow-* cues. */
+/** Edge trim uses `outline` (not ring/box-shadow) so sleeves never fight the .glow-* cues.
+ *  Dashed + brighter per the designer's eye (issue #28: solid trim read too subtle). */
 export const SLEEVE_EDGE: Record<Sleeve, string> = {
-  ivory: 'outline outline-2 outline-offset-0 outline-[#cabf9e]',
-  gunmetal: 'outline outline-2 outline-offset-0 outline-[#78828f]',
+  ivory: 'outline-dashed outline-2 outline-offset-0 outline-[#e3d8b4]',
+  gunmetal: 'outline-dashed outline-2 outline-offset-0 outline-[#8b96a4]',
 }
 
 /** The lip: a small tab hanging inside the top edge — hand/board rows are overflow-x-auto,

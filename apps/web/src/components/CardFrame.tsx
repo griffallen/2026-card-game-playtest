@@ -65,7 +65,7 @@ const typeMeta: Record<string, { icon: string; label: string; chip: string }> = 
 }
 
 /** One component renders any card at any size — hand, browser, admin preview. */
-export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge, onLongPress, sleeve }: {
+export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge, onLongPress, sleeve, stamp }: {
   card: CardLike
   size?: 'sm' | 'md'
   onClick?: () => void
@@ -76,6 +76,8 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
   onLongPress?: () => void
   /** ownership sleeve (issue #22) — omit where the card has no owner (browser, rules pages) */
   sleeve?: Sleeve
+  /** #28: bold overlay banner across the card (e.g. "Resource" while picking setup banks) */
+  stamp?: string
 }) {
   // a mobile/CDN blip must not strip a card's art for the whole session (issue #19):
   // retry twice with a cache-busting src before conceding to procedural art
@@ -106,6 +108,13 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
     >
       {sleeve && (
         <span aria-hidden className={`pointer-events-none absolute left-1/2 top-0 z-10 h-[5px] w-8 -translate-x-1/2 rounded-b-md shadow-[0_1px_2px_rgba(0,0,0,0.5)] ${SLEEVE_TAB[sleeve]}`} />
+      )}
+      {stamp && (
+        <span className="pointer-events-none absolute inset-0 z-20 grid place-items-center rounded-lg bg-black/55">
+          <span className="-rotate-12 rounded border-2 border-goldbright bg-black/70 px-2 py-0.5 font-display text-[13px] font-bold uppercase tracking-widest text-goldbright shadow-lg">
+            ⬢ {stamp}
+          </span>
+        </span>
       )}
       {/* header: cost gem (cool = clearly the cost, distinct from the warm stats) · name · flag · count */}
       <div className="flex items-center gap-1.5">
