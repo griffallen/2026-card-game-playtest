@@ -42,6 +42,7 @@ export const V3_RULES: RulesConfig = {
   pipModel: 'presence',
   upgradesOrphan: true,
   firstRoundStartStep: false,   // decision 71: play round 1 from the opening hand + 2 setup resources
+  upgradePressureInfluence: 0,  // decision 83: the inherited v1.2 greed tax is cut — "cut the greed tax"
 }
 
 /** Merge a stored (possibly partial/older) config over current defaults, mapping legacy v1 keys. */

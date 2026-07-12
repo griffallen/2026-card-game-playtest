@@ -84,8 +84,11 @@ describe('view exposure — nothing hidden (#23)', () => {
 })
 
 describe('engine minors from the consistency sweep (#23, logged assumptions)', () => {
-  it('salvaging a second upgrade pays upgrade pressure, same as playing one', () => {
+  it('salvaging a second upgrade pays upgrade pressure when the knob is on (v3 cut it — decision 83)', () => {
+    // decision 83 zeroes the tax in V3_RULES; the mechanism itself must keep working for v2.3,
+    // so this test turns the knob back on explicitly.
     let s = v3game()
+    s.rules = { ...s.rules, upgradePressureInfluence: 1 }
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const scav = put(s, me, 'brute', 1)
     // already wearing one upgrade

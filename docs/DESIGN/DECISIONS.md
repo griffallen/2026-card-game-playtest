@@ -134,6 +134,8 @@ Numbered, in the order they were made. Format: decision — reason.
 
 82. ✅ **Public-table undo: one free per round, then opponent approval** (issue #24 Q11, 2026-07-12 — Griff). Private/friendly tables keep the v2.3 spec's free trust-based undo. Implementation lands with the multiplayer v3 port (issue #23): per-round undo counting + a consent exchange over the wire.
 
+83. ✅ **The greed tax is cut** (issue #24, 2026-07-12 — Griff: "cut the greed tax"). The inherited v1.2 upgrade-pressure rule (second upgrade on a unit → opponent gains 1 influence) is removed from v3 (`upgradePressureInfluence: 0`); the classic v2.3 config keeps it for the archive. An invisible rule the designer never knew existed had no defenders; if anti-stacking tension is wanted later, it returns as a printed card. — The #23-sweep salvage extension (decision-adjacent housekeeping) dies with it in v3, its mechanism preserved under test for v2.3.
+
 ## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
 
 - **Red burn grammar:** unit-only burn = cost+1 damage (Devastating Strike became unit-only); face-capable burn = cost (Raging Inferno 5→6 dmg; Searing Bolt/Volcanic Slam/Rupture already conformed). Burn the Frontline 7-for-4 → 6-for-6 one-zone (the wall-breaker; friendly fire stays as red's visible cost).

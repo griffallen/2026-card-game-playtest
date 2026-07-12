@@ -85,6 +85,9 @@ pay → can't attach. Battlefield salvage: your dead champion's sword is anyone'
 Engine: upgrade gains an `orphanedIn: ZoneId` state; new `attachOrphan` turn action; cost check
 identical to playing the card. **[Decision 79 (issue #24 Q8, designer)]: salvage is not playing** —
 "when you play this" text does not re-run on a salvaged upgrade.
+**[Decision 83 (issue #24, designer: "cut the greed tax")]:** the inherited v1.2 **upgrade-pressure
+rule is CUT in v3** — stacking upgrades no longer pays the opponent influence. (It survives in the
+classic v2.3 config; if anti-stacking tension is ever wanted again, it returns as a card.)
 
 ## 2. Keyword set v3
 
