@@ -11,8 +11,8 @@
 | [Reckless Charge](red/reckless-charge.md) | 0 | action | — |  | canon | Choose one — move one of your units one zone, even if exhausted (this doesn't exhaust it); OR target unit gets +1 Power this round for each other red unit in its zone (either side's). |
 | [Cinder Initiate](red/cinder-initiate.md) | 1 | unit | 2/1 | rush | canon | Rush. |
 | [Devastating Strike](red/devastating-strike.md) | 1 | action | — |  | canon | Deal 2 damage to target unit — 3 instead if it's already damaged. |
-| [Spark Hound](red/spark-hound.md) | 1 | unit | 2/1 | rush | canon | Rush. When this attacks, it gets +1 Power this round. |
-| [Berserker](red/berserker.md) | 2 | unit | 3/2 | rush, scar | canon | Rush. Scar. |
+| [Spark Hound](red/spark-hound.md) | 1 | unit | 2/1 | rush, guard | canon | Rush. Guard. When this attacks, it gets +1 Power this round. |
+| [Berserker](red/berserker.md) | 2 | unit | 1/4 | rush, scar | canon | Rush. Scar. |
 | [Blood Rush](red/blood-rush.md) | 2 | action | — |  | canon | Remove all damage from a unit you control; deal that much damage to your Home. |
 | [Flameblade Raider](red/flameblade-raider.md) | 2 | unit | 2/2 | rush, breakthrough | canon | Rush. Breakthrough. |
 | [Pillage](red/pillage.md) | 2 | action | — |  | canon | Destroy target enemy upgrade. |

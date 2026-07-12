@@ -21,6 +21,8 @@ deck's signature. Red wins by **Life**, never by Influence.
 
 **Forbidden:** Guard, Armor, cantAttack, untargetable, Flying, Ranged. Red doesn't defend, hide,
 or shoot from safety — it closes distance and swings.
+*One sworn exception (designer, PR #31, 2026-07-12): **Spark Hound** carries Guard — "they look
+like guard dogs." Flavor may overrule the law, but each new exception is ratify-first.*
 
 ## Invariants (the design laws)
 

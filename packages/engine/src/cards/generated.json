@@ -120,15 +120,19 @@
   "cost": 1,
   "power": 2,
   "health": 1,
-  "text": "Rush. When this attacks, it gets +1 Power this round.",
+  "text": "Rush. Guard. When this attacks, it gets +1 Power this round.",
   "kw": [
    {
     "k": "rush"
+   },
+   {
+    "k": "guard"
    }
   ],
   "pips": [
    "red"
   ],
+  "designerNote": "2026-07-12 (designer, PR #31): gains Guard — \"they look like guard dogs.\" Note for the record:\nred's charter forbids Guard (\"red doesn't defend\"); the designer's PR makes Spark Hound the first\nsworn exception, and the charter now records it. A 1-cost 2/1 that blocks free and bites back.",
   "artUrl": "/cards/spark-hound.jpg"
  },
  "berserker": {
@@ -137,8 +141,8 @@
   "color": "red",
   "type": "unit",
   "cost": 2,
-  "power": 3,
-  "health": 2,
+  "power": 1,
+  "health": 4,
   "text": "Rush. Scar.",
   "kw": [
    {

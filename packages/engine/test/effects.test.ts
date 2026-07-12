@@ -209,11 +209,11 @@ describe('tempo and timing', () => {
   it('Unchained Rage doubles ALL friendlies for two rounds (2026-07-11 rework, issue #4)', () => {
     let { s, p1 } = arena()
     const engine = put(s, p1, 'apocalypse-engine', 1)  // 8/7 since the v3 churn
-    const zerk = put(s, p1, 'berserker', 2)            // 3/2
+    const zerk = put(s, p1, 'berserker', 2)            // 1/4 since PR #32 (stats to favor Scar)
     const rage = toHand(s, p1, 'unchained-rage')
     s = act(s, p1, { type: 'play', card: rage })
     expect(effPower(s, s.units[engine])).toBe(16)
-    expect(effPower(s, s.units[zerk])).toBe(6)
+    expect(effPower(s, s.units[zerk])).toBe(2)
     s = act(s, (1 - p1) as Seat, { type: 'pass' })
     s = act(s, p1, { type: 'pass' })                   // round ends once: still doubled
     expect(effPower(s, s.units[engine])).toBe(16)
