@@ -128,6 +128,12 @@ Numbered, in the order they were made. Format: decision — reason.
 
 79. ✅ **Salvage is not playing** (issue #24 Q8, 2026-07-12 — Griff: "correct, salvage isn't playing"). A salvaged upgrade's "when you play this" text does not re-run. Ratifies existing engine behavior. (The upgrade-pressure question the same comment raised is answered on the thread — the designer hadn't been told that inherited rule exists; his verdict on keeping or cutting it is pending.)
 
+80. ✅ **Ranged is reborn as an ability** (issue #24 Q9, 2026-07-12 — Griff's rework). v3 `Ranged N` = an ability action: exhaust the unit to deal N damage to **one enemy unit in any zone** (a chosen shot — ready Hidden refuses it per 76; a lethal volley credits onKill per 74). Its **attacks are ordinary** — same zone, blockable, base-legal. Ranged bodies carry deliberately low attack power; the keyword is **reserved for Blue's future identity**, purple keeping two archers (Nocturne Sniper 1/3 R3, Dusk Archer 1/2 R2) while Veil Adept→Hidden, Gloom Piercer→Infiltrate, The Unseen Court→Hidden, and Veilmaster's aura now grants **Hidden** (⚑ all six for ratify/veto — the Veilmaster call is the boldest). v2.3 keeps the old sniper-shot semantics under its own ruleset.
+
+81. ✅ **Pip presence reads the whole bank** (issue #24 Q10, 2026-07-12 — Griff: "Yes, whole bank"). A banked card provides its colors ready or spent — presence is citizenship, not upkeep. Ratifies decision 69's engine behavior; closes the open question carried from issue #21.
+
+82. ✅ **Public-table undo: one free per round, then opponent approval** (issue #24 Q11, 2026-07-12 — Griff). Private/friendly tables keep the v2.3 spec's free trust-based undo. Implementation lands with the multiplayer v3 port (issue #23): per-round undo counting + a consent exchange over the wire.
+
 ## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
 
 - **Red burn grammar:** unit-only burn = cost+1 damage (Devastating Strike became unit-only); face-capable burn = cost (Raging Inferno 5→6 dmg; Searing Bolt/Volcanic Slam/Rupture already conformed). Burn the Frontline 7-for-4 → 6-for-6 one-zone (the wall-breaker; friendly fire stays as red's visible cost).

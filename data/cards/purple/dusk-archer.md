@@ -2,11 +2,17 @@
 name: Dusk Archer
 type: unit
 cost: 2
-power: 2
+power: 1
 health: 2
-keywords: ranged
+keywords: ranged 2
 pips: purple
 status: draft
 art: /cards/dusk-archer.svg
 ---
-Ranged.
+Ranged 2.
+
+## Design notes
+
+2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged
+reborn as an ability action ("exhaust: deal N to one enemy unit in any zone") with ordinary attacks;
+purple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: 2/2 → 1/2 with Ranged 2 — the cheap archer archetype, teeth moved into the volley.

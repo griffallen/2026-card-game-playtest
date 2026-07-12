@@ -31,7 +31,7 @@ function V3Content() {
         <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, attack, <b>use a Sneak ability</b>, <b>salvage an orphaned upgrade</b>, release a captive, or pass. <b>Two passes in a row end the round.</b> Passing is soft: if they act after you passed, you can act again.</Row>
         <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
         <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives one free move the round it arrives.</Row>
-        <Row icon="⚔" title="Attack — blockers answer">Exhaust <b>one or more ready units in a zone</b> and name one target. The defender then <b>pairs ready units onto your attackers as blockers</b> — one-on-one or ganging up — and <b>blocking exhausts</b> (Guards block free). Pairs trade blows all at once; gang damage pours in pair order. Attackers <b>nobody blocked</b> hit the declared target full-force — and a target that didn't block <b>doesn't strike back</b>. Bases can only be struck from inside <i>their</i> Home; cross-zone Ranged shots open no block window.</Row>
+        <Row icon="⚔" title="Attack — blockers answer">Exhaust <b>one or more ready units in a zone</b> and name one target. The defender then <b>pairs ready units onto your attackers as blockers</b> — one-on-one or ganging up — and <b>blocking exhausts</b> (Guards block free). Pairs trade blows all at once; gang damage pours in pair order. Attackers <b>nobody blocked</b> hit the declared target full-force — and a target that didn't block <b>doesn't strike back</b>. Bases can only be struck from inside <i>their</i> Home.</Row>
       </div>
 
       <H>Reading the board</H>
@@ -48,7 +48,7 @@ function V3Content() {
       <H>Keywords in one line</H>
       <p className="mt-2 text-[13px] leading-relaxed text-body/90">
         <b>Rush</b> one free move on arrival · <b>Breakthrough</b> kills its blocker → <i>all</i> excess pushes to the original target ·
-        <b> Ranged</b> shoots adjacent zones (no block, no counter), never bases · <b>Guard</b> blocks free ·
+        <b> Ranged N</b> exhaust to volley N at any enemy unit, any zone (its attacks are ordinary) · <b>Guard</b> blocks free ·
         <b> Hidden</b> while ready it can't be targeted or attacked; exhausting reveals it · <b>Infiltrate</b> deploys to any zone ·
         <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under; it returns ready ·
         <b> Shielded</b> first hit prevented · <b>Scar</b> +1 power per damage marked, capped at remaining health.

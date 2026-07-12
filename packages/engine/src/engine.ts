@@ -165,7 +165,7 @@ function applyLoopPhase(state: GameState, action: GameAction, seat: Seat) {
       return
     }
     case 'play': playCard(state, action, seat); break
-    case 'activate': activateSneak(state, action, seat); break
+    case 'activate': activateAbility(state, action, seat); break
     case 'releaseCaptive': releaseCaptive(state, action.unit, seat); break
     case 'attachOrphan': attachOrphan(state, action, seat); break
     case 'move': moveUnit(state, action.unit, action.to, seat); break
@@ -177,14 +177,34 @@ function applyLoopPhase(state: GameState, action: GameAction, seat: Seat) {
 
 // ─── v3 keyword actions ──────────────────────────────────────────────────────
 
-/** Sneak (decision 60): exhaust-activated per-card payload, targets locked to the unit's zone. */
-function activateSneak(state: GameState, action: Extract<GameAction, { type: 'activate' }>, seat: Seat) {
+/** Exhaust-activated abilities: Sneak (decision 60) and v3 Ranged volleys (decision 80). */
+function activateAbility(state: GameState, action: Extract<GameAction, { type: 'activate' }>, seat: Seat) {
   const unit = state.units[action.unit] ?? fail('no-unit', 'no such unit')
   if (unit.owner !== seat) fail('not-yours', 'not your unit')
-  if (unit.exhausted) fail('exhausted', 'exhausted units cannot use Sneak')
+  if (unit.exhausted) fail('exhausted', 'exhausted units cannot use abilities')
+  if (unit.imprisoned) fail('imprisoned', 'imprisoned units cannot use abilities')
   const def = defOf(state, unit.id)
   const sneak = def.sneak
-  if (!(def.kw ?? []).some(k => k.k === 'sneak') || !sneak) fail('no-sneak', `${def.name} has no Sneak ability`)
+  if (!(def.kw ?? []).some(k => k.k === 'sneak') || !sneak) {
+    // v3 Ranged (decision 80): exhaust to volley N at one enemy unit, any zone
+    const n = kwOf(state, unit, 'ranged')
+    if (state.rules.combatModel === 'blockerPairing' && typeof n === 'number') {
+      const ref = (action.targets ?? [])[0]
+      if (!ref || ref.kind !== 'unit') fail('bad-targets', 'a volley needs one enemy unit')
+      const t = state.units[ref.id] ?? fail('bad-targets', 'no such unit')
+      if (t.owner === seat) fail('bad-targets', 'volleys strike the enemy')
+      if (!t.exhausted && hasKw(state, t, 'hidden')) fail('bad-targets', `${defOf(state, t.id).name} is hidden`)
+      unit.exhausted = true
+      log(state, seat, `${def.name} volleys ${defOf(state, t.id).name}`)
+      damageUnit(state, t, n, def.name)
+      // decision 74: a kill is a kill — a lethal volley credits the archer
+      if (state.units[t.id] && t.damage >= effHealth(state, t)) {
+        fireTrigger({ state, attackTarget: { kind: 'unit', id: t.id }, actorSeat: seat }, unit, 'onKill')
+      }
+      return
+    }
+    fail('no-sneak', `${def.name} has no ability to use`)
+  }
   const targets = action.targets ?? []
   validateTargets(state, seat, sneak.targets ?? [], targets, `${def.name} (Sneak)`)
   for (const ref of targets) {
@@ -433,10 +453,13 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
     if (typeof kwOf(state, state.units[id], 'overextend') !== 'number') fail('cant-overextend', `${defOf(state, id).name} has no Overextend value`)
   }
 
-  const allRangedOrReach = units.every(u => hasKw(state, u, 'ranged') || hasKw(state, u, 'reach'))
+  // decision 80: the sniper-shot attack semantics survive only in classic v2.3 — v3 Ranged
+  // attacks are ordinary (the reach moved into the volley ability)
+  const legacyRanged = state.rules.combatModel === 'intercept'
+  const allRangedOrReach = legacyRanged && units.every(u => hasKw(state, u, 'ranged') || hasKw(state, u, 'reach'))
   if (action.target.kind === 'base') {
     if (action.target.seat === seat) fail('bad-target', 'cannot attack your own base')
-    if (units.some(u => hasKw(state, u, 'ranged'))) fail('bad-target', 'ranged units cannot target bases')
+    if (legacyRanged && units.some(u => hasKw(state, u, 'ranged'))) fail('bad-target', 'ranged units cannot target bases')
     if (zone !== homeZone(action.target.seat)) fail('bad-target', "you must stand in the enemy's home zone to strike their base")
   } else if (action.target.kind === 'unit') {
     const defender = state.units[action.target.id] ?? fail('no-unit', 'no such defender')

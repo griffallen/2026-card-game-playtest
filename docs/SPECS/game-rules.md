@@ -48,8 +48,8 @@ Cost and color are now two separate checks:
    exhaust to defend" is only a perk if everyone else does; echoed on the issue for veto]**.
    The earlier draft assumption (blocking is free) is dead. In a gang block the defender's
    **pair order is the pour order** — the attacker's damage fills each blocker in sequence
-   (deterministic split under the defender's control, decision Q5). Cross-zone Ranged attacks
-   open no block window (the sniper shot: unblockable, unretaliated).
+   (deterministic split under the defender's control, decision Q5). *(Decision 80 removed the
+   cross-zone Ranged sniper shot — all v3 attacks happen within one zone and open the window.)*
 3. **Resolve simultaneously, per pairing:** each attacker fights its blocker(s); **[Q5 ✓] in a
    gang-block the DEFENDER divides the attacker's damage** among the blockers; blockers' combined
    power hits the attacker back.
@@ -94,8 +94,13 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
 `imprisonWatcher`, §1.11 — resolves decisions 16/37/53).
 
 ### Changed
-- `ranged` — may attack an adjacent zone; cross-zone draws no retaliation; **same-zone attacks
-  retaliate normally** (matches current engine behavior; text clarified).
+- `ranged N` — **[Decision 80 (issue #24 Q9, designer) — full rework]** an **ability action**:
+  exhaust this unit to deal **N damage to one enemy unit in any zone** (a chosen target — ready
+  Hidden units refuse it, decision 76; a lethal volley credits onKill, decision 74). Its
+  **attacks are ordinary** — same zone, blockable, base-legal, counter-able. Ranged bodies carry
+  deliberately low attack power (the teeth live in the volley). Color law: Ranged is **reserved
+  for Blue's future identity**; purple keeps two archers and otherwise leans on non-attack
+  keywords. The v2.3 sniper-shot semantics survive only under the classic ruleset.
 - `breakthrough` — loses N; pushes all excess damage (see 1.3.5).
 
 - `guard` — **redefined [Q10 ✓]:** no longer an intercept trigger; a Guard **does not exhaust
@@ -150,8 +155,21 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
 3. Full card re-churn against the v3 keyword set (red→Scar, yellow→Capture/Shielded,
    purple→Hidden/Infiltrate/Sneak if adopted), then canon-v2.0.
 
+## 5. Undo at a public table *(decision 82 — issue #24 Q11, designer, 2026-07-12)*
+The v2.3 spec's free undo remains the law for private/friendly tables. On **public multiplayer
+tables**: each player gets **one free undo per round**; any further undo that round requires
+the **opponent's approval**. Implementation lands with the multiplayer v3 port (issue #23) —
+per-round undo counting plus a consent message over the wire.
+
+## 6. Pip presence reads the whole bank *(decision 81 — issue #24 Q10, designer, 2026-07-12)*
+A banked card provides its colors **whether ready or spent** — presence is citizenship, not
+upkeep. Closes the open question carried from issue #21.
+
 ## Open questions index
 **All answered (2026-07-10, [issue #9](https://github.com/booherbg/2026-card-game/issues/9)):**
 Q1–Q6 midday, Q7–Q10 evening — folded in above (decisions 59–62). The lone remaining echo:
 **blocking exhausts the blocker** is *derived* from Q10, not stated by the designer — flagged
 on the issue; a veto flips 1.3.2 and makes Guard need a different perk.
+**Second court (2026-07-12, [issue #24](https://github.com/booherbg/2026-card-game/issues/24)):**
+all eleven questions answered — decisions 73–82, folded in above. One rule stands accused
+awaiting verdict: the inherited **upgrade-pressure tax** (cut or keep-and-teach).

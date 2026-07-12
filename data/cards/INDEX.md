@@ -103,18 +103,18 @@
 | Card | Cost | Type | P/H | Keywords | Status | Text |
 |---|---|---|---|---|---|---|
 | [Glimpse](purple/glimpse.md) | 1 | action | — |  | draft | Draw a card. |
-| [Veil Adept](purple/veil-adept.md) | 1 | unit | 1/1 | ranged | draft | Ranged. |
+| [Veil Adept](purple/veil-adept.md) | 1 | unit | 1/1 | hidden | draft | Hidden. |
 | [Whisper Blade](purple/whisper-blade.md) | 1 | unit | 2/1 |  | draft | When this defeats a unit, gain 1 Influence. |
 | [Cloak of Haze](purple/cloak-of-haze.md) | 2 | upgrade | — |  | draft | Attached unit has Hidden. |
 | [Crippling Dart](purple/crippling-dart.md) | 2 | action | — |  | draft | Deal 2 damage to target enemy unit. It gets -1 Power permanently. |
-| [Dusk Archer](purple/dusk-archer.md) | 2 | unit | 2/2 | ranged | draft | Ranged. |
+| [Dusk Archer](purple/dusk-archer.md) | 2 | unit | 1/2 | ranged 2 | draft | Ranged 2. |
 | [Mist Stalker](purple/mist-stalker.md) | 2 | unit | 2/2 |  | draft | When this defeats a unit, gain 1 Influence. |
 | [Pacify](purple/pacify.md) | 2 | action | — |  | draft | Target enemy unit can't attack this round. |
 | [Shadowstep](purple/shadowstep.md) | 2 | action | — |  | draft | Target friendly unit gains Hidden this round. Draw a card. |
 | [Twilight Scout](purple/twilight-scout.md) | 2 | unit | 2/3 | infiltrate | draft | Infiltrate. (Deploy this to any zone.) |
 | [Veiled Messenger](purple/veiled-messenger.md) | 2 | unit | 1/3 |  | draft | When this enters play, draw a card. |
 | [Wither](purple/wither.md) | 2 | action | — |  | draft | Target enemy unit gets -2 Power permanently. |
-| [Gloom Piercer](purple/gloom-piercer.md) | 3 | unit | 3/2 | ranged | draft | Ranged. |
+| [Gloom Piercer](purple/gloom-piercer.md) | 3 | unit | 3/2 | infiltrate | draft | Infiltrate. |
 | [Nightweaver](purple/nightweaver.md) | 3 | unit | 3/3 |  | draft | When this enters play, target enemy unit gets -1 Power permanently. |
 | [Obscure](purple/obscure.md) | 3 | action | — |  | draft | Prevent the next 2 damage to your base this round. Draw a card. |
 | [Veil Assassin](purple/veil-assassin.md) | 3 | unit | 4/2 |  | draft | When this defeats a unit, gain 1 Influence. |
@@ -127,9 +127,9 @@
 | [Shade of the Bazaar](purple/shade-of-the-bazaar.md) | 4 | unit | 3/4 |  | draft | When this enters play, draw a card. |
 | [Silence the Song](purple/silence-the-song.md) | 4 | action | — |  | draft | Target enemy unit gets -2 Power permanently. Draw a card. |
 | [Dream Thief](purple/dream-thief.md) | 5 | unit | 4/4 | hidden, sneak | draft | Hidden. When this enters play, draw a card. Sneak — gain 2 Influence. |
-| [Nocturne Sniper](purple/nocturne-sniper.md) | 5 | unit | 4/3 | ranged | draft | Ranged. When this defeats a unit, gain 1 Influence. |
+| [Nocturne Sniper](purple/nocturne-sniper.md) | 5 | unit | 1/3 | ranged 3 | draft | Ranged 3. When this defeats a unit, gain 1 Influence. |
 | [Second Shadow](purple/second-shadow.md) | 5 | action | — |  | draft | Ready one of your units. Draw a card. |
-| [Veilmaster](purple/veilmaster.md) | 5 | unit | 3/5 |  | draft | Your other units have Ranged. |
+| [Veilmaster](purple/veilmaster.md) | 5 | unit | 3/5 |  | draft | Your other units have Hidden. |
 | [Duskweaver Oracle](purple/duskweaver-oracle.md) | 6 | unit | 4/6 |  | draft | When this enters play, draw 2 cards. |
 | [Fog of Knives](purple/fog-of-knives.md) | 6 | action | — |  | draft | Choose a zone. Deal 3 damage to every enemy unit there. |
 | [Umbral Colossus](purple/umbral-colossus.md) | 6 | unit | 5/5 | hidden, shielded | draft | Hidden. Shielded. (Enters with a shield that eats the first damage.) |
@@ -137,4 +137,4 @@
 | [Eclipse](purple/eclipse.md) | 7 | action | — |  | draft | Every enemy unit gets -2 Power permanently. |
 | [Midnight Reckoning](purple/midnight-reckoning.md) | 7 | action | — |  | draft | Deal 3 damage to every enemy unit. Draw a card. |
 | [Sovereign of the Veil](purple/sovereign-of-the-veil.md) | 7 | unit | 5/6 | hidden, infiltrate, sneak | draft | Hidden. Infiltrate. Sneak — deal 4 damage to target enemy unit in this zone and gain 1 Influence. |
-| [The Unseen Court](purple/the-unseen-court.md) | 8 | unit | 6/7 | ranged | draft | Ranged. When this defeats a unit, gain 2 Influence. |
+| [The Unseen Court](purple/the-unseen-court.md) | 8 | unit | 6/7 | hidden | draft | Hidden. When this defeats a unit, gain 2 Influence. |

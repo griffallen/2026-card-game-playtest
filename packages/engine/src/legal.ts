@@ -136,6 +136,17 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
       }
     }
   }
+  // v3 Ranged (decision 80): exhaust to volley N at one enemy unit, any zone
+  if (state.rules.combatModel === 'blockerPairing') {
+    for (const u of unitsOf(state, seat)) {
+      if (u.exhausted || u.imprisoned) continue
+      if (typeof kwOf(state, u, 'ranged') !== 'number') continue
+      for (const t of unitsOf(state, other(seat))) {
+        if (!t.exhausted && hasKw(state, t, 'hidden')) continue   // decision 76: a volley chooses
+        out.push({ type: 'activate', unit: u.id, targets: [{ kind: 'unit', id: t.id }] })
+      }
+    }
+  }
   // v3 (decision 67): salvage orphaned upgrades in reach
   const readyRes = state.sides[seat].resources.filter(r => !r.exhausted).length
   for (const up of Object.values(state.upgrades)) {
@@ -181,8 +192,11 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
 function attackTargets(state: GameState, attacker: UnitInstance): TargetRef[] {
   const seat = attacker.owner
   const enemy = other(seat)
-  const ranged = hasKw(state, attacker, 'ranged')
-  const reach = hasKw(state, attacker, 'reach')
+  // decision 80: v3 Ranged is an ability, not an attack style — its ATTACKS are ordinary.
+  // The sniper-shot semantics (cross-zone reach, base ban) survive only in classic v2.3.
+  const legacy = state.rules.combatModel === 'intercept'
+  const ranged = legacy && hasKw(state, attacker, 'ranged')
+  const reach = legacy && hasKw(state, attacker, 'reach')
   const out: TargetRef[] = []
 
   const zonesInReach: ZoneId[] = [attacker.zone]
@@ -196,7 +210,7 @@ function attackTargets(state: GameState, attacker: UnitInstance): TargetRef[] {
     }
   }
 
-  // base: melee/reach only, standing in the enemy home zone (protection is now the intercept window, decision 42)
+  // base: standing in the enemy home zone; the v2.3 ranged ban applies only there (decision 80)
   if (!ranged && attacker.zone === homeZone(enemy)) {
     out.push({ kind: 'base', seat: enemy })
   }

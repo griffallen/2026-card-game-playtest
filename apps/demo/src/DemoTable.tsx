@@ -588,13 +588,18 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
               </label>
             )
           })()}
-          {selection.ids.length === 1 && activateActionsFor(selection.ids[0]).length > 0 && (
-            <button className="btn btn-primary !py-1 text-xs" onClick={() => {
-              const acts = activateActionsFor(selection.ids[0])
-              if (acts.some(a => !a.targets?.length)) apply({ type: 'activate', unit: selection.ids[0] }, seat)
-              else setSelection({ kind: 'sneaking', unit: selection.ids[0] })
-            }}>✦ Use Sneak</button>
-          )}
+          {selection.ids.length === 1 && activateActionsFor(selection.ids[0]).length > 0 && (() => {
+            const uid = selection.ids[0]
+            const isSneak = !!DEMO_CARDS[state.cardOf[uid]]?.sneak
+            const rn = unitViewOf(uid)?.keywords.find(k => k.startsWith('ranged'))?.split(' ')[1]
+            return (
+              <button className="btn btn-primary !py-1 text-xs" onClick={() => {
+                const acts = activateActionsFor(uid)
+                if (acts.some(a => !a.targets?.length)) apply({ type: 'activate', unit: uid }, seat)
+                else setSelection({ kind: 'sneaking', unit: uid })
+              }}>{isSneak ? '✦ Use Sneak' : `🏹 Volley${rn ? ` (${rn})` : ''}`}</button>
+            )
+          })()}
           {selection.ids.length === 1 && releaseActionFor(selection.ids[0]) && (
             <button className="btn btn-primary !py-1 text-xs"
               onClick={() => apply({ type: 'releaseCaptive', unit: selection.ids[0] }, seat)}>
@@ -631,7 +636,11 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       })()}
       {selection?.kind === 'sneaking' && (
         <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
-          <span>Choose a target for <b>{unitName(selection.unit)}</b>'s Sneak ability — using it exhausts (and reveals) the unit…</span>
+          <span>
+            {DEMO_CARDS[state.cardOf[selection.unit]]?.sneak
+              ? <>Choose a target for <b>{unitName(selection.unit)}</b>'s Sneak ability — using it exhausts (and reveals) the unit…</>
+              : <>Choose a target for <b>{unitName(selection.unit)}</b>'s volley — any enemy unit, anywhere; the shot exhausts the archer…</>}
+          </span>
           <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
         </div>
       )}

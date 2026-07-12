@@ -5,7 +5,7 @@ export const KEYWORD_GLOSS: Record<string, string> = {
   guard: 'Defends for free — stepping in front of an attack doesn\'t exhaust it, so it can defend again and still take its own turn.',
   armor: 'Every hit this unit takes is reduced by this much.',
   rush: 'Its first move the round it arrives is free — that one move doesn\'t exhaust it, so it can reposition and still attack. One free move only; a second exhausts it.',
-  ranged: 'May attack a unit one zone away — no block window opens, and nothing strikes back. In its own zone it fights like anyone else. It never attacks bases.',
+  ranged: 'Ability: exhaust this unit to deal its Ranged number to one enemy unit in any zone (a chosen shot — ready Hidden units refuse it). Its regular attacks are ordinary. (Classic v2.3: attacks one zone away instead, no counter, never bases.)',
   reach: 'May attack units one zone away (bases still require standing in their Home). (Classic v2.3 only.)',
   flying: 'May move to any zone, ignoring adjacency. (Classic v2.3 only — retired in v3.)',
   breakthrough: 'When this attacker kills its blocker, all the leftover damage pushes through to its original target — unit or base. (Classic v2.3 capped the spill at N and sent it to the owner\'s life.)',

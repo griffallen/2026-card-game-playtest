@@ -77,15 +77,18 @@ describe('blocker-pairing combat (v3)', () => {
     expect(s.units[guard].exhausted).toBe(false)
   })
 
-  it('no ready defenders → no block window; cross-zone ranged is unblockable', () => {
+  it('no ready defenders → no block window; v3 ranged attacks are ordinary (decision 80)', () => {
     let s = g()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
-    const archer = put(s, me, 'archer', 1)          // ranged 2/2
-    const victim = put(s, them, 'brute', 2)         // adjacent zone
-    put(s, them, 'brute', 2, { exhausted: true })   // exhausted: cannot block anyway
-    s = applyAction(s, { type: 'attack', attackers: [archer], target: { kind: 'unit', id: victim } }, me).state
-    expect(s.phase).toBe('loop')                    // resolved immediately
-    expect(s.units[victim].damage).toBe(2)
-    expect(s.units[archer].damage).toBe(0)          // sniper shot: no retaliation
+    const archer = put(s, me, 'archer', 1)          // ranged — but in v3 that's an ability, not reach
+    const far = put(s, them, 'brute', 2)            // adjacent zone: out of attack range now
+    expect(() => applyAction(s, { type: 'attack', attackers: [archer], target: { kind: 'unit', id: far } }, me))
+      .toThrowError(/zone/i)                        // decision 80: the sniper shot left with v2.3
+    const near = put(s, them, 'brute', 1, { exhausted: true })   // same zone, cannot block
+    s.actorSeat = me
+    s = applyAction(s, { type: 'attack', attackers: [archer], target: { kind: 'unit', id: near } }, me).state
+    expect(s.phase).toBe('loop')                    // no ready defenders → resolved immediately
+    expect(s.units[near].damage).toBe(2)
+    expect(s.units[archer].damage).toBe(0)          // didn't block → no strike-back (current law)
   })
 })
