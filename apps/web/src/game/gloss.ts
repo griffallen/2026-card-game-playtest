@@ -15,7 +15,7 @@ export const KEYWORD_GLOSS: Record<string, string> = {
   hidden: 'While ready, enemy actions can\'t target it and enemy attacks can\'t be declared at it. It can still block; anything that exhausts it reveals it until it readies again.',
   infiltrate: 'May be played into any zone — not just your Home.',
   sneak: 'An ability used as your turn: exhaust the unit to resolve its printed Sneak effect on something in its own zone.',
-  capture: 'Takes an enemy unit under this one, off the board entirely. The captive returns — exhausted — when the capturer leaves play or lets it go.',
+  capture: 'Takes an enemy unit under this one, off the board entirely, at no cost to the capturer. The captive returns — ready — when the capturer leaves play or lets it go (decision 73).',
   shielded: 'Arrives with a shield token: the first time it would take damage, the whole hit is prevented and the token is spent.',
   scar: 'Gets +1 Power for each damage marked on it, capped at its remaining Health — the wound powers it, never past what it can survive.',
 }

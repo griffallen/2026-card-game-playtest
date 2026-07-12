@@ -55,7 +55,15 @@ Cost and color are now two separate checks:
    power hits the attacker back.
 4. **[Q4 ✓] Unblocked attackers deal their full damage to the declared target** (unit or Home).
 5. **[Q6 ✓] Breakthrough** (no number): excess damage from a killed blocker pushes through **to
-   the original declared target**. No choices; fully deterministic.
+   the original declared target**. No choices; fully deterministic. *(Decision 75: the ten red
+   cards that still printed "Breakthrough N" shed their numbers — the printed cap was already
+   dead under this rule.)*
+6. **[Decision 74 — "a kill is a kill" (issue #24 Q2, designer)]** "When this defeats a unit"
+   triggers fire for the unit whose combat damage felled the victim, on either side of the
+   pairing: an attacker credits each blocker it fells, blockers credit the attacker they fell,
+   and the declared target's death credits **only the attackers whose damage actually reached
+   it** (unblocked or spilling through) — an idle, fully-blocked attacker never collects on an
+   ally's kill. Simultaneous trades credit both sides.
 6. **[Q10 ✓] Guard: "does not exhaust to defend."** A Guard blocks without exhausting — it can
    block again this round and is still ready on its own turn. Designer's framing: start simple,
    give Guards a defending bonus later **only if playtesting shows they need it** (candidate
@@ -95,7 +103,7 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
 |---|---|---|
 | **Hidden** | While this unit is **ready**, it can't be targeted by enemy actions or declared as an attack target. | Attacking/exhausting reveals it until it readies. **[Q7 ✓] A Hidden unit CAN block** (blocking isn't being attacked) — though blocking exhausts it (1.3.2), so blocking also reveals it. The self-revealing rhythm is the design. Engine: targeting filter + attack-eligibility keyed on `exhausted`. |
 | **Sneak** | Exhaust-activated ability, per card: "Sneak — [effect]" hits a target in this unit's zone (unit or base). | Finally builds §1.9's deferred `activate` action. **[Q8 ✓] Per-card payloads confirmed** — designer's examples: attack for less than full power; forbid the opponent from blocking. |
-| **Capture** | On its trigger, this unit takes an enemy unit **under itself** (out of play, no zone presence). The captive returns when the capturer leaves play — or when the capturer readies; its owner **may decline to ready the capturer** at their ready step to keep holding. | Prison's successor with a body-attached cost (the capturer stays exhausted = can't attack, and can't block under 1.3.2). **[Q9 ✓] The captive returns EXHAUSTED** — it readies at its owner's next ready step, so no same-turn revenge. |
+| **Capture** | On its trigger, this unit takes an enemy unit **under itself** (out of play, no zone presence). The captive returns when the capturer leaves play — or when the capturer's owner spends a **turn action to release it** (which also readies the capturer). | Prison's successor. **[Decision 73 (issue #24 Q1, designer) — supersedes Q9/decision 61 and the exhausted-grip draft]:** capturing charges **no readiness cost** (the removal is temporary in a game rich with permanent answers; costs live in card rates), and **the freed captive returns READY**. |
 | **Infiltrate** | May be deployed to **any zone**, not just its owner's Home. | Clear; deploy-time zone choice in the play action. |
 | **Shielded** | Enters play with a shield token; the first instance of damage it would take is prevented entirely and the token is removed. | Clear. "Instance" = one damage event (combat hit, one effect op). |
 | **Scar** | This unit gets **+1 power for each damage marked on it, up to its remaining health** (bonus = min(damage, health − damage)). | Power derivation from `damage`, capped **[decision 70 — designer's "reading A" on #12]**: a 3-health unit with 2 damage gets +1, not +2. The wound powers you, never past what you could survive. **Designer-confirmed as Overextend's successor** (red's identity). |

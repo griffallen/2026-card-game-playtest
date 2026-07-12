@@ -4,11 +4,11 @@ type: unit
 cost: 4
 power: 5
 health: 4
-keywords: rush, breakthrough 3
+keywords: rush, breakthrough
 pips: red, red
 status: canon
 ---
-Rush. Breakthrough 3.
+Rush. Breakthrough.
 
 ## Design notes
 

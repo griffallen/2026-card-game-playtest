@@ -19,7 +19,7 @@ const KEYWORDS: [string, string][] = [
   ['Hidden', 'While this unit is ready, enemy actions can’t target it and enemy attacks can’t be declared at it. It can still block — blocking isn’t being targeted — but anything that exhausts it (attacking, blocking, a Sneak) reveals it until it readies again. Strike, vanish, repeat.'],
   ['Infiltrate', 'May be played into any zone — not just your Home.'],
   ['Sneak', 'An ability you use as your turn: exhaust the unit to resolve its printed Sneak effect on something in its own zone — a unit or the base. Each card’s text says what its Sneak does.'],
-  ['Capture', 'On its trigger, this unit takes an enemy unit under itself — off the board entirely. The captive returns when the capturer leaves play or readies, so keeping your grip means declining to ready the capturer at your start step: it stays exhausted, unable to attack or block. The freed captive comes back exhausted — no same-round revenge.'],
+  ['Capture', 'On its trigger, this unit takes an enemy unit under itself — off the board entirely, and at no cost to the capturer (decision 73). The captive returns when the capturer leaves play, or when its owner spends a turn action to release it (which also readies the capturer). The freed captive comes back ready — capture is temporary custody, not a wound.'],
   ['Shielded', 'Arrives with a shield token. The first time it would take damage, the whole hit is prevented and the token is spent.'],
   ['Scar', 'Gets +1 Power for each damage marked on it, capped at its remaining Health — a 3-Health unit with 2 damage gets +1, not +2. The wound powers you, never past what you could survive.'],
 ]

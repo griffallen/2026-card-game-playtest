@@ -5,9 +5,9 @@ cost: 4
 pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"buff","t":"chosen0","p":3,"dur":"round"},{"op":"grant","t":"chosen0","kw":{"k":"breakthrough","n":3},"dur":"round"}]}
+effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"buff","t":"chosen0","p":3,"dur":"round"},{"op":"grant","t":"chosen0","kw":{"k":"breakthrough"},"dur":"round"}]}
 ---
-Target unit gets +3 Power and Breakthrough 3 this round.
+Target unit gets +3 Power and Breakthrough this round.
 
 ## Design notes
 

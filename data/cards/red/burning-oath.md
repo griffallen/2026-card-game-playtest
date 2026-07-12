@@ -5,9 +5,9 @@ cost: 4
 pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"aura","scope":"attached","p":2},{"s":"aura","scope":"attached","kw":{"k":"breakthrough","n":2}}]}
+effects: {"statics":[{"s":"aura","scope":"attached","p":2},{"s":"aura","scope":"attached","kw":{"k":"breakthrough"}}]}
 ---
-Attached unit gets +2 Power and Breakthrough 2.
+Attached unit gets +2 Power and Breakthrough.
 
 ## Design notes
 

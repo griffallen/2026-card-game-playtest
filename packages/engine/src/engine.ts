@@ -199,7 +199,7 @@ function activateSneak(state: GameState, action: Extract<GameAction, { type: 'ac
   runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat }, sneak.ops)
 }
 
-/** Capture (spec §2): the holder's owner readies the capturer, returning the captive exhausted. */
+/** Capture (decision 73): the holder's owner readies the capturer, returning the captive READY. */
 function releaseCaptive(state: GameState, unitId: string, seat: Seat) {
   const unit = state.units[unitId] ?? fail('no-unit', 'no such unit')
   if (unit.owner !== seat) fail('not-yours', 'not your unit')
@@ -208,11 +208,11 @@ function releaseCaptive(state: GameState, unitId: string, seat: Seat) {
   unit.exhausted = false
   for (const [cid, c] of held) {
     c.unit.zone = unit.zone
-    c.unit.exhausted = true          // decision 61: returns exhausted
+    c.unit.exhausted = false         // decision 73 (reverses 61): capture is temporary — the return is whole
     c.unit.enteredRound = state.round
     state.units[cid] = c.unit
     delete state.captives[cid]
-    log(state, seat, `${defOf(state, cid).name} is released, dazed`)
+    log(state, seat, `${defOf(state, cid).name} is released, ready`)
   }
 }
 
@@ -547,7 +547,7 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   // snapshot the plan first — everything resolves simultaneously
   const plans = attackers.map(a => {
     const blockers = (byAttacker.get(a.id) ?? []).map(id => state.units[id]).filter(Boolean) as UnitInstance[]
-    return { a, blockers, aPower: effPower(state, a), counter: blockers.reduce((s, b) => s + effPower(state, b), 0) }
+    return { a, blockers, aPower: effPower(state, a), counter: blockers.reduce((s, b) => s + effPower(state, b), 0), spilled: false }
   })
   for (const p of plans) for (const b of p.blockers) {
     fireTrigger({ state, attackTarget: { kind: 'unit', id: p.a.id }, actorSeat: seat }, b, 'onDefend')
@@ -581,7 +581,7 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       if (chunk > 0) unitHits.push([b, chunk, defOf(state, p.a.id).name])
       dmg -= chunk
     }
-    if (dmg > 0 && hasKw(state, p.a, 'breakthrough')) targetSpill += dmg   // v3: no N — all excess pushes through
+    if (dmg > 0 && hasKw(state, p.a, 'breakthrough')) { targetSpill += dmg; p.spilled = true }   // v3: no N — all excess pushes through
     if (p.counter > 0) unitHits.push([p.a, p.counter, 'the blockers'])
   }
 
@@ -592,6 +592,8 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
 
   // apply everything at once
   for (const [u, n, src] of unitHits) if (state.units[u.id]) damageUnit(state, u, n, src)
+  // decision 74: "a kill is a kill" — deaths haven't cleaned up yet, so lethality is the test
+  const felled = (id: string) => { const u = state.units[id]; return !!u && u.damage >= effHealth(state, u) }
   const toTarget = unblockedTotal + targetSpill
   if (toTarget > 0) {
     if (pa.target.kind === 'base') {
@@ -601,10 +603,29 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       }
     } else if (targetUnit && state.units[targetUnit.id]) {
       damageUnit(state, targetUnit, toTarget, unblockedNames.join(', ') || 'breakthrough')
-      if (targetUnit.damage >= effHealth(state, targetUnit)) {
-        for (const p of plans) if (state.units[p.a.id]) {
+      if (felled(targetUnit.id)) {
+        // credit only attackers whose damage actually reached the target — idle blocked
+        // attackers stop collecting on their allies' kills (decision 74)
+        for (const p of plans) if ((!p.blockers.length || p.spilled) && state.units[p.a.id]) {
           fireTrigger({ state, attackTarget: pa.target, actorSeat: seat }, p.a, 'onKill')
         }
+      }
+    }
+  }
+  // decision 74: attackers credit the blockers they fell; blockers credit the attacker they fell;
+  // under the #25 retaliation experiment, the target credits attackers its counter-blow kills.
+  for (const p of plans) {
+    for (const b of p.blockers) {
+      if (felled(b.id) && state.units[p.a.id]) {
+        fireTrigger({ state, attackTarget: { kind: 'unit', id: b.id }, actorSeat: seat }, p.a, 'onKill')
+      }
+    }
+    if (felled(p.a.id)) {
+      for (const b of p.blockers) if (state.units[b.id]) {
+        fireTrigger({ state, attackTarget: { kind: 'unit', id: p.a.id }, actorSeat: seat }, b, 'onKill')
+      }
+      if (!p.blockers.length && retaliatePower > 0 && preTarget && state.units[preTarget.id]) {
+        fireTrigger({ state, attackTarget: { kind: 'unit', id: p.a.id }, actorSeat: seat }, preTarget, 'onKill')
       }
     }
   }

@@ -121,7 +121,7 @@ describe('the capture era (v3 churn pass 3 — prison is gone from canon)', () =
     expect(influenceFor(s, p2)).toBe(2)
   })
 
-  it('Absolution frees your captured units, dazed', () => {
+  it('Absolution frees your captured units, ready (decision 73)', () => {
     let { s, p1, p2 } = arena()
     const jailer = put(s, p1, 'bulwark-protector', 1)
     const mine = put(s, p2, 'berserker', 1)
@@ -133,7 +133,7 @@ describe('the capture era (v3 churn pass 3 — prison is gone from canon)', () =
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: abso, targets: [{ kind: 'unit', id: hero }] })
     expect(s.captives[mine]).toBeUndefined()
-    expect(s.units[mine].exhausted).toBe(true)
+    expect(s.units[mine].exhausted).toBe(false)
   })
 
   it('Lawbringer stills a room every time it marches in', () => {

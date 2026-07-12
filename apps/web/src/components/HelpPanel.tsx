@@ -39,7 +39,7 @@ function V3Content() {
         <Row icon="⟳" title="Exhausted">Dimmed with a ⟳ — already acted; readies at the start of its owner's next round.</Row>
         <Row icon="💨" title="Rush ready">Its <b>one free move</b> the round it arrived — move <i>without</i> exhausting, then it can still fight.</Row>
         <Row icon="⛨" title="Shielded">Carries its shield token: the <b>first</b> hit is prevented entirely, then the ⛨ disappears — what you see is what's live.</Row>
-        <Row icon="⛓" title="Captives">A ⛓ on a unit means it holds an enemy unit <b>under it</b>, off the board. Select the capturer and <b>Release</b> to hand it back — the captive returns exhausted.</Row>
+        <Row icon="⛓" title="Captives">A ⛓ on a unit means it holds an enemy unit <b>under it</b>, off the board. Select the capturer and <b>Release</b> to hand it back — the captive returns <b>ready</b>, and the release readies your capturer too.</Row>
         <Row icon="⬥" title="Orphaned upgrades">When a unit dies, its upgrades stay <b>lying in the zone</b> as dashed ⬥ tokens. Either player may tap one to <b>salvage</b> it onto their own unit there — paying its full cost and pips, as if played.</Row>
         <Row icon="🛡" title="Guard">Blocks <b>without exhausting</b> — it can block again this round and still take its own turn. ◈ is armor: every hit is reduced by that much.</Row>
         <Row icon="⚑" title="Flagged card">A prototype ruling was needed for this card's printed text — hover/long-press to read it.</Row>
@@ -50,7 +50,7 @@ function V3Content() {
         <b>Rush</b> one free move on arrival · <b>Breakthrough</b> kills its blocker → <i>all</i> excess pushes to the original target ·
         <b> Ranged</b> shoots adjacent zones (no block, no counter), never bases · <b>Guard</b> blocks free ·
         <b> Hidden</b> while ready it can't be targeted or attacked; exhausting reveals it · <b>Infiltrate</b> deploys to any zone ·
-        <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under; it returns exhausted ·
+        <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under; it returns ready ·
         <b> Shielded</b> first hit prevented · <b>Scar</b> +1 power per damage marked, capped at remaining health.
       </p>
 

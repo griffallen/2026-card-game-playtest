@@ -192,14 +192,13 @@
   "cost": 2,
   "power": 2,
   "health": 2,
-  "text": "Rush. Breakthrough 1.",
+  "text": "Rush. Breakthrough.",
   "kw": [
    {
     "k": "rush"
    },
    {
-    "k": "breakthrough",
-    "n": 1
+    "k": "breakthrough"
    }
   ],
   "pips": [
@@ -271,8 +270,7 @@
     "op": "grant",
     "t": "chosen0",
     "kw": {
-     "k": "breakthrough",
-     "n": 2
+     "k": "breakthrough"
     },
     "dur": "round"
    }
@@ -282,7 +280,7 @@
   "color": "red",
   "type": "action",
   "cost": 2,
-  "text": "Target unit with Rush gains Breakthrough 2 this round.",
+  "text": "Target unit with Rush gains Breakthrough this round.",
   "pips": [
    "red"
   ],
@@ -437,11 +435,10 @@
   "cost": 3,
   "power": 4,
   "health": 4,
-  "text": "Breakthrough 2.",
+  "text": "Breakthrough.",
   "kw": [
    {
-    "k": "breakthrough",
-    "n": 2
+    "k": "breakthrough"
    }
   ],
   "pips": [
@@ -494,14 +491,13 @@
   "cost": 4,
   "power": 4,
   "health": 4,
-  "text": "Rush. Breakthrough 2.",
+  "text": "Rush. Breakthrough.",
   "kw": [
    {
     "k": "rush"
    },
    {
-    "k": "breakthrough",
-    "n": 2
+    "k": "breakthrough"
    }
   ],
   "pips": [
@@ -522,8 +518,7 @@
     "s": "aura",
     "scope": "attached",
     "kw": {
-     "k": "breakthrough",
-     "n": 2
+     "k": "breakthrough"
     }
    }
   ],
@@ -532,7 +527,7 @@
   "color": "red",
   "type": "upgrade",
   "cost": 4,
-  "text": "Attached unit gets +2 Power and Breakthrough 2.",
+  "text": "Attached unit gets +2 Power and Breakthrough.",
   "pips": [
    "red",
    "red"
@@ -558,8 +553,7 @@
     "op": "grant",
     "t": "chosen0",
     "kw": {
-     "k": "breakthrough",
-     "n": 3
+     "k": "breakthrough"
     },
     "dur": "round"
    }
@@ -569,7 +563,7 @@
   "color": "red",
   "type": "action",
   "cost": 4,
-  "text": "Target unit gets +3 Power and Breakthrough 3 this round.",
+  "text": "Target unit gets +3 Power and Breakthrough this round.",
   "pips": [
    "red",
    "red"
@@ -585,14 +579,13 @@
   "cost": 4,
   "power": 5,
   "health": 4,
-  "text": "Rush. Breakthrough 3.",
+  "text": "Rush. Breakthrough.",
   "kw": [
    {
     "k": "rush"
    },
    {
-    "k": "breakthrough",
-    "n": 3
+    "k": "breakthrough"
    }
   ],
   "pips": [
@@ -637,11 +630,10 @@
   "cost": 4,
   "power": 5,
   "health": 4,
-  "text": "Breakthrough 3. Scar.",
+  "text": "Breakthrough. Scar.",
   "kw": [
    {
-    "k": "breakthrough",
-    "n": 3
+    "k": "breakthrough"
    },
    {
     "k": "scar"
@@ -815,11 +807,10 @@
   "cost": 6,
   "power": 7,
   "health": 5,
-  "text": "Breakthrough 3. Scar.",
+  "text": "Breakthrough. Scar.",
   "kw": [
    {
-    "k": "breakthrough",
-    "n": 3
+    "k": "breakthrough"
    },
    {
     "k": "scar"
@@ -868,11 +859,10 @@
   "cost": 7,
   "power": 8,
   "health": 7,
-  "text": "Breakthrough 4.",
+  "text": "Breakthrough.",
   "kw": [
    {
-    "k": "breakthrough",
-    "n": 4
+    "k": "breakthrough"
    }
   ],
   "pips": [
@@ -975,11 +965,10 @@
   "cost": 8,
   "power": 9,
   "health": 8,
-  "text": "Breakthrough 5. Scar.",
+  "text": "Breakthrough. Scar.",
   "kw": [
    {
-    "k": "breakthrough",
-    "n": 5
+    "k": "breakthrough"
    },
    {
     "k": "scar"

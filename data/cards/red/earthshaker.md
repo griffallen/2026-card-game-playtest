@@ -4,11 +4,11 @@ type: unit
 cost: 6
 power: 7
 health: 5
-keywords: breakthrough 3, scar
+keywords: breakthrough, scar
 pips: red, red
 status: canon
 ---
-Breakthrough 3. Scar.
+Breakthrough. Scar.
 
 ## Design notes
 

@@ -4,11 +4,11 @@ type: unit
 cost: 7
 power: 8
 health: 7
-keywords: breakthrough 4
+keywords: breakthrough
 pips: red, red, red
 status: canon
 ---
-Breakthrough 4.
+Breakthrough.
 
 ## Design notes
 

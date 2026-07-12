@@ -196,11 +196,11 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
           if (c.unit.owner !== controller) continue
           const holder = state.units[c.by]
           c.unit.zone = holder ? holder.zone : c.unit.zone
-          c.unit.exhausted = true
+          c.unit.exhausted = false   // decision 73 (reverses 61): freed captives return whole
           c.unit.enteredRound = state.round
           state.units[cid] = c.unit
           delete state.captives[cid]
-          log(state, controller, `${name(state, cid)} is freed, dazed`)
+          log(state, controller, `${name(state, cid)} is freed, ready`)
         }
         break
       }
@@ -362,11 +362,11 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
 
 export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
   if (!state.units[unit.id]) return
-  // v3 Capture: the capturer leaving play frees its captives — exhausted (decision 61)
+  // v3 Capture: the capturer leaving play frees its captives — READY (decision 73, reverses 61)
   for (const [cid, c] of Object.entries(state.captives)) {
     if (c.by !== unit.id) continue
     c.unit.zone = unit.zone
-    c.unit.exhausted = true
+    c.unit.exhausted = false
     c.unit.enteredRound = state.round
     state.units[cid] = c.unit
     delete state.captives[cid]

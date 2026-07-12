@@ -143,7 +143,7 @@ describe('Sneak — exhaust-activated per-card payload (decision 60)', () => {
 })
 
 describe('Capture — the captive lifecycle (decisions 61, spec §2)', () => {
-  it('captures under, holder skips ready, release returns the captive exhausted', () => {
+  it('captures under, holder skips ready, release returns the captive READY (decision 73)', () => {
     let s = v3game2()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const victim = put(s, them, 'soldier', s.actorSeat === 0 ? 0 : 2)
@@ -156,11 +156,11 @@ describe('Capture — the captive lifecycle (decisions 61, spec §2)', () => {
     s.actorSeat = me   // tests own the window
     s = applyAction(s, { type: 'releaseCaptive', unit: card }, me).state
     expect(s.captives[victim]).toBeUndefined()
-    expect(s.units[victim].exhausted).toBe(true)       // decision 61
+    expect(s.units[victim].exhausted).toBe(false)      // decision 73 reverses 61: capture is temporary, the return is whole
     expect(s.units[victim].zone).toBe(s.units[card].zone)
   })
 
-  it('capturer death frees the captive, exhausted', () => {
+  it('capturer death frees the captive, ready (decision 73)', () => {
     const s = v3game2()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const victim = put(s, them, 'soldier', me === 0 ? 0 : 2)
@@ -169,7 +169,7 @@ describe('Capture — the captive lifecycle (decisions 61, spec §2)', () => {
     destroyUnit(s2, s2.units[card], 'slain')
     expect(s2.units[card]).toBeUndefined()
     expect(s2.captives[victim]).toBeUndefined()
-    expect(s2.units[victim].exhausted).toBe(true)
+    expect(s2.units[victim].exhausted).toBe(false)
   })
 })
 
@@ -220,7 +220,7 @@ describe('yellow-conversion vocabulary (V3-6)', () => {
     expect(s.captives[victim]?.by).toBe(warden)
   })
 
-  it('freeCaptives returns YOUR captured units, exhausted', () => {
+  it('freeCaptives returns YOUR captured units, ready (decision 73)', () => {
     let s = v3game3()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const jailer = put(s, them, 'guardian', 1)
@@ -231,7 +231,7 @@ describe('yellow-conversion vocabulary (V3-6)', () => {
     const card = give3(s, me, 'jailbreak')
     s = applyAction(s, { type: 'play', card }, me).state
     expect(s.captives[mine]).toBeUndefined()
-    expect(s.units[mine].exhausted).toBe(true)
+    expect(s.units[mine].exhausted).toBe(false)
   })
 
   it('attachOrphan: dead wearer orphans the upgrade; either side salvages at full cost (decision 67)', () => {
