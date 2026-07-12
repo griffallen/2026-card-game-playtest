@@ -167,7 +167,7 @@ export function Rules() {
       <ul className="ml-5 list-disc">
         <LI><B>Declare.</B> Pick <B>one or more of your ready units in the same zone</B> — they all exhaust. Choose one target: an enemy unit in their zone, or the enemy <B>base</B> (only if your attackers stand in the enemy’s Home).</LI>
         <LI><B>Block.</B> The defender may pair any of their <B>ready units in that zone</B> onto your attackers as <B>blockers</B> — one-on-one, or several ganging up on one attacker. The declared target may block its own attacker (self-defense is a block like any other), and units block for the base the same way. <B>Blocking exhausts the blocker</B> — except a <B>Guard</B>, who blocks for free. (One case skips all this: a cross-zone <B>Ranged</B> shot opens no block window.)</LI>
-        <LI><B>Resolve — every pairing at once.</B> Each attacker deals its Power to its blocker, and a gang of blockers deals its <B>combined</B> Power back to their attacker. In a gang block the attacker’s damage <B>pours in pair order</B> — fill the first blocker, spill into the second — so the defender controls the split. Armor shrinks each hit it faces. Attackers <B>nobody blocked</B> deal their full Power to the declared target — and a target that didn’t block <B>doesn’t strike back</B>. Fighting back <i>is</i> blocking. (A base never strikes back.)</LI>
+        <LI><B>Resolve — every pairing at once.</B> Each attacker deals its Power to its blocker, and a gang of blockers deals its <B>combined</B> Power back to their attacker. In a gang block the attacker’s damage <B>pours in pair order</B> — fill the first blocker, spill into the second — so the defender controls the split. Armor shrinks each hit it faces. Attackers <B>nobody blocked</B> deal their full Power to the declared target — <B>and the target strikes every unblocked attacker back at full Power, even while exhausted</B> (decision 84). No unit dies without a fight. (A base never strikes back.)</LI>
       </ul>
       <P>
         If an attacker with <B>Breakthrough</B> kills its blocker, the leftover damage pushes through to the original
@@ -205,7 +205,7 @@ export function Rules() {
           <LI><B>Round 1:</B> no start step — straight into turns with your opening hand and 2 resources.</LI>
           <LI><B>Every round after:</B> both players ready up, draw 2, bank up to 1 — then take turns until two passes in a row.</LI>
           <LI><B>Your turn:</B> play a card, move (exhausts), attack, use a Sneak, salvage an upgrade, claim initiative, or pass.</LI>
-          <LI><B>Attack:</B> exhaust your attackers, name one target; the defender pairs blockers onto attackers (blocking exhausts — Guards block free); pairs trade blows at once; unblocked attackers hit the target, and no block means no strike-back.</LI>
+          <LI><B>Attack:</B> exhaust your attackers, name one target; the defender pairs blockers onto attackers (blocking exhausts — Guards block free); pairs trade blows at once; unblocked attackers hit the target, and the target hits every unblocked attacker back — exhausted or not.</LI>
           <LI><B>Costs:</B> pay with any resources; colored pips just have to be <i>present</i> in your bank.</LI>
           <LI><B>Base:</B> attack it only from inside the enemy’s Home zone.</LI>
           <LI><B>Claim initiative:</B> end your round now to take the first turn next round.</LI>

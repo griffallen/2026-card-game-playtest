@@ -59,7 +59,7 @@ describe('influence effects', () => {
     const raider = put(s, p1, 'berserker', 2)
     s = act(s, p2, { type: 'pass' })
     s = act(s, p1, { type: 'attack', attackers: [raider], target: { kind: 'unit', id: victim } })
-    expect(influenceFor(s, p2)).toBe(1)                    // Bulwark defended → +1
+    expect(influenceFor(s, p2)).toBe(2)                    // Bulwark defended → +2 (decision 85 ladder)
   })
 
   it('influence win threshold ends the game', () => {
@@ -285,8 +285,8 @@ describe('start-of-round engines', () => {
     const before = influenceFor(s, p2)
     s = act(s, p1, { type: 'attack', attackers: [raider], target: { kind: 'unit', id: wearer } })
     if (s.phase === 'intercept') s = act(s, p2, { type: 'declineIntercept' })
-    // custodian's own onDefend (+2) plus the aura's onDefend (+2)
-    expect(influenceFor(s, p2)).toBe(before + 4)
+    // custodian's own onDefend (+3) plus the aura's onDefend (+3) — decision 85 ladder
+    expect(influenceFor(s, p2)).toBe(before + 6)
   })
 })
 

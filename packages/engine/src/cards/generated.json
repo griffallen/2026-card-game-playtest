@@ -1073,7 +1073,7 @@
   "onDefend": [
    {
     "op": "influence",
-    "n": 1
+    "n": 2
    }
   ],
   "slug": "vanguard-sentinel",
@@ -1083,7 +1083,7 @@
   "cost": 1,
   "power": 1,
   "health": 2,
-  "text": "Guard. When this defends, gain 1 Influence.",
+  "text": "Guard. When this defends, gain 2 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1092,7 +1092,7 @@
   "pips": [
    "yellow"
   ],
-  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
   "artUrl": "/cards/vanguard-sentinel.jpg"
  },
  "binding-light": {
@@ -1250,7 +1250,7 @@
   "onDefend": [
    {
     "op": "influence",
-    "n": 1
+    "n": 2
    }
   ],
   "slug": "sunguard-defender",
@@ -1260,7 +1260,7 @@
   "cost": 2,
   "power": 2,
   "health": 3,
-  "text": "Guard. When this defends, gain 1 Influence.",
+  "text": "Guard. When this defends, gain 2 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1269,14 +1269,14 @@
   "pips": [
    "yellow"
   ],
-  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
   "artUrl": "/cards/sunguard-defender.jpg"
  },
  "aura-of-resolve": {
   "onDefend": [
    {
     "op": "influence",
-    "n": 2
+    "n": 3
    }
   ],
   "slug": "aura-of-resolve",
@@ -1284,19 +1284,19 @@
   "color": "yellow",
   "type": "upgrade",
   "cost": 3,
-  "text": "Attach to unit. When this unit defends, gain 2 Influence.",
+  "text": "Attach to unit. When this unit defends, gain 3 Influence.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006 redesign: was \"at the start of your round, gain 1 Influence\" — passive income, illegal under the yellow charter (influence is event-earned, decision 34). Now it pays when the wearer defends: put it on a Guard and get paid for every intercept.",
+  "designerNote": "Session 006 redesign: was \"at the start of your round, gain 1 Influence\" — passive income, illegal under the yellow charter (influence is event-earned, decision 34). Now it pays when the wearer defends: put it on a Guard and get paid for every intercept.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
   "artUrl": "/cards/aura-of-resolve.jpg"
  },
  "bulwark-protector": {
   "onDefend": [
    {
     "op": "influence",
-    "n": 1
+    "n": 2
    }
   ],
   "slug": "bulwark-protector",
@@ -1306,7 +1306,7 @@
   "cost": 3,
   "power": 2,
   "health": 5,
-  "text": "Guard. When this defends, gain 1 Influence.",
+  "text": "Guard. When this defends, gain 2 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1316,7 +1316,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
   "artUrl": "/cards/bulwark-protector.jpg"
  },
  "chain-of-law": {
@@ -1357,7 +1357,7 @@
   "onDefend": [
    {
     "op": "influence",
-    "n": 2
+    "n": 3
    }
   ],
   "slug": "justicar-enforcer",
@@ -1367,7 +1367,7 @@
   "cost": 3,
   "power": 3,
   "health": 4,
-  "text": "Guard. When this defends, gain 2 Influence.",
+  "text": "Guard. When this defends, gain 3 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1377,7 +1377,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006 balance pass: payout restored to 2 — this is yellow's dedicated influence-engine guard (the vanilla walls pay 1). Sims: without real influence payouts yellow's second win axis never fires.",
+  "designerNote": "Session 006 balance pass: payout restored to 2 — this is yellow's dedicated influence-engine guard (the vanilla walls pay 1). Sims: without real influence payouts yellow's second win axis never fires.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
   "artUrl": "/cards/justicar-enforcer.jpg"
  },
  "noble-purifier": {
@@ -1415,7 +1415,7 @@
   "color": "yellow",
   "type": "unit",
   "cost": 3,
-  "power": 0,
+  "power": 1,
   "health": 6,
   "text": "This can't attack. Other friendly units in this zone have Armor 1.",
   "kw": [
@@ -1427,7 +1427,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006: the aura is now zone-local (was board-wide — a 3-mana wall quietly armoring the whole army from home). Walls protect what stands behind them.",
+  "designerNote": "Session 006: the aura is now zone-local (was board-wide — a 3-mana wall quietly armoring the whole army from home). Walls protect what stands behind them.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
   "artUrl": "/cards/sanctified-bastion.jpg"
  },
  "subjugate": {
@@ -1629,7 +1629,7 @@
   "color": "yellow",
   "type": "unit",
   "cost": 4,
-  "power": 1,
+  "power": 2,
   "health": 7,
   "text": "This can't attack. Other friendly units in this zone have Guard.",
   "kw": [
@@ -1641,13 +1641,14 @@
    "yellow",
    "yellow"
   ],
+  "designerNote": "2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
   "artUrl": "/cards/fortress-keeper.jpg"
  },
  "high-justiciar": {
   "onDefend": [
    {
     "op": "influence",
-    "n": 2
+    "n": 3
    }
   ],
   "slug": "high-justiciar",
@@ -1657,7 +1658,7 @@
   "cost": 4,
   "power": 3,
   "health": 5,
-  "text": "Guard. When this defends, gain 2 Influence.",
+  "text": "Guard. When this defends, gain 3 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1667,7 +1668,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 51 text (deterministic pick, stated on the card).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Guard is free blocking in v3 — the Justiciar holds the line and the court pays it.",
+  "designerNote": "Decision 51 text (deterministic pick, stated on the card).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Guard is free blocking in v3 — the Justiciar holds the line and the court pays it.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
   "artUrl": "/cards/high-justiciar.jpg"
  },
  "lawbringer": {
@@ -1819,7 +1820,7 @@
   "onDefend": [
    {
     "op": "influence",
-    "n": 2
+    "n": 3
    }
   ],
   "slug": "custodian-of-law",
@@ -1829,7 +1830,7 @@
   "cost": 5,
   "power": 4,
   "health": 6,
-  "text": "Guard. When this defends, gain 2 Influence.",
+  "text": "Guard. When this defends, gain 3 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1839,7 +1840,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).",
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
   "artUrl": "/cards/custodian-of-law.jpg"
  },
  "dawnspear-paladin": {
@@ -2054,7 +2055,7 @@
   "onDefend": [
    {
     "op": "influence",
-    "n": 1
+    "n": 2
    }
   ],
   "slug": "gateward-colossus",
@@ -2064,7 +2065,7 @@
   "cost": 6,
   "power": 3,
   "health": 9,
-  "text": "Guard. Armor 2. Can't attack. When this defends, gain 1 Influence.",
+  "text": "Guard. Armor 2. Can't attack. When this defends, gain 2 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -2082,7 +2083,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The wall keeps its post; imprisonWatcher dies with prison. Armor 2 + free blocks = the gate that holds.",
+  "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The wall keeps its post; imprisonWatcher dies with prison. Armor 2 + free blocks = the gate that holds.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
   "artUrl": "/cards/gateward-colossus.jpg"
  },
  "hierophant": {
@@ -2318,7 +2319,7 @@
   "color": "yellow",
   "type": "unit",
   "cost": 7,
-  "power": 0,
+  "power": 1,
   "health": 8,
   "text": "This can't attack. While this is in play, your opponent's Influence win threshold is increased by 2.",
   "kw": [
@@ -2331,7 +2332,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 49: the card now says exactly what the static does (the old \"maximum Influence\" text meant nothing on a shared track).",
+  "designerNote": "Decision 49: the card now says exactly what the static does (the old \"maximum Influence\" text meant nothing on a shared track).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
   "artUrl": "/cards/radiant-citadel.jpg"
  },
  "supreme-sentence": {
@@ -2381,7 +2382,7 @@
   "onDefend": [
    {
     "op": "influence",
-    "n": 2
+    "n": 3
    }
   ],
   "slug": "light-s-vanguard",
@@ -2391,7 +2392,7 @@
   "cost": 8,
   "power": 7,
   "health": 8,
-  "text": "Guard. Armor 1. Shielded. When this defends, gain 2 Influence.",
+  "text": "Guard. Armor 1. Shielded. When this defends, gain 3 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -2409,7 +2410,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Flying is canon (decision 48): may move to any zone, ignoring adjacency.\n\n2026-07-11 (v3 churn pass 4): flying is cut — the Vanguard lands and becomes the great shield: 7/8 Guard (free blocks in v3), Armor 1, Shielded, and the court pays 2 when it holds the line. An 8-cost that does a lot (decision 68).",
+  "designerNote": "Flying is canon (decision 48): may move to any zone, ignoring adjacency.\n\n2026-07-11 (v3 churn pass 4): flying is cut — the Vanguard lands and becomes the great shield: 7/8 Guard (free blocks in v3), Armor 1, Shielded, and the court pays 2 when it holds the line. An 8-cost that does a lot (decision 68).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
   "artUrl": "/cards/light-s-vanguard.jpg"
  },
  "glimpse": {

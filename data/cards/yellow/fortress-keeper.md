@@ -2,7 +2,7 @@
 name: Fortress Keeper
 type: unit
 cost: 4
-power: 1
+power: 2
 health: 7
 keywords: cantAttack
 pips: yellow, yellow
@@ -11,3 +11,9 @@ status: canon
 effects: {"statics":[{"s":"aura","scope":"friendlyInZone","kw":{"k":"guard"}}]}
 ---
 This can't attack. Other friendly units in this zone have Guard.
+## Design notes
+
+2026-07-12 (decision 85, issues #25/#24 — designer: "yes, push these up"): door 2 (retaliation)
+became law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now
+trigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power
+is also its retaliation now). ⚑ ratify/veto per card.

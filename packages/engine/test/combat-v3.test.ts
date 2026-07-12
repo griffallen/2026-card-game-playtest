@@ -89,6 +89,6 @@ describe('blocker-pairing combat (v3)', () => {
     s = applyAction(s, { type: 'attack', attackers: [archer], target: { kind: 'unit', id: near } }, me).state
     expect(s.phase).toBe('loop')                    // no ready defenders → resolved immediately
     expect(s.units[near].damage).toBe(2)
-    expect(s.units[archer].damage).toBe(0)          // didn't block → no strike-back (current law)
+    expect(s.units[archer]).toBeUndefined()         // decision 84: the attacked always fight back — 4 power fells the 2/2
   })
 })

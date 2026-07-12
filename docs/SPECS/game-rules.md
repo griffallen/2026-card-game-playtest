@@ -54,6 +54,13 @@ Cost and color are now two separate checks:
    gang-block the DEFENDER divides the attacker's damage** among the blockers; blockers' combined
    power hits the attacker back.
 4. **[Q4 ✓] Unblocked attackers deal their full damage to the declared target** (unit or Home).
+   **[Decision 84 (issues #25/#24, designer) — the attacked always fight back:** a unit that is
+   the declared target strikes **every unblocked attacker** back at its full power, **exhausted
+   or not**, simultaneously. Being attacked is never free for the attacker; exhaustion costs you
+   the *choice* of defense (blocking for others), not self-defense. Bases never strike back.
+   Being the declared target also fires "when this defends" triggers whether or not damage got
+   through (decision 85), and yellow's guard-payout ladder and wall statlines moved up a notch
+   in the same ruling.]**
 5. **[Q6 ✓] Breakthrough** (no number): excess damage from a killed blocker pushes through **to
    the original declared target**. No choices; fully deterministic. *(Decision 75: the ten red
    cards that still printed "Breakthrough N" shed their numbers — the printed cap was already

@@ -52,33 +52,33 @@
 | [Iron Discipline](yellow/iron-discipline.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. Gain 1 Influence. |
 | [Oath of Order](yellow/oath-of-order.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gets +1 Power and Guard. |
 | [Prison Warrant](yellow/prison-warrant.md) | 1 | action | — |  | canon | Target unit you control captures target enemy unit with 2 or less Power. Gain 1 Influence. |
-| [Vanguard Sentinel](yellow/vanguard-sentinel.md) | 1 | unit | 1/2 | guard | canon | Guard. When this defends, gain 1 Influence. |
+| [Vanguard Sentinel](yellow/vanguard-sentinel.md) | 1 | unit | 1/2 | guard | canon | Guard. When this defends, gain 2 Influence. |
 | [Binding Light](yellow/binding-light.md) | 2 | action | — |  | canon | Exhaust target enemy unit with 4 or less Power. |
 | [Containment Priest](yellow/containment-priest.md) | 2 | unit | 2/3 | capture | canon | When this enters play, it captures target enemy unit with 2 or less Power. |
 | [Disciplined Mind](yellow/disciplined-mind.md) | 2 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. Draw a card. |
 | [Hold the Line](yellow/hold-the-line.md) | 2 | action | — |  | canon | Choose a zone. Your units there gain Guard. Gain 1 Influence. |
 | [Radiant Aegis](yellow/radiant-aegis.md) | 2 | action | — |  | canon | Target unit gets Armor 2, permanently. Gain 1 Influence. |
-| [Sunguard Defender](yellow/sunguard-defender.md) | 2 | unit | 2/3 | guard | canon | Guard. When this defends, gain 1 Influence. |
-| [Aura of Resolve](yellow/aura-of-resolve.md) | 3 | upgrade | — |  | canon | Attach to unit. When this unit defends, gain 2 Influence. |
-| [Bulwark Protector](yellow/bulwark-protector.md) | 3 | unit | 2/5 | guard | canon | Guard. When this defends, gain 1 Influence. |
+| [Sunguard Defender](yellow/sunguard-defender.md) | 2 | unit | 2/3 | guard | canon | Guard. When this defends, gain 2 Influence. |
+| [Aura of Resolve](yellow/aura-of-resolve.md) | 3 | upgrade | — |  | canon | Attach to unit. When this unit defends, gain 3 Influence. |
+| [Bulwark Protector](yellow/bulwark-protector.md) | 3 | unit | 2/5 | guard | canon | Guard. When this defends, gain 2 Influence. |
 | [Chain of Law](yellow/chain-of-law.md) | 3 | upgrade | — |  | canon | Attached unit has Guard and Armor 1. Gain 1 Influence. |
-| [Justicar Enforcer](yellow/justicar-enforcer.md) | 3 | unit | 3/4 | guard | canon | Guard. When this defends, gain 2 Influence. |
+| [Justicar Enforcer](yellow/justicar-enforcer.md) | 3 | unit | 3/4 | guard | canon | Guard. When this defends, gain 3 Influence. |
 | [Noble Purifier](yellow/noble-purifier.md) | 3 | unit | 3/3 |  | canon | When this kills a unit, gain 2 Influence. |
-| [Sanctified Bastion](yellow/sanctified-bastion.md) | 3 | unit | 0/6 | cantAttack | canon | This can't attack. Other friendly units in this zone have Armor 1. |
+| [Sanctified Bastion](yellow/sanctified-bastion.md) | 3 | unit | 1/6 | cantAttack | canon | This can't attack. Other friendly units in this zone have Armor 1. |
 | [Subjugate](yellow/subjugate.md) | 3 | action | — |  | canon | Target enemy unit gets −2 Power permanently. Gain 1 Influence. |
 | [Unwavering Faith](yellow/unwavering-faith.md) | 3 | action | — |  | canon | Heal 3 damage from target unit. Gain 1 Influence. |
 | [Absolution](yellow/absolution.md) | 4 | action | — |  | canon | Remove all negative effects from target unit you control. Free all your captured units. Gain 1 Influence. |
 | [Devout Intervention](yellow/devout-intervention.md) | 4 | action | — |  | canon | Prevent the next 3 damage to your base this round. Gain 1 Influence. |
 | [Disarming Order](yellow/disarming-order.md) | 4 | action | — |  | canon | Target unit can't attack this round. Draw a card. |
 | [Exemplar Knight](yellow/exemplar-knight.md) | 4 | unit | 4/4 |  | canon | When this attacks, it gets +2 Power this round. When it defeats a unit, gain 1 Influence. |
-| [Fortress Keeper](yellow/fortress-keeper.md) | 4 | unit | 1/7 | cantAttack | canon | This can't attack. Other friendly units in this zone have Guard. |
-| [High Justiciar](yellow/high-justiciar.md) | 4 | unit | 3/5 | guard | canon | Guard. When this defends, gain 2 Influence. |
+| [Fortress Keeper](yellow/fortress-keeper.md) | 4 | unit | 2/7 | cantAttack | canon | This can't attack. Other friendly units in this zone have Guard. |
+| [High Justiciar](yellow/high-justiciar.md) | 4 | unit | 3/5 | guard | canon | Guard. When this defends, gain 3 Influence. |
 | [Lawbringer](yellow/lawbringer.md) | 4 | unit | 4/4 |  | canon | Whenever this enters a zone, exhaust target enemy unit. |
 | [Light of Authority](yellow/light-of-authority.md) | 4 | action | — |  | canon | Target unit gets +3 Power this round. Gain 1 Influence. |
 | [Resolve Banner](yellow/resolve-banner.md) | 4 | upgrade | — |  | canon | Attach to unit. Other friendly units in this zone get +1 Power. |
 | [Sentence](yellow/sentence.md) | 4 | action | — |  | canon | Target unit you control captures target enemy unit. Draw a card. |
 | [Censer of Purity](yellow/censer-of-purity.md) | 5 | unit | 3/6 |  | canon | At the start of your round, lose 1 Influence and heal 2 damage from your base. |
-| [Custodian of Law](yellow/custodian-of-law.md) | 5 | unit | 4/6 | guard | canon | Guard. When this defends, gain 2 Influence. |
+| [Custodian of Law](yellow/custodian-of-law.md) | 5 | unit | 4/6 | guard | canon | Guard. When this defends, gain 3 Influence. |
 | [Dawnspear Paladin](yellow/dawnspear-paladin.md) | 5 | unit | 5/5 |  | canon | When this attacks, gain 2 Influence. |
 | [Imprisonment Chamber](yellow/imprisonment-chamber.md) | 5 | action | — |  | canon | Target unit you control captures target enemy unit. Gain 2 Influence. |
 | [Radiant Judgment](yellow/radiant-judgment.md) | 5 | action | — |  | canon | Exhaust every enemy unit with 3 or less Power. Gain 2 Influence. |
@@ -86,7 +86,7 @@
 | [Sanctify](yellow/sanctify.md) | 5 | action | — |  | canon | Heal 4 damage from your base. Gain 1 Influence. |
 | [Unshakable Wall](yellow/unshakable-wall.md) | 5 | upgrade | — |  | canon | Attach to unit. This unit gets +2 Armor and Guard. |
 | [Detain](yellow/detain.md) | 6 | action | — |  | canon | Target unit you control captures target enemy unit. Your Home heals 3. Gain 1 Influence. |
-| [Gateward Colossus](yellow/gateward-colossus.md) | 6 | unit | 3/9 | guard, armor 2, cantAttack | canon | Guard. Armor 2. Can't attack. When this defends, gain 1 Influence. |
+| [Gateward Colossus](yellow/gateward-colossus.md) | 6 | unit | 3/9 | guard, armor 2, cantAttack | canon | Guard. Armor 2. Can't attack. When this defends, gain 2 Influence. |
 | [Hierophant](yellow/hierophant.md) | 6 | unit | 3/7 |  | canon | Other friendly units get +1 Power while your Influence is 10 or more. |
 | [Inquisitor](yellow/inquisitor.md) | 6 | unit | 4/5 | capture | canon | When this enters play, it captures target enemy unit with 4 or less Power. |
 | [Mobilize the Faithful](yellow/mobilize-the-faithful.md) | 6 | action | — |  | canon | Your units get +1 Power and gain Guard, permanently. Gain 1 Influence. |
@@ -94,9 +94,9 @@
 | [Champion of the Faith](yellow/champion-of-the-faith.md) | 7 | unit | 7/7 |  | canon | When this attacks, gain 1 Influence. |
 | [Command Edict](yellow/command-edict.md) | 7 | action | — |  | canon | Your units get Armor 1, permanently. Gain 2 Influence. |
 | [Prison of Light](yellow/prison-of-light.md) | 7 | action | — |  | canon | Choose a zone: exhaust all enemy units there. Gain 2 Influence. |
-| [Radiant Citadel](yellow/radiant-citadel.md) | 7 | unit | 0/8 | cantAttack | canon | This can't attack. While this is in play, your opponent's Influence win threshold is increased by 2. |
+| [Radiant Citadel](yellow/radiant-citadel.md) | 7 | unit | 1/8 | cantAttack | canon | This can't attack. While this is in play, your opponent's Influence win threshold is increased by 2. |
 | [Supreme Sentence](yellow/supreme-sentence.md) | 7 | action | — |  | canon | Up to two target enemy units anywhere are exhausted and take 2 damage each. |
-| [Light's Vanguard](yellow/light-s-vanguard.md) | 8 | unit | 7/8 | guard, armor 1, shielded | canon | Guard. Armor 1. Shielded. When this defends, gain 2 Influence. |
+| [Light's Vanguard](yellow/light-s-vanguard.md) | 8 | unit | 7/8 | guard, armor 1, shielded | canon | Guard. Armor 1. Shielded. When this defends, gain 3 Influence. |
 
 ## Purple (36)
 

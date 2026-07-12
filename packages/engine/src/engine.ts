@@ -609,7 +609,9 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   }
 
   const targetUnit = pa.target.kind === 'unit' ? state.units[pa.target.id] : undefined
-  if (pa.target.kind === 'unit' && targetUnit && (unblockedTotal > 0 || targetSpill > 0)) {
+  // decision 85: being the declared target IS defending — the trigger fires whether the attack
+  // got through or its blockers ate everything ("no matter if it's targeted or if it defends")
+  if (targetUnit) {
     fireTrigger({ state, attackTarget: { kind: 'unit', id: attackers[0]?.id ?? '' }, actorSeat: seat }, targetUnit, 'onDefend')
   }
 
