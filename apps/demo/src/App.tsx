@@ -1,6 +1,7 @@
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { Play } from './pages/Play.tsx'
 import { Cards } from './pages/Cards.tsx'
+import { DeckBuilder } from './pages/DeckBuilder.tsx'
 import { Simulate } from './pages/Simulate.tsx'
 import { Rules } from './pages/Rules.tsx'
 import { Audit } from './pages/Audit.tsx'
@@ -22,6 +23,7 @@ export function App() {
             off-viewport, breaking taps (playtest 001, mobile probe) */}
         <nav className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-1">
           <NavLink to="/play" className={tab}>Play</NavLink>
+          <NavLink to="/decks" className={tab}>Decks</NavLink>
           <NavLink to="/cards" className={tab}>Cards</NavLink>
           <NavLink to="/simulate" className={tab}>Simulate</NavLink>
           <NavLink to="/rules" className={tab}>Rulebook</NavLink>
@@ -33,6 +35,7 @@ export function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/play" replace />} />
           <Route path="/play" element={<Play />} />
+          <Route path="/decks" element={<DeckBuilder />} />
           <Route path="/cards" element={<Cards />} />
           <Route path="/simulate" element={<Simulate />} />
           <Route path="/rules" element={<Rules />} />

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import type { PolicyName } from '@newgame/engine'
 import { DECKS, type DemoConfig, type Mode } from '../local.ts'
+import { allDecks } from '../custom-decks.ts'
 import { DemoTable } from '../DemoTable.tsx'
 
 const MODES: { id: Mode; title: string; blurb: string }[] = [
@@ -11,7 +12,7 @@ const MODES: { id: Mode; title: string; blurb: string }[] = [
 ]
 
 const botName = (deckSlug: string, policy: PolicyName) => {
-  const deck = DECKS.find(d => d.slug === deckSlug)
+  const deck = allDecks().find(d => d.slug === deckSlug)
   return `Bot ${deck?.name.split(' ')[0] ?? 'Unknown'}${policy === 'random' ? ' (random)' : ''}`
 }
 
@@ -56,17 +57,18 @@ export function Play() {
       seed,
       londonMulligan: london,
       rulesVersion: rulesV3 ? 'v3.0' as const : 'v2.3' as const,
-      nameA: mode === 'watch' ? botName(deckA, 'heuristic') : mode === 'vs-ai' ? DECKS.find(d => d.slug === deckA)?.name ?? 'Player 1' : 'Player 1',
+      nameA: mode === 'watch' ? botName(deckA, 'heuristic') : mode === 'vs-ai' ? pool.find(d => d.slug === deckA)?.name ?? 'Player 1' : 'Player 1',
       nameB: mode === 'watch' ? botName(deckB, 'heuristic') : mode === 'vs-ai' ? 'The Machine' : 'Player 2',
       policyA: 'heuristic',
       policyB: 'heuristic',
     })
   }
 
+  const pool = allDecks()   // prebuilts + workshop decks (issue #30)
   const deckPick = (value: string, onChange: (v: string) => void, label: string) => (
     <label className="text-xs uppercase tracking-wider text-dim">{label}
       <select className="input mt-1" value={value} onChange={e => onChange(e.target.value)}>
-        {DECKS.map(d => <option key={d.slug} value={d.slug}>{d.name} ({d.color})</option>)}
+        {pool.map(d => <option key={d.slug} value={d.slug}>{d.name} ({d.color})</option>)}
       </select>
     </label>
   )

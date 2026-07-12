@@ -14,6 +14,8 @@ export const DEMO_CARDS: CardSet = Object.fromEntries(
 export const DECKS = PREBUILT_DECKS
 export type Mode = 'hotseat' | 'vs-ai' | 'watch'
 
+import { allDecks } from './custom-decks.ts'
+
 export interface DemoConfig {
   mode: Mode
   deckA: string   // prebuilt slug, seat 0
@@ -30,8 +32,9 @@ export interface DemoConfig {
 }
 
 export function newLocalGame(cfg: DemoConfig): GameState {
-  const a = DECKS.find(d => d.slug === cfg.deckA) ?? DECKS[0]
-  const b = DECKS.find(d => d.slug === cfg.deckB) ?? DECKS[1]
+  const pool = allDecks()   // prebuilts + the browser's custom decks (issue #30)
+  const a = pool.find(d => d.slug === cfg.deckA) ?? DECKS[0]
+  const b = pool.find(d => d.slug === cfg.deckB) ?? DECKS[1]
   return createGame({
     seed: cfg.seed,
     rules: { ...(cfg.rulesVersion === 'v3.0' ? V3_RULES : DEFAULT_RULES), ...(cfg.londonMulligan ? { mulliganStyle: 'london' as const } : {}) },

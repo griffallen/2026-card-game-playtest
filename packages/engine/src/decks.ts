@@ -62,5 +62,5 @@ export function buildPrebuiltDecks(set: CardSet): PrebuiltDeck[] {
 
 export const PREBUILT_DECKS: PrebuiltDeck[] = buildPrebuiltDecks(CARD_SET)
 
-export const deckSlugs = (d: PrebuiltDeck): string[] =>
+export const deckSlugs = (d: Pick<PrebuiltDeck, 'cards'>): string[] =>
   d.cards.flatMap(c => Array.from({ length: c.count }, () => c.slug))
