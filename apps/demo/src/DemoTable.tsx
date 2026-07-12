@@ -21,7 +21,8 @@ type Inspect =
 type Selection =
   | { kind: 'hand'; id: string }
   | { kind: 'unit'; ids: string[] }           // one or more attackers in a single zone (attack group)
-  | { kind: 'targeting'; card: string; collected: TargetRef[] }
+  | { kind: 'targeting'; card: string; collected: TargetRef[]; mode?: number }
+  | { kind: 'mode'; card: string }            // v3 modal cards: choosing which mode to play (#26)
   | { kind: 'sneaking'; unit: string }        // v3 Sneak: choosing the ability's target
   | { kind: 'orphan'; id: string }            // v3 salvage: choosing which unit picks the orphan up
   | null
@@ -256,7 +257,8 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     if (!myWindow || !selection) return []
     if (selection.kind === 'targeting') {
       const matching = playActionsFor(selection.card).filter(a =>
-        selection.collected.every((c, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], c)))
+        (selection.mode === undefined || a.mode === selection.mode)
+        && selection.collected.every((c, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], c)))
       const idx = selection.collected.length
       const refs: TargetRef[] = []
       for (const a of matching) {
@@ -313,10 +315,12 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     if (selection.kind === 'targeting') {
       const collected = [...selection.collected, ref]
       const candidates = playActionsFor(selection.card).filter(a =>
-        collected.every((c, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], c)))
+        (selection.mode === undefined || a.mode === selection.mode)
+        && collected.every((c, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], c)))
       const needed = candidates[0]?.targets?.length ?? collected.length
-      if (collected.length >= needed) apply({ type: 'play', card: selection.card, targets: collected }, seat)
-      else setSelection({ kind: 'targeting', card: selection.card, collected })
+      if (collected.length >= needed)
+        apply({ type: 'play', card: selection.card, targets: collected, ...(selection.mode !== undefined ? { mode: selection.mode } : {}) }, seat)
+      else setSelection({ kind: 'targeting', card: selection.card, collected, mode: selection.mode })
       return
     }
     if (selection.kind === 'sneaking') {
@@ -391,8 +395,19 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       return
     }
     setLethalPlay(null)
-    if ((plays[0].targets?.length ?? 0) === 0) apply({ type: 'play', card: cardId }, seat)
-    else setSelection({ kind: 'targeting', card: cardId, collected: [] })
+    // v3 modal cards (#26): more than one mode among the legal plays → the player picks first
+    const modes = [...new Set(plays.map(p => p.mode).filter((m): m is number => m !== undefined))]
+    if (modes.length > 1) { setSelection({ kind: 'mode', card: cardId }); return }
+    const mode = plays[0].mode
+    if ((plays[0].targets?.length ?? 0) === 0) apply({ type: 'play', card: cardId, ...(mode !== undefined ? { mode } : {}) }, seat)
+    else setSelection({ kind: 'targeting', card: cardId, collected: [], mode })
+  }
+
+  function pickMode(cardId: string, mode: number) {
+    const plays = playActionsFor(cardId).filter(p => p.mode === mode)
+    if (!plays.length) return
+    if ((plays[0].targets?.length ?? 0) === 0) apply({ type: 'play', card: cardId, mode }, seat)
+    else setSelection({ kind: 'targeting', card: cardId, collected: [], mode })
   }
 
   const unitActionable = (unitId: string) =>
@@ -571,6 +586,22 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
         </div>
       )}
+      {selection?.kind === 'mode' && (() => {
+        const def = DEMO_CARDS[state.cardOf[selection.card]]
+        const modes = (def?.modes ?? []) as { label?: string }[]
+        return (
+          <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            <span className="text-goldbright">Choose a mode for <b>{def?.name}</b>:</span>
+            {modes.map((m, i) => {
+              const legal = playActionsFor(selection.card).some(a => a.mode === i)
+              return legal
+                ? <button key={i} className="btn btn-primary !py-1 text-xs" onClick={() => pickMode(selection.card, i)}>{m.label ?? `Mode ${i + 1}`}</button>
+                : <button key={i} className="btn !py-1 text-xs opacity-50" disabled title="no legal target right now">{m.label ?? `Mode ${i + 1}`}</button>
+            })}
+            <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
+          </div>
+        )
+      })()}
       {selection?.kind === 'sneaking' && (
         <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
           <span>Choose a target for <b>{unitName(selection.unit)}</b>'s Sneak ability — using it exhausts (and reveals) the unit…</span>
