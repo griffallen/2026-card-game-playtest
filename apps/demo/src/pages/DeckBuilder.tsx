@@ -1,7 +1,9 @@
-/* The deck workshop (issue #30): start from any deck, turn the count dials, save your own.
-   Lives entirely in the browser — custom decks persist in localStorage and appear in Play. */
+/* The deck workshop (issue #30, layout per the designer's second pass): left half is the
+   searchable pool, right half is the live card preview (hand-size) plus your deck so far.
+   Custom decks persist in localStorage and appear in Play. */
 import { useMemo, useState } from 'react'
 import { PREBUILT_DECKS, V3_RULES } from '@newgame/engine'
+import { CardFrame } from '@ui/components/CardFrame.tsx'
 import { CardSheet } from '@ui/game/Sheets.tsx'
 import { DEMO_CARDS } from '../local.ts'
 import { allDecks, customSlugFor, deleteCustomDeck, saveCustomDeck, type CustomDeck } from '../custom-decks.ts'
@@ -9,6 +11,8 @@ import { allDecks, customSlugFor, deleteCustomDeck, saveCustomDeck, type CustomD
 const MAX_COPIES = V3_RULES.maxCopies
 const MIN_SIZE = V3_RULES.deckMinSize
 const COLORS = ['red', 'yellow', 'purple'] as const
+const colorText = (c: string) =>
+  c === 'red' ? 'text-[#e2583e]' : c === 'yellow' ? 'text-[#e8c14a]' : c === 'purple' ? 'text-[#a06bd8]' : 'text-dim'
 
 export function DeckBuilder() {
   const [, bump] = useState(0)
@@ -19,6 +23,7 @@ export function DeckBuilder() {
   const [counts, setCounts] = useState<Record<string, number>>(() => fromDeck(decks[0].slug))
   const [filter, setFilter] = useState<'all' | (typeof COLORS)[number]>('all')
   const [search, setSearch] = useState('')
+  const [preview, setPreview] = useState<string | null>(null)
   const [inspect, setInspect] = useState<string | null>(null)
   const [toast, setToast] = useState('')
 
@@ -37,7 +42,7 @@ export function DeckBuilder() {
   }
 
   const total = useMemo(() => Object.values(counts).reduce((s, n) => s + n, 0), [counts])
-  const cards = useMemo(() => {
+  const pool = useMemo(() => {
     const all = Object.values(DEMO_CARDS)
       .filter(c => c.color !== 'neutral')
       .sort((a, b) => a.color.localeCompare(b.color) || a.cost - b.cost || a.name.localeCompare(b.name))
@@ -45,6 +50,12 @@ export function DeckBuilder() {
       (filter === 'all' || c.color === filter)
       && (!search || c.name.toLowerCase().includes(search.toLowerCase())))
   }, [filter, search])
+  const deckList = useMemo(() =>
+    Object.entries(counts)
+      .map(([slug, count]) => ({ def: DEMO_CARDS[slug], count }))
+      .filter(e => e.def)
+      .sort((a, b) => a.def.color.localeCompare(b.def.color) || a.def.cost - b.def.cost || a.def.name.localeCompare(b.def.name)),
+    [counts])
 
   const setCount = (slug: string, n: number) =>
     setCounts(prev => {
@@ -75,14 +86,23 @@ export function DeckBuilder() {
 
   const base = decks.find(d => d.slug === baseSlug)
   const isCustomBase = !!base && 'custom' in base
+  const previewDef = preview ? DEMO_CARDS[preview] : null
+
+  const stepper = (slug: string, n: number) => (
+    <div className="flex shrink-0 items-center gap-1.5">
+      <button className="btn !px-2.5 !py-0.5" disabled={n <= 0} onClick={() => setCount(slug, n - 1)}>−</button>
+      <span className="w-6 text-center font-display font-bold text-parchment">{n}</span>
+      <button className="btn !px-2.5 !py-0.5" disabled={n >= MAX_COPIES} onClick={() => setCount(slug, n + 1)}>+</button>
+    </div>
+  )
 
   return (
-    <div className="mx-auto max-w-4xl p-6">
+    <div className="mx-auto max-w-6xl p-6">
       <h1 className="font-display text-3xl font-bold text-parchment">The Deck Workshop</h1>
       <p className="mt-2 text-sm text-dim">
-        Start from any deck, turn the count dials (0–{MAX_COPIES} copies), name it, save. Custom decks live in
-        this browser and appear in the <b>Play</b> deck pickers. Minimum {MIN_SIZE} cards; colors mix freely —
-        pips only ask that each color lives in your bank.
+        Left: the card pool — search, filter, turn the dials (0–{MAX_COPIES} copies). Right: the card under your
+        cursor, exactly as it looks in hand, and your deck so far. Minimum {MIN_SIZE} cards; colors mix freely.
+        Saved decks appear in <b>Play</b>.
       </p>
 
       <div className="panel mt-4 flex flex-wrap items-end gap-3 p-4">
@@ -106,31 +126,58 @@ export function DeckBuilder() {
         {toast && <span className="text-xs text-goldbright">{toast}</span>}
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        {(['all', ...COLORS] as const).map(c => (
-          <button key={c} className={`btn !py-1 text-xs capitalize ${filter === c ? 'btn-primary' : ''}`} onClick={() => setFilter(c)}>{c}</button>
-        ))}
-        <input className="input !w-56 !py-1 text-sm" placeholder="search cards…" value={search} onChange={e => setSearch(e.target.value)} />
-      </div>
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_400px]">
+        {/* left: the pool */}
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            {(['all', ...COLORS] as const).map(c => (
+              <button key={c} className={`btn !py-1 text-xs capitalize ${filter === c ? 'btn-primary' : ''}`} onClick={() => setFilter(c)}>{c}</button>
+            ))}
+            <input className="input !w-56 !py-1 text-sm" placeholder="search cards…" value={search} onChange={e => setSearch(e.target.value)} />
+          </div>
+          <div className="mt-3 flex flex-col gap-1">
+            {pool.map(c => {
+              const n = counts[c.slug] ?? 0
+              return (
+                <div key={c.slug}
+                  onMouseEnter={() => setPreview(c.slug)}
+                  className={`flex items-center gap-3 rounded border px-3 py-1.5 ${n > 0 ? 'border-goldbright/40 bg-goldbright/5' : 'hairline'} ${preview === c.slug ? '!border-goldbright/70' : ''}`}>
+                  <span className={`w-14 shrink-0 text-[11px] font-bold uppercase ${colorText(c.color)}`}>{c.color}</span>
+                  <span className="w-6 shrink-0 text-center font-display text-sm font-bold text-parchment">{c.cost}</span>
+                  <button className="min-w-0 flex-1 truncate text-left text-sm text-body hover:text-goldbright" onClick={() => setPreview(c.slug)}>
+                    {c.name} <span className="text-xs text-dim">· {c.type}{c.type === 'unit' ? ` ${c.power}/${c.health}` : ''}</span>
+                  </button>
+                  {stepper(c.slug, n)}
+                </div>
+              )
+            })}
+          </div>
+        </div>
 
-      <div className="mt-3 flex flex-col gap-1">
-        {cards.map(c => {
-          const n = counts[c.slug] ?? 0
-          return (
-            <div key={c.slug} className={`flex items-center gap-3 rounded border px-3 py-1.5 ${n > 0 ? 'border-goldbright/40 bg-goldbright/5' : 'hairline'}`}>
-              <span className={`w-14 shrink-0 text-[11px] font-bold uppercase ${c.color === 'red' ? 'text-[#e2583e]' : c.color === 'yellow' ? 'text-[#e8c14a]' : 'text-[#a06bd8]'}`}>{c.color}</span>
-              <span className="w-8 shrink-0 text-center font-display text-sm font-bold text-parchment">{c.cost}</span>
-              <button className="min-w-0 flex-1 truncate text-left text-sm text-body hover:text-goldbright" onClick={() => setInspect(c.slug)} title="inspect">
-                {c.name} <span className="text-xs text-dim">· {c.type}{c.type === 'unit' ? ` ${c.power}/${c.health}` : ''}</span>
-              </button>
-              <div className="flex shrink-0 items-center gap-1.5">
-                <button className="btn !px-2.5 !py-0.5" disabled={n <= 0} onClick={() => setCount(c.slug, n - 1)}>−</button>
-                <span className="w-6 text-center font-display font-bold text-parchment">{n}</span>
-                <button className="btn !px-2.5 !py-0.5" disabled={n >= MAX_COPIES} onClick={() => setCount(c.slug, n + 1)}>+</button>
+        {/* right: preview + the deck so far */}
+        <div className="lg:sticky lg:top-4 lg:self-start">
+          <div className="panel flex gap-4 p-4">
+            {previewDef
+              ? <button onClick={() => setInspect(preview)} title="full details" className="shrink-0"><CardFrame card={previewDef} size="sm" /></button>
+              : <div className="grid h-[240px] w-[148px] shrink-0 place-items-center rounded-lg border border-dashed hairline text-center text-xs text-dim/60">hover a card<br />to preview it</div>}
+            <div className="min-w-0 flex-1">
+              <div className="text-[11px] uppercase tracking-widest text-dim">Your deck so far · {total}</div>
+              <div className="mt-2 flex max-h-[60vh] flex-col gap-0.5 overflow-y-auto pr-1">
+                {deckList.map(({ def, count }) => (
+                  <div key={def.slug}
+                    onMouseEnter={() => setPreview(def.slug)}
+                    className={`flex items-center gap-2 rounded px-1.5 py-0.5 text-[13px] ${preview === def.slug ? 'bg-goldbright/10' : ''}`}>
+                    <span className={`w-4 shrink-0 text-center font-display text-xs font-bold ${colorText(def.color)}`}>{def.cost}</span>
+                    <button className="min-w-0 flex-1 truncate text-left text-body hover:text-goldbright" onClick={() => setPreview(def.slug)}>{def.name}</button>
+                    <span className="shrink-0 font-display text-xs font-bold text-parchment">×{count}</span>
+                    <button className="btn !px-1.5 !py-0 text-xs" onClick={() => setCount(def.slug, count - 1)}>−</button>
+                  </div>
+                ))}
+                {!deckList.length && <span className="text-xs text-dim/60">empty — start turning dials</span>}
               </div>
             </div>
-          )
-        })}
+          </div>
+        </div>
       </div>
 
       {inspect && DEMO_CARDS[inspect] && <CardSheet card={DEMO_CARDS[inspect]} onClose={() => setInspect(null)} />}
