@@ -1,7 +1,7 @@
 ---
 name: Cataclysmic Charge
 type: action
-cost: 4
+cost: 2
 pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
