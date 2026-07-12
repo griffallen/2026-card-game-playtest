@@ -2,8 +2,8 @@
 name: Berserker
 type: unit
 cost: 2
-power: 3
-health: 2
+power: 1
+health: 4
 keywords: rush, scar
 pips: red
 status: canon
