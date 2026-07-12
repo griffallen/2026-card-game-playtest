@@ -2,8 +2,8 @@
 name: Earthshaker
 type: unit
 cost: 6
-power: 7
-health: 5
+power: 4
+health: 7
 keywords: breakthrough, scar
 pips: red, red
 status: canon
