@@ -10,6 +10,12 @@ import { InfluenceTrack } from '@ui/game/InfluenceTrack.tsx'
 import { BaseSheet, CardSheet, EventTicker, PileSheet, UnitInspector, useValueFlash } from '@ui/game/Sheets.tsx'
 import { sleeveFor } from '@ui/game/sleeves.ts'
 import { DEMO_CARDS, aiControls, newLocalGame, type DemoConfig } from './local.ts'
+import { setSound, sfx, soundOn } from './sound.ts'
+
+const SFX_BY_ACTION: Partial<Record<GameAction['type'], 'play' | 'hit'>> = {
+  play: 'play', activate: 'play', attachOrphan: 'play', resource: 'play',
+  attack: 'hit', block: 'hit', intercept: 'hit',
+}
 
 type Inspect =
   | { kind: 'unit'; id: string }
@@ -61,11 +67,14 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const [history, setHistory] = useState<HistoryEntry[]>([])
   const [selection, setSelection] = useState<Selection>(null)
   const [setupBottoms, setSetupBottoms] = useState<string[]>([])
-  const [confirming, setConfirming] = useState<'concede' | null>(null)
+  const [confirming, setConfirming] = useState<'concede' | 'pass' | null>(null)
+  const [sound, setSoundState] = useState(soundOn())
+  const [roundBanner, setRoundBanner] = useState<number | null>(null)
+  const prevRound = useRef<number | null>(null)
   const [overlayDismissed, setOverlayDismissed] = useState(false)
   const [toast, setToast] = useState('')
   const [paused, setPaused] = useState(false)
-  const [speed, setSpeed] = useState<Speed>(config.mode === 'watch' ? 'normal' : 'fast')
+  const [speed, setSpeed] = useState<Speed>('normal')
   const [showHelp, setShowHelp] = useState(false)
   const [lethalPlay, setLethalPlay] = useState<{ card: string; cede: number } | null>(null)
   const [skipToMyWindow, setSkipToMyWindow] = useState(false)
@@ -103,9 +112,12 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       setState(next)
       setHistory(h => [...h, { seat: actor, action, rngAfter: currentRng }])
       setSelection(null)
+      const s = SFX_BY_ACTION[action.type]
+      if (s) sfx(s)
     } catch (e) {
       setToast(e instanceof EngineError ? e.message : 'that was not allowed')
       setTimeout(() => setToast(''), 3500)
+      sfx('error')
     }
   }
 
@@ -116,12 +128,14 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     const { state: next } = applyAction(state, action, state.actorSeat)
     setState(next)
     setHistory(h => [...h, { seat: state.actorSeat, action, rngAfter: nextRng }])
+    const s = SFX_BY_ACTION[action.type]
+    if (s) sfx(s)
   }
 
   // AI driver (auto-play unless paused; Step ▸ drives it manually)
   useEffect(() => {
     if (!aiWindow || paused) return
-    const t = setTimeout(aiStep, config.mode === 'watch' ? SPEED_MS[speed] : 700)
+    const t = setTimeout(aiStep, SPEED_MS[speed])   // #27: speed control applies to vs-AI too
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, aiWindow, paused, speed, config.mode])
@@ -142,6 +156,19 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   }, [state, onlyPass, skipToMyWindow, isIntercept, isBlock, config.mode])
 
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight }, [view.log])
+  // #27: make round transitions impossible to miss — banner + chime (skipped on mount)
+  useEffect(() => {
+    if (prevRound.current !== null && view.round !== prevRound.current) {
+      setRoundBanner(view.round)
+      sfx('round')
+      const t = setTimeout(() => setRoundBanner(null), 1900)
+      prevRound.current = view.round
+      return () => clearTimeout(t)
+    }
+    prevRound.current = view.round
+  }, [view.round])
+  useEffect(() => { if (state.winner !== null) sfx('win') }, [state.winner])
+  useEffect(() => { setConfirming(null) }, [view.actorSeat, view.round])
   useEffect(() => { setSetupPicks([]) }, [view.actorSeat, view.phase])
   useEffect(() => { setArmOverextend(false) }, [selection?.kind === 'unit' ? selection.ids.join(',') : null])
   useEffect(() => { if (isIntercept) { setSelection(null); setArmOverextend(false) } }, [isIntercept]) // intercept has its own UI — drop any attack-group selection
@@ -673,6 +700,16 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         <span className="text-xs text-dim">Round {view.round} · seed {config.seed}</span>
         <span className="text-xs text-goldbright" title="holds the initiative — acts first each round">⚑ {names[view.initiative]}</span>
         <span className="ml-auto flex gap-1.5">
+          {config.mode === 'vs-ai' && (
+            <select className="input !w-auto !py-0.5 text-xs" value={speed} onChange={e => setSpeed(e.target.value as Speed)} title="AI thinking speed" aria-label="AI speed">
+              <option value="slow">🤖 slow</option>
+              <option value="normal">🤖 normal</option>
+              <option value="fast">🤖 fast</option>
+            </select>
+          )}
+          <button className="btn !px-2.5 !py-0.5 text-xs" onClick={() => { setSound(!sound); setSoundState(!sound) }} title={sound ? 'sound on' : 'sound off'}>
+            {sound ? '🔊' : '🔇'}
+          </button>
           <button className="btn !px-2.5 !py-0.5 text-xs" onClick={() => setShowHelp(true)} title="how to play">?</button>
           <button className="btn !py-0.5 text-xs" onClick={copyChronicle}>Copy chronicle</button>
           <button className="btn !py-0.5 text-xs" onClick={exportGame}>Download game file</button>
@@ -695,6 +732,14 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
 
           <div className="relative my-1.5 grid gap-1.5 lg:min-h-0 lg:flex-1 lg:grid-rows-3">
             <EventTicker log={view.log} />
+            {roundBanner !== null && (
+              <div className="round-banner pointer-events-none absolute inset-x-0 top-1/3 z-40 text-center">
+                <div className="inline-block rounded-lg border border-goldbright/40 bg-black/85 px-6 py-3 shadow-xl">
+                  <div className="font-display text-2xl font-bold text-parchment">Round {roundBanner}</div>
+                  <div className="mt-0.5 text-xs text-goldbright">⚑ {names[view.initiative]} leads</div>
+                </div>
+              </div>
+            )}
             {zonesTopToBottom.map(z => {
               const zoneRef: TargetRef = { kind: 'zone', zone: z }
               const zoneGlow = isHighlighted(zoneRef)
@@ -803,9 +848,32 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                 <button className="btn btn-primary !py-1 text-xs" title="take the initiative token: ends your round, but you act first next round"
                   onClick={() => apply({ type: 'claimInitiative' }, seat)}>Claim initiative ⚑</button>
               )}
-              {myWindow && canPass && (
-                <button className="btn !py-1 text-xs" onClick={() => apply({ type: 'pass' }, seat)}>Pass</button>
-              )}
+              {myWindow && canPass && (() => {
+                // #27: a pass that ENDS the round with actions still on the table asks first
+                const endsRound = state.passStreak >= 1 || view.outOfRound[foe]
+                const readyLeft = view.zones.flatMap(z => z.units).filter(u => u.owner === seat && unitActionable(u.id)).length
+                const playableLeft = new Set(actions.filter(a => a.type === 'play').map(a => a.card)).size
+                const leftovers = readyLeft + playableLeft
+                if (confirming === 'pass') {
+                  const what = [
+                    readyLeft && `${readyLeft} unit${readyLeft > 1 ? 's' : ''} can still act`,
+                    playableLeft && `${playableLeft} card${playableLeft > 1 ? 's' : ''} playable`,
+                  ].filter(Boolean).join(' · ')
+                  return (
+                    <>
+                      <span className="w-full text-[12.5px] text-[#e5a99f]">Passing now <b>ends the round</b> — {what}.</span>
+                      <button className="btn btn-danger !py-1 text-xs" onClick={() => { setConfirming(null); apply({ type: 'pass' }, seat) }}>End the round</button>
+                      <button className="btn !py-1 text-xs" onClick={() => setConfirming(null)}>Keep playing</button>
+                    </>
+                  )
+                }
+                return (
+                  <button className="btn !py-1 text-xs" onClick={() => {
+                    if (endsRound && leftovers > 0) setConfirming('pass')
+                    else apply({ type: 'pass' }, seat)
+                  }}>Pass</button>
+                )
+              })()}
               {state.winner === null && history.length > 0 && config.mode !== 'watch' && (
                 <button className="btn !py-1 text-xs" onClick={undo}>Undo</button>
               )}

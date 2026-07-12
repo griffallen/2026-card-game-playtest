@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { UnitView } from '@newgame/engine'
 import { ProceduralArt } from '../components/ProceduralArt.tsx'
 import { useLongPress } from '../components/CardFrame.tsx'
@@ -18,6 +18,18 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }:
   const lp = useLongPress(onLongPress)
   const sleeve = sleeveFor(mine)
   const hurt = unit.damage > 0
+  // #27: taking damage is visible — shake the chip and float the number
+  const prevDamage = useRef(unit.damage)
+  const [justHit, setJustHit] = useState(0)
+  useEffect(() => {
+    if (unit.damage > prevDamage.current) {
+      setJustHit(unit.damage - prevDamage.current)
+      const t = setTimeout(() => setJustHit(0), 900)
+      prevDamage.current = unit.damage
+      return () => clearTimeout(t)
+    }
+    prevDamage.current = unit.damage
+  }, [unit.damage])
   const chips: string[] = []
   if (unit.keywords.some(k => k.startsWith('guard'))) chips.push('🛡')
   if (unit.armor > 0) chips.push(`◈${unit.armor}`)
@@ -39,6 +51,7 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }:
       title={tooltip}
       className={[
         'relative w-[84px] shrink-0 select-none rounded-md border border-black/50 bg-raised p-0.5 transition-transform',
+        justHit > 0 ? 'chip-hit' : '',
         SLEEVE_EDGE[sleeve],
         onClick ? 'cursor-pointer hover:-translate-y-0.5' : '',
         glow === 'selected' ? 'glow-selected' : glow === 'target' ? 'glow-target' : glow === 'attack' ? 'glow-attack' : '',
@@ -46,6 +59,11 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }:
       ].join(' ')}
     >
       <span aria-hidden className={`pointer-events-none absolute left-1/2 top-0 z-10 h-[4px] w-6 -translate-x-1/2 rounded-b shadow-[0_1px_2px_rgba(0,0,0,0.5)] ${SLEEVE_TAB[sleeve]}`} />
+      {justHit > 0 && (
+        <span aria-hidden className="dmg-float pointer-events-none absolute -top-1 right-0 z-20 font-display text-[15px] font-bold text-[#ff6a55] drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+          −{justHit}
+        </span>
+      )}
       {actionable && glow === 'none' && (
         <span className="pulse-soft absolute -right-1 -top-1 z-10 h-2.5 w-2.5 rounded-full bg-goldbright shadow-[0_0_6px_rgba(232,193,74,0.9)]" title="can act" />
       )}

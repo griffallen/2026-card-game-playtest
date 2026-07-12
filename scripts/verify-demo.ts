@@ -42,6 +42,10 @@ async function main() {
     const letThrough = await vis(/Let it through/)
     if (letThrough) { intercepts++; await letThrough.click(); await page.waitForTimeout(200); continue }
 
+    // #27: a round-ending pass with actions left asks for confirmation — the bot is always sure
+    const endRound = await vis(/End the round/)
+    if (endRound) { await endRound.click(); await page.waitForTimeout(200); continue }
+
     // setup phase (decision 31, hotseat only — vs-AI is zero-input): pick 2, confirm
     const bank2 = await vis(/Bank these/)
     if (bank2) {
