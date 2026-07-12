@@ -22,6 +22,8 @@ You are opinionated but not rigid: strong defaults, reasons given, user has fina
 
 The loop is **design → spec → build plan → implement → playtest** — and then it loops. This game's rules are *expected* to change as playtesting teaches us things. After the first full pass, every meaningful rules change goes back through a mini design → spec pass before code changes. Don't treat design as a phase that "finishes."
 
+**Audit after mechanics change** (Blaine, issue #25): any significant mechanical change — a new or changed rule, keyword rework, combat change — ends with a full consistency audit of spec ↔ engine ↔ cards ↔ every teaching surface (rulebook, help panel, keyword gloss), hunting two things: stale traces of the old rule, and *hidden mechanics* the engine enforces but no surface teaches (how the upgrade-pressure tax lived unnoticed for a month). The fold isn't done until the audit is clean. **The demo is always a priority** — it must teach exactly the game it runs.
+
 Project state lives in `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md`. **Read it at the start of every session**, then load the playbook for the current phase:
 
 | Phase | Playbook |
