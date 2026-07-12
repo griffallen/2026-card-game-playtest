@@ -12,7 +12,7 @@ export const KEYWORD_GLOSS: Record<string, string> = {
   overextend: 'Optional gamble when attacking: +N power now, N self-damage at end of round. (Classic v2.3 only — retired in v3.)',
   cantAttack: 'Cannot attack.',
   untargetable: 'Cannot be targeted by enemy action cards. (Classic v2.3 only.)',
-  hidden: 'While ready, enemy actions can\'t target it and enemy attacks can\'t be declared at it. It can still block; anything that exhausts it reveals it until it readies again.',
+  hidden: 'While ready, enemy actions can\'t target it and enemy attacks can\'t be declared at it. It can still block; anything that exhausts it reveals it until it readies again. Effects that don\'t choose ("all", whole-zone, automatic picks) still reach it.',
   infiltrate: 'May be played into any zone — not just your Home.',
   sneak: 'An ability used as your turn: exhaust the unit to resolve its printed Sneak effect on something in its own zone.',
   capture: 'Takes an enemy unit under this one, off the board entirely, at no cost to the capturer. The captive returns — ready — when the capturer leaves play or lets it go (decision 73).',

@@ -120,6 +120,14 @@ Numbered, in the order they were made. Format: decision — reason.
 
 75. ✅ **Breakthrough sheds its printed numbers** (issue #24 Q3, 2026-07-12 — Griff: "remove the text from the cards"). Eleven red cards (eight carriers + three grants) drop the dead "N" from keywords, text, and grant effects — the v3 rule spills everything and ignored the cap already. *Caveat:* the classic v2.3 A/B reads the number for its capped spill, so real-card breakthrough is inert under that checkbox now; v2.3's cap semantics survive in engine tests only. One line restores archival numbers if the A/B ever needs them.
 
+76. ✅ **Hidden beats choices, not consequences** (issue #24 Q5, 2026-07-12 — Griff: "it can't be chosen but can have effects that say 'all' still impact it"). Automatic picks ("strongest other"), zone-wide damage, and 'all'-effects still reach a ready Hidden unit; only *chosen* targeting and declared attacks are refused. Ratifies existing engine behavior — pinned by test so it can't drift.
+
+77. ✅ **A shield wall soaks the whole pour** (issue #24 Q6, 2026-07-12 — Griff: "keep the shield absorbing it all"). A Shielded blocker absorbs its attacker's entire assigned damage while taking none, shrinking Breakthrough spill — shield-wall counterplay, kept deliberately with a watch note ("if this gets too powerful, we can address later"). Ratifies existing engine behavior; pinned by test.
+
+78. ✅ **Base-trigger vocabulary splits in two** (issue #24 Q7, 2026-07-12 — Griff). "When this *attacks* a base" = declared, unblocked attack reaching the base (spill is aftermath, not an attack — current engine confirmed). "When this *damages* a base" = reserved second trigger for any base damage including Breakthrough spill; the engine implements it with the first card that prints it.
+
+79. ✅ **Salvage is not playing** (issue #24 Q8, 2026-07-12 — Griff: "correct, salvage isn't playing"). A salvaged upgrade's "when you play this" text does not re-run. Ratifies existing engine behavior. (The upgrade-pressure question the same comment raised is answered on the thread — the designer hadn't been told that inherited rule exists; his verdict on keeping or cutting it is pending.)
+
 ## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
 
 - **Red burn grammar:** unit-only burn = cost+1 damage (Devastating Strike became unit-only); face-capable burn = cost (Raging Inferno 5→6 dmg; Searing Bolt/Volcanic Slam/Rupture already conformed). Burn the Frontline 7-for-4 → 6-for-6 one-zone (the wall-breaker; friendly fire stays as red's visible cost).
