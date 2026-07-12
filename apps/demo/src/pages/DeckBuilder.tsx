@@ -1,7 +1,7 @@
 /* The deck workshop (issue #30, layout per the designer's second pass): left half is the
    searchable pool, right half is the live card preview (hand-size) plus your deck so far.
    Custom decks persist in localStorage and appear in Play. */
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { PREBUILT_DECKS, V3_RULES } from '@newgame/engine'
 import { CardFrame } from '@ui/components/CardFrame.tsx'
 import { CardSheet } from '@ui/game/Sheets.tsx'
@@ -26,6 +26,29 @@ export function DeckBuilder() {
   const [preview, setPreview] = useState<string | null>(null)
   const [inspect, setInspect] = useState<string | null>(null)
   const [toast, setToast] = useState('')
+  // the split is yours to drag (issue #30) — persisted, clamped so neither half can vanish
+  const [deckW, setDeckW] = useState(() => {
+    const saved = Number(localStorage.getItem('workshop-split'))
+    return saved >= 300 && saved <= 720 ? saved : 400
+  })
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  function startDrag(e: React.PointerEvent) {
+    e.preventDefault()
+    const onMove = (ev: PointerEvent) => {
+      const rect = gridRef.current?.getBoundingClientRect()
+      if (!rect) return
+      const w = Math.round(Math.min(720, Math.max(300, rect.right - ev.clientX)))
+      setDeckW(w)
+      localStorage.setItem('workshop-split', String(w))
+    }
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+  }
 
   function fromDeck(slug: string): Record<string, number> {
     const d = allDecks().find(x => x.slug === slug)
@@ -101,7 +124,8 @@ export function DeckBuilder() {
       <h1 className="font-display text-3xl font-bold text-parchment">The Deck Workshop</h1>
       <p className="mt-2 text-sm text-dim">
         Left: the card pool — search, filter, turn the dials (0–{MAX_COPIES} copies). Right: the card under your
-        cursor, exactly as it looks in hand, and your deck so far. Minimum {MIN_SIZE} cards; colors mix freely.
+        cursor, exactly as it looks in hand, and your deck so far — drag the divider between them to
+        trade space. Minimum {MIN_SIZE} cards; colors mix freely.
         Saved decks appear in <b>Play</b>.
       </p>
 
@@ -126,7 +150,8 @@ export function DeckBuilder() {
         {toast && <span className="text-xs text-goldbright">{toast}</span>}
       </div>
 
-      <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_400px]">
+      <div ref={gridRef} style={{ ['--deckw' as string]: `${deckW}px` }}
+        className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_10px_var(--deckw)]">
         {/* left: the pool */}
         <div>
           <div className="flex flex-wrap items-center gap-2">
@@ -154,8 +179,14 @@ export function DeckBuilder() {
           </div>
         </div>
 
+        {/* the divider: drag to trade pool for deck (issue #30) */}
+        <div onPointerDown={startDrag} title="drag to resize"
+          className="hidden cursor-col-resize items-center justify-center lg:flex group">
+          <div className="h-24 w-1 rounded bg-white/15 group-hover:bg-goldbright/50" />
+        </div>
+
         {/* right: preview + the deck so far */}
-        <div className="lg:sticky lg:top-4 lg:self-start">
+        <div className="min-w-0 lg:sticky lg:top-4 lg:self-start">
           <div className="panel flex gap-4 p-4">
             {previewDef
               ? <button onClick={() => setInspect(preview)} title="full details" className="shrink-0"><CardFrame card={previewDef} size="sm" /></button>
