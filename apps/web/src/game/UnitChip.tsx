@@ -32,6 +32,7 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }:
   }, [unit.damage])
   const chips: string[] = []
   if (unit.keywords.some(k => k.startsWith('guard'))) chips.push('🛡')
+  if (unit.keywords.includes('cantAttack')) chips.push('⊘')   // printed wall or a disarming effect (#40)
   if (unit.armor > 0) chips.push(`◈${unit.armor}`)
   if (unit.rushFreeMove) chips.push('💨')
   if (unit.overextendedBy > 0) chips.push(`🔥${unit.overextendedBy}`)

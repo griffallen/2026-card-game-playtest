@@ -344,7 +344,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       const candidates = playActionsFor(selection.card).filter(a =>
         (selection.mode === undefined || a.mode === selection.mode)
         && collected.every((c, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], c)))
-      const needed = candidates[0]?.targets?.length ?? collected.length
+      const needed = Math.max(collected.length, ...candidates.map(a => a.targets?.length ?? 0))
       if (collected.length >= needed)
         apply({ type: 'play', card: selection.card, targets: collected, ...(selection.mode !== undefined ? { mode: selection.mode } : {}) }, seat)
       else setSelection({ kind: 'targeting', card: selection.card, collected, mode: selection.mode })
@@ -575,6 +575,13 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
               ? `${selection.ids.length} attackers chosen — tap another in this zone to add, or tap a red target to strike together.`
               : 'Tap a glowing target: dashed zone = move · red glow = attack. Tap another ready unit in this zone to attack together.'}
           </span>
+          {selection.ids.length === 1 && unitViewOf(selection.ids[0])?.keywords.includes('cantAttack') && (
+            <span className="w-full text-[12.5px] text-[#e5a99f]">
+              ⊘ {unitName(selection.ids[0])} can't attack{(DEMO_CARDS[state.cardOf[selection.ids[0]]]?.kw ?? []).some(k => k.k === 'cantAttack')
+                ? ' — its own card forbids it'
+                : ' this round — an enemy effect disarmed it'}. It can still move and block.
+            </span>
+          )}
           {(() => {
             const oeUnits = selection.ids.filter(id => oeOf(id) !== null)
             if (!oeUnits.length) return null
@@ -612,12 +619,24 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel</button>
         </div>
       )}
-      {selection?.kind === 'targeting' && targetingCard && (
-        <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
-          <span>Choose {selection.collected.length > 0 ? 'the next' : 'a'} target for <b>{targetingCard.name}</b>…</span>
-          <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
-        </div>
-      )}
+      {selection?.kind === 'targeting' && targetingCard && (() => {
+        const done = selection.collected.length > 0 && playActionsFor(selection.card).some(a =>
+          (selection.mode === undefined || a.mode === selection.mode)
+          && (a.targets?.length ?? 0) === selection.collected.length
+          && selection.collected.every((t, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], t)))
+        return (
+          <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
+            <span>Choose {selection.collected.length > 0 ? 'the next' : 'a'} target for <b>{targetingCard.name}</b>…</span>
+            {done && (
+              <button className="btn btn-primary !py-1 text-xs"
+                onClick={() => apply({ type: 'play', card: selection.card, targets: selection.collected, ...(selection.mode !== undefined ? { mode: selection.mode } : {}) }, seat)}>
+                ✓ Cast with {selection.collected.length} target{selection.collected.length > 1 ? 's' : ''}
+              </button>
+            )}
+            <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
+          </div>
+        )
+      })()}
       {selection?.kind === 'mode' && (() => {
         const def = DEMO_CARDS[state.cardOf[selection.card]]
         const modes = (def?.modes ?? []) as { label?: string }[]

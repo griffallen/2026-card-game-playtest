@@ -42,6 +42,7 @@ function V3Content() {
         <Row icon="⛓" title="Captives">A ⛓ on a unit means it holds an enemy unit <b>under it</b>, off the board. The grip has a price: <b>a holder skips the ready step</b> — once spent, it stays spent until it lets go. Select the capturer and <b>Release</b> to hand the captive back — it returns <b>ready</b>, and the release readies your capturer too.</Row>
         <Row icon="⬥" title="Orphaned upgrades">When a unit dies, its upgrades stay <b>lying in the zone</b> as dashed ⬥ tokens. Either player may tap one to <b>salvage</b> it onto their own unit there — paying its full cost and pips, as if played.</Row>
         <Row icon="🛡" title="Guard">Blocks <b>without exhausting</b> — it can block again this round and still take its own turn. ◈ is armor: every hit is reduced by that much.</Row>
+        <Row icon="⊘" title="Can't attack">This unit <b>can't attack right now</b> — either its own card forbids it (walls), or an enemy effect <b>disarmed it for the round</b>. It can still move and block.</Row>
         <Row icon="⚑" title="Flagged card">A prototype ruling was needed for this card's printed text — hover/long-press to read it.</Row>
       </div>
 
