@@ -168,9 +168,16 @@ export function DeckBuilder() {
                     onMouseEnter={() => setPreview(def.slug)}
                     className={`flex items-center gap-2 rounded px-1.5 py-0.5 text-[13px] ${preview === def.slug ? 'bg-goldbright/10' : ''}`}>
                     <span className={`w-4 shrink-0 text-center font-display text-xs font-bold ${colorText(def.color)}`}>{def.cost}</span>
+                    <span className="flex w-9 shrink-0 -space-x-[3px]" title={def.pips?.length ? `Requires banked color: ${def.pips.join(', ')}` : undefined}>
+                      {(def.pips ?? []).map((c, i) => (
+                        <img key={i} src={`${import.meta.env.BASE_URL}pips/pip-${c}.png`} alt={c} draggable={false}
+                          className="h-[11px] w-[11px] rounded-full object-cover ring-1 ring-black/50" />
+                      ))}
+                    </span>
                     <button className="min-w-0 flex-1 truncate text-left text-body hover:text-goldbright" onClick={() => setPreview(def.slug)}>{def.name}</button>
                     <span className="shrink-0 font-display text-xs font-bold text-parchment">×{count}</span>
                     <button className="btn !px-1.5 !py-0 text-xs" onClick={() => setCount(def.slug, count - 1)}>−</button>
+                    <button className="btn !px-1.5 !py-0 text-xs" disabled={count >= MAX_COPIES} onClick={() => setCount(def.slug, count + 1)}>+</button>
                   </div>
                 ))}
                 {!deckList.length && <span className="text-xs text-dim/60">empty — start turning dials</span>}
