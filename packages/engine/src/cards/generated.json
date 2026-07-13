@@ -1,4 +1,31 @@
 {
+ "reckless-abandon": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "xSurge",
+    "t": "chosen0"
+   }
+  ],
+  "slug": "reckless-abandon",
+  "name": "Reckless Abandon",
+  "color": "red",
+  "type": "action",
+  "cost": 0,
+  "xCost": true,
+  "text": "Pay any number of resources. Lose X Influence: one of your units gets +X Power and Breakthrough this round.",
+  "pips": [
+   "red",
+   "red"
+  ],
+  "designerNote": "2026-07-13 (designer, issue #45): \"Pay any number of resources and lose X influence to give one\nunit +X strength and breakthrough.\" The game's first X card — new vocabulary: `cost: X` in the\nfrontmatter, the declared X flows into the effect. Name and art (borrowed from Reckless Charge)\nare agent picks, ⚑ freely rename/re-art.\n\n⚑ Agent assumptions to ratify or veto: the pump and Breakthrough last **this round** (red's pump\ngrammar); the target is **friendly**; **X=0 is legal** (a free Breakthrough rider); **2 red pips**\n(a scaling finisher reads deep-red, though the cost-tier grammar has no row for X); single copy\nin Crimson Assault (an X finisher isn't a ≤2-cost workhorse for the doubles rule).",
+  "artUrl": "/cards/reckless-abandon.jpg"
+ },
  "reckless-charge": {
   "modes": [
    {

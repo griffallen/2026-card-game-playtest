@@ -89,8 +89,16 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   // plays (both windows)
   for (const card of state.sides[seat].hand) {
     const def = defOf(state, card)
-    if (def.cost > ready) continue
+    if (!def.xCost && def.cost > ready) continue
     if (!pipGateSatisfied(state, seat, def)) continue
+    if (def.xCost) {   // issue #45: one play per affordable X per target combo
+      for (const targets of enumerateTargets(state, seat, card)) {
+        for (let x = 0; x <= ready; x++) {
+          out.push(targets.length ? { type: 'play', card, targets, x } : { type: 'play', card, x })
+        }
+      }
+      continue
+    }
     const infiltrates = def.type === 'unit' && (def.kw ?? []).some(k => k.k === 'infiltrate')
     if (def.modes) {  // v3 modal cards: each mode enumerates with its own targets
       def.modes.forEach((mode, mi) => {

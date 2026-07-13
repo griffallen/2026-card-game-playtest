@@ -48,6 +48,8 @@ export interface CardLike {
   designerNote?: string | null
   /** v3 presence pips (decision 69) — one sigil rendered per entry, e.g. ['red','red'] */
   pips?: string[] | null
+  /** printed cost is "X", declared at cast (issue #45) */
+  xCost?: boolean | null
 }
 
 const frameTint: Record<string, string> = {
@@ -119,9 +121,9 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
       {/* header: cost gem (cool = clearly the cost, distinct from the warm stats) · name · flag · count */}
       <div className="flex items-center gap-1.5">
         <span
-          title={`Cost ${card.cost}`}
+          title={card.xCost ? 'Cost X — you choose at cast' : `Cost ${card.cost}`}
           className={`grid ${size === 'sm' ? 'h-[22px] w-[22px] text-[13px]' : 'h-6 w-6 text-[14px]'} shrink-0 place-items-center rounded-full bg-gradient-to-b from-[#eaf0f8] to-[#a8b6c9] font-display font-bold leading-none text-[#15202f] shadow-sm ring-1 ring-black/50`}
-        >{card.cost}</span>
+        >{card.xCost ? 'X' : card.cost}</span>
         {card.pips && card.pips.length > 0 && (
           <span
             className="flex shrink-0 -space-x-[3px]"

@@ -28,6 +28,9 @@ export function buildPrebuiltDecks(set: CardSet): PrebuiltDeck[] {
   redDoubles.delete('pillage')
   // Decks are min-48, not exactly-48 (designer, issue #30) — Cataclysmic Charge doubles like
   // every other ≤2 workhorse and red simply runs 49 (⚑ the doubled alpha-strike pump is untested)
+  // Reckless Abandon (issue #45) parses as cost 0 but is an X-scaling finisher, not a cheap
+  // workhorse — single copy (⚑ curation call)
+  redDoubles.delete('reckless-abandon')
   redDoubles.add('rageforged-brute')
   redDoubles.add('volcanic-slam')
 

@@ -27,8 +27,9 @@ type Inspect =
 type Selection =
   | { kind: 'hand'; id: string }
   | { kind: 'unit'; ids: string[] }           // one or more attackers in a single zone (attack group)
-  | { kind: 'targeting'; card: string; collected: TargetRef[]; mode?: number }
+  | { kind: 'targeting'; card: string; collected: TargetRef[]; mode?: number; x?: number }
   | { kind: 'mode'; card: string }            // v3 modal cards: choosing which mode to play (#26)
+  | { kind: 'x'; card: string }               // X-cost cards: declaring X before targeting (#45)
   | { kind: 'sneaking'; unit: string }        // v3 Sneak: choosing the ability's target
   | { kind: 'orphan'; id: string }            // v3 salvage: choosing which unit picks the orphan up
   | null
@@ -309,6 +310,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     if (selection.kind === 'targeting') {
       const matching = playActionsFor(selection.card).filter(a =>
         (selection.mode === undefined || a.mode === selection.mode)
+        && (selection.x === undefined || a.x === selection.x)
         && selection.collected.every((c, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], c)))
       const idx = selection.collected.length
       const refs: TargetRef[] = []
@@ -367,11 +369,12 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       const collected = [...selection.collected, ref]
       const candidates = playActionsFor(selection.card).filter(a =>
         (selection.mode === undefined || a.mode === selection.mode)
+        && (selection.x === undefined || a.x === selection.x)
         && collected.every((c, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], c)))
       const needed = Math.max(collected.length, ...candidates.map(a => a.targets?.length ?? 0))
       if (collected.length >= needed)
-        apply({ type: 'play', card: selection.card, targets: collected, ...(selection.mode !== undefined ? { mode: selection.mode } : {}) }, seat)
-      else setSelection({ kind: 'targeting', card: selection.card, collected, mode: selection.mode })
+        apply({ type: 'play', card: selection.card, targets: collected, ...(selection.mode !== undefined ? { mode: selection.mode } : {}), ...(selection.x !== undefined ? { x: selection.x } : {}) }, seat)
+      else setSelection({ kind: 'targeting', card: selection.card, collected, mode: selection.mode, x: selection.x })
       return
     }
     if (selection.kind === 'sneaking') {
@@ -449,6 +452,8 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     // v3 modal cards (#26): more than one mode among the legal plays → the player picks first
     const modes = [...new Set(plays.map(p => p.mode).filter((m): m is number => m !== undefined))]
     if (modes.length > 1) { setSelection({ kind: 'mode', card: cardId }); return }
+    // X-cost cards (#45): declare X first, then target
+    if (def.xCost) { setSelection({ kind: 'x', card: cardId }); return }
     const mode = plays[0].mode
     if ((plays[0].targets?.length ?? 0) === 0) apply({ type: 'play', card: cardId, ...(mode !== undefined ? { mode } : {}) }, seat)
     else setSelection({ kind: 'targeting', card: cardId, collected: [], mode })
@@ -459,6 +464,13 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     if (!plays.length) return
     if ((plays[0].targets?.length ?? 0) === 0) apply({ type: 'play', card: cardId, mode }, seat)
     else setSelection({ kind: 'targeting', card: cardId, collected: [], mode })
+  }
+
+  function pickX(cardId: string, x: number) {
+    const plays = playActionsFor(cardId).filter(p => p.x === x)
+    if (!plays.length) return
+    if ((plays[0].targets?.length ?? 0) === 0) apply({ type: 'play', card: cardId, x }, seat)
+    else setSelection({ kind: 'targeting', card: cardId, collected: [], x })
   }
 
   const unitActionable = (unitId: string) =>
@@ -646,6 +658,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       {selection?.kind === 'targeting' && targetingCard && (() => {
         const done = selection.collected.length > 0 && playActionsFor(selection.card).some(a =>
           (selection.mode === undefined || a.mode === selection.mode)
+          && (selection.x === undefined || a.x === selection.x)
           && (a.targets?.length ?? 0) === selection.collected.length
           && selection.collected.every((t, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], t)))
         return (
@@ -653,7 +666,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             <span>Choose {selection.collected.length > 0 ? 'the next' : 'a'} target for <b>{targetingCard.name}</b>…</span>
             {done && (
               <button className="btn btn-primary !py-1 text-xs"
-                onClick={() => apply({ type: 'play', card: selection.card, targets: selection.collected, ...(selection.mode !== undefined ? { mode: selection.mode } : {}) }, seat)}>
+                onClick={() => apply({ type: 'play', card: selection.card, targets: selection.collected, ...(selection.mode !== undefined ? { mode: selection.mode } : {}), ...(selection.x !== undefined ? { x: selection.x } : {}) }, seat)}>
                 ✓ Cast with {selection.collected.length} target{selection.collected.length > 1 ? 's' : ''}
               </button>
             )}
@@ -680,6 +693,19 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                 {modes.map((m, i) => m.text && <div key={i}><b className="text-body/90">{m.label ?? `Mode ${i + 1}`}:</b> {m.text}</div>)}
               </div>
             )}
+          </div>
+        )
+      })()}
+      {selection?.kind === 'x' && (() => {
+        const def = DEMO_CARDS[state.cardOf[selection.card]]
+        const xs = [...new Set(playActionsFor(selection.card).map(a => a.x).filter((x): x is number => x !== undefined))].sort((a, b) => a - b)
+        return (
+          <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            <span className="text-goldbright">Declare X for <b>{def?.name}</b> — you'll pay X resources and lose X influence:</span>
+            {xs.map(x => (
+              <button key={x} className="btn btn-primary !px-2.5 !py-1 text-xs" onClick={() => pickX(selection.card, x)}>{x}</button>
+            ))}
+            <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
           </div>
         )
       })()}

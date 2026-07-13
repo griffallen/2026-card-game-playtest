@@ -64,6 +64,7 @@ export type Op =
   | { op: 'move'; t: OpTarget; to: 'chosenZone' }                 // decision 72: relocate the unit — exhausted or not, exhausting nothing
   | { op: 'attackTax'; n: number; rounds: number }                // PR #39 (Unchained Rage): each of your attacking units cedes n influence
   | { op: 'doom'; t: 'chosen0' }                                  // PR #38 (Final Onslaught): after the extra action, the unit and its attack's victims die
+  | { op: 'xSurge'; t: 'chosen0' }                                // issue #45 (Reckless Abandon): lose X influence; +X power and Breakthrough this round
 
 export type Static =
   | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; armor?: number; kw?: KeywordSpec; cond?: Cond }
@@ -100,6 +101,8 @@ export interface CardDef {
   sneak?: { targets?: TargetSpec[]; ops: Op[] }
   /** v3 modal actions (spec §3, PR #13): the player declares one mode at cast time; each mode owns its targets+ops */
   modes?: { label: string; text?: string; targets?: TargetSpec[]; ops: Op[] }[]
+  /** cost is printed "X": the player declares how many resources to pay at cast (issue #45) */
+  xCost?: boolean
   kw?: KeywordSpec[]
   targets?: TargetSpec[]     // play-time targets (upgrades: attach target is implicit and NOT listed)
   onPlay?: Op[]              // action body; unit/upgrade enter-play effects
@@ -271,7 +274,7 @@ export type GameAction =
   | { type: 'setupBank'; cards: string[]; bottom?: string[] }  // bottom: london-mulligan payback (decision 58)   // setup phase: choose starting resources
   | { type: 'resource'; card: string }       // bank phase: resource a card
   | { type: 'skipResource' }                 // bank phase: end your start step
-  | { type: 'play'; card: string; targets?: TargetRef[]; zone?: ZoneId; mode?: number }  // zone: v3 Infiltrate; mode: v3 modal cards
+  | { type: 'play'; card: string; targets?: TargetRef[]; zone?: ZoneId; mode?: number; x?: number }  // zone: v3 Infiltrate; mode: v3 modal cards; x: declared X cost (issue #45)
   | { type: 'activate'; unit: string; targets?: TargetRef[] }             // v3 Sneak (decision 60)
   | { type: 'releaseCaptive'; unit: string }                              // v3 Capture: ready the capturer, captive returns READY (decision 73)
   | { type: 'block'; pairs: { blocker: string; onto: string }[] }         // v3 combat: defender pairs blockers (empty = let it through); pour order = pair order

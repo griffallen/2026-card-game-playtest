@@ -380,7 +380,10 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
       : def.modes[action.mode]
   ) : undefined
   validateTargets(state, seat, (mode ? mode.targets : def.targets) ?? [], targets, def.name)
-  payCost(state, seat, def.cost)
+  // issue #45: an X card's cost is declared at cast — any number of ready resources
+  if (def.xCost && (action.x === undefined || !Number.isInteger(action.x) || action.x < 0))
+    fail('bad-x', `${def.name} costs X — declare how many resources to pay`)
+  payCost(state, seat, def.xCost ? action.x! : def.cost)
   side.hand.splice(idx, 1)
 
   if (def.type === 'unit') {
@@ -399,14 +402,14 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     }
     log(state, seat, `${side.name} deploys ${def.name}`)
     const unit = state.units[action.card]
-    if (def.onPlay?.length) runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat }, def.onPlay)
+    if (def.onPlay?.length) runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat, x: action.x }, def.onPlay)
     if (def.onEnterZone?.length && state.units[unit.id]) {
       fireTrigger({ state, targets, enteredZone: zone, actorSeat: seat }, unit, 'onEnterZone')
     }
   } else {
     // action card
-    log(state, seat, `${side.name} plays ${def.name}${mode ? ` — ${mode.label}` : ''}`)
-    runOps({ state, controller: seat, targets, actorSeat: seat }, mode ? mode.ops : (def.onPlay ?? []))
+    log(state, seat, `${side.name} plays ${def.name}${mode ? ` — ${mode.label}` : ''}${def.xCost ? ` (X=${action.x})` : ''}`)
+    runOps({ state, controller: seat, targets, actorSeat: seat, x: action.x }, mode ? mode.ops : (def.onPlay ?? []))
     side.discard.push(action.card)
   }
 }

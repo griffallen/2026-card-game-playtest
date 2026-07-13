@@ -18,6 +18,8 @@ export interface FxCtx {
   attackTarget?: TargetRef
   /** zone just entered, for onEnterZone */
   enteredZone?: ZoneId
+  /** declared X for xCost cards (issue #45) */
+  x?: number
   /** v3 "that much" link: written by clearDamage, read by damage n:'linked' (spec §3) */
   linked?: number
   actorSeat: Seat
@@ -357,6 +359,16 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         if (u.imprisoned) releaseUnit(state, u, 'absolved')
         u.mods = u.mods.filter(m => (m.p ?? 0) >= 0 && (m.h ?? 0) >= 0)
         log(state, u.owner, `${name(state, u.id)} is cleansed`)
+        break
+      }
+      case 'xSurge': {   // issue #45: pay-any-X — cede X influence, +X power and Breakthrough for the round
+        const u = resolveUnitTarget(ctx, op.t)
+        if (!u) break
+        const x = ctx.x ?? 0
+        addInfluence(state, controller, -x)
+        u.mods.push({ p: x, round: true })
+        u.mods.push({ kw: { k: 'breakthrough' }, round: true })
+        log(state, controller, `${state.sides[controller].name} cedes ${x} influence — ${name(state, u.id)} gets +${x} power and breakthrough this round`)
         break
       }
       case 'capture': {

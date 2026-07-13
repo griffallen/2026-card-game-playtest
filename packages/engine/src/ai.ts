@@ -235,6 +235,14 @@ function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'p
   const chosenIdx = (t: unknown): number | null => (t === 'chosen0' ? 0 : t === 'chosen1' ? 1 : null)
   const stockValue = (u: UnitInstance) => defOf(state, u.id).cost + effPower(state, u)
 
+  if (def.xCost) {
+    // issue #45: value the surge against its influence bleed — favor a solid mid X, and only
+    // when the pumped unit can actually swing this round
+    const x = action.x ?? 0
+    const u = action.targets?.[0]?.kind === 'unit' ? state.units[action.targets[0].id] : undefined
+    if (!u || u.exhausted || x === 0) return 1
+    return 10 + x * 4 - Math.max(0, x - 3) * 6
+  }
   for (const op of def.onPlay ?? []) {
     switch (op.op) {
       case 'influence': score += op.n > 0 ? op.n * 4 : op.n * 2; break

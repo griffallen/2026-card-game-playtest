@@ -117,7 +117,8 @@ export function parseCardFile(src: string, slug: string, color: Color): { card?:
 
   if (!fields.name?.trim()) err('missing field "name"')
   if (!fields.type) err('missing field "type"')
-  const cost = int('cost')
+  const xCost = fields.cost === 'X'   // issue #45: printed X — declared at cast
+  const cost = xCost ? 0 : int('cost')
   if (fields.cost === undefined) err('missing field "cost"')
 
   let structural: Partial<CardDef> = {}
@@ -150,6 +151,7 @@ export function parseCardFile(src: string, slug: string, color: Color): { card?:
     color,
     type: fields.type as CardDef['type'],   // value range re-checked by validateCardSet
     cost: cost!,
+    ...(xCost ? { xCost: true } : {}),
     ...(power !== undefined ? { power } : {}),
     ...(health !== undefined ? { health } : {}),
     text,
@@ -167,7 +169,7 @@ export function serializeCardFile(def: CardDef, status: CardStatus): string {
   if (/^(## |---\s*$)/m.test(def.text) || (def.designerNote && /^(## |---\s*$)/m.test(def.designerNote))) {
     throw new Error(`${def.slug}: text/notes may not contain "## " headings or --- fences`)
   }
-  const out = ['---', `name: ${def.name}`, `type: ${def.type}`, `cost: ${def.cost}`]
+  const out = ['---', `name: ${def.name}`, `type: ${def.type}`, `cost: ${def.xCost ? 'X' : def.cost}`]
   if (def.power !== undefined) out.push(`power: ${def.power}`)
   if (def.health !== undefined) out.push(`health: ${def.health}`)
   const kwText = (def.kw ?? []).map(k => (k.n !== undefined ? `${k.k} ${k.n}` : k.k)).join(', ')

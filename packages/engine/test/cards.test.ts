@@ -8,12 +8,12 @@ import { validateDeck } from '../src/setup.ts'
 import { DEFAULT_RULES } from '../src/rules.ts'
 
 describe('card set', () => {
-  it('holds the full pool (36 red, 48 yellow, 36 purple), unique slugs', () => {
+  it('holds the full pool (37 red, 48 yellow, 36 purple), unique slugs', () => {
     const cards = Object.values(CARD_SET)
-    expect(cards.filter(c => c.color === 'red').length).toBe(36)
+    expect(cards.filter(c => c.color === 'red').length).toBe(37)   // +1: Reckless Abandon (issue #45)
     expect(cards.filter(c => c.color === 'yellow').length).toBe(48)
     expect(cards.filter(c => c.color === 'purple').length).toBe(36)
-    expect(Object.keys(CARD_SET).length).toBe(120)
+    expect(Object.keys(CARD_SET).length).toBe(121)
   })
 
   it('passes structural validation — the admin-edit safety contract', () => {
