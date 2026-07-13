@@ -52,7 +52,7 @@
 |---|---|---|---|---|---|---|
 | [Iron Plating](yellow/iron-discipline.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. |
 | [Oath of Order](yellow/oath-of-order.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gains Guard. |
-| [Vanguard Sentinel](yellow/vanguard-sentinel.md) | 1 | unit | 1/2 | guard | canon | Guard. When this defends, gain 2 Influence. |
+| [Vanguard Sentinel](yellow/vanguard-sentinel.md) | 1 | unit | 1/1 | guard | canon | Guard. When this unit dies, gain 1 Influence. |
 | [Binding Light](yellow/binding-light.md) | 2 | action | — |  | canon | Exhaust target enemy unit with 4 or less Power. |
 | [Containment Priest](yellow/containment-priest.md) | 2 | unit | 2/3 | capture | canon | When this enters play, it captures target enemy unit with 2 or less Power. |
 | [Disciplined Mind](yellow/disciplined-mind.md) | 2 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. Draw a card. |

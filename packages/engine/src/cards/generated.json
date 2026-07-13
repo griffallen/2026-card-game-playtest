@@ -1068,10 +1068,10 @@
   "artUrl": "/cards/oath-of-order.jpg"
  },
  "vanguard-sentinel": {
-  "onDefend": [
+  "onDeath": [
    {
     "op": "influence",
-    "n": 2
+    "n": 1
    }
   ],
   "slug": "vanguard-sentinel",
@@ -1080,8 +1080,8 @@
   "type": "unit",
   "cost": 1,
   "power": 1,
-  "health": 2,
-  "text": "Guard. When this defends, gain 2 Influence.",
+  "health": 1,
+  "text": "Guard. When this unit dies, gain 1 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1090,7 +1090,7 @@
   "pips": [
    "yellow"
   ],
-  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n\n2026-07-13 (designer, PR #54 — yellow rebalance pass, issue #50): 1/2 → 1/1, and the defend\npayout becomes a death payout — \"When this unit dies, gain 1 Influence.\" New vocabulary:\n`onDeath` trigger (fires as the unit falls, its owner collects). The martyr, not the sentry.",
   "artUrl": "/cards/vanguard-sentinel.jpg"
  },
  "binding-light": {

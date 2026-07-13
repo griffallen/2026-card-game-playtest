@@ -113,6 +113,7 @@ export interface CardDef {
   onAttackBase?: Op[]
   onDefend?: Op[]
   onKill?: Op[]
+  onDeath?: Op[]             // PR #54: fires as the unit dies (controller = owner)
   startOfRound?: { cond?: Cond; ops: Op[] }
   endOfRound?: { cond?: Cond; ops: Op[] }
   statics?: Static[]

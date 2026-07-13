@@ -25,9 +25,9 @@ describe('splashReap (Fiery Impaler, PR #46, decision 93)', () => {
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const imp = put(s, me, 'fiery-impaler', 1)
     const wall = put(s, them, 'berserker', 1, { exhausted: true })  // no onDefend payout to muddy the influence check
-    const wisp = put(s, them, 'vanguard-sentinel', 1, { exhausted: true, damage: 0 })
-    // set the wisp to 1 effective health so the skewer kills: use damage to health-1
-    s.units[wisp].damage = (CARD_SET['vanguard-sentinel'].health ?? 1) - 1
+    // spark-hound: no death payout (PR #54 made vanguard-sentinel a martyr — bad fixture)
+    const wisp = put(s, them, 'spark-hound', 1, { exhausted: true, damage: 0 })
+    s.units[wisp].damage = (CARD_SET['spark-hound'].health ?? 1) - 1
     const before = s.influence
     s = applyAction(s, {
       type: 'attack', attackers: [imp], target: { kind: 'unit', id: wall },

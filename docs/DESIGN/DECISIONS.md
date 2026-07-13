@@ -162,6 +162,8 @@ Numbered, in the order they were made. Format: decision — reason.
 
 96. ✅ **Prison Warrant: the flat fee becomes rent** (PR #53, 2026-07-13 — yellow rebalance pass). Cost 1 → 3; the ≤2-power cap becomes **damaged OR ≤2 health** (new target vocabulary `damagedOrMaxHealth`); and the on-play +1 influence becomes **+1 per round while the captive is held** (new capture `income`, paid at the holder's owner's start step — so from round 2 on, per decision 71). The income dies with the holder (decision 92: so does the grip). ⚑ Agent readings: "beginning of each round" = the holder's owner's start step; the dead `influenceTrigger` field was removed with the flat gain.
 
+97. ✅ **Vanguard Sentinel becomes the martyr — and death learns to speak** (PR #54, 2026-07-13 — yellow rebalance pass). 1/2 → 1/1; the defend payout ("gain 2 when this defends") becomes a death payout ("when this unit dies, gain 1 Influence"). New vocabulary: the **`onDeath` trigger** — fires as the unit falls, its owner collects; the body leaves play before the last words run (recursion-proof by construction). Rate note: yellow's cheapest defend-payer stops feeding the ladder every combat and instead pays once, at the worst moment for the opponent to feel good about the kill.
+
 ## Session-006 card redesigns (all ⚑ — designer ratify/veto; the why is on each card's Design notes)
 
 - **Red burn grammar:** unit-only burn = cost+1 damage (Devastating Strike became unit-only); face-capable burn = cost (Raging Inferno 5→6 dmg; Searing Bolt/Volcanic Slam/Rupture already conformed). Burn the Frontline 7-for-4 → 6-for-6 one-zone (the wall-breaker; friendly fire stays as red's visible cost).

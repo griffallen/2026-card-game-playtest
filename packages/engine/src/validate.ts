@@ -7,7 +7,7 @@ const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
 const TARGET_KINDS = new Set(['unit', 'unitOrBase', 'zone', 'upgrade'])
 const COND_KEYS = new Set(['influenceAtLeast', 'influenceAtMost', 'selfLifeAtMost'])
-const TRIGGER_KEYS = ['onPlay', 'onEnterZone', 'onAttack', 'onAttackBase', 'onDefend', 'onKill'] as const
+const TRIGGER_KEYS = ['onPlay', 'onEnterZone', 'onAttack', 'onAttackBase', 'onDefend', 'onKill', 'onDeath'] as const
 
 const isInt = (v: unknown, lo = -99, hi = 99) => Number.isInteger(v) && (v as number) >= lo && (v as number) <= hi
 

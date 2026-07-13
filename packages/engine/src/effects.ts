@@ -405,6 +405,14 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
 
 export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
   if (!state.units[unit.id]) return
+  // PR #54 (onDeath): last words. The body leaves play FIRST — ops run over a state where the
+  // unit is already gone, so the op-tail cleanup can't re-enter this death and recurse.
+  // actorSeat attribution uses the owner (win-tie edge; today's onDeath ops are influence-only).
+  const deathOps = unit.imprisoned ? undefined : defOf(state, unit.id).onDeath
+  delete state.units[unit.id]
+  if (deathOps?.length) {
+    runOps({ state, controller: unit.owner, sourceUnit: unit.id, actorSeat: unit.owner }, deathOps)
+  }
   // v3 Capture: the capturer leaving play frees its captives — READY (decision 73, reverses 61)
   for (const [cid, c] of Object.entries(state.captives)) {
     if (c.by !== unit.id) continue
