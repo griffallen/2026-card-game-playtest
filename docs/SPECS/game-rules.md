@@ -41,10 +41,15 @@ Cost and color are now two separate checks:
 1. **Declare:** attacker exhausts a group of ready units in one zone and declares **one target:
    an enemy unit there, or the enemy's Home** (Home only while standing in that zone, as today).
 2. **Block — the duel law [decision 98 (issue #50, designer: "flip it") — supersedes the open
-   window for lone attackers]:** if **exactly one unit attacks**, no ordinary unit may block —
-   the block window opens only if the defender has a ready **Guard** in the zone, and then
-   **at most one Guard** may step in front (full redirect: the Guard takes the entire hit and
-   counters as a blocker; the target is untouched and does not retaliate). If **two or more
+   window for lone attackers]:** if **exactly one unit attacks an enemy unit**, no ordinary
+   unit may block — the block window opens only if the defender has a ready **Guard** in the
+   zone, and then **at most one Guard** may step in front (full redirect: the Guard takes the
+   entire hit and counters as a blocker; the target is untouched and does not retaliate).
+   **[Decision 100 (issue #50, designer) — the Home is everyone's to defend:** the duel law
+   governs **unit targets only**. A lone attacker declaring the **Home** faces the fully open
+   block window — any ready unit may block (Guards still block without exhausting). Purple
+   owns zero Guards; under an unqualified duel law it literally could not defend its base.
+   Measured cost of the carve-out: prebuilt red 46.0% → 33.5%.]** If **two or more
    units attack**, the defense opens fully: the defender assigns any of their ready units in
    that zone as blockers, pairing them onto attackers — 1v1 or several blockers ganging one
    attacker; the declared target may itself block its attacker. **Blocking exhausts the

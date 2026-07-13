@@ -507,6 +507,33 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     else setSelection({ kind: 'targeting', card: cardId, collected: [], mode })
   }
 
+  // #57 (Blaine): confirm without the cross-screen mouse trip — Enter fires the selected
+  // hand card's one obvious action (Play, or Bank during the bank step); Esc backs out of
+  // whatever is open. The lethal-play rail stays click-only: a reflex Enter must never be
+  // the keystroke that loses the game.
+  const keyHandler = useRef<(e: KeyboardEvent) => void>(() => {})
+  keyHandler.current = e => {
+    const t = e.target as HTMLElement | null
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return
+    if (e.key === 'Escape') {
+      if (inspect) { setInspect(null); return }
+      setLethalPlay(null); setConfirming(null); setSelection(null)
+      return
+    }
+    if (e.key !== 'Enter' || e.repeat) return
+    if (!myWindow || lethalPlay || view.phase === 'setup') return
+    if (selection?.kind === 'hand') {
+      e.preventDefault()
+      if (playActionsFor(selection.id).length > 0) beginPlay(selection.id)
+      else if (resourceActionFor(selection.id)) apply({ type: 'resource', card: selection.id }, seat)
+    }
+  }
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => keyHandler.current(e)
+    window.addEventListener('keydown', h)
+    return () => window.removeEventListener('keydown', h)
+  }, [])
+
   function pickMode(cardId: string, mode: number) {
     const plays = playActionsFor(cardId).filter(p => p.mode === mode)
     if (!plays.length) return
@@ -663,6 +690,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           )}
           <button className="btn !py-1 text-xs" onClick={() => setInspect({ kind: 'card', slug: state.cardOf[selection.id] })}>ⓘ details</button>
           <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel</button>
+          <span className="w-full text-[11px] text-dim/70 max-lg:hidden">⏎ Enter confirms · Esc cancels</span>
         </div>
       )}
       {selection?.kind === 'unit' && (
@@ -808,12 +836,16 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         : view.phase === 'setup'
           ? `Opening hand — pick ${setupN} cards to bank as your starting resources (${setupPicks.length}/${setupN}).`
           : view.phase === 'bank'
-            ? 'Start of round — bank a card as a resource, or skip.'
+            ? '⬢ Banking step — bank a card as a resource, or skip. (Cards are not played in this step.)'
             : skipToMyWindow
               ? 'Passing through empty turns…'
               : config.mode === 'hotseat'
                 ? `${names[seat]} — your turn (screen follows whoever acts)`
                 : 'Your turn.'
+
+  // #57 (Blaine): banking mode kept getting mistaken for the play window — "i kept
+  // forgetting i had to bank or skip, thought i was playing." Make the step wear a color.
+  const bankMode = view.phase === 'bank' && myWindow && canBank
 
   // Contextual guidance: say WHAT you can do right now.
   const hints: string[] = []
@@ -822,7 +854,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     if (view.phase === 'setup') {
       hints.push('Banked cards become permanent resources (+1 to spend every round, forever) — but the cards themselves never come back. Most players bank what they least want to draw into.')
     } else if (view.phase === 'bank') {
-      hints.push(`Banking tucks a card away forever and pays +1 toward costs every round — you'd have ${ready + 1} each round after this. Most rounds, bank.`)
+      hints.push(`Banking tucks a card away forever and pays +1 toward costs every round — you'd have ${ready + 1} each round after this. Bank early and often — but once your bank covers your biggest costs, every further bank is a card you'll miss in the late game.`)
     } else if (isIntercept) {
       hints.push('An attack is incoming. Intercepting redirects the whole blow onto one of your ready units (Guards stay ready; others exhaust). Let it through to take it on the declared target instead.')
     } else if (onlyPass) {
@@ -985,7 +1017,13 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             onBase={() => setInspect({ kind: 'base', seat })}
           />
 
-          <div className="mt-1.5 flex gap-2 overflow-x-auto pb-1">
+          {bankMode && (
+            <div className="mt-1.5 flex flex-wrap items-center gap-2 rounded-md border border-[#c98a27] bg-[#c98a27]/10 px-2 py-1.5 text-xs">
+              <span className="text-goldbright">⬢ <b>Banking step</b> — tap a card below to bank it as a resource (not play it), or</span>
+              <button className="btn !py-0.5 text-xs" onClick={() => apply({ type: 'skipResource' }, seat)}>Skip banking →</button>
+            </div>
+          )}
+          <div className={`mt-1.5 flex gap-2 overflow-x-auto pb-1 ${bankMode ? 'rounded-md bg-[#c98a27]/[0.06] p-1 ring-1 ring-[#c98a27]/50' : ''}`}>
             {[...view.hand].sort((a, b) => {
               const da = DEMO_CARDS[a.slug]; const db = DEMO_CARDS[b.slug]
               return (da?.cost ?? 0) - (db?.cost ?? 0) || (da?.type ?? '').localeCompare(db?.type ?? '') || (da?.name ?? '').localeCompare(db?.name ?? '')
@@ -1008,7 +1046,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         </div>
 
         <div className="flex min-h-0 flex-col gap-2 border-t hairline p-2 lg:border-l lg:border-t-0">
-          <div className="panel p-3">
+          <div className={`panel p-3 ${bankMode ? 'bg-[#c98a27]/10 ring-1 ring-[#c98a27]/60' : ''}`}>
             <div className="text-[11.5px] uppercase tracking-widest text-dim">Round {view.round} — {names[view.actorSeat]}'s turn</div>
             <div className={`mt-1 font-display text-parchment ${myWindow && !skipToMyWindow ? 'pulse-soft text-goldbright' : ''}`}>{statusLine}</div>
             {hints.map((h, i) => <p key={i} className="mt-1.5 text-[12.5px] leading-relaxed text-dim">{h}</p>)}
@@ -1021,9 +1059,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                     Auto-pass empty turns ⏭
                   </button>
               )}
-              {myWindow && canBank && (
-                <button className="btn !py-1 text-xs" onClick={() => apply({ type: 'skipResource' }, seat)}>Skip banking →</button>
-              )}
+              {/* the Skip banking button lives in the amber bank-step banner over the hand (#57) */}
               {myWindow && canClaim && (
                 <button className="btn btn-primary !py-1 text-xs" title="take the initiative token: ends your round, but you act first next round"
                   onClick={() => apply({ type: 'claimInitiative' }, seat)}>Claim initiative ⚑</button>

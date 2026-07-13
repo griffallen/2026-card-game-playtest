@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { GameState } from '../src/types.ts'
+import type { GameAction, GameState } from '../src/types.ts'
 import { createGame } from '../src/setup.ts'
 import { applyAction } from '../src/engine.ts'
 import { getLegalActions } from '../src/legal.ts'
@@ -41,7 +41,8 @@ describe('duel law (issue #50, singleAttackerDuels)', () => {
     const guard2 = put(s, them, 'guardian', 1)
     s = applyAction(s, { type: 'attack', attackers: [atk], target: { kind: 'unit', id: victim } }, me).state
     expect(s.phase).toBe('block')
-    const blocks = getLegalActions(s, them).filter(a => a.type === 'block' && a.pairs.length)
+    const blocks = getLegalActions(s, them)
+      .filter((a): a is Extract<GameAction, { type: 'block' }> => a.type === 'block' && a.pairs.length > 0)
     // both guards offer, but every offer is a single pair — no gangs, no plain units
     expect(blocks.every(b => b.pairs.length === 1)).toBe(true)
     expect(new Set(blocks.map(b => b.pairs[0].blocker))).toEqual(new Set([guard, guard2]))

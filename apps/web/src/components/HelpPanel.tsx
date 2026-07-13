@@ -31,7 +31,7 @@ function V3Content() {
         <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, attack, <b>use a Sneak ability</b>, <b>salvage an orphaned upgrade</b>, or pass. <b>Two passes in a row end the round.</b> Passing is soft: if they act after you passed, you can act again.</Row>
         <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
         <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives one free move the round it arrives.</Row>
-        <Row icon="⚔" title="Attack — the duel law">Exhaust <b>one or more ready units in a zone</b> and name one target. <b>Attack alone and nobody may block</b> — except a ready <b>Guard</b>, who may step in front of the target and take the whole hit (one Guard only). <b>Attack in a gang</b> and the defense opens: the defender pairs ready units onto your attackers freely, and <b>blocking exhausts</b> (Guards block free). Pairs trade blows at once; gang damage pours in pair order. Unblocked attackers hit the declared target full-force — and the target <b>strikes them back at full power, even while exhausted</b>. Certainty travels alone; numbers can be answered.</Row>
+        <Row icon="⚔" title="Attack — the duel law">Exhaust <b>one or more ready units in a zone</b> and name one target. <b>Attack a unit alone and nobody may block</b> — except a ready <b>Guard</b>, who may step in front of the target and take the whole hit (one Guard only). <b>Attack a base</b> and the window is always open — <b>any ready unit may block</b>, however few attack; the base is everyone's to defend. <b>Attack in a gang</b> and the defense opens: the defender pairs ready units onto your attackers freely, and <b>blocking exhausts</b> (Guards block free). Pairs trade blows at once; gang damage pours in pair order. Unblocked attackers hit the declared target full-force — and the target <b>strikes them back at full power, even while exhausted</b>. Certainty travels alone; numbers can be answered.</Row>
       </div>
 
       <H>Reading the board</H>
@@ -41,7 +41,7 @@ function V3Content() {
         <Row icon="⛨" title="Shielded">Carries its shield token: the <b>first</b> hit is prevented entirely, then the ⛨ disappears — what you see is what's live.</Row>
         <Row icon="⛓" title="Captives">A ⛓ on a unit means it holds an enemy unit <b>under it</b>, off the board. The grip breaks only one way: <b>when the capturer dies</b>, the captive returns to that zone, <b>ready</b>. There is no letting go — kill the jailer to free the prisoner.</Row>
         <Row icon="⬥" title="Orphaned upgrades">When a unit dies, its upgrades stay <b>lying in the zone</b> as dashed ⬥ tokens. Either player may tap one to <b>salvage</b> it onto their own unit there — paying its full cost and pips, as if played.</Row>
-        <Row icon="🛡" title="Guard">The <b>bodyguard</b>: the only unit that may block a <b>lone</b> attacker — stepping fully in front of the target — and it blocks <b>without exhausting</b>, in duels or gangs. ◈ is armor: every hit is reduced by that much.</Row>
+        <Row icon="🛡" title="Guard">The <b>bodyguard</b>: the only unit that may block a <b>lone</b> attacker striking a unit — stepping fully in front of the target — and it blocks <b>without exhausting</b>, in duels or gangs. (Lone attacks on a <b>base</b> are open to every ready unit.) ◈ is armor: every hit is reduced by that much.</Row>
         <Row icon="⊘" title="Can't attack">This unit <b>can't attack right now</b> — either its own card forbids it (walls), or an enemy effect <b>disarmed it for the round</b>. It can still move and block.</Row>
         <Row icon="⚑" title="Flagged card">A prototype ruling was needed for this card's printed text — hover/long-press to read it.</Row>
       </div>
@@ -49,7 +49,7 @@ function V3Content() {
       <H>Keywords in one line</H>
       <p className="mt-2 text-[13px] leading-relaxed text-body/90">
         <b>Rush</b> one free move on arrival · <b>Breakthrough</b> kills its blocker → <i>all</i> excess pushes to the original target ·
-        <b> Ranged N</b> exhaust to volley N at any enemy unit, any zone (its attacks are ordinary) · <b>Guard</b> the only block against a lone attacker; always blocks free ·
+        <b> Ranged N</b> exhaust to volley N at any enemy unit, any zone (its attacks are ordinary) · <b>Guard</b> the only block against a lone attacker on a unit (base attacks stay open to all); always blocks free ·
         <b> Hidden</b> while ready it can't be targeted or attacked; exhausting reveals it · <b>Infiltrate</b> deploys to any zone ·
         <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under until the holder dies; it returns ready ·
         <b> Shielded</b> first hit prevented · <b>Scar</b> +1 power per damage marked — no cap ·

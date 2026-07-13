@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import type { FastifyInstance } from 'fastify'
+import { CARD_SET, PREBUILT_DECKS } from '@newgame/engine'
 import { buildApp } from '../src/app.ts'
 import { prisma } from '../src/db.ts'
 
@@ -46,15 +47,17 @@ describe('auth', () => {
 })
 
 describe('library', () => {
-  it('serves the full pool and all prebuilt decks with 48-card lists', async () => {
+  it('serves the full pool and all prebuilt decks with min-48-card lists', async () => {
     await register('boba')
     const cards = await app.inject({ method: 'GET', url: '/api/cards', headers: cookieFor('boba') })
-    expect(cards.json().cards.length).toBe(120)
+    // sized from the engine, not a literal — the pool grows with the ledger (121 as of session 009)
+    expect(cards.json().cards.length).toBe(Object.keys(CARD_SET).length)
 
     const decks = await app.inject({ method: 'GET', url: '/api/decks', headers: cookieFor('boba') })
     const list = decks.json().decks
-    expect(list.length).toBe(3)
-    expect(list.every((d: { cardCount: number }) => d.cardCount === 48)).toBe(true)
+    expect(list.length).toBe(PREBUILT_DECKS.length)
+    // decks are min-48, not exactly-48 (decision 90) — red runs 49, Griff's Red 65
+    expect(list.every((d: { cardCount: number }) => d.cardCount >= 48)).toBe(true)
 
     const detail = await app.inject({ method: 'GET', url: `/api/decks/${list[0].id}`, headers: cookieFor('boba') })
     expect(detail.json().deck.cards.length).toBeGreaterThan(30)
@@ -88,7 +91,12 @@ describe('game lifecycle', () => {
     expect(joined.json().game.status).toBe('active')
 
     const game = await prisma.game.findUniqueOrThrow({ where: { id: gameId } })
-    expect(Object.keys(game.cardSet as object).length).toBe(84) // both decks' cards snapshotted
+    // both decks' cards snapshotted — sized from the actual prebuilt lists, not a literal
+    const uniqueSlugs = new Set(
+      PREBUILT_DECKS.filter(d => d.name.includes('Crimson') || d.name.includes('Radiant'))
+        .flatMap(d => d.cards.map(c => c.slug)),
+    )
+    expect(Object.keys(game.cardSet as object).length).toBe(uniqueSlugs.size)
   })
 
   it('host can cancel a waiting game; others cannot', async () => {
