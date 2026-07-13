@@ -850,7 +850,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       </div>
 
       {/* phones: plain block flow in the page scroll (bars scroll away); lg+: two-column grid */}
-      <div className="min-h-0 flex-1 max-lg:overflow-visible lg:grid lg:grid-cols-[1fr_290px]">
+      <div className="min-h-0 flex-1 max-lg:overflow-visible lg:grid lg:grid-cols-[minmax(0,1fr)_290px]">
         <div className="flex min-h-0 flex-col p-2">
           <PlayerBar
             name={`${names[foe]}${aiControls(config, foe) ? ' 🤖' : ''}`} life={their.life} handCount={their.handCount}
@@ -1140,10 +1140,10 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           title={`${names[inspect.seat]} — ${inspect.pile === 'resources' ? 'banked resources' : 'discard pile'}`}
           note={inspect.pile === 'resources'
             ? 'Resources are banked face-up: public to both players. Exhausted ones refresh at the start of their owner\'s next round.'
-            : 'Everything destroyed, spent, or discarded — public to both players.'}
+            : 'Everything destroyed, spent, or discarded — newest first, public to both players.'}
           cards={(inspect.pile === 'resources'
             ? view.sides[inspect.seat].resources.map(r => DEMO_CARDS[r.slug])
-            : view.sides[inspect.seat].discard.map(d => DEMO_CARDS[d.slug])
+            : [...view.sides[inspect.seat].discard].reverse().map(d => DEMO_CARDS[d.slug])   // #48: newest first
           ).filter(Boolean)}
           sleeve={sleeveFor(inspect.seat === seat)}
           onClose={() => setInspect(null)}
