@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import type { UnitView } from '@newgame/engine'
 import { ProceduralArt } from '../components/ProceduralArt.tsx'
 import { useLongPress } from '../components/CardFrame.tsx'
-import { SLEEVE_EDGE, SLEEVE_TAB, sleeveFor } from './sleeves.ts'
+import { SLEEVE_EDGE, SLEEVE_TAB, sleeveFor, type Sleeve } from './sleeves.ts'
 
-export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }: {
+export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, sleeve: sleeveProp }: {
   unit: UnitView
   mine: boolean
   glow: 'none' | 'selected' | 'target' | 'attack'
@@ -13,10 +13,12 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress }:
   actionable?: boolean
   /** long-press opens the inspector regardless of tap semantics */
   onLongPress?: () => void
+  /** issue #61: the owner's chosen sleeve — falls back to the ivory/gunmetal defaults */
+  sleeve?: Sleeve
 }) {
   const [artBroken, setArtBroken] = useState(false)
   const lp = useLongPress(onLongPress)
-  const sleeve = sleeveFor(mine)
+  const sleeve = sleeveProp ?? sleeveFor(mine)
   const hurt = unit.damage > 0
   // #27: taking damage is visible — shake the chip and float the number
   const prevDamage = useRef(unit.damage)

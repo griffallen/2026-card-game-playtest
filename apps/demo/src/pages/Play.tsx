@@ -4,6 +4,7 @@ import type { PolicyName } from '@newgame/engine'
 import { DECKS, type DemoConfig, type Mode } from '../local.ts'
 import { allDecks } from '../custom-decks.ts'
 import { DemoTable } from '../DemoTable.tsx'
+import { SLEEVE_CHOICES, SLEEVE_SWATCH, type Sleeve } from '@ui/game/sleeves.ts'
 
 const MODES: { id: Mode; title: string; blurb: string }[] = [
   { id: 'hotseat', title: '🪑 Hotseat', blurb: 'Two humans, one screen — or one designer playing both sides. The view follows whoever acts.' },
@@ -24,6 +25,8 @@ export function Play() {
   const [seedText, setSeedText] = useState('')
   const [london, setLondon] = useState(false)
   const [rulesV3, setRulesV3] = useState(true)   // v3.0 default; v2.3 selectable for A/B
+  const [sleeveA, setSleeveA] = useState<Sleeve>('ivory')     // #61: per-seat sleeve picks
+  const [sleeveB, setSleeveB] = useState<Sleeve>('gunmetal')
   const [params, setParams] = useSearchParams()
 
   // Replay links from the Simulator: #/play?watch=1&seed=…&first=red|yellow&pa=…&pb=…
@@ -61,8 +64,24 @@ export function Play() {
       nameB: mode === 'watch' ? botName(deckB, 'heuristic') : mode === 'vs-ai' ? 'The Machine' : 'Player 2',
       policyA: 'heuristic',
       policyB: 'heuristic',
+      sleeves: [sleeveA, sleeveB],
     })
   }
+
+  // #61: sleeve picker — bold swatches, one row per seat
+  const sleevePick = (value: Sleeve, onChange: (s: Sleeve) => void, other: Sleeve, label: string) => (
+    <div className="text-xs uppercase tracking-wider text-dim">{label}
+      <div className="mt-1 flex gap-1.5">
+        {SLEEVE_CHOICES.map(c => (
+          <button key={c.id} title={c.label + (c.id === other ? ' — taken by the other seat' : '')}
+            disabled={c.id === other}
+            onClick={() => onChange(c.id)}
+            className={`h-7 w-7 rounded-md ${SLEEVE_SWATCH[c.id]} ${value === c.id ? 'ring-2 ring-goldbright ring-offset-2 ring-offset-black' : c.id === other ? 'opacity-25' : 'opacity-70 hover:opacity-100'}`}
+            aria-label={`${label}: ${c.label}`} />
+        ))}
+      </div>
+    </div>
+  )
 
   const pool = allDecks()   // prebuilts + workshop decks (issue #30)
   const deckPick = (value: string, onChange: (v: string) => void, label: string) => (
@@ -106,6 +125,8 @@ export function Play() {
             Rules v3.0 — pips, blocker combat, the new keywords (uncheck for classic v2.3)
           </label>
         </label>
+        {sleevePick(sleeveA, setSleeveA, sleeveB, mode === 'vs-ai' ? 'Your sleeves' : 'Seat 1 sleeves')}
+        {sleevePick(sleeveB, setSleeveB, sleeveA, mode === 'vs-ai' ? "The AI's sleeves" : 'Seat 2 sleeves')}
       </div>
 
       <button className="btn btn-primary mt-4 px-6" onClick={start}>Begin ⚔</button>

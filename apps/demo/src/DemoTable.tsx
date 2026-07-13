@@ -302,6 +302,8 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     const kw = unitViewOf(id)?.keywords.find(k => k.startsWith('overextend'))
     return kw ? Number(kw.split(' ')[1] ?? 0) : null
   }
+  // issue #61: per-seat sleeve picks from setup; defaults keep ivory-mine/gunmetal-theirs
+  const sleeveOf = (owner: Seat) => config.sleeves?.[owner] ?? sleeveFor(owner === seat)
   const refName = (ref: TargetRef): string =>
     ref.kind === 'unit' ? unitName(ref.id)
       : ref.kind === 'base' ? `${names[ref.seat]}'s base`
@@ -660,32 +662,49 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         })()}
       </span>
     </div>
-  ) : isBlock && myWindow ? (
-    <div className="rounded-md border border-[#c98a27] bg-[#c98a27]/10 p-2 text-xs">
-      <p className="text-goldbright">
-        ⚔ <b>{pendingAttack ? pendingAttack.attackers.map(unitName).join(', ') : 'The enemy'}</b>{' '}
-        attack{pendingAttack && pendingAttack.attackers.length === 1 ? 's' : ''}{' '}
-        <b>{pendingAttack ? refName(pendingAttack.target) : 'you'}</b>. Assign blockers — gangs allowed; blocking exhausts (Guards stay ready).
-      </p>
-      <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-        <span className="text-[12.5px] text-dim">
-          Tap a glowing unit to send it in{(pendingAttack?.attackers.length ?? 0) > 1 ? ' — tap it again to switch which attacker it fights; one more pulls it out' : ' — tap again to pull it out'}.
-        </span>
-        <button className="btn !py-0.5 text-xs" onClick={() => apply({ type: 'block', pairs: blockPairs }, seat)}>
-          {blockPairs.length ? `Block with ${blockPairs.length}` : 'Let it through'}
-        </button>
-      </div>
-      {blockPairs.length > 0 && (
-        <p className="mt-1.5 text-[12.5px] text-parchment">
-          {blockPairs.map(p => `${unitName(p.blocker)} ⚔ ${unitName(p.onto)}`).join(' · ')}
-          {(() => {
-            const open = (pendingAttack?.attackers ?? []).filter(a => view.zones.some(z => z.units.some(u => u.id === a)) && !blockPairs.some(p => p.onto === a))
-            return open.length ? ` — ${open.map(unitName).join(', ')} unblocked → hits ${pendingAttack ? refName(pendingAttack.target) : 'the target'}` : ''
-          })()}
+  ) : isBlock && myWindow ? (() => {
+    // #62 (Blaine): the block window is a decision — show the numbers it turns on, live.
+    const atk = (pendingAttack?.attackers ?? []).map(id => unitViewOf(id)).filter((u): u is NonNullable<typeof u> => !!u)
+    const tgt = pendingAttack?.target
+    const tgtView = tgt?.kind === 'unit' ? unitViewOf(tgt.id) : undefined
+    const open = atk.filter(a => !blockPairs.some(p => p.onto === a.id))
+    const openPower = open.reduce((s, a) => s + a.power, 0)
+    const armor = tgtView?.armor ?? 0
+    const landing = tgtView?.shielded ? 0 : Math.max(0, openPower - armor)  // combined hit, armor once
+    return (
+      <div className="rounded-md border border-[#c98a27] bg-[#c98a27]/10 p-2 text-xs">
+        <p className="text-goldbright">
+          ⚔ <b>{atk.map(a => `${a.name} (${a.power}⚔${a.keywords.some(k => k.startsWith('breakthrough')) ? ', breakthrough' : ''})`).join(' + ')}</b>{' '}
+          attack{atk.length === 1 ? 's' : ''} <b>{pendingAttack ? refName(pendingAttack.target) : 'you'}</b>.
+          Blockers exhaust (Guards stay ready), eat their attacker's damage, and counter with their own power.
         </p>
-      )}
-    </div>
-  ) : isIntercept && myWindow ? (
+        <p className="mt-1 text-[12.5px] text-body/90">
+          {open.length === 0
+            ? 'Everything is blocked — nothing reaches the target.'
+            : tgt?.kind === 'base'
+              ? <>Let through: <b className="text-parchment">{openPower} damage to your base</b> → you'd be at {Math.max(0, my.life - openPower)} life. (Bases never strike back.)</>
+              : <>Let through: <b className="text-parchment">{landing} lands on {tgtView?.name ?? 'the target'}</b>
+                {tgtView?.shielded ? ' — its ⛨ shield eats this entire hit' : armor > 0 ? ` (${openPower} shrunk once by armor ${armor})` : ''}
+                {tgtView && !tgtView.shielded && landing >= tgtView.health - tgtView.damage ? ' — lethal' : ''}
+                {tgtView ? <> — and it strikes back: each unblocked attacker takes <b className="text-parchment">{tgtView.power}</b>, even while exhausted.</> : null}</>}
+        </p>
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+          <span className="text-[12.5px] text-dim">
+            Tap a glowing unit to send it in{atk.length > 1 ? ' — tap it again to switch which attacker it fights; one more pulls it out' : ' — tap again to pull it out'}.
+          </span>
+          <button className="btn !py-0.5 text-xs" onClick={() => apply({ type: 'block', pairs: blockPairs }, seat)}>
+            {blockPairs.length ? `Block with ${blockPairs.length}` : 'Let it through'}
+          </button>
+        </div>
+        {blockPairs.length > 0 && (
+          <p className="mt-1.5 text-[12.5px] text-parchment">
+            {blockPairs.map(p => `${unitName(p.blocker)} ⚔ ${unitName(p.onto)}`).join(' · ')}
+            {open.length ? ` — ${open.map(a => a.name).join(', ')} unblocked → hits ${pendingAttack ? refName(pendingAttack.target) : 'the target'}` : ''}
+          </p>
+        )}
+      </div>
+    )
+  })() : isIntercept && myWindow ? (
     <div className="rounded-md border border-[#c98a27] bg-[#c98a27]/10 p-2 text-xs">
       <p className="text-goldbright">
         ⚔ <b>{pendingAttack ? pendingAttack.attackers.map(unitName).join(', ') : 'The enemy'}</b>{' '}
@@ -1010,7 +1029,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                           : isInterceptor ? 'target'
                             : glowFor(ref)
                       return (
-                        <UnitChip key={u.id} unit={u} mine={mine} glow={glow}
+                        <UnitChip key={u.id} unit={u} mine={mine} glow={glow} sleeve={sleeveOf(u.owner)}
                           actionable={mine && myWindow && unitActionable(u.id)}
                           onLongPress={() => setInspect({ kind: 'unit', id: u.id })}
                           onClick={() => {
@@ -1028,14 +1047,16 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                       return (
                         <button key={o.id}
                           className={`shrink-0 rounded-md border border-dashed px-1.5 py-1 text-left text-[10px] leading-tight ${active ? 'glow-selected border-goldbright text-goldbright' : salvages.length ? 'border-goldbright/60 text-goldbright hover:border-goldbright' : 'hairline text-dim'}`}
-                          title={`${o.name} — an orphaned upgrade. Either player may salvage it onto their unit in this zone, paying its full cost and pips (decision 67).`}
+                          title={salvages.length
+                            ? `${o.name} — tap to salvage it onto one of your units here (you pay its full cost and pips).`
+                            : `${o.name} — an orphaned upgrade. Either player may salvage it onto a unit of theirs in this zone, paying its full cost and pips. Right now you can't: you need a unit standing here, enough ready resources, and the pips.`}
                           onClick={e => {
                             e.stopPropagation()
                             if (salvages.length) setSelection(active ? null : { kind: 'orphan', id: o.id })
                             else setInspect({ kind: 'card', slug: o.slug })
                           }}>
                           ⬥ {o.name}
-                          <span className="block text-[8.5px] uppercase tracking-wide opacity-70">orphaned</span>
+                          <span className="block text-[8.5px] uppercase tracking-wide opacity-70">{salvages.length ? 'orphaned · tap to salvage' : 'orphaned'}</span>
                         </button>
                       )
                     })}
@@ -1071,7 +1092,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
               const def = DEMO_CARDS[h.slug]
               const canAct = playActionsFor(h.id).length > 0 || !!resourceActionFor(h.id)
               return (
-                <CardFrame key={h.id} card={def} size="sm" sleeve="ivory"
+                <CardFrame key={h.id} card={def} size="sm" sleeve={sleeveOf(seat)}
                   selected={view.phase === 'setup' ? setupPicks.includes(h.id) : (selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id))}
                   stamp={(view.phase === 'setup' && setupPicks.includes(h.id))
                     || (view.phase === 'bank' && selection?.kind === 'hand' && selection.id === h.id) ? 'Resource' : undefined}
@@ -1199,7 +1220,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             unit={uv}
             card={DEMO_CARDS[uv.slug]}
             upgradeCards={uv.upgrades.map(up => DEMO_CARDS[up.slug]).filter(Boolean)}
-            sleeve={sleeveFor(uv.owner === seat)}
+            sleeve={sleeveOf(uv.owner)}
             onClose={() => setInspect(null)}
           />
         )
@@ -1238,7 +1259,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             ? view.sides[inspect.seat].resources.map(r => DEMO_CARDS[r.slug])
             : [...view.sides[inspect.seat].discard].reverse().map(d => DEMO_CARDS[d.slug])   // #48: newest first
           ).filter(Boolean)}
-          sleeve={sleeveFor(inspect.seat === seat)}
+          sleeve={sleeveOf(inspect.seat)}
           onClose={() => setInspect(null)}
         />
       )}

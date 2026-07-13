@@ -2,6 +2,7 @@ import {
   CARD_SET, DEFAULT_RULES, PREBUILT_DECKS, V3_RULES, createGame, deckSlugs,
   type CardSet, type GameState, type PolicyName, type Seat,
 } from '@newgame/engine'
+import type { Sleeve } from '@ui/game/sleeves.ts'
 
 /** Engine card set with art urls resolved against the deployed base path (keep each card's own extension — the veil set ships SVGs). */
 export const DEMO_CARDS: CardSet = Object.fromEntries(
@@ -29,6 +30,8 @@ export interface DemoConfig {
   /** decision 58 A/B: full-redraw mulligans that owe cards to the deck bottom */
   londonMulligan?: boolean
   rulesVersion?: 'v2.3' | 'v3.0'
+  /** issue #61: per-seat sleeve picks — defaults to ivory (seat 0) / gunmetal (seat 1) */
+  sleeves?: [Sleeve, Sleeve]
 }
 
 export function newLocalGame(cfg: DemoConfig): GameState {
