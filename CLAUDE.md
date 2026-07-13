@@ -38,6 +38,12 @@ Project state lives in `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md`. **Read it at th
 
 **Start:** read the handoff prompt, then check the designer's inbox — `gh pr list` and `gh issue list` — for card PRs or intent issues from Griff (triage: respond on the thread, review card PRs per `data/cards/README.md`, fold accepted changes into the canon). State where the project stands and what's next, confirm with the user before doing work.
 
+**Model split (Blaine, session 010 — usage costs):** this repo's `.claude/settings.json`
+defaults sessions to **Opus** — right for the watch loop, triage, UX folds, and thread
+replies. Switch to **Fable** (`/model`) only for major mechanics design, the AI-policy
+work, architecture calls, and cross-surface audits; an Opus session may also delegate a
+mechanics-shaped ticket to a Fable subagent (Agent tool, `model: 'fable'`).
+
 **GitHub voice:** the agent signs issue/PR comments as **⚜ The Chronicler** (Blaine signs `-BB`). One consistent handle so Griff always knows which replies are the agent.
 
 **During:** present decisions **one at a time** — the back-and-forth is where the good ideas emerge. If open threads pile up to where a clean handoff would be hard to write, suggest wrapping. Nudge, don't force.
