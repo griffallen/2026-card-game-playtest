@@ -383,7 +383,15 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
       case 'declineIntercept': score = interceptScore(state, action); break
       case 'block': score = blockScore(state, seat, action); break
       case 'activate': score = activateScore(state, seat, action); break
-      case 'releaseCaptive': score = 2; break
+      case 'releaseCaptive': {
+        // #44: releasing is a trade — our exhausted body back into the fight vs their unit back
+        // on the board. Never open a ready grip; weigh power regained against power returned.
+        const holder = state.units[action.unit]
+        const captive = Object.values(state.captives).find(cp => cp.by === action.unit)
+        const captivePower = captive ? (defOf(state, captive.unit.id).power ?? 0) : 0
+        score = holder?.exhausted ? 3 + effPower(state, holder) * 2 - captivePower * 2 : -8
+        break
+      }
       case 'attachOrphan': score = 10; break
       case 'concede': score = -Infinity; break
     }

@@ -109,11 +109,12 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const canPass = actions.some(a => a.type === 'pass')
   const canClaim = actions.some(a => a.type === 'claimInitiative')
 
-  const COMBAT_RE = /damage|destroyed|blocks|attacks|intercepts|retaliat|spill|captiv|captur|freed|suffers|overextend|onslaught|rage|falls/i
+  const COMBAT_RE = /damage|destroyed|blocks|attacks|intercepts|retaliat|spill|captiv|captur|released|freed|suffers|overextend|onslaught|rage|falls/i
+  const BIG_RE = /destroyed|captures|released|freed|falls/i   // #44: one of these alone still deserves the stage
   function queueRecap(events: { msg: string }[]) {
     if (speed === 'fast') return                       // watching at speed — the log suffices
     const combat = events.filter(e => COMBAT_RE.test(e.msg))
-    if (combat.length >= 2) { setRecap(combat); setRecapShown(1) }
+    if (combat.length >= 2 || combat.some(e => BIG_RE.test(e.msg))) { setRecap(combat); setRecapShown(1) }
   }
 
   function apply(action: GameAction, actor: Seat) {
