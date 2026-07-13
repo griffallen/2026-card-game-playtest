@@ -1,4 +1,5 @@
-import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { Play } from './pages/Play.tsx'
 import { Cards } from './pages/Cards.tsx'
 import { DeckBuilder } from './pages/DeckBuilder.tsx'
@@ -7,6 +8,49 @@ import { Rules } from './pages/Rules.tsx'
 import { Audit } from './pages/Audit.tsx'
 import { AuditArchive } from './pages/AuditArchive.tsx'
 import { Appendix } from './pages/Appendix.tsx'
+import { Journal } from './pages/Journal.tsx'
+
+/* The design/history docs live under one "Archive" sub-menu so the nav stays lean (session 010).
+   The Rulebook stays top-level — it teaches the game; these document its making. */
+const ARCHIVE = [
+  { to: '/journal', label: 'Journal', blurb: 'the Chronicle of every session' },
+  { to: '/audit', label: 'Design Audit', blurb: 'the current state of the realm' },
+  { to: '/appendix', label: 'Appendix', blurb: 'the dry ledgers in full' },
+] as const
+
+function ArchiveMenu({ tab }: { tab: (a: { isActive: boolean }) => string }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const loc = useLocation()
+  const active = ARCHIVE.some(a => loc.pathname.startsWith(a.to))
+  useEffect(() => setOpen(false), [loc.pathname])   // navigating closes the menu
+  useEffect(() => {
+    if (!open) return
+    const close = (e: PointerEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    window.addEventListener('pointerdown', close)
+    return () => window.removeEventListener('pointerdown', close)
+  }, [open])
+  return (
+    <div ref={ref} className="relative">
+      <button className={tab({ isActive: active })} onClick={() => setOpen(o => !o)} aria-expanded={open}>
+        Archive <span className="text-[9px]">▾</span>
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full z-50 mt-1 w-52 rounded-lg border hairline bg-raised p-1 shadow-xl">
+          {ARCHIVE.map(a => (
+            <NavLink key={a.to} to={a.to}
+              className={({ isActive }) => `block rounded px-3 py-1.5 text-sm ${isActive ? 'text-goldbright' : 'text-body hover:text-goldbright'}`}>
+              {a.label}
+              <span className="block text-[10.5px] italic text-dim">{a.blurb}</span>
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export function App() {
   const tab = ({ isActive }: { isActive: boolean }) =>
@@ -27,8 +71,7 @@ export function App() {
           <NavLink to="/cards" className={tab}>Cards</NavLink>
           <NavLink to="/simulate" className={tab}>Simulate</NavLink>
           <NavLink to="/rules" className={tab}>Rulebook</NavLink>
-          <NavLink to="/audit" className={tab}>Design Audit</NavLink>
-          <NavLink to="/appendix" className={tab}>Appendix</NavLink>
+          <ArchiveMenu tab={tab} />
         </nav>
       </header>
       <main className="min-h-0 flex-1 overflow-y-auto max-lg:overflow-visible">
@@ -39,6 +82,7 @@ export function App() {
           <Route path="/cards" element={<Cards />} />
           <Route path="/simulate" element={<Simulate />} />
           <Route path="/rules" element={<Rules />} />
+          <Route path="/journal" element={<Journal />} />
           <Route path="/audit" element={<Audit />} />
           <Route path="/audit/archive" element={<AuditArchive />} />
           <Route path="/appendix" element={<Appendix />} />
