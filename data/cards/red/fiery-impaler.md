@@ -9,7 +9,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onAttack":[{"op":"damage","t":"autoSplash","n":1}]}
 ---
-When this attacks a unit, it also deals 1 damage to the strongest other enemy unit in that zone.
+When this attacks a unit, it also deals 1 damage to a unit of your choice in the same zone. If that unit dies, gain +1 influence.
 
 ## Design notes
 
