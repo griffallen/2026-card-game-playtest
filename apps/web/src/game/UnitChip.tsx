@@ -4,6 +4,26 @@ import { ProceduralArt } from '../components/ProceduralArt.tsx'
 import { useLongPress } from '../components/CardFrame.tsx'
 import { SLEEVE_EDGE, SLEEVE_TAB, sleeveFor, type Sleeve } from './sleeves.ts'
 
+/** Issue #63 (Blaine): keywords are hard to remember mid-game — every table unit's hover
+ *  tooltip glosses its keywords in one line each. Long-press/right-click still opens the
+ *  full inspector; this is the glance-level reminder. */
+const KW_GLOSS: Record<string, string> = {
+  guard: 'the only unit that may block a lone attack on a unit, and it never exhausts to block',
+  breakthrough: 'kills its blocker → all excess damage spills to the declared target',
+  rush: 'its first move is free the round it arrives',
+  ranged: 'exhaust to volley that much damage at any enemy unit, any zone',
+  armor: 'every hit it takes is reduced by that much',
+  cantAttack: 'holds the zone and blocks, but never attacks',
+  hidden: "while ready it can't be targeted or attacked; exhausting reveals it",
+  infiltrate: 'may deploy into any zone',
+  sneak: 'exhaust as your turn to use its printed ability',
+  capture: 'takes an enemy unit under it until the holder leaves play',
+  shielded: 'the first hit it would take is fully prevented',
+  scar: '+1 power per damage marked on it — no cap',
+  politician: 'end of round: +1 influence if its side holds the Neutral-zone majority',
+  overextend: 'may gamble bonus power now for that much self-damage at end of round',
+}
+
 export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, sleeve: sleeveProp }: {
   unit: UnitView
   mine: boolean
@@ -41,7 +61,8 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, s
   if (unit.shielded) chips.push('⛨')
   if (unit.captives.length > 0) chips.push(`⛓${unit.captives.length}`)
   const tooltip = [
-    `${unit.name}`, unit.keywords.join(', '),
+    `${unit.name}`,
+    ...unit.keywords.map(k => KW_GLOSS[k.split(' ')[0]] ? `${k[0].toUpperCase()}${k.slice(1)} — ${KW_GLOSS[k.split(' ')[0]]}` : k),
     unit.upgrades.length ? `Upgrades: ${unit.upgrades.map(u => u.name).join(', ')}` : '',
     unit.captives.length ? `Holding captive: ${unit.captives.map(c => c.name).join(', ')}` : '',
   ].filter(Boolean).join('\n')
