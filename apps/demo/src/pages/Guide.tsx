@@ -43,10 +43,10 @@ export function Guide() {
         and the influence track at ±15. Beginners watch life. Yellow players watch you watching life.
         Check the influence track <B>every round</B>, the way you'd check your purse in a crowded market —
         by the time you feel it's light, the thief is three streets away.
-        Past ±10, every action you take should either close your clock or slow theirs.
+        Past ±10, every action you take should either speed your clock or slow theirs.
       </P>
       <ul className="ml-5 mt-2 list-disc">
-        <LI><B>Rounds 1–3, the muster:</B> bank every round, curve out cheap bodies, take the Neutral zone. Nothing that dies here matters much — position does.</LI>
+        <LI><B>Rounds 1–3, the muster:</B> bank every round, spend the rest on cheap bodies, take the Neutral zone. Nothing that dies here matters much — position does.</LI>
         <LI><B>Rounds 4–8, the argument:</B> the real trades. Guards get paid, gangs form, removal answers walls. Most games are decided here and end later.</LI>
         <LI><B>Rounds 9+, the bill:</B> hands are short, banks are tall, one good swing or one quiet +2 ends it. If you saved nothing for this act, you already lost in act two.</LI>
       </ul>
@@ -54,21 +54,21 @@ export function Guide() {
       <H2 id="banking">Banking — when, what, and when to stop</H2>
       <V>"The bank is a graveyard that pays interest. Bury your dead, not your soldiers."</V>
       <ul className="ml-5 mt-2 list-disc">
-        <LI><B>Bank every round until your bank covers your biggest cost</B> — for most decks that's 6 or 7. You start with 2; banking each round puts you at 6 by round 4, which is exactly when the argument starts.</LI>
+        <LI><B>Bank every round until your bank covers your biggest cost</B> — for most decks that's 6 or 7. You start with 2; banking each round puts you at 6 by round five, right as the argument peaks.</LI>
         <LI><B>Then stop.</B> Every bank past your curve is a card deleted from your late game. The commonest loss I see: a player at twelve resources wondering why their hand is empty in act three. The bank ate their finishers in act one.</LI>
         <LI><B>Bank your worst card, always.</B> A dead draw, the third copy, the situational trick for a situation that passed. Never bank a card you'd be happy to draw in round ten.</LI>
-        <LI><B>Mind your pips.</B> Banked cards are citizenship: a card wanting two red pips needs two distinct red cards living in your bank, ready or spent. Mono-color decks barely notice; the moment you splash, count before you bury.</LI>
+        <LI><B>Mind your pips.</B> A banked card doubles as citizenship papers: a card wanting two red pips needs two distinct red cards living in your bank, ready or spent. Mono-color decks barely notice; the moment you splash, count before you bury.</LI>
         <LI>Skipping the bank is rarely right in acts one and two — and often right in act three, when the card in your hand is worth more than the copper in the ground.</LI>
       </ul>
 
       <H2 id="attack">Attacking under the duel law</H2>
-      <V>"An attack is a promise. The new law just makes you keep it."</V>
+      <V>"An attack is a promise. The duel law just makes you keep it."</V>
       <ul className="ml-5 mt-2 list-disc">
         <LI><B>A lone attacker on a unit cannot be blocked</B> — except by one Guard, who takes the entire hit and pays nothing for the privilege. So the first question before every solo swing: <B>is there a ready Guard in that zone?</B> If yes, your certainty becomes a donation — the Guard eats the blow, counters, and (if it's yellow) charges a toll. Burn the Guard out first, gang so it can only save one of you, or go where it isn't.</LI>
         <LI><B>The target always hits back</B> — full power, even exhausted. Do the arithmetic in both directions before you swing: <i>my power against their health, their power against my health.</i> Equal trades are for players who are ahead.</LI>
         <LI><B>Gangs open the defense</B> — two or more attackers and the defender pairs freely. That's the price of numbers. But it's also how you beat walls: pour order means their armor shrinks one blow, not three.</LI>
-        <LI><B>Bases are always defended ground.</B> Any ready unit may block a base attack, however few you send. A siege works when their board is exhausted or dead — which is why removal is tempo, not just answers.</LI>
-        <LI><B>Breakthrough is a gang keyword now.</B> Solo, your damage either lands whole or dies on a Guard. In a gang or against blockers, the spill reaches what you actually wanted dead.</LI>
+        <LI><B>Bases are always defended ground.</B> Any ready unit may block a base attack, however few you send. A siege works when their board is exhausted or dead — which is why killing a defender isn't just an answer; it's how the gate gets opened.</LI>
+        <LI><B>Breakthrough is a gang keyword.</B> Solo, your damage either lands whole or dies on a Guard. In a gang or against blockers, the spill reaches what you actually wanted dead.</LI>
         <LI><B>Claim the initiative when your hand is spent</B>, or when striking first next round wins you a trade you'd otherwise lose. It ends your round — but your units still defend while you rest, so a claim behind a wall costs less than it looks.</LI>
       </ul>
 
@@ -76,7 +76,7 @@ export function Guide() {
       <V>"Dying well is a skill. Most players never practice it."</V>
       <ul className="ml-5 mt-2 list-disc">
         <LI><B>You choose who fights whom.</B> When a gang comes in, tap a defender to send it in, tap it again to switch which attacker it duels. Feed your cheapest body to their biggest hitter and duel the rest fairly — the classic sellsword's split.</LI>
-        <LI><B>Blocking exhausts</B> (Guards excepted) — every block is a unit that won't swing back next turn. Sometimes the correct block is none: take three to the base rather than trade your board's whole next round for it.</LI>
+        <LI><B>Blocking exhausts</B> (Guards excepted) — every unit that blocks is done acting for the round. Sometimes the correct block is none: take three to the base rather than trade your board's whole next round for it.</LI>
         <LI><B>Keep Guards ready.</B> A Guard that attacked is a bodyguard on break. Its whole value is standing there making every solo swing into that zone a bad idea.</LI>
         <LI><B>The counter-blow is real damage.</B> A blocker with high power is removal that waits. Walls with 1 power stop damage; walls with 4 power stop attacks from ever being declared.</LI>
       </ul>
@@ -84,8 +84,8 @@ export function Guide() {
       <H2 id="red">Red — the bill collector</H2>
       <V>"Red doesn't ask twice. Red barely asks once."</V>
       <P>
-        <B>The plan:</B> curve out, take the middle, and present lethal by round nine or ten. Red has the best
-        rates on damage in the game and no patience for the long book. <B>The weakness:</B> yellow gets paid
+        <B>The plan:</B> spend every copper on bodies, take the middle, and have the kill on the table by round
+        nine or ten. Red buys the cheapest damage in the game and has no patience for the long game. <B>The weakness:</B> yellow gets paid
         every time you attack into a ready defender — a reckless red doesn't lose the fight, it <i>finances</i> the
         opponent's victory. Count what each swing donates. And red owns almost no Guards: your own Home
         holds only because everyone may block base attacks.
@@ -95,7 +95,7 @@ export function Guide() {
         <CardTip name="Execution Swing (4 · destroy a damaged unit)" tip="'damaged' is a condition you control — one skewer, one volley, one counter-blow, then the Swing. This is how Guards die." />
         <CardTip name="Cataclysmic Charge (2 · +3 Power and Breakthrough this round)" tip="two coppers to turn any body into a siege engine. The card that ends act three." />
         <CardTip name="Bloodfrenzy (3 · upgrade: +1/+1 Armor, grows below 10 life)" tip="red's only apology for taking damage — it pays you back with interest once you're bleeding." />
-        <CardTip name="Fiery Impaler (3 · 3/3, skewers on attack)" tip="the extra pick chips a second target every swing — Execution Swing fodder, and it pays influence on the kill." />
+        <CardTip name="Fiery Impaler (3 · 3/3, skewers on attack)" tip="its skewer chips a second target every swing — Execution Swing fodder, and it pays influence on the kill." />
       </ul>
       <P>
         <B>Deck note:</B> decks are minimum 48, and red rewards curation past it — the designer's own 65-card
@@ -117,14 +117,14 @@ export function Guide() {
         <CardTip name="Dawnspear Paladin (5 · 5/5, +2 influence on attack)" tip="the closer — it wins by swinging, whether or not the swing lands well. Games end at 15 with this card mid-leap." />
         <CardTip name="Exemplar Knight (4 · 4/4, +2 power attacking, pays on kills)" tip="the honest body that punches up a weight class and tips the track doing it." />
         <CardTip name="Prison Warrant (3 · capture a damaged unit, rent every round)" tip="removal that pays a salary. The grip only breaks when the jailer dies — so guard the jailer." />
-        <CardTip name="Supreme Sentence (7 · exhaust two units anywhere, 3 damage each)" tip="the verdict: it un-readies Guards, breaks Hidden, and sets up Execution-proof turns. Yellow's act-three answer." />
-        <CardTip name="Radiant Citadel (7 · 1/8, opponent's influence threshold +2)" tip="buys three more rounds of tolls in the mirror and against purple. A wall that moves the finish line." />
+        <CardTip name="Supreme Sentence (7 · exhaust two units anywhere, 3 damage each)" tip="the verdict: it un-readies whatever was about to matter — Guards lose their vigil, Hidden units lose their veil — and the 3 damage marks two heads for your knights. Yellow's act-three answer." />
+        <CardTip name="Radiant Citadel (7 · 1/8, opponent's influence threshold +2)" tip="raises the price of beating you by two more tolls — cruelest in the mirror and against purple. A wall that moves the finish line." />
       </ul>
 
-      <H2 id="purple">Purple — the knife you signed for</H2>
-      <V>"The veiled court has no Guards, no walls, and no mercy. You will not see the deck that kills you."</V>
+      <H2 id="purple">Purple — the contract killer</H2>
+      <V>"The veiled court has no Guards, no walls, and no mercy. You will not see the knife that kills you."</V>
       <P>
-        <B>The plan:</B> trade up with mathematics they can't interfere with. <B>Hidden</B> units can't be targeted
+        <B>The plan:</B> only pick fights you've already won on paper — and the veil means nobody can pick one with you. <B>Hidden</B> units can't be targeted
         or attacked while ready — so you choose every engagement: strike, stand revealed for a round, ready,
         vanish again. Influence comes <B>by theft</B> — kill triggers, Sneak payloads, and a politician holding
         the middle. <B>The weakness:</B> purple owns zero Guards and thin bodies — your Home stands only because
@@ -135,8 +135,8 @@ export function Guide() {
         <CardTip name="Whisper Blade (1 · 2/1, pays on kills)" tip="a copper knife that funds the track every time it finishes something. The correct round-one play." />
         <CardTip name="Veil Assassin (3 · 4/2, pays on kills)" tip="the rate purple wants: enough power to kill what it touches, too thin to survive being touched. Don't let it be touched." />
         <CardTip name="Dream Thief (5 · 4/4, Hidden, draws on entry, Sneak: +2 influence)" tip="value on arrival, influence while it loiters, a body when you need one. The card that makes slow purple hands work." />
-        <CardTip name="Umbral Colossus (6 · 5/5, Hidden, Shielded)" tip="the closest thing to a wall the court owns — the shield eats the first consequence, the veil refuses the rest." />
-        <CardTip name="Sovereign of the Veil (7 · 5/6, Hidden, Infiltrate, Sneak: 4 damage + influence)" tip="lands anywhere, kills from the dark, and pays for the privilege. The act-three door-kicker." />
+        <CardTip name="Umbral Colossus (6 · 5/5, Hidden, Shielded)" tip="the closest thing to a wall the court owns — the shield eats the first blow, the veil refuses the next." />
+        <CardTip name="Sovereign of the Veil (7 · 5/6, Hidden, Infiltrate, Sneak: 4 damage + influence)" tip="lands anywhere, kills from the dark, and gets paid for the privilege. The act-three door-kicker." />
         <CardTip name="Veiled Messenger (2 · 1/3, Politician, draws on entry)" tip="hold the Neutral zone with more bodies than they have and the middle votes purple every round." />
       </ul>
 
