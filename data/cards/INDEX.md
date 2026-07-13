@@ -50,8 +50,8 @@
 
 | Card | Cost | Type | P/H | Keywords | Status | Text |
 |---|---|---|---|---|---|---|
-| [Iron Discipline](yellow/iron-discipline.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. Gain 1 Influence. |
-| [Oath of Order](yellow/oath-of-order.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gets +1 Power and Guard. |
+| [Iron Plating](yellow/iron-discipline.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. |
+| [Oath of Order](yellow/oath-of-order.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gains Guard. |
 | [Prison Warrant](yellow/prison-warrant.md) | 1 | action | — |  | canon | Target unit you control captures target enemy unit with 2 or less Power. Gain 1 Influence. |
 | [Vanguard Sentinel](yellow/vanguard-sentinel.md) | 1 | unit | 1/2 | guard | canon | Guard. When this defends, gain 2 Influence. |
 | [Binding Light](yellow/binding-light.md) | 2 | action | — |  | canon | Exhaust target enemy unit with 4 or less Power. |

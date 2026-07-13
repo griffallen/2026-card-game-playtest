@@ -170,13 +170,13 @@ describe('auras and upgrades', () => {
     const iron = toHand(s, p2, 'iron-discipline')
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: oath, targets: [{ kind: 'unit', id: knight }] })
-    expect(effPower(s, s.units[knight])).toBe(5)
+    expect(effPower(s, s.units[knight])).toBe(4)          // PR #52: Oath's +1 Power rider is cut — Guard only
     expect(hasKw(s, s.units[knight], 'guard')).toBe(true)
     expect(influenceFor(s, p1)).toBe(0)                    // first upgrade: no pressure
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: iron, targets: [{ kind: 'unit', id: knight }] })
     // second upgrade: +1 influence to opponent (pressure), then card's own Influence +1 balances
-    expect(influenceFor(s, p1)).toBe(1 - 1)
+    expect(influenceFor(s, p1)).toBe(1)   // PR #51: Iron Plating lost its own influence rider — pressure alone remains
     expect(effArmor(s, s.units[knight])).toBe(1)
     const pillage = toHand(s, p1, 'pillage')
     const oathId = s.units[knight].upgrades[0]

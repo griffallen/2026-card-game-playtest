@@ -1033,31 +1033,20 @@
     "armor": 1
    }
   ],
-  "onPlay": [
-   {
-    "op": "influence",
-    "n": 1
-   }
-  ],
   "slug": "iron-discipline",
-  "name": "Iron Discipline",
+  "name": "Iron Plating",
   "color": "yellow",
   "type": "upgrade",
   "cost": 1,
-  "text": "Attach to unit. This unit gets Armor 1. Gain 1 Influence.",
+  "text": "Attach to unit. This unit gets Armor 1.",
   "pips": [
    "yellow"
   ],
-  "designerNote": "Session 006: 2 → 1 mana. As an upgrade it can be Pillaged and feeds the upgrade-pressure rule — it should undercut the action version (Radiant Aegis).",
+  "designerNote": "Session 006: 2 → 1 mana. As an upgrade it can be Pillaged and feeds the upgrade-pressure rule — it should undercut the action version (Radiant Aegis).\n\n2026-07-13 (designer, PR #51 — yellow rebalance pass, issue #50): renamed Iron Discipline → Iron Plating; the on-play influence rider is cut. Armor for a coin, nothing else.",
   "artUrl": "/cards/iron-discipline.jpg"
  },
  "oath-of-order": {
   "statics": [
-   {
-    "s": "aura",
-    "scope": "attached",
-    "p": 1
-   },
    {
     "s": "aura",
     "scope": "attached",
@@ -1071,10 +1060,11 @@
   "color": "yellow",
   "type": "upgrade",
   "cost": 1,
-  "text": "Attach to unit. This unit gets +1 Power and Guard.",
+  "text": "Attach to unit. This unit gains Guard.",
   "pips": [
    "yellow"
   ],
+  "designerNote": "2026-07-13 (designer, PR #52 — yellow rebalance pass, issue #50): the +1 Power rider is cut; Guard alone for 1. Notable under the proposed #50 rework, where Guard becomes the only bodyguard.",
   "artUrl": "/cards/oath-of-order.jpg"
  },
  "prison-warrant": {
