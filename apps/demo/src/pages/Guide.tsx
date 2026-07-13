@@ -36,12 +36,13 @@ export function Guide() {
       </p>
 
       <H2 id="shape">The shape of a game</H2>
-      <V>"Every fight I've ever been in had the same three acts. Learn the acts and you'll stop losing to the calendar."</V>
+      <V>"Every fight I've ever been in had the same three acts. Learn the acts and you'll stop losing to the clock."</V>
       <P>
         A game runs <B>ten to fourteen rounds</B>. Both players draw two cards every round, so nobody runs dry —
         the loser is the one who spent worse, not the one who drew worse. There are <B>two clocks</B>: 20 life,
         and the influence track at ±15. Beginners watch life. Yellow players watch you watching life.
-        Check the influence track <B>every round</B>, the way you'd check a wound — by the time it hurts, it's late.
+        Check the influence track <B>every round</B>, the way you'd check your purse in a crowded market —
+        by the time you feel it's light, the thief is three streets away.
         Past ±10, every action you take should either close your clock or slow theirs.
       </P>
       <ul className="ml-5 mt-2 list-disc">
@@ -143,7 +144,7 @@ export function Guide() {
       <V>
         "Every loss I've watched at this table was one of four sins: banked the finisher, fed the Guard,
         forgot the second clock, or blocked with the whole village. Sin differently each game and you'll
-        be dangerous inside a week. Now buy the next round — the Chronicler only pays me for five sections."
+        be dangerous inside a week. Now buy the next round — I'm paid by the page, and this is the last one."
       </V>
 
       <footer className="mt-12 border-t hairline pt-4 text-xs text-dim/70">
