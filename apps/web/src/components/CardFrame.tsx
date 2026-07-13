@@ -69,7 +69,7 @@ const typeMeta: Record<string, { icon: string; label: string; chip: string }> = 
 /** One component renders any card at any size — hand, browser, admin preview. */
 export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge, onLongPress, sleeve, stamp }: {
   card: CardLike
-  size?: 'sm' | 'md'
+  size?: 'sm' | 'md' | 'lg'
   onClick?: () => void
   selected?: boolean
   dimmed?: boolean
@@ -87,11 +87,12 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
   const [artTry, setArtTry] = useState(0)
   const lp = useLongPress(onLongPress)
   const tint = frameTint[card.color] ?? frameTint.neutral
-  const w = size === 'sm' ? 'w-[148px]' : 'w-[176px]'   // sm widened for phones (issue #17): fewer, bigger, readable
-  const artH = size === 'sm' ? 'h-[74px]' : 'h-[96px]'
+  // sm widened for phones (issue #17); lg is the workshop preview (Blaine: big enough to actually read)
+  const w = size === 'sm' ? 'w-[148px]' : size === 'lg' ? 'w-[248px]' : 'w-[176px]'
+  const artH = size === 'sm' ? 'h-[74px]' : size === 'lg' ? 'h-[150px]' : 'h-[96px]'
   const isUnit = card.type === 'unit'
   const meta = typeMeta[card.type] ?? typeMeta.unit
-  const bigStat = size === 'sm' ? 'text-[13px]' : 'text-[14px]'
+  const bigStat = size === 'sm' ? 'text-[13px]' : size === 'lg' ? 'text-[16px]' : 'text-[14px]'
 
   return (
     <div
@@ -122,7 +123,7 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
       <div className="flex items-center gap-1.5">
         <span
           title={card.xCost ? 'Cost X — you choose at cast' : `Cost ${card.cost}`}
-          className={`grid ${size === 'sm' ? 'h-[22px] w-[22px] text-[13px]' : 'h-6 w-6 text-[14px]'} shrink-0 place-items-center rounded-full bg-gradient-to-b from-[#eaf0f8] to-[#a8b6c9] font-display font-bold leading-none text-[#15202f] shadow-sm ring-1 ring-black/50`}
+          className={`grid ${size === 'sm' ? 'h-[22px] w-[22px] text-[13px]' : size === 'lg' ? 'h-7 w-7 text-[16px]' : 'h-6 w-6 text-[14px]'} shrink-0 place-items-center rounded-full bg-gradient-to-b from-[#eaf0f8] to-[#a8b6c9] font-display font-bold leading-none text-[#15202f] shadow-sm ring-1 ring-black/50`}
         >{card.xCost ? 'X' : card.cost}</span>
         {card.pips && card.pips.length > 0 && (
           <span
@@ -135,12 +136,12 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
                 src={`${import.meta.env.BASE_URL}pips/pip-${c}.png`}
                 alt={c}
                 draggable={false}
-                className={`${size === 'sm' ? 'h-[13px] w-[13px]' : 'h-[15px] w-[15px]'} rounded-full object-cover ring-1 ring-black/50`}
+                className={`${size === 'sm' ? 'h-[13px] w-[13px]' : size === 'lg' ? 'h-[17px] w-[17px]' : 'h-[15px] w-[15px]'} rounded-full object-cover ring-1 ring-black/50`}
               />
             ))}
           </span>
         )}
-        <span className={`min-w-0 flex-1 truncate font-display font-semibold ${size === 'sm' ? 'text-[12.5px]' : 'text-[13px]'}`}>{card.name}</span>
+        <span className={`min-w-0 flex-1 truncate font-display font-semibold ${size === 'sm' ? 'text-[12.5px]' : size === 'lg' ? 'text-[15px]' : 'text-[13px]'}`}>{card.name}</span>
         {card.designerNote && <span className="shrink-0 text-[11px] text-goldbright" aria-label="designer flag">⚑</span>}
         {badge && <span className="shrink-0 rounded bg-black/45 px-1 text-[10px] font-bold leading-tight text-goldbright ring-1 ring-black/30">{badge}</span>}
       </div>
@@ -164,7 +165,7 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
       </div>
 
       {/* rules text */}
-      <div className={`mt-1.5 rounded bg-[#efe4cd] px-1.5 py-1 text-ink ${size === 'sm' ? 'min-h-[48px] text-[10.5px] leading-[1.3]' : 'min-h-[56px] text-[10.5px] leading-snug'}`}>
+      <div className={`mt-1.5 rounded bg-[#efe4cd] px-1.5 py-1 text-ink ${size === 'sm' ? 'min-h-[48px] text-[10.5px] leading-[1.3]' : size === 'lg' ? 'min-h-[72px] text-[12px] leading-snug' : 'min-h-[56px] text-[10.5px] leading-snug'}`}>
         {card.text}
       </div>
 

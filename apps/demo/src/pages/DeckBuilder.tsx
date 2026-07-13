@@ -11,8 +11,25 @@ import { allDecks, customSlugFor, deleteCustomDeck, saveCustomDeck, type CustomD
 const MAX_COPIES = V3_RULES.maxCopies
 const MIN_SIZE = V3_RULES.deckMinSize
 const COLORS = ['red', 'yellow', 'purple'] as const
+const TYPES = ['unit', 'action', 'upgrade'] as const
 const colorText = (c: string) =>
   c === 'red' ? 'text-[#e2583e]' : c === 'yellow' ? 'text-[#e8c14a]' : c === 'purple' ? 'text-[#a06bd8]' : 'text-dim'
+
+/* #59-adjacent (Blaine): the pool rows say their type at a glance — same palette the cards
+   themselves wear (unit steel-blue, action violet, upgrade gold). */
+const TYPE_CHIP: Record<string, { icon: string; cls: string }> = {
+  unit: { icon: '⚔', cls: 'bg-[#31435c]/60 text-[#b9cbe4] ring-[#4d6787]' },
+  action: { icon: '✦', cls: 'bg-[#4d2f63]/60 text-[#d5b5ef] ring-[#7b4f9e]' },
+  upgrade: { icon: '⬥', cls: 'bg-[#5c4a1e]/60 text-[#ecd9a0] ring-[#96793a]' },
+}
+const TypeChip = ({ t }: { t: string }) => {
+  const m = TYPE_CHIP[t] ?? TYPE_CHIP.unit
+  return (
+    <span className={`inline-flex w-[74px] shrink-0 items-center justify-center gap-1 rounded-full px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wide ring-1 ${m.cls}`}>
+      {m.icon} {t}
+    </span>
+  )
+}
 
 export function DeckBuilder() {
   const [, bump] = useState(0)
@@ -22,6 +39,7 @@ export function DeckBuilder() {
   const [name, setName] = useState('')
   const [counts, setCounts] = useState<Record<string, number>>(() => fromDeck(decks[0].slug))
   const [filter, setFilter] = useState<'all' | (typeof COLORS)[number]>('all')
+  const [typeFilter, setTypeFilter] = useState<'all' | (typeof TYPES)[number]>('all')
   const [search, setSearch] = useState('')
   const [preview, setPreview] = useState<string | null>(null)
   const [inspect, setInspect] = useState<string | null>(null)
@@ -59,6 +77,7 @@ export function DeckBuilder() {
 
   function loadBase(slug: string) {
     setBaseSlug(slug)
+    if (slug === '__empty__') { setCounts({}); setName(''); return }  // a clean bench (Blaine)
     setCounts(fromDeck(slug))
     const d = allDecks().find(x => x.slug === slug)
     if (d && 'custom' in d) setName(d.name)
@@ -71,8 +90,17 @@ export function DeckBuilder() {
       .sort((a, b) => a.color.localeCompare(b.color) || a.cost - b.cost || a.name.localeCompare(b.name))
     return all.filter(c =>
       (filter === 'all' || c.color === filter)
+      && (typeFilter === 'all' || c.type === typeFilter)
       && (!search || c.name.toLowerCase().includes(search.toLowerCase())))
-  }, [filter, search])
+  }, [filter, typeFilter, search])
+  const composition = useMemo(() => {
+    const by: Record<string, number> = {}
+    for (const [slug, count] of Object.entries(counts)) {
+      const t = DEMO_CARDS[slug]?.type
+      if (t) by[t] = (by[t] ?? 0) + count
+    }
+    return TYPES.map(t => ({ t, n: by[t] ?? 0 })).filter(x => x.n > 0)
+  }, [counts])
   const deckList = useMemo(() =>
     Object.entries(counts)
       .map(([slug, count]) => ({ def: DEMO_CARDS[slug], count }))
@@ -132,6 +160,7 @@ export function DeckBuilder() {
       <div className="panel mt-4 flex flex-wrap items-end gap-3 p-4">
         <label className="text-xs uppercase tracking-wider text-dim">Start from
           <select className="input mt-1" value={baseSlug} onChange={e => loadBase(e.target.value)}>
+            <option value="__empty__">— fresh deck (empty) —</option>
             {decks.map(d => <option key={d.slug} value={d.slug}>{d.name}{'custom' in d ? ' (custom)' : ''}</option>)}
           </select>
         </label>
@@ -158,6 +187,12 @@ export function DeckBuilder() {
             {(['all', ...COLORS] as const).map(c => (
               <button key={c} className={`btn !py-1 text-xs capitalize ${filter === c ? 'btn-primary' : ''}`} onClick={() => setFilter(c)}>{c}</button>
             ))}
+            <span className="h-4 w-px bg-white/15" />
+            {(['all', ...TYPES] as const).map(t => (
+              <button key={t} className={`btn !py-1 text-xs capitalize ${typeFilter === t ? 'btn-primary' : ''}`} onClick={() => setTypeFilter(t)}>
+                {t === 'all' ? 'all types' : `${TYPE_CHIP[t].icon} ${t}s`}
+              </button>
+            ))}
             <input className="input !w-56 !py-1 text-sm" placeholder="search cards…" value={search} onChange={e => setSearch(e.target.value)} />
           </div>
           <div className="mt-3 flex flex-col gap-1">
@@ -169,8 +204,9 @@ export function DeckBuilder() {
                   className={`flex items-center gap-3 rounded border px-3 py-1.5 ${n > 0 ? 'border-goldbright/40 bg-goldbright/5' : 'hairline'} ${preview === c.slug ? '!border-goldbright/70' : ''}`}>
                   <span className={`w-14 shrink-0 text-[11px] font-bold uppercase ${colorText(c.color)}`}>{c.color}</span>
                   <span className="w-6 shrink-0 text-center font-display text-sm font-bold text-parchment">{c.cost}</span>
+                  <TypeChip t={c.type} />
                   <button className="min-w-0 flex-1 truncate text-left text-sm text-body hover:text-goldbright" onClick={() => setPreview(c.slug)}>
-                    {c.name} <span className="text-xs text-dim">· {c.type}{c.type === 'unit' ? ` ${c.power}/${c.health}` : ''}</span>
+                    {c.name}{c.type === 'unit' ? <span className="text-xs text-dim"> · ⚔{c.power} ♥{c.health}</span> : ''}
                   </button>
                   {stepper(c.slug, n)}
                 </div>
@@ -187,18 +223,28 @@ export function DeckBuilder() {
 
         {/* right: preview + the deck so far */}
         <div className="min-w-0 lg:sticky lg:top-4 lg:self-start">
-          <div className="panel flex gap-4 p-4">
-            {previewDef
-              ? <button onClick={() => setInspect(preview)} title="full details" className="shrink-0"><CardFrame card={previewDef} size="sm" /></button>
-              : <div className="grid h-[240px] w-[148px] shrink-0 place-items-center rounded-lg border border-dashed hairline text-center text-xs text-dim/60">hover a card<br />to preview it</div>}
+          <div className="panel flex flex-col gap-3 p-4">
+            <div className="flex justify-center">
+              {previewDef
+                ? <button onClick={() => setInspect(preview)} title="full details"><CardFrame card={previewDef} size="lg" /></button>
+                : <div className="grid h-[340px] w-[248px] place-items-center rounded-lg border border-dashed hairline text-center text-xs text-dim/60">hover a card<br />to preview it</div>}
+            </div>
             <div className="min-w-0 flex-1">
-              <div className="text-[11px] uppercase tracking-widest text-dim">Your deck so far · {total}</div>
+              <div className="text-[11px] uppercase tracking-widest text-dim">
+                Your deck so far · {total}
+                {composition.length > 0 && (
+                  <span className="ml-2 normal-case tracking-normal text-dim/80">
+                    {composition.map(({ t, n }) => `${n} ${t}${n === 1 ? '' : 's'}`).join(' · ')}
+                  </span>
+                )}
+              </div>
               <div className="mt-2 flex max-h-[60vh] flex-col gap-0.5 overflow-y-auto pr-1">
                 {deckList.map(({ def, count }) => (
                   <div key={def.slug}
                     onMouseEnter={() => setPreview(def.slug)}
                     className={`flex items-center gap-2 rounded px-1.5 py-0.5 text-[13px] ${preview === def.slug ? 'bg-goldbright/10' : ''}`}>
                     <span className={`w-4 shrink-0 text-center font-display text-xs font-bold ${colorText(def.color)}`}>{def.cost}</span>
+                    <span className="w-3.5 shrink-0 text-center text-[10px]" title={def.type}>{(TYPE_CHIP[def.type] ?? TYPE_CHIP.unit).icon}</span>
                     <span className="flex w-9 shrink-0 -space-x-[3px]" title={def.pips?.length ? `Requires banked color: ${def.pips.join(', ')}` : undefined}>
                       {(def.pips ?? []).map((c, i) => (
                         <img key={i} src={`${import.meta.env.BASE_URL}pips/pip-${c}.png`} alt={c} draggable={false}
