@@ -51,6 +51,29 @@ export function buildPrebuiltDecks(set: CardSet): PrebuiltDeck[] {
     },
   ]
 
+  // Griff's Red (issue #50, 2026-07-13): the designer's own 65-card curation, transcribed from
+  // his workshop — shipped as a named deck so the AI can pilot it in sims and at the table.
+  const GRIFFS_RED: [string, number][] = [
+    ['reckless-abandon', 4], ['cinder-initiate', 4], ['devastating-strike', 4], ['searing-bolt', 4],
+    ['spark-hound', 2], ['berserker', 4], ['blood-rush', 1], ['cataclysmic-charge', 2],
+    ['flameblade-raider', 1], ['warcry-leader', 1], ['bloodfrenzy', 4], ['collateral-damage', 2],
+    ['fiery-impaler', 4], ['rageforged-brute', 1], ['volcanic-slam', 2], ['blaze-juggernaut', 1],
+    ['burning-oath', 1], ['doombringer', 1], ['execution-swing', 4], ['inferno-titan', 4],
+    ['rupture', 1], ['crimson-behemoth', 2], ['final-onslaught', 1], ['relentless-assault', 1],
+    ['scorching-howl', 1], ['warlord-garok', 1], ['burn-the-frontline', 1], ['earthshaker', 1],
+    ['raging-inferno', 1], ['unchained-rage', 1], ['apocalypse-engine', 1], ['last-stand', 1],
+    ['worldrender', 1],
+  ]
+  if (GRIFFS_RED.every(([slug]) => set[slug])) {
+    decks.push({
+      slug: 'griffs-red',
+      name: "Griff's Red",
+      color: 'red',
+      description: "The designer's own 65-card red — curated by hand, tested in anger. Burn everything.",
+      cards: GRIFFS_RED.map(([slug, count]) => ({ slug, count })),
+    })
+  }
+
   // Purple's 36 uniques were designed with exactly twelve cost ≤ 2 slugs, so the doubles rule is clean.
   if (purple.length) {
     const purpleDoubles = new Set(purple.filter(c => c.cost <= 2).map(c => c.slug))

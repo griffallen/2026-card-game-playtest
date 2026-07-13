@@ -64,8 +64,10 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
       : pa.target.kind === 'base' ? homeZone(pa.target.seat) : undefined  // attacks only ever target unit|base
     const candidates = unitsOf(state, seat).filter(u => u.zone === zone && !u.exhausted && !u.imprisoned)
     const out2: GameAction[] = [{ type: 'block', pairs: [] }]
-    // issue #50 (duel law): a lone attacker is answered by at most ONE Guard — full redirect
-    const duel = state.rules.singleAttackerDuels && pa.attackers.filter(a => state.units[a]).length === 1
+    // issue #50 (duel law): a lone attacker is answered by at most ONE Guard — full redirect.
+    // decision 100: the Home is everyone's to defend — base attacks keep the open window
+    const duel = state.rules.singleAttackerDuels && pa.target.kind === 'unit'
+      && pa.attackers.filter(a => state.units[a]).length === 1
     if (duel) {
       const a = pa.attackers.find(x => state.units[x])!
       for (const b of candidates) if (hasKw(state, b, 'guard')) out2.push({ type: 'block', pairs: [{ blocker: b.id, onto: a }] })

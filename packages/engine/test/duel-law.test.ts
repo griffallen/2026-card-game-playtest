@@ -65,6 +65,19 @@ describe('duel law (issue #50, singleAttackerDuels)', () => {
       .toThrow(/only a Guard/i)
   })
 
+  it('the Home is everyone\'s to defend — a lone base attacker faces open blocking (decision 100)', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const enemyHome = me === 0 ? 2 : 0
+    const atk = put(s, me, 'brute', enemyHome as 0 | 2)      // lone, standing at their gates
+    const plain = put(s, them, 'crusher', enemyHome as 0 | 2) // NOT a guard — still allowed
+    const lifeBefore = s.sides[them].life
+    s = applyAction(s, { type: 'attack', attackers: [atk], target: { kind: 'base', seat: them } }, me).state
+    expect(s.phase).toBe('block')                             // the window opened for a plain unit
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: plain, onto: atk }] }, them).state
+    expect(s.sides[them].life).toBe(lifeBefore)               // fully absorbed
+  })
+
   it('gangs keep the open pairing rules — any ready unit may block any attacker', () => {
     let s = g()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
