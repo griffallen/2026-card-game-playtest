@@ -28,7 +28,7 @@ function V3Content() {
         <Row icon="🔄" title="Start of round (round 2 on)">Both players, in turn, ready all their cards, <b>draw 2</b>, and may <b>bank one card</b> face-up as a resource (permanent — each pays 1 toward costs, forever).</Row>
         <Row icon="⏳" title="Empty deck">Every card you fail to draw costs you <b>1 life and 1 influence</b>. Slow decks own a real clock.</Row>
         <Row icon="⬡" title="Pips and colors">Paying a cost is <b>colorblind</b> — exhaust any resources. A card's <b>pips</b> are a residency requirement instead: one red pip needs a red-providing card <i>living in your bank</i>, ready or spent. Multi-color cards provide every color they show.</Row>
-        <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, attack, <b>use a Sneak ability</b>, <b>salvage an orphaned upgrade</b>, release a captive, or pass. <b>Two passes in a row end the round.</b> Passing is soft: if they act after you passed, you can act again.</Row>
+        <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, attack, <b>use a Sneak ability</b>, <b>salvage an orphaned upgrade</b>, or pass. <b>Two passes in a row end the round.</b> Passing is soft: if they act after you passed, you can act again.</Row>
         <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
         <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives one free move the round it arrives.</Row>
         <Row icon="⚔" title="Attack — everyone fights back">Exhaust <b>one or more ready units in a zone</b> and name one target. The defender then <b>pairs ready units onto your attackers as blockers</b> — one-on-one or ganging up — and <b>blocking exhausts</b> (Guards block free). Pairs trade blows all at once; gang damage pours in pair order. Attackers <b>nobody blocked</b> hit the declared target full-force — and the target <b>strikes every unblocked attacker back at full power, even while exhausted</b>. No unit dies without a fight; only bases don't hit back.</Row>
@@ -39,7 +39,7 @@ function V3Content() {
         <Row icon="⟳" title="Exhausted">Dimmed with a ⟳ — already acted; readies at the start of its owner's next round.</Row>
         <Row icon="💨" title="Rush ready">Its <b>one free move</b> the round it arrived — move <i>without</i> exhausting, then it can still fight.</Row>
         <Row icon="⛨" title="Shielded">Carries its shield token: the <b>first</b> hit is prevented entirely, then the ⛨ disappears — what you see is what's live.</Row>
-        <Row icon="⛓" title="Captives">A ⛓ on a unit means it holds an enemy unit <b>under it</b>, off the board. The grip has a price: <b>a holder skips the ready step</b> — once spent, it stays spent until it lets go. Select the capturer and <b>Release</b> to hand the captive back — it returns <b>ready</b>, and the release readies your capturer too.</Row>
+        <Row icon="⛓" title="Captives">A ⛓ on a unit means it holds an enemy unit <b>under it</b>, off the board. The grip breaks only one way: <b>when the capturer dies</b>, the captive returns to that zone, <b>ready</b>. There is no letting go — kill the jailer to free the prisoner.</Row>
         <Row icon="⬥" title="Orphaned upgrades">When a unit dies, its upgrades stay <b>lying in the zone</b> as dashed ⬥ tokens. Either player may tap one to <b>salvage</b> it onto their own unit there — paying its full cost and pips, as if played.</Row>
         <Row icon="🛡" title="Guard">Blocks <b>without exhausting</b> — it can block again this round and still take its own turn. ◈ is armor: every hit is reduced by that much.</Row>
         <Row icon="⊘" title="Can't attack">This unit <b>can't attack right now</b> — either its own card forbids it (walls), or an enemy effect <b>disarmed it for the round</b>. It can still move and block.</Row>
@@ -51,7 +51,7 @@ function V3Content() {
         <b>Rush</b> one free move on arrival · <b>Breakthrough</b> kills its blocker → <i>all</i> excess pushes to the original target ·
         <b> Ranged N</b> exhaust to volley N at any enemy unit, any zone (its attacks are ordinary) · <b>Guard</b> blocks free ·
         <b> Hidden</b> while ready it can't be targeted or attacked; exhausting reveals it · <b>Infiltrate</b> deploys to any zone ·
-        <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under (the holder skips readying); it returns ready ·
+        <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under until the holder dies; it returns ready ·
         <b> Shielded</b> first hit prevented · <b>Scar</b> +1 power per damage marked, capped at remaining health ·
         <b> Politician</b> in Neutral with the majority at round end → +1 Influence.
       </p>

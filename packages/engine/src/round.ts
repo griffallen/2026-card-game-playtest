@@ -31,10 +31,8 @@ function runStartStepAuto(state: GameState, seat: Seat) {
     }
   }
 
-  const holding = new Set(Object.values(state.captives).map(c => c.by))
   for (const u of unitsOf(state, seat)) {
-    if (holding.has(u.id)) { u.movedThisRound = false; continue }  // v3 Capture: declining to ready = keeping the captive
-    u.exhausted = false; u.movedThisRound = false
+    u.exhausted = false; u.movedThisRound = false   // decision 92: holding costs nothing — the grip is broken only by death
   }
   for (const r of state.sides[seat].resources) r.exhausted = false
 

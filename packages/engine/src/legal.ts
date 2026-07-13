@@ -166,12 +166,6 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     }
   }
 
-  // v3 Capture: release a held captive (ready the capturer)
-  for (const c of Object.values(state.captives)) {
-    const holder = state.units[c.by]
-    if (holder && holder.owner === seat) out.push({ type: 'releaseCaptive', unit: holder.id })
-  }
-
   // attacks (decision 42): each ready unit alone, plus one full-group per (zone, shared target). No guard-forcing.
   const attackers = unitsOf(state, seat).filter(u => !u.exhausted && !u.imprisoned && !isSick(state, u) && !hasKw(state, u, 'cantAttack'))
   const byZone = new Map<ZoneId, UnitInstance[]>()

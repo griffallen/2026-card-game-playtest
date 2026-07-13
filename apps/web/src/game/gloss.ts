@@ -15,7 +15,7 @@ export const KEYWORD_GLOSS: Record<string, string> = {
   hidden: 'While ready, enemy actions can\'t target it and enemy attacks can\'t be declared at it. It can still block; anything that exhausts it reveals it until it readies again. Effects that don\'t choose ("all", whole-zone, automatic picks) still reach it.',
   infiltrate: 'May be played into any zone — not just your Home.',
   sneak: 'An ability used as your turn: exhaust the unit to resolve its printed Sneak effect on something in its own zone.',
-  capture: 'Takes an enemy unit under this one, off the board entirely. Nothing exhausts up front, but while holding a captive this unit skips the ready step — once spent it stays spent until it releases (a turn action, readying both) or falls. The captive returns ready.',
+  capture: 'Takes an enemy unit under this one, off the board entirely. Holding costs nothing — the grip breaks only when the capturer dies, and the freed captive returns to that zone ready. Kill the jailer to free the prisoner.',
   shielded: 'Arrives with a shield token: the first time it would take damage, the whole hit is prevented and the token is spent.',
   scar: 'Gets +1 Power for each damage marked on it, capped at its remaining Health — the wound powers it, never past what it can survive.',
   politician: 'At the end of each round, if this unit stands in the Neutral zone and its owner has more units there than the opponent, its owner gains 1 Influence (once per round, however many politicians).',

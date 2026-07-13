@@ -186,7 +186,7 @@ function applyLoopPhase(state: GameState, action: GameAction, seat: Seat) {
     }
     case 'play': playCard(state, action, seat); break
     case 'activate': activateAbility(state, action, seat); break
-    case 'releaseCaptive': releaseCaptive(state, action.unit, seat); break
+    case 'releaseCaptive': fail('no-release', 'captives are freed only when their captor falls (decision 92)')
     case 'attachOrphan': attachOrphan(state, action, seat); break
     case 'move': moveUnit(state, action.unit, action.to, seat); break
     case 'attack': attackDeclare(state, action, seat); return // declare→intercept/resolve advances the window itself
@@ -237,23 +237,6 @@ function activateAbility(state: GameState, action: Extract<GameAction, { type: '
   unit.exhausted = true
   log(state, seat, `${def.name} sneaks`)
   runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat }, sneak.ops)
-}
-
-/** Capture (decision 73): the holder's owner readies the capturer, returning the captive READY. */
-function releaseCaptive(state: GameState, unitId: string, seat: Seat) {
-  const unit = state.units[unitId] ?? fail('no-unit', 'no such unit')
-  if (unit.owner !== seat) fail('not-yours', 'not your unit')
-  const held = Object.entries(state.captives).filter(([, c]) => c.by === unitId)
-  if (!held.length) fail('no-captive', `${defOf(state, unitId).name} holds no captive`)
-  unit.exhausted = false
-  for (const [cid, c] of held) {
-    c.unit.zone = unit.zone
-    c.unit.exhausted = false         // decision 73 (reverses 61): capture is temporary — the return is whole
-    c.unit.enteredRound = state.round
-    state.units[cid] = c.unit
-    delete state.captives[cid]
-    log(state, seat, `${defOf(state, cid).name} is released, ready`)
-  }
 }
 
 /** v3 (decision 67): salvage an orphaned upgrade onto your unit in its zone — full cost, pips included. */

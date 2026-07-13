@@ -142,8 +142,8 @@ describe('Sneak — exhaust-activated per-card payload (decision 60)', () => {
   })
 })
 
-describe('Capture — the captive lifecycle (decisions 61, spec §2)', () => {
-  it('captures under, holder skips ready, release returns the captive READY (decision 73)', () => {
+describe('Capture — the captive lifecycle (decision 92: death is the only key)', () => {
+  it('captures under at no cost; voluntary release is refused (decision 92 supersedes 73)', () => {
     let s = v3game2()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const victim = put(s, them, 'soldier', s.actorSeat === 0 ? 0 : 2)
@@ -152,12 +152,23 @@ describe('Capture — the captive lifecycle (decisions 61, spec §2)', () => {
     expect(s.units[victim]).toBeUndefined()            // out of play, no zone presence
     expect(s.captives[victim]?.by).toBe(card)
     expect(s.units[card].exhausted).toBe(false)
-    // release: capturer readies (it already is), captive returns READY to the zone (decision 73)
     s.actorSeat = me   // tests own the window
-    s = applyAction(s, { type: 'releaseCaptive', unit: card }, me).state
-    expect(s.captives[victim]).toBeUndefined()
-    expect(s.units[victim].exhausted).toBe(false)      // decision 73 reverses 61: capture is temporary, the return is whole
-    expect(s.units[victim].zone).toBe(s.units[card].zone)
+    expect(() => applyAction(s, { type: 'releaseCaptive', unit: card }, me)).toThrow(/captor falls/)
+    expect(s.captives[victim]?.by).toBe(card)          // still held
+  })
+
+  it('a holder readies normally at start of round — the grip-lock died with decision 92', () => {
+    let s = v3game2()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const victim = put(s, them, 'soldier', me === 0 ? 0 : 2)
+    const card = give(s, me, 'jailer')
+    s = applyAction(s, { type: 'play', card, targets: [{ kind: 'unit', id: victim }] }, me).state
+    s.units[card].exhausted = true                     // it fought this round
+    s = applyAction(s, { type: 'pass' }, s.actorSeat).state
+    s = applyAction(s, { type: 'pass' }, s.actorSeat).state
+    while (s.phase === 'bank') s = applyAction(s, { type: 'skipResource' }, s.actorSeat).state
+    expect(s.units[card].exhausted).toBe(false)        // ready, still holding
+    expect(s.captives[victim]?.by).toBe(card)
   })
 
   it('capturer death frees the captive, ready (decision 73)', () => {

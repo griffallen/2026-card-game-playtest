@@ -261,7 +261,6 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const resourceActionFor = (cardId: string) => actions.find(a => a.type === 'resource' && a.card === cardId)
   const activateActionsFor = (unitId: string) =>
     actions.filter((a): a is Extract<GameAction, { type: 'activate' }> => a.type === 'activate' && a.unit === unitId)
-  const releaseActionFor = (unitId: string) => actions.find(a => a.type === 'releaseCaptive' && a.unit === unitId)
   const salvageActionsFor = (upgradeId: string) =>
     actions.filter((a): a is Extract<GameAction, { type: 'attachOrphan' }> => a.type === 'attachOrphan' && a.upgrade === upgradeId)
 
@@ -475,7 +474,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
 
   const unitActionable = (unitId: string) =>
     actions.some(a => (a.type === 'move' && a.unit === unitId) || (a.type === 'attack' && a.attackers.includes(unitId))
-      || (a.type === 'activate' && a.unit === unitId) || (a.type === 'releaseCaptive' && a.unit === unitId))
+      || (a.type === 'activate' && a.unit === unitId))
   const unitCanAttack = (unitId: string) =>
     actions.some(a => a.type === 'attack' && a.attackers.includes(unitId))
 
@@ -643,12 +642,6 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
               }}>{isSneak ? '✦ Use Sneak' : `🏹 Volley${rn ? ` (${rn})` : ''}`}</button>
             )
           })()}
-          {selection.ids.length === 1 && releaseActionFor(selection.ids[0]) && (
-            <button className="btn btn-primary !py-1 text-xs"
-              onClick={() => apply({ type: 'releaseCaptive', unit: selection.ids[0] }, seat)}>
-              ⛓ Release {unitViewOf(selection.ids[0])?.captives[0]?.name ?? 'captive'}
-            </button>
-          )}
           {selection.ids.length === 1 && (
             <button className="btn !py-1 text-xs" onClick={() => setInspect({ kind: 'unit', id: selection.ids[0] })}>ⓘ details</button>
           )}
