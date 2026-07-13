@@ -34,6 +34,8 @@ export function Rules() {
         Everything you need to sit down and play, the game as it stands today. Want to try it while you read? The{' '}
         <Link className="text-goldbright underline" to="/play">Play</Link> tab runs the full rules in your browser,
         and every card’s exact text is in the <Link className="text-goldbright underline" to="/cards">Cards</Link> tab.
+        When you know what’s legal and want to know what’s <i>smart</i>, Old Varga’s{' '}
+        <Link className="text-goldbright underline" to="/guide">Sellsword’s Primer</Link> is one tab over.
       </P>
 
       <Card>

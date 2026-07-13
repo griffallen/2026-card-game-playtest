@@ -925,7 +925,8 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         <span className="font-display text-parchment">{names[0]} vs {names[1]}</span>
         <span className="text-xs text-dim">Round {view.round} · seed {config.seed}</span>
         <span className="text-xs text-goldbright" title="holds the initiative — acts first each round">⚑ {names[view.initiative]}</span>
-        <span className="ml-auto flex gap-1.5">
+        {/* wraps rather than stretching the layout viewport — a 393px row at 390px broke taps once (#17) */}
+        <span className="ml-auto flex min-w-0 flex-wrap justify-end gap-1.5">
           {config.mode === 'vs-ai' && (
             <select className="input !w-auto !py-0.5 text-xs" value={speed} onChange={e => setSpeed(e.target.value as Speed)} title="AI thinking speed" aria-label="AI speed">
               <option value="slow">🤖 slow</option>
