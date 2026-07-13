@@ -700,6 +700,14 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           <p className="mt-1.5 text-[12.5px] text-parchment">
             {blockPairs.map(p => `${unitName(p.blocker)} ⚔ ${unitName(p.onto)}`).join(' · ')}
             {open.length ? ` — ${open.map(a => a.name).join(', ')} unblocked → hits ${pendingAttack ? refName(pendingAttack.target) : 'the target'}` : ''}
+            {/* #62: self-blocking is legal but subtle — it punches either way; the block buys armor-per-hit and costs readiness */}
+            {tgt?.kind === 'unit' && blockPairs.some(p => p.blocker === tgt.id) && tgtView && (
+              <span className="block text-dim">
+                {tgtView.name} is blocking its own attacker — it punches back either way; the block makes its armor
+                shrink each hit separately instead of once{tgtView.armor > 0 || tgtView.shielded ? '' : ' (it has no armor, so that buys nothing)'},
+                {tgtView.keywords.includes('guard') ? ' and as a Guard it stays ready.' : ' at the price of exhausting it.'}
+              </span>
+            )}
           </p>
         )}
       </div>
