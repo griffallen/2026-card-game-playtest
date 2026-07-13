@@ -10,7 +10,7 @@ import { T, toyDeck, put } from './util.ts'
 const K: CardSet = {
   ...T,
   ghost: { slug: 'ghost', name: 'ghost', color: 'purple', type: 'unit', cost: 2, power: 3, health: 3, text: '', kw: [{ k: 'hidden' }] },
-  shell: { slug: 'shell', name: 'shell', color: 'yellow', type: 'unit', cost: 2, power: 1, health: 3, text: '', kw: [{ k: 'shielded' }] },
+  shell: { slug: 'shell', name: 'shell', color: 'yellow', type: 'unit', cost: 2, power: 1, health: 3, text: '', kw: [{ k: 'shielded' }, { k: 'guard' }] },   // guard: duels admit only guards (decision 98)
   splasher: { slug: 'splasher', name: 'splasher', color: 'red', type: 'unit', cost: 3, power: 3, health: 3, text: '',
     kw: [{ k: 'ranged' }], onAttack: [{ op: 'damage', t: 'autoSplash', n: 1 }] },
 }

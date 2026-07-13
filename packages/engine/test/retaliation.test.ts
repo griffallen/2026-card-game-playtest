@@ -4,6 +4,10 @@ import { createGame } from '../src/setup.ts'
 import { applyAction } from '../src/engine.ts'
 import { V3_RULES } from '../src/rules.ts'
 import { T, toyDeck, put } from './util.ts'
+import type { CardSet } from '../src/types.ts'
+
+// decision 98 (duel law): only guards answer a lone attacker — the blocking wall wears the badge
+const R: CardSet = { ...T, gwall: { slug: 'gwall', name: 'gwall', color: 'yellow', type: 'unit', cost: 2, power: 0, health: 5, text: '', kw: [{ k: 'cantAttack' }, { k: 'guard' }] } }
 
 // #25 (Griff): "a unit directly attacked always deals combat damage to the attackers,
 // whether it's exhausted or not." Experiment knob: rules.retaliation 'blockers' (current
@@ -13,7 +17,7 @@ function game(retaliation: 'blockers' | 'ready' | 'always'): GameState {
   let s = createGame({
     seed: 31,
     rules: { ...V3_RULES, retaliation, chooseStartingResources: false },
-    cardSet: T,
+    cardSet: R,
     players: [{ name: 'Ada', deck: toyDeck() }, { name: 'Bo', deck: toyDeck() }],
   })
   while (s.phase === 'bank') s = applyAction(s, { type: 'skipResource' }, s.actorSeat).state
@@ -74,7 +78,7 @@ describe('retaliation experiment (#25)', () => {
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const raider = put(s, me, 'soldier', 1)          // 2/2
     const target = put(s, them, 'brute', 1, { exhausted: true })   // 4/3
-    const wall = put(s, them, 'wall', 1)             // 0/5 cantAttack blocker
+    const wall = put(s, them, 'gwall', 1)            // 0/5 guard wall (decision 98: duels admit only guards)
     s.actorSeat = me
     let next = applyAction(s, { type: 'attack', attackers: [raider], target: { kind: 'unit', id: target } }, me).state
     next = applyAction(next, { type: 'block', pairs: [{ blocker: wall, onto: raider }] }, them).state

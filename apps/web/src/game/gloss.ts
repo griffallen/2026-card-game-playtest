@@ -2,7 +2,7 @@
  *  Phrasing mirrors the v3 rulebook's keyword table (issue #23: one voice across every teaching
  *  surface); entries live only in the classic v2.3 ruleset are marked. */
 export const KEYWORD_GLOSS: Record<string, string> = {
-  guard: 'Defends for free — stepping in front of an attack doesn\'t exhaust it, so it can defend again and still take its own turn.',
+  guard: 'The bodyguard. When ONE unit attacks alone, no ordinary unit may block — but a Guard may step in front of the target (one Guard, full redirect) — and it defends without exhausting, so it can do it again. In gang attacks it blocks freely like anyone, still for free.',
   armor: 'Every hit this unit takes is reduced by this much.',
   rush: 'Its first move the round it arrives is free — that one move doesn\'t exhaust it, so it can reposition and still attack. One free move only; a second exhausts it.',
   ranged: 'Ability: exhaust this unit to deal its Ranged number to one enemy unit in any zone (a chosen shot — ready Hidden units refuse it). Its regular attacks are ordinary. (Classic v2.3: attacks one zone away instead, no counter, never bases.)',

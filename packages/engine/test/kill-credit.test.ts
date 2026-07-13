@@ -14,7 +14,7 @@ const K: CardSet = {
   reaper: { slug: 'reaper', name: 'reaper', color: 'red', type: 'unit', cost: 3, power: 5, health: 4, text: '',
     onKill: [{ op: 'influence', n: 1 }] },
   cutpurse: { slug: 'cutpurse', name: 'cutpurse', color: 'red', type: 'unit', cost: 2, power: 2, health: 3, text: '',
-    onKill: [{ op: 'influence', n: 1 }] },
+    kw: [{ k: 'guard' }], onKill: [{ op: 'influence', n: 1 }] },   // guard: only guards may answer a duel (decision 98)
 }
 
 function v3game(): GameState {
@@ -36,7 +36,7 @@ describe('a kill is a kill (decision 74)', () => {
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const reaper = put(s, me, 'reaper', 1)              // 5/4, onKill +1
     const target = put(s, them, 'brute', 1, { exhausted: true })
-    const blocker = put(s, them, 'soldier', 1)          // 2/2 chump
+    const blocker = put(s, them, 'cutpurse', 1)         // 2/3 guard chump (decision 98: duels admit only guards)
     s.actorSeat = me
     const before = inf(s, me)
     let next = applyAction(s, { type: 'attack', attackers: [reaper], target: { kind: 'unit', id: target } }, me).state

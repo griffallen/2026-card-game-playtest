@@ -40,16 +40,19 @@ Cost and color are now two separate checks:
 ### 1.3 Combat — target-declared, blocker-paired *(Q4–Q6 answered; replaces combined-hit + intercept)*
 1. **Declare:** attacker exhausts a group of ready units in one zone and declares **one target:
    an enemy unit there, or the enemy's Home** (Home only while standing in that zone, as today).
-2. **Block:** the defender assigns any of their ready units in that zone as blockers, pairing
-   them onto attackers — 1v1 or several blockers ganging one attacker. **The declared target
-   may itself block its attacker** (self-defense is a block like any other — engine ruling
-   during the build; without it a lone ready unit takes free hits with no reply). **Blocking
-   exhausts the blocker** (Guard excepted, see 1.3.6) **[derived from Q10 ✓ — "Guards don't
-   exhaust to defend" is only a perk if everyone else does; echoed on the issue for veto]**.
-   The earlier draft assumption (blocking is free) is dead. In a gang block the defender's
-   **pair order is the pour order** — the attacker's damage fills each blocker in sequence
-   (deterministic split under the defender's control, decision Q5). *(Decision 80 removed the
-   cross-zone Ranged sniper shot — all v3 attacks happen within one zone and open the window.)*
+2. **Block — the duel law [decision 98 (issue #50, designer: "flip it") — supersedes the open
+   window for lone attackers]:** if **exactly one unit attacks**, no ordinary unit may block —
+   the block window opens only if the defender has a ready **Guard** in the zone, and then
+   **at most one Guard** may step in front (full redirect: the Guard takes the entire hit and
+   counters as a blocker; the target is untouched and does not retaliate). If **two or more
+   units attack**, the defense opens fully: the defender assigns any of their ready units in
+   that zone as blockers, pairing them onto attackers — 1v1 or several blockers ganging one
+   attacker; the declared target may itself block its attacker. **Blocking exhausts the
+   blocker** (Guard excepted, see 1.3.6). In a gang block the defender's **pair order is the
+   pour order** — the attacker's damage fills each blocker in sequence (deterministic split
+   under the defender's control, decision Q5). *A/B verdict (400 games): red 28.5% → 36.3%,
+   influence wins 49% → 40% — reliable removal without touching a red card.* *(Decision 80
+   removed the cross-zone Ranged sniper shot — all v3 attacks happen within one zone.)*
 3. **Resolve simultaneously, per pairing:** each attacker fights its blocker(s); **[Q5 ✓] in a
    gang-block the DEFENDER divides the attacker's damage** among the blockers; blockers' combined
    power hits the attacker back.

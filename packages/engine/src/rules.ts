@@ -40,7 +40,7 @@ export const DEFAULT_RULES: RulesConfig = {
 export const V3_RULES: RulesConfig = {
   ...DEFAULT_RULES,
   combatModel: 'blockerPairing',
-  singleAttackerDuels: false,   // issue #50: flips on for the A/B; canon after the designer sees numbers
+  singleAttackerDuels: true,    // decision 98 (issue #50, designer: "flip it") — duels are canon
   pipModel: 'presence',
   upgradesOrphan: true,
   firstRoundStartStep: false,   // decision 71: play round 1 from the opening hand + 2 setup resources

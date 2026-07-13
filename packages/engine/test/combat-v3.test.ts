@@ -39,28 +39,33 @@ describe('blocker-pairing combat (v3)', () => {
   })
 
   it('gang block: defender pour order splits the attacker damage; combined counter kills', () => {
+    // decision 98 (duel law): gang-blocking needs a gang — a pawn rides along so the pairing stays open
     let s = g()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const big = put(s, me, 'crusher', 1)      // 3/3 breakthrough (kw n ignored in v3 resolve)
+    const chaff = put(s, me, 'pawn', 1)       // 1/1 second attacker — unblocked, hits the target
     const b1 = put(s, them, 'soldier', 1)     // 2/2 listed first: eats 2
     const b2 = put(s, them, 'brute', 1)       // 4/3 second: eats overflow 1
-    s = applyAction(s, { type: 'attack', attackers: [big], target: { kind: 'unit', id: b2 } }, me).state
+    s = applyAction(s, { type: 'attack', attackers: [big, chaff], target: { kind: 'unit', id: b2 } }, me).state
     s = applyAction(s, { type: 'block', pairs: [{ blocker: b1, onto: big }, { blocker: b2, onto: big }] }, them).state
     expect(s.units[b1]).toBeUndefined()       // 2 damage kills the 2/2
-    expect(s.units[b2].damage).toBe(1)        // pour overflow
+    expect(s.units[b2].damage).toBe(2)        // pour overflow 1 + the unblocked pawn's 1
     expect(s.units[big]).toBeUndefined()      // 2+4 combined counter kills the 3-health crusher
+    expect(s.units[chaff]).toBeUndefined()    // decision 84: the target struck the unblocked pawn back at 4
   })
 
   it('breakthrough spills leftover damage to the ORIGINAL declared target', () => {
+    // decision 98 (duel law): a plain chump may only block inside a gang — a runner rides along
     let s = g()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const big = put(s, me, 'crusher', 1)      // 3 power, breakthrough
+    const mate = put(s, me, 'runner', 1)      // 1/1 second attacker — unblocked
     const chump = put(s, them, 'pawn', 1)     // 1/1 blocker
     const victim = put(s, them, 'wall', 1)    // 0/5 declared target
-    s = applyAction(s, { type: 'attack', attackers: [big], target: { kind: 'unit', id: victim } }, me).state
+    s = applyAction(s, { type: 'attack', attackers: [big, mate], target: { kind: 'unit', id: victim } }, me).state
     s = applyAction(s, { type: 'block', pairs: [{ blocker: chump, onto: big }] }, them).state
     expect(s.units[chump]).toBeUndefined()
-    expect(s.units[victim].damage).toBe(2)    // 3 power − 1 to kill the pawn = 2 spilled
+    expect(s.units[victim].damage).toBe(3)    // 2 spilled through the pawn + the runner's 1
   })
 
   it('blocking exhausts non-Guards; Guards block and stay ready (decision 62)', () => {

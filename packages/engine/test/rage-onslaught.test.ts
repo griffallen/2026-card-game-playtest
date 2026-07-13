@@ -11,6 +11,8 @@ import { T, toyDeck, put, toHand } from './util.ts'
 // every unit its attack actually wounded.
 const SET: CardSet = {
   ...T,
+  mastiff: { slug: 'mastiff', name: 'mastiff', color: 'red', type: 'unit', cost: 3, power: 4, health: 3, text: '',
+    kw: [{ k: 'guard' }] },   // decision 98: duels admit only guards — the doom tests' blocker
   rage: { slug: 'rage', name: 'rage', color: 'red', type: 'action', cost: 0, text: '',
     onPlay: [{ op: 'double', t: { side: 'friendly' }, rounds: 2 }, { op: 'attackTax', n: 2, rounds: 2 }] },
   finale: { slug: 'finale', name: 'finale', color: 'red', type: 'action', cost: 0, text: '',
@@ -102,7 +104,7 @@ describe('doom (Final Onslaught, PR #38)', () => {
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const vet = put(s, me, 'brute', 1, { exhausted: true })      // 4/3
     const wall = put(s, them, 'wall', 1)                          // 0/5 target — blocks a1 itself? no: bystander
-    const tank = put(s, them, 'brute', 1)                         // 4/3 blocker — eats 3 of the pour, counters 4
+    const tank = put(s, them, 'mastiff', 1)                       // 4/3 GUARD blocker (decision 98), counters 4
     const finale = toHand(s, me, 'finale')
     s = applyAction(s, { type: 'play', card: finale, targets: [{ kind: 'unit', id: vet }] }, me).state
     s = applyAction(s, { type: 'attack', attackers: [vet], target: { kind: 'unit', id: wall } }, me).state
@@ -121,7 +123,7 @@ describe('doom (Final Onslaught, PR #38)', () => {
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const vet = put(s, me, 'soldier', 1, { exhausted: true })    // 2/2
     const wall = put(s, them, 'wall', 1)                          // target
-    const tank = put(s, them, 'brute', 1)                         // 4/3 blocker: takes 2, survives, counters 4
+    const tank = put(s, them, 'mastiff', 1)                       // 4/3 GUARD blocker: takes 2, survives, counters 4
     const finale = toHand(s, me, 'finale')
     s = applyAction(s, { type: 'play', card: finale, targets: [{ kind: 'unit', id: vet }] }, me).state
     s = applyAction(s, { type: 'attack', attackers: [vet], target: { kind: 'unit', id: wall } }, me).state

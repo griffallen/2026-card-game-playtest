@@ -10,6 +10,8 @@ import { T, toyDeck, put } from './util.ts'
 // declaration, so it fires even when every point of damage is prevented.
 const K: CardSet = {
   ...T,
+  gwall: { slug: 'gwall', name: 'gwall', color: 'yellow', type: 'unit', cost: 2, power: 0, health: 5, text: '',
+    kw: [{ k: 'cantAttack' }, { k: 'guard' }] },   // decision 98: duels admit only guards
   paladin: { slug: 'paladin', name: 'paladin', color: 'yellow', type: 'unit', cost: 3, power: 2, health: 5, text: '',
     kw: [{ k: 'guard' }], onDefend: [{ op: 'influence', n: 2 }] },
   siegecat: { slug: 'siegecat', name: 'siegecat', color: 'red', type: 'unit', cost: 3, power: 2, health: 3, text: '',
@@ -55,7 +57,7 @@ describe('decision 86 — targeted IS defending: one trigger, even when self-blo
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const raider = put(s, me, 'soldier', 1)
     const target = put(s, them, 'paladin', 1)        // targeted, doesn't block
-    const wall = put(s, them, 'wall', 1)
+    const wall = put(s, them, 'gwall', 1)
     s.actorSeat = me
     const before = inf(s, them)
     let next = applyAction(s, { type: 'attack', attackers: [raider], target: { kind: 'unit', id: target } }, me).state
