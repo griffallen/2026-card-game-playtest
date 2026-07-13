@@ -66,7 +66,11 @@ Project state lives in `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md`. **Read it at th
    ```
 
 2. Overwrite `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md` with the Hand-off section.
-3. Offer to commit everything, with a suggested message.
+3. Add the session's entry to **The Chronicle** (`apps/demo/src/pages/Journal.tsx`) — the
+   demo's illuminated journal. Fantasy-voiced, succinct (2–3 short paragraphs), in the hand
+   of ⚜ The Chronicler; a marginal note where one fits. The dry summary is the record; the
+   Chronicle is the story. Deploy so it's live before the session closes.
+4. Offer to commit everything, with a suggested message.
 
 ## Working principles
 
