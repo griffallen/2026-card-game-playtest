@@ -3,7 +3,7 @@ name: Vanguard Sentinel
 type: unit
 cost: 1
 power: 1
-health: 2
+health: 1
 keywords: guard
 influenceTrigger: onDefend
 pips: yellow
@@ -11,7 +11,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onDefend":[{"op":"influence","n":2}]}
 ---
-Guard. When this defends, gain 2 Influence.
+Guard. When this unit dies, gain 1 Influence.
 
 ## Design notes
 
