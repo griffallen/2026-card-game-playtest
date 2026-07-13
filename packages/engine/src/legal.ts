@@ -168,6 +168,23 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
 
   // attacks (decision 42): each ready unit alone, plus one full-group per (zone, shared target). No guard-forcing.
   const attackers = unitsOf(state, seat).filter(u => !u.exhausted && !u.imprisoned && !isSick(state, u) && !hasKw(state, u, 'cantAttack'))
+  // PR #46 (splashReap): a chosen-splash attacker declares its victim with the attack — one
+  // action variant per victim combination (decision 24: everything is declared up front)
+  const withSplash = (a: Extract<GameAction, { type: 'attack' }>): GameAction[] => {
+    if (a.target.kind !== 'unit') return [a]
+    const tgtId = a.target.id
+    const tgt = state.units[tgtId]!
+    const splashers = a.attackers.filter(id => (defOf(state, id).onAttack ?? []).some(o => o.op === 'splashReap'))
+    if (!splashers.length) return [a]
+    let combos: { by: string; unit: string }[][] = [[]]
+    for (const sid of splashers) {
+      const cands = unitsInZone(state, tgt.zone).filter(u =>
+        u.id !== tgtId && u.id !== sid && !u.imprisoned && !(u.owner !== seat && !u.exhausted && hasKw(state, u, 'hidden')))
+      if (!cands.length) continue
+      combos = combos.flatMap(cur => cands.map(v => [...cur, { by: sid, unit: v.id }]))
+    }
+    return combos.map(sp => (sp.length ? { ...a, splash: sp } : a))
+  }
   const byZone = new Map<ZoneId, UnitInstance[]>()
   for (const u of attackers) byZone.set(u.zone, [...(byZone.get(u.zone) ?? []), u])
   for (const [, group] of byZone) {
@@ -176,15 +193,15 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     for (const t of targetsHere.values()) {
       const able = group.filter(u => attackTargets(state, u).some(x => JSON.stringify(x) === JSON.stringify(t)))
       for (const u of able) {
-        out.push({ type: 'attack', attackers: [u.id], target: t })
+        out.push(...withSplash({ type: 'attack', attackers: [u.id], target: t }))
         if (state.rules.combatModel !== 'blockerPairing' && typeof kwOf(state, u, 'overextend') === 'number')
-          out.push({ type: 'attack', attackers: [u.id], target: t, overextend: [u.id] })
+          out.push(...withSplash({ type: 'attack', attackers: [u.id], target: t, overextend: [u.id] }))
       }
       if (able.length > 1) {
         const ids = able.map(u => u.id)
-        out.push({ type: 'attack', attackers: ids, target: t })
+        out.push(...withSplash({ type: 'attack', attackers: ids, target: t }))
         const oe = state.rules.combatModel === 'blockerPairing' ? [] : able.filter(u => typeof kwOf(state, u, 'overextend') === 'number').map(u => u.id)
-        if (oe.length) out.push({ type: 'attack', attackers: ids, target: t, overextend: oe })
+        if (oe.length) out.push(...withSplash({ type: 'attack', attackers: ids, target: t, overextend: oe }))
       }
     }
   }

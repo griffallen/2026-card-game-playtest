@@ -374,7 +374,16 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
         break
       }
       case 'mulligan': score = 2; break // baseline bot keeps what it's dealt
-      case 'attack': score = attackScore(state, action); break
+      case 'attack': {
+        score = attackScore(state, action)
+        // PR #46: the skewer pick rides the attack — reward enemy wounds and kills, tax friendly fire
+        for (const sp of action.splash ?? []) {
+          const v = state.units[sp.unit]
+          if (!v) continue
+          score += v.owner === seat ? -5 : (v.damage + 1 >= effHealth(state, v) ? 12 : 3)
+        }
+        break
+      }
       case 'play': score = playScore(state, seat, action); break
       case 'move': score = moveScore(state, seat, action); break
       case 'resource': {

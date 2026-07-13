@@ -20,6 +20,8 @@ export interface FxCtx {
   enteredZone?: ZoneId
   /** declared X for xCost cards (issue #45) */
   x?: number
+  /** attack-declared splash victims by attacker id (PR #46: splashReap) */
+  splashChoice?: Record<string, string>
   /** v3 "that much" link: written by clearDamage, read by damage n:'linked' (spec §3) */
   linked?: number
   actorSeat: Seat
@@ -369,6 +371,18 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         u.mods.push({ p: x, round: true })
         u.mods.push({ kw: { k: 'breakthrough' }, round: true })
         log(state, controller, `${state.sides[controller].name} cedes ${x} influence — ${name(state, u.id)} gets +${x} power and breakthrough this round`)
+        break
+      }
+      case 'splashReap': {   // PR #46: the skewer — declared victim takes n; a kill reaps influence
+        const victimId = ctx.sourceUnit ? ctx.splashChoice?.[ctx.sourceUnit] : undefined
+        const v = victimId ? state.units[victimId] : undefined
+        if (!v) break
+        damageUnit(state, v, op.n, name(state, ctx.sourceUnit!))
+        const dead = state.units[v.id] && state.units[v.id].damage >= effHealth(state, state.units[v.id])
+        if (dead && op.influence > 0) {
+          addInfluence(state, controller, op.influence)
+          log(state, controller, `the skewer reaps: ${state.sides[controller].name} gains ${op.influence} influence`)
+        }
         break
       }
       case 'capture': {

@@ -30,6 +30,7 @@ type Selection =
   | { kind: 'targeting'; card: string; collected: TargetRef[]; mode?: number; x?: number }
   | { kind: 'mode'; card: string }            // v3 modal cards: choosing which mode to play (#26)
   | { kind: 'x'; card: string }               // X-cost cards: declaring X before targeting (#45)
+  | { kind: 'splash'; ids: string[]; target: TargetRef; picks: { by: string; unit: string }[]; oe: string[] }  // PR #46: skewer victims declared with the attack
   | { kind: 'sneaking'; unit: string }        // v3 Sneak: choosing the ability's target
   | { kind: 'orphan'; id: string }            // v3 salvage: choosing which unit picks the orphan up
   | null
@@ -333,6 +334,10 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       }
       return refs
     }
+    if (selection.kind === 'splash') {
+      const current = splashersOf(selection.ids)[selection.picks.length]
+      return splashCandidates(selection.target, current).map(id => ({ kind: 'unit', id }) as TargetRef)
+    }
     if (selection.kind === 'sneaking') {
       const refs: TargetRef[] = []
       for (const a of activateActionsFor(selection.unit)) {
@@ -350,7 +355,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
 
   const isHighlighted = (ref: TargetRef) => highlights.some(h => sameRef(h, ref))
   const glowFor = (ref: TargetRef): 'target' | 'attack' | 'none' =>
-    !isHighlighted(ref) ? 'none' : selection?.kind === 'unit' && ref.kind !== 'zone' ? 'attack' : 'target'
+    !isHighlighted(ref) ? 'none' : (selection?.kind === 'unit' || selection?.kind === 'splash') && ref.kind !== 'zone' ? 'attack' : 'target'
 
   function clickTarget(ref: TargetRef) {
     if (!isHighlighted(ref) || !selection) return
@@ -359,9 +364,24 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         apply({ type: 'move', unit: selection.ids[0], to: ref.zone }, seat) // move is single-unit only
       } else {
         const oe = armOverextend ? selection.ids.filter(id => oeOf(id) !== null) : []
+        // PR #46: a skewer-carrying attacker declares its victim before the attack is submitted
+        if (ref.kind === 'unit' && splashersOf(selection.ids).some(sid => splashCandidates(ref, sid).length)) {
+          setSelection({ kind: 'splash', ids: selection.ids, target: ref, picks: [], oe })
+          setArmOverextend(false)
+          return
+        }
         apply({ type: 'attack', attackers: selection.ids, target: ref, ...(oe.length ? { overextend: oe } : {}) }, seat)
       }
       setArmOverextend(false)
+      return
+    }
+    if (selection.kind === 'splash' && ref.kind === 'unit') {
+      const splashers = splashersOf(selection.ids)
+      const picks = [...selection.picks, { by: splashers[selection.picks.length], unit: ref.id }]
+      if (picks.length >= splashers.length) {
+        apply({ type: 'attack', attackers: selection.ids, target: selection.target, splash: picks,
+          ...(selection.oe.length ? { overextend: selection.oe } : {}) }, seat)
+      } else setSelection({ ...selection, picks })
       return
     }
     if (selection.kind === 'targeting') {
@@ -470,6 +490,19 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     if (!plays.length) return
     if ((plays[0].targets?.length ?? 0) === 0) apply({ type: 'play', card: cardId, x }, seat)
     else setSelection({ kind: 'targeting', card: cardId, collected: [], x })
+  }
+
+  // PR #46 (splashReap): attackers whose trigger wants a declared victim, and the legal victims
+  const splashersOf = (ids: string[]) =>
+    ids.filter(id => (DEMO_CARDS[state.cardOf[id]]?.onAttack ?? []).some(o => o.op === 'splashReap'))
+  const splashCandidates = (targetRef: TargetRef, splasher?: string): string[] => {
+    if (targetRef.kind !== 'unit') return []
+    const tgt = view.zones.flatMap(z => z.units).find(u => u.id === targetRef.id)
+    if (!tgt) return []
+    return view.zones[tgt.zone].units
+      .filter(u => u.id !== tgt.id && u.id !== splasher && !u.imprisoned
+        && !(u.owner !== seat && !u.exhausted && u.keywords.includes('hidden')))
+      .map(u => u.id)
   }
 
   const unitActionable = (unitId: string) =>
@@ -698,6 +731,18 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             {xs.map(x => (
               <button key={x} className="btn btn-primary !px-2.5 !py-1 text-xs" onClick={() => pickX(selection.card, x)}>{x}</button>
             ))}
+            <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
+          </div>
+        )
+      })()}
+      {selection?.kind === 'splash' && (() => {
+        const splashers = splashersOf(selection.ids)
+        const current = splashers[selection.picks.length]
+        return (
+          <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            <span className="text-goldbright">
+              <b>{unitName(current)}</b> skewers as it attacks — choose any unit in the zone (even your own; not the attack's target):
+            </span>
             <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
           </div>
         )

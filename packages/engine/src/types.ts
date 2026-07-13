@@ -65,6 +65,7 @@ export type Op =
   | { op: 'attackTax'; n: number; rounds: number }                // PR #39 (Unchained Rage): each of your attacking units cedes n influence
   | { op: 'doom'; t: 'chosen0' }                                  // PR #38 (Final Onslaught): after the extra action, the unit and its attack's victims die
   | { op: 'xSurge'; t: 'chosen0' }                                // issue #45 (Reckless Abandon): lose X influence; +X power and Breakthrough this round
+  | { op: 'splashReap'; n: number; influence: number }            // PR #46 (Fiery Impaler): on attack, n damage to the declared splash victim; +influence if it dies
 
 export type Static =
   | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; armor?: number; kw?: KeywordSpec; cond?: Cond }
@@ -279,7 +280,7 @@ export type GameAction =
   | { type: 'releaseCaptive'; unit: string }                              // RETIRED (decision 92): kept for replay compat; always rejected
   | { type: 'block'; pairs: { blocker: string; onto: string }[] }         // v3 combat: defender pairs blockers (empty = let it through); pour order = pair order
   | { type: 'attachOrphan'; upgrade: string; unit: string }               // v3 (decision 67): salvage an orphaned upgrade at full cost+pips
-  | { type: 'attack'; attackers: string[]; target: TargetRef; overextend?: string[] } // decision 42: 1+ attackers, one zone; overextend: subset taking the gamble
+  | { type: 'attack'; attackers: string[]; target: TargetRef; overextend?: string[]; splash?: { by: string; unit: string }[] }  // splash: per-attacker chosen victims for splashReap triggers (PR #46, decision 24-compatible) // decision 42: 1+ attackers, one zone; overextend: subset taking the gamble
   | { type: 'move'; unit: string; to: ZoneId }
   | { type: 'claimInitiative' }              // decision 40: take the token, leave the round
   | { type: 'intercept'; unit: string }      // decision 42: redirect the attack to a ready unit

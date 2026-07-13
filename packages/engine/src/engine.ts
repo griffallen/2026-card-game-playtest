@@ -477,6 +477,34 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
       fail('bad-zone', allRangedOrReach ? 'target is out of range' : 'combat happens within one zone')
   } else fail('bad-target', 'attack a unit or a base')
 
+  // PR #46 (splashReap, decision 93): attackers with a chosen-splash trigger declare their
+  // victims WITH the attack (decision 24: no mid-resolution input). Any unit in the combat
+  // zone — even your own (designer: "I like the openness") — except the declared target.
+  const needsSplash = (uid: string) => (defOf(state, uid).onAttack ?? []).some(o => o.op === 'splashReap')
+  const combatZoneForSplash = action.target.kind === 'unit' ? state.units[action.target.id]!.zone : null
+  const splashChoice: Record<string, string> = {}
+  for (const e of action.splash ?? []) {
+    if (!ids.includes(e.by) || !needsSplash(e.by)) fail('bad-splash', 'that attacker declares no skewer')
+    if (splashChoice[e.by]) fail('bad-splash', 'one victim per skewer')
+    if (combatZoneForSplash === null) fail('bad-splash', 'the skewer only fires when attacking a unit')
+    const v = state.units[e.unit] ?? fail('bad-splash', 'no such skewer victim')
+    if (v.zone !== combatZoneForSplash) fail('bad-splash', 'the skewer reaches only the combat zone')
+    if (action.target.kind === 'unit' && v.id === action.target.id) fail('bad-splash', 'the skewer wants a second victim — it ALSO deals damage')
+    if (v.id === e.by) fail('bad-splash', 'the skewer cannot turn on its own wielder')
+    if (v.imprisoned) fail('bad-splash', 'imprisoned units cannot be skewered')
+    if (v.owner !== seat && !v.exhausted && hasKw(state, v, 'hidden')) fail('bad-splash', 'a ready hidden unit cannot be chosen (decision 76)')
+    splashChoice[e.by] = e.unit
+  }
+  if (combatZoneForSplash !== null) {
+    for (const u of units) {
+      if (!needsSplash(u.id) || splashChoice[u.id]) continue
+      const cands = unitsInZone(state, combatZoneForSplash).filter(x =>
+        x.id !== (action.target as { id: string }).id && x.id !== u.id && !x.imprisoned
+        && !(x.owner !== seat && !x.exhausted && hasKw(state, x, 'hidden')))
+      if (cands.length) fail('missing-splash', `${defOf(state, u.id).name} must declare its skewer victim with the attack`)
+    }
+  }
+
   // Unchained Rage (PR #39): each attacking unit cedes influence while the rage lasts
   for (const tax of state.attackTaxes) {
     if (tax.seat !== seat) continue
@@ -500,7 +528,7 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
   log(state, seat, `${ids.map(id => defOf(state, id).name).join(', ')} attack${ids.length === 1 ? 's' : ''} ${targetName}`)
   for (const u of units) {
     if (!state.units[u.id]) continue
-    fireTrigger({ state, attackTarget: action.target, actorSeat: seat }, u, 'onAttack')
+    fireTrigger({ state, attackTarget: action.target, actorSeat: seat, splashChoice }, u, 'onAttack')
   }
 
   state.pendingAttack = { seat, attackers: ids.filter(id => state.units[id]), target: action.target, overextend: oeIds }

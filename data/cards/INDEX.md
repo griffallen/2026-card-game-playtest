@@ -24,7 +24,7 @@
 | [Warpath](red/warpath.md) | 2 | action | — |  | canon | Your units get +1 Power this round. |
 | [Bloodfrenzy](red/bloodfrenzy.md) | 3 | upgrade | — |  | canon | Attached unit gets +1 Power and Armor 1. At the start of your round, if you have 10 or less life, attached unit gets +1 Power permanently. |
 | [Collateral Damage](red/collateral-damage.md) | 3 | action | — |  | canon | Deal 2 damage to two different target units. |
-| [Fiery Impaler](red/fiery-impaler.md) | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to the strongest other enemy unit in that zone. |
+| [Fiery Impaler](red/fiery-impaler.md) | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to a unit of your choice in the same zone. If that unit dies, gain +1 influence. |
 | [Rageforged Brute](red/rageforged-brute.md) | 3 | unit | 4/4 | breakthrough | canon | Breakthrough. |
 | [Volcanic Slam](red/volcanic-slam.md) | 3 | action | — |  | canon | Deal 3 damage to up to two units in the same zone. |
 | [Blaze Juggernaut](red/blaze-juggernaut.md) | 4 | unit | 4/4 | rush, breakthrough | canon | Rush. Breakthrough. |

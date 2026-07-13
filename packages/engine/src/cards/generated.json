@@ -476,9 +476,9 @@
  "fiery-impaler": {
   "onAttack": [
    {
-    "op": "damage",
-    "t": "autoSplash",
-    "n": 1
+    "op": "splashReap",
+    "n": 1,
+    "influence": 1
    }
   ],
   "slug": "fiery-impaler",
@@ -488,12 +488,12 @@
   "cost": 3,
   "power": 3,
   "health": 3,
-  "text": "When this attacks a unit, it also deals 1 damage to the strongest other enemy unit in that zone.",
+  "text": "When this attacks a unit, it also deals 1 damage to a unit of your choice in the same zone. If that unit dies, gain +1 influence.",
   "pips": [
    "red",
    "red"
   ],
-  "designerNote": "Session 006: text now states the deterministic pick (decision 51) instead of the vague \"an adjacent unit\".",
+  "designerNote": "Session 006: text now states the deterministic pick (decision 51) instead of the vague \"an adjacent unit\".\n\n2026-07-13 (designer, PR #46 → decision 93): the pick becomes a CHOICE — declared with the attack\n(decision 24 stands: no mid-resolution input), any unit in the combat zone except the declared\ntarget, \"even your own\" (friendly fire is deliberate, and red — Scar synergy is legal). A kill by\nthe skewer reaps 1 influence. New vocabulary: op `splashReap`, attack-action `splash` declarations.\n⚑ Agent rulings within the door: the skewer can't hit the attack's own target (the text says\n\"ALSO deals\"); ready enemy Hidden units refuse the choice (decision 76); no candidates → the\ntrigger fizzles and the attack proceeds.",
   "artUrl": "/cards/fiery-impaler.jpg"
  },
  "rageforged-brute": {
