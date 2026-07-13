@@ -113,7 +113,8 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const canPass = actions.some(a => a.type === 'pass')
   const canClaim = actions.some(a => a.type === 'claimInitiative')
 
-  const COMBAT_RE = /damage|destroyed|blocks|attacks|intercepts|retaliat|spill|captiv|captur|released|freed|suffers|overextend|onslaught|rage|falls/i
+  // #57 (Blaine): influence rides in the recap too — guard-payouts were deciding games invisibly
+  const COMBAT_RE = /damage|destroyed|blocks|attacks|intercepts|retaliat|spill|captiv|captur|released|freed|suffers|overextend|onslaught|rage|falls|influence/i
   const BIG_RE = /destroyed|captures|released|freed|falls/i   // #44: one of these alone still deserves the stage
   function queueRecap(events: { msg: string }[], mustAck = false) {
     if (speed === 'fast') return                       // watching at speed — the log suffices
@@ -1239,7 +1240,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         />
       )}
 
-      {showHelp && <HelpPanel edition={state.rules.combatModel === 'blockerPairing' ? 'v3' : 'v2.3'} onClose={() => setShowHelp(false)} />}
+      {showHelp && <HelpPanel edition={state.rules.combatModel === 'blockerPairing' ? 'v3' : 'v2.3'} keyboard onClose={() => setShowHelp(false)} />}
 
       {view.winner !== null && !overlayDismissed && (
         <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4">

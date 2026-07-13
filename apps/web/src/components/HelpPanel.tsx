@@ -129,7 +129,7 @@ function V2Content() {
 /** Compact rules companion — one screen, opened from the ? button on any table.
  *  Edition follows the rules the table is actually running (issue #23: the help must
  *  describe the game on screen, not a remembered one). */
-export function HelpPanel({ onClose, edition = 'v2.3' }: { onClose: () => void; edition?: 'v2.3' | 'v3' }) {
+export function HelpPanel({ onClose, edition = 'v2.3', keyboard = false }: { onClose: () => void; edition?: 'v2.3' | 'v3'; keyboard?: boolean }) {
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-3" onClick={onClose}>
       <div
@@ -141,6 +141,18 @@ export function HelpPanel({ onClose, edition = 'v2.3' }: { onClose: () => void; 
           <button className="text-dim hover:text-body" onClick={onClose}>✕</button>
         </div>
         {edition === 'v3' ? <V3Content /> : <V2Content />}
+        {keyboard && (
+          <>
+            <H>Keyboard (#57)</H>
+            <p className="mt-2 text-[13px] leading-relaxed text-body/90">
+              Every key does exactly what its button does — same guard rails, same confirmations.
+              <b> Enter</b> confirms the selected card (Play, or Bank during the bank step) ·
+              <b> P</b> passes (a round-ending pass still asks first) ·
+              <b> Esc</b> backs out of anything — selection, inspector, confirmation.
+              The dangerous ones (End the round, lethal plays, Concede) are click-only on purpose.
+            </p>
+          </>
+        )}
         <button className="btn btn-primary mt-5 w-full" onClick={onClose}>Back to the table</button>
       </div>
     </div>
