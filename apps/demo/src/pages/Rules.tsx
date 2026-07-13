@@ -21,7 +21,7 @@ const KEYWORDS: [string, string][] = [
   ['Sneak', 'An ability you use as your turn: exhaust the unit to resolve its printed Sneak effect on something in its own zone — a unit or the base. Each card’s text says what its Sneak does.'],
   ['Capture', 'On its trigger, this unit takes an enemy unit under itself — off the board entirely. Holding costs nothing, and there is no letting go: the captive returns only when the capturer leaves play, coming back to that zone ready. Capture is custody, not a wound — and killing the jailer frees the prisoner.'],
   ['Shielded', 'Arrives with a shield token. The first time it would take damage, the whole hit is prevented and the token is spent.'],
-  ['Scar', 'Gets +1 Power for each damage marked on it, capped at its remaining Health — a 3-Health unit with 2 damage gets +1, not +2. The wound powers you, never past what you could survive.'],
+  ['Scar', 'Gets +1 Power for each damage marked on it — no cap. A 3-Health unit with 2 damage gets +2. Every wound is fuel; the closer to death, the harder it hits.'],
   ['Politician', 'At the end of each round, if this unit stands in the Neutral zone and its owner holds more units there than the opponent, its owner gains 1 Influence — once per round, however many politicians. The middle finally has a constituency: campaign there, hold the crowd, sway the track.'],
 ]
 

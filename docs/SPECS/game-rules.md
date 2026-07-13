@@ -130,7 +130,7 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
 | **Capture** | On its trigger, this unit takes an enemy unit **under itself** (out of play, no zone presence). The captive returns **only when the capturer leaves play**, ready, to that zone. | Prison's successor. **[Decision 92 (issue #44, designer) — supersedes 73's release clause and the grip-lock]:** capturing costs nothing, holding costs nothing, and **there is no voluntary release** — the grip breaks only with the capturer's death (card effects like Absolution can still free). Future cards may print their own release abilities. Pinned by test. |
 | **Infiltrate** | May be deployed to **any zone**, not just its owner's Home. | Clear; deploy-time zone choice in the play action. |
 | **Shielded** | Enters play with a shield token; the first instance of damage it would take is prevented entirely and the token is removed. | Clear. "Instance" = one damage event (combat hit, one effect op). **[Decision 77 (issue #24 Q6, designer)]: as a blocker, the shield soaks the attacker's ENTIRE pour** — the wall absorbs the whole assigned chunk and shrinks Breakthrough spill. That's shield-wall counterplay, kept deliberately ("if this gets too powerful, we can address later"). |
-| **Scar** | This unit gets **+1 power for each damage marked on it, up to its remaining health** (bonus = min(damage, health − damage)). | Power derivation from `damage`, capped **[decision 70 — designer's "reading A" on #12]**: a 3-health unit with 2 damage gets +1, not +2. The wound powers you, never past what you could survive. **Designer-confirmed as Overextend's successor** (red's identity). |
+| **Scar** | This unit gets **+1 power for each damage marked on it** — no cap. | Power derivation from `damage`, uncapped **[decision 94 (issue #49, designer) — supersedes 70's reading-A cap]**: a 3-health unit with 2 damage gets +2. Every wound is fuel; the closer to death, the harder it hits. **Designer-confirmed as Overextend's successor** (red's identity). |
 | **Politician** | At the end of each round, if this unit stands in the **Neutral zone** and its owner has **more units there** than the opponent, its owner gains **1 Influence** — once per round, however many politicians. | **[Decision 88 (issue #29, designer)]** — the door-1 zone rule reborn as a keyword ("rather than a hard-coded rule, let's make it a keyword"). Color law: yellow/blue/purple identity; red gets few, if any. Assumptions logged for veto: Neutral-only (a home-zone politician earns nothing — majority at home is free), any-units majority (not ready-only), capped at 1/round. First carriers ⚑: Veiled Messenger, Hierophant. |
 
 ## 3. Effect-vocabulary deltas
@@ -158,7 +158,7 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
 - **`double` over a UnitFilter + multi-round durations** (`dur: {rounds: N}`): the designer's
   Unchained Rage rework (issue #4) — "double all your units' attacks for the next 2 rounds".
   Today `double` is single-target and durations are round/perm only.
-- **[RESOLVED — decision 70]** Scar's bonus caps at remaining health ("reading A", #12).
+- **[RESOLVED — decision 94, superseding 70]** Scar's bonus is uncapped (+1 per damage marked; issue #49).
   Overextend stays cut. Folded into the keyword table above.
 
 ## 4. Migration sketch (for the build plan)

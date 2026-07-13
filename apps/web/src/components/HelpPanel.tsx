@@ -52,7 +52,7 @@ function V3Content() {
         <b> Ranged N</b> exhaust to volley N at any enemy unit, any zone (its attacks are ordinary) · <b>Guard</b> blocks free ·
         <b> Hidden</b> while ready it can't be targeted or attacked; exhausting reveals it · <b>Infiltrate</b> deploys to any zone ·
         <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under until the holder dies; it returns ready ·
-        <b> Shielded</b> first hit prevented · <b>Scar</b> +1 power per damage marked, capped at remaining health ·
+        <b> Shielded</b> first hit prevented · <b>Scar</b> +1 power per damage marked — no cap ·
         <b> Politician</b> in Neutral with the majority at round end → +1 Influence.
       </p>
 

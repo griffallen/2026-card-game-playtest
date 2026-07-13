@@ -9,7 +9,7 @@ import { damageUnit, destroyUnit } from '../src/effects.ts'
 import { T, toyDeck, put } from './util.ts'
 
 // Slice V3-3a — the v3 keyword suite, part 1 (spec game-rules-v3-draft §2):
-// Scar (capped, decision 70) · Shielded · Hidden (decision 59 + Q7)
+// Scar (uncapped, decision 94) · Shielded · Hidden (decision 59 + Q7)
 const K: CardSet = {
   ...T,
   scarred: { slug: 'scarred', name: 'scarred', color: 'red', type: 'unit', cost: 3, power: 2, health: 5, text: '', kw: [{ k: 'scar' }] },
@@ -28,15 +28,15 @@ function v3game(): GameState {
   return s
 }
 
-describe('Scar — +1 power per damage, capped at remaining health (decision 70)', () => {
-  it('grows with wounds but never past what it could survive', () => {
+describe('Scar — +1 power per damage marked, no cap (decision 94, supersedes 70)', () => {
+  it('every wound is fuel — a unit at 1 health hits hardest', () => {
     const s = v3game()
     const id = put(s, 0, 'scarred', 2)                 // 2/5
     expect(effPower(s, s.units[id])).toBe(2)           // unhurt: no bonus
     s.units[id].damage = 2
-    expect(effPower(s, s.units[id])).toBe(4)           // min(2, 3) = +2
+    expect(effPower(s, s.units[id])).toBe(4)           // +2
     s.units[id].damage = 4
-    expect(effPower(s, s.units[id])).toBe(3)           // min(4, 1) = +1 — the designer's example shape
+    expect(effPower(s, s.units[id])).toBe(6)           // +4 — the old cap would have said 3
   })
 })
 
