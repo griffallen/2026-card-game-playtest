@@ -161,6 +161,9 @@ export interface RulesConfig {
   maxAttackers: number
   /** v3 (decision Q4-Q6/#9): 'blockerPairing' replaces the intercept window entirely */
   combatModel: 'intercept' | 'blockerPairing'
+  /** issue #50 experiment: a SINGLE attacker cannot be blocked except by one Guard (full
+   *  redirect, no exhaust) — the declared target must face its attacker. Gangs stay blockable. */
+  singleAttackerDuels: boolean
   /** v3 (decision 69): 'presence' gates plays on banked color sources; pips never exhaust */
   pipModel: 'none' | 'presence'
   /** v3 (decision 67): dead units' upgrades orphan in the zone and are salvageable by either side */

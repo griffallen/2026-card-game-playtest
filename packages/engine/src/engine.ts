@@ -538,7 +538,11 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
     const combatZone = action.target.kind === 'unit' ? state.units[action.target.id]!.zone : homeZone(action.target.seat)
     const defSeat = other(seat)
     const crossZone = combatZone !== zone   // unreachable under v3 since decision 80 (no cross-zone attacks); v2.3-only path
-    const candidates = unitsInZone(state, combatZone, defSeat).filter(u => !u.imprisoned && !u.exhausted)
+    let candidates = unitsInZone(state, combatZone, defSeat).filter(u => !u.imprisoned && !u.exhausted)
+    // issue #50 (duel law): a lone attacker opens a window only for Guards
+    if (state.rules.singleAttackerDuels && state.pendingAttack.attackers.length === 1) {
+      candidates = candidates.filter(u => hasKw(state, u, 'guard'))
+    }
     // the declared target may block its own attacker — self-defense costs the exhaust like any block
     if (!crossZone && candidates.length) {
       state.phase = 'block'
@@ -580,6 +584,12 @@ function applyBlockPhase(state: GameState, action: GameAction, seat: Seat) {
   if (action.type !== 'block') fail('bad-phase', 'assign blockers with a block action (empty pairs lets it through)')
   const combatZone = pa.target.kind === 'unit' ? state.units[pa.target.id]?.zone
     : pa.target.kind === 'base' ? homeZone(pa.target.seat) : undefined  // attacks only ever target unit|base
+  // issue #50 (duel law): one attacker → at most one blocker, and only a Guard may step in
+  if (state.rules.singleAttackerDuels && pa.attackers.filter(a => state.units[a]).length === 1 && action.pairs.length) {
+    if (action.pairs.length > 1) fail('bad-block', 'a lone attacker is answered by one guard at most')
+    const g = state.units[action.pairs[0].blocker]
+    if (!g || !hasKw(state, g, 'guard')) fail('bad-block', 'only a Guard may step in front of a duel (issue #50)')
+  }
   const seen = new Set<string>()
   for (const { blocker, onto } of action.pairs) {
     const b = state.units[blocker] ?? fail('no-unit', 'no such blocker')

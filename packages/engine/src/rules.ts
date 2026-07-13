@@ -29,6 +29,7 @@ export const DEFAULT_RULES: RulesConfig = {
   maxAttackers: 0,
   simultaneousLifeTiebreak: 'actor',
   combatModel: 'intercept',
+  singleAttackerDuels: false,
   pipModel: 'none',
   upgradesOrphan: false,
   blockingExhausts: true,   // inert under 'intercept'; v3 combat reads it (decision 62)
@@ -39,6 +40,7 @@ export const DEFAULT_RULES: RulesConfig = {
 export const V3_RULES: RulesConfig = {
   ...DEFAULT_RULES,
   combatModel: 'blockerPairing',
+  singleAttackerDuels: false,   // issue #50: flips on for the A/B; canon after the designer sees numbers
   pipModel: 'presence',
   upgradesOrphan: true,
   firstRoundStartStep: false,   // decision 71: play round 1 from the opening hand + 2 setup resources
