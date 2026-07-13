@@ -81,6 +81,9 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const [inspect, setInspect] = useState<Inspect>(null)
   const [setupPicks, setSetupPicks] = useState<string[]>([])
   const [armOverextend, setArmOverextend] = useState(false)
+  // #42: combat resolves inside ONE action — replay its event lines slowly enough to read
+  const [recap, setRecap] = useState<{ msg: string }[]>([])
+  const [recapShown, setRecapShown] = useState(0)
   const logRef = useRef<HTMLDivElement>(null)
 
   // Policy rng travels WITH the history (snapshot after every action), so stepping
@@ -106,12 +109,20 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const canPass = actions.some(a => a.type === 'pass')
   const canClaim = actions.some(a => a.type === 'claimInitiative')
 
+  const COMBAT_RE = /damage|destroyed|blocks|attacks|intercepts|retaliat|spill|captiv|captur|freed|suffers|overextend|onslaught|rage|falls/i
+  function queueRecap(events: { msg: string }[]) {
+    if (speed === 'fast') return                       // watching at speed — the log suffices
+    const combat = events.filter(e => COMBAT_RE.test(e.msg))
+    if (combat.length >= 2) { setRecap(combat); setRecapShown(1) }
+  }
+
   function apply(action: GameAction, actor: Seat) {
     try {
-      const { state: next } = applyAction(state, action, actor)
+      const { state: next, events } = applyAction(state, action, actor)
       setState(next)
       setHistory(h => [...h, { seat: actor, action, rngAfter: currentRng }])
       setSelection(null)
+      if (action.type === 'block' || action.type === 'intercept') queueRecap(events)
       const s = SFX_BY_ACTION[action.type]
       if (s) sfx(s)
     } catch (e) {
@@ -125,20 +136,32 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     if (!aiWindow) return
     const policy = POLICIES[state.actorSeat === 0 ? config.policyA : config.policyB]
     const [action, nextRng] = policy(state, state.actorSeat, currentRng)
-    const { state: next } = applyAction(state, action, state.actorSeat)
+    const { state: next, events } = applyAction(state, action, state.actorSeat)
     setState(next)
     setHistory(h => [...h, { seat: state.actorSeat, action, rngAfter: nextRng }])
+    queueRecap(events)                                 // #42: let the human read what the AI did
     const s = SFX_BY_ACTION[action.type]
     if (s) sfx(s)
   }
 
   // AI driver (auto-play unless paused; Step ▸ drives it manually)
   useEffect(() => {
-    if (!aiWindow || paused) return
+    if (!aiWindow || paused || recap.length > 0) return   // #42: hold the next AI move while a recap plays
     const t = setTimeout(aiStep, SPEED_MS[speed])   // #27: speed control applies to vs-AI too
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, aiWindow, paused, speed, config.mode])
+  }, [state, aiWindow, paused, speed, config.mode, recap.length])
+
+  // #42: the recap reveals one line at a time, lingers, then clears itself
+  useEffect(() => {
+    if (!recap.length) return
+    if (recapShown < recap.length) {
+      const t = setTimeout(() => setRecapShown(n => n + 1), speed === 'slow' ? 1300 : 900)
+      return () => clearTimeout(t)
+    }
+    const t = setTimeout(() => { setRecap([]); setRecapShown(0) }, 1700)
+    return () => clearTimeout(t)
+  }, [recap, recapShown, speed])
 
   // Quality of life (bullet 6): auto-pass NOTHING by default. "Auto-pass empty windows" is opt-in,
   // meaningful only while you're still in the round, and only fires on windows whose sole legal
@@ -765,6 +788,19 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                 <div className="inline-block rounded-lg border border-goldbright/40 bg-black/85 px-6 py-3 shadow-xl">
                   <div className="font-display text-2xl font-bold text-parchment">Round {roundBanner}</div>
                   <div className="mt-0.5 text-xs text-goldbright">⚑ {names[view.initiative]} leads</div>
+                </div>
+              </div>
+            )}
+            {recap.length > 0 && (
+              <div className="absolute inset-x-0 top-[18%] z-40 flex justify-center">
+                <div onClick={() => { setRecap([]); setRecapShown(0) }} title="tap to dismiss"
+                  className="max-w-[520px] cursor-pointer rounded-lg border border-goldbright/30 bg-black/85 px-4 py-2.5 shadow-xl backdrop-blur">
+                  <div className="mb-1 text-center text-[10px] uppercase tracking-[0.25em] text-goldbright/80">⚔ combat</div>
+                  {recap.slice(0, recapShown).map((l, i) => (
+                    <div key={i} className={`text-[13px] leading-relaxed ${i === recapShown - 1 ? 'text-parchment' : 'text-body/60'}`}>
+                      {/destroyed|falls/i.test(l.msg) ? '☠' : /damage|suffers/i.test(l.msg) ? '💥' : '⚔'} {l.msg}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}

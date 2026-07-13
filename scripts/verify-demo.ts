@@ -38,6 +38,10 @@ async function main() {
     won = await page.getByText(/wins —|Rematch|Play again/i).first().isVisible().catch(() => false)
     if (won) break
 
+    // #42: a combat recap holds the AI until read — tap it through like an impatient human
+    const recapPanel = await vis(/⚔ combat/)
+    if (recapPanel) { await recapPanel.click().catch(() => {}); await page.waitForTimeout(120); continue }
+
     // v2 intercept window (decision 42): let the assault through to keep the drive moving
     const letThrough = await vis(/Let it through/)
     if (letThrough) { intercepts++; await letThrough.click(); await page.waitForTimeout(200); continue }
