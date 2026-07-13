@@ -31,6 +31,16 @@ function runStartStepAuto(state: GameState, seat: Seat) {
     }
   }
 
+  // PR #53 (Prison Warrant): captives taken under a warrant pay their holder's owner each round
+  for (const [cid, c] of Object.entries(state.captives)) {
+    const holder = state.units[c.by]
+    if (!c.income || !holder || holder.owner !== seat) continue
+    addInfluence(state, seat, c.income)
+    log(state, seat, `the warrant on ${state.cardSet[c.unit.slug]?.name ?? cid} pays ${c.income} influence`)
+  }
+  stateBasedCleanup(state, seat)
+  if (state.winner !== null) return
+
   for (const u of unitsOf(state, seat)) {
     u.exhausted = false; u.movedThisRound = false   // decision 92: holding costs nothing — the grip is broken only by death
   }

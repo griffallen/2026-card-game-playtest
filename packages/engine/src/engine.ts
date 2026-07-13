@@ -317,6 +317,8 @@ function validateTargets(state: GameState, seat: Seat, specs: TargetSpec[], targ
       if (spec.side === 'enemy' && u.owner === seat) fail('bad-targets', 'must target an enemy unit')
       if (spec.side === 'friendly' && u.owner !== seat) fail('bad-targets', 'must target a friendly unit')
       if (spec.maxPower !== undefined && effPower(state, u) > spec.maxPower) fail('bad-targets', `target power exceeds ${spec.maxPower}`)
+      if (spec.damagedOrMaxHealth !== undefined && u.damage <= 0 && effHealth(state, u) > spec.damagedOrMaxHealth)
+        fail('bad-targets', `target must be damaged or have ${spec.damagedOrMaxHealth} or less health`)
       if (spec.withKw && !hasKw(state, u, spec.withKw)) fail('bad-targets', `target must have ${spec.withKw}`)
       if (spec.mustBeDamaged && u.damage <= 0) fail('bad-targets', 'target must be damaged')
       // Chain of Law: enemy units with `untargetable` can't be chosen by enemy card effects

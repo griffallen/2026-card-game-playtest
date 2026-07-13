@@ -1184,7 +1184,7 @@ function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, 
       className={`panel flex items-center gap-3 px-3 py-1.5 ${baseGlow ? 'glow-attack cursor-pointer' : ''}`}>
       <span className="min-w-0 truncate font-display font-semibold text-parchment">{name}</span>
       {hasInitiative && <span className="text-xs text-goldbright" title="holds the initiative">⚑</span>}
-      {outOfRound && <span className="rounded bg-goldbright/15 px-1.5 py-0.5 text-[11.5px] uppercase tracking-wider text-goldbright/90" title="claimed the initiative — acts first next round">claimed — done this round</span>}
+      {outOfRound && <span className="rounded bg-goldbright/15 px-1.5 py-0.5 text-[11.5px] uppercase tracking-wider text-goldbright/90" title="claimed the initiative — no more actions this round, but its units still block and retaliate; acts first next round">claimed — resting, still defends</span>}
       <button
         className={`rounded px-1 font-display text-xl font-bold hover:bg-raised ${lifeFlash || (life <= 5 ? 'text-[#e5735f]' : 'text-parchment')}`}
         title="This is the base — tap for details"

@@ -79,6 +79,7 @@ function validateTargetSpec(slug: string, t: TargetSpec): string[] {
   if (!TARGET_KINDS.has(t.t)) errors.push(`${slug}: unknown target kind ${t.t}`)
   if (t.count !== undefined && !isInt(t.count, 1, 4)) errors.push(`${slug}: bad target count`)
   if (t.maxPower !== undefined && !isInt(t.maxPower, 0, 99)) errors.push(`${slug}: bad maxPower`)
+  if (t.damagedOrMaxHealth !== undefined && !isInt(t.damagedOrMaxHealth, 0, 99)) errors.push(`${slug}: bad damagedOrMaxHealth`)
   if (t.withKw && !KEYWORDS.has(t.withKw)) errors.push(`${slug}: unknown withKw ${t.withKw}`)
   return errors
 }

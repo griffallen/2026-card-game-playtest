@@ -1,6 +1,6 @@
 import type { GameAction, GameState, Seat, TargetRef, TargetSpec, UnitInstance, ZoneId } from './types.ts'
 import { ZONES, adjacent, homeZone } from './types.ts'
-import { defOf, effPower, hasKw, idNum, isSick, kwOf, other, pipGateSatisfied, unitsInZone, unitsOf } from './helpers.ts'
+import { defOf, effHealth, effPower, hasKw, idNum, isSick, kwOf, other, pipGateSatisfied, unitsInZone, unitsOf } from './helpers.ts'
 import { interceptCandidates } from './engine.ts'
 
 /**
@@ -341,6 +341,7 @@ function candidatesFor(state: GameState, seat: Seat, spec: TargetSpec): TargetRe
     if (spec.side === 'enemy' && u.owner === seat) continue
     if (spec.side === 'friendly' && u.owner !== seat) continue
     if (spec.maxPower !== undefined && effPower(state, u) > spec.maxPower) continue
+    if (spec.damagedOrMaxHealth !== undefined && u.damage <= 0 && effHealth(state, u) > spec.damagedOrMaxHealth) continue
     if (spec.withKw && !hasKw(state, u, spec.withKw)) continue
     if (spec.mustBeDamaged && u.damage <= 0) continue
     if (u.owner !== seat && hasKw(state, u, 'untargetable')) continue

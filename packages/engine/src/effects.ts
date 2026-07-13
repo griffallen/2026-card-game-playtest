@@ -394,8 +394,8 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         if (!srcU) break
         // v3 Capture: out of play, under the capturer, upgrades ride along
         delete state.units[t.id]
-        state.captives[t.id] = { unit: t, by: srcU.id }
-        log(state, ctx.controller, `${name(state, srcU.id)} captures ${name(state, t.id)}`)
+        state.captives[t.id] = { unit: t, by: srcU.id, ...(op.income ? { income: op.income } : {}) }
+        log(state, ctx.controller, `${name(state, srcU.id)} captures ${name(state, t.id)}${op.income ? ` — the warrant pays ${op.income}/round while held` : ''}`)
         break
       }
     }

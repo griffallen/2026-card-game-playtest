@@ -106,7 +106,8 @@ describe('the capture era (v3 churn pass 3 — prison is gone from canon)', () =
     s = act(s, p2, { type: 'play', card: warrant, targets: [{ kind: 'unit', id: warden }, { kind: 'unit', id: small }] })
     expect(s.units[small]).toBeUndefined()
     expect(s.captives[small]?.by).toBe(warden)
-    expect(influenceFor(s, p2)).toBe(1)
+    expect(influenceFor(s, p2)).toBe(0)                    // PR #53: the flat gain became income —
+    expect(s.captives[small]?.income).toBe(1)              // 1/round while the warrant holds
   })
 
   it('Radiant Judgment exhausts exactly the ≤3-power enemies, everywhere', () => {

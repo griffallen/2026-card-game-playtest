@@ -58,7 +58,7 @@ export type Op =
   | { op: 'removeNegative'; t: OpTarget }
   | { op: 'clearDamage'; t: OpTarget }
   | { op: 'countBuff'; t: OpTarget; per: { color?: Color; side: 'all' | 'friendly' | 'enemy'; zone: 'ofTarget'; other?: boolean }; p: number; dur: 'round' | 'perm' }  // v3 (Reckless mode B): +p per matching unit                            // v3 (Blood Rush): remove ALL damage; the amount becomes the linked value
-  | { op: 'capture'; t: OpTarget; by?: 'chosen0' }                // v3: take the enemy unit under the source unit — or under a chosen warden (yellow actions)
+  | { op: 'capture'; t: OpTarget; by?: 'chosen0'; income?: number }  // v3: take the enemy unit under the source unit — or a chosen warden; income = influence per round while held (PR #53)
   | { op: 'exhaust'; t: OpTarget | UnitFilter }                   // v3 yellow: order a unit to stand down
   | { op: 'freeCaptives' }                                        // v3 yellow: your captured units return, READY (decision 73)
   | { op: 'move'; t: OpTarget; to: 'chosenZone' }                 // decision 72: relocate the unit — exhausted or not, exhausting nothing
@@ -80,6 +80,7 @@ export interface TargetSpec {
   maxPower?: number
   withKw?: KeywordName
   mustBeDamaged?: boolean
+  damagedOrMaxHealth?: number  // PR #53 (Prison Warrant): legal if damaged OR effective health ≤ n
   count?: number            // distinct targets sharing this spec (Collateral Damage: 2)
   upTo?: boolean            // v3 (Volcanic Slam): 1..count targets acceptable instead of exactly count
   sameZone?: boolean        // v3 (Volcanic Slam): all unit targets of this spec share one zone
@@ -238,7 +239,7 @@ export interface GameState {
   claimedThisRound: boolean           // at most one claim per round
   setupBanked: [boolean, boolean]     // per-seat: starting resources chosen (setup phase)
   /** v3 Capture: captive unit id → its frozen instance + the capturer's unit id */
-  captives: Record<string, { unit: UnitInstance; by: string }>
+  captives: Record<string, { unit: UnitInstance; by: string; income?: number }>  // income: influence per round while held (PR #53)
   /** Unchained Rage (PR #39): while active, each of the seat's attacking units costs n influence */
   attackTaxes: { seat: Seat; n: number; rounds: number }[]
   /** Final Onslaught (PR #38): after the granted extra action resolves, this unit and everything

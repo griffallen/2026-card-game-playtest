@@ -188,8 +188,8 @@ describe('Capture — the captive lifecycle (decision 92: death is the only key)
 const K3: CardSet = {
   ...T,
   warrant: { slug: 'warrant', name: 'warrant', color: 'yellow', type: 'action', cost: 1, text: '',
-    targets: [{ t: 'unit', side: 'friendly' }, { t: 'unit', side: 'enemy' }],
-    onPlay: [{ op: 'capture', t: 'chosen1', by: 'chosen0' }] },
+    targets: [{ t: 'unit', side: 'friendly' }, { t: 'unit', side: 'enemy', damagedOrMaxHealth: 2 }],
+    onPlay: [{ op: 'capture', t: 'chosen1', by: 'chosen0', income: 1 }] },
   lullaby: { slug: 'lullaby', name: 'lullaby', color: 'yellow', type: 'action', cost: 2, text: '',
     targets: [{ t: 'unit', side: 'enemy' }], onPlay: [{ op: 'exhaust', t: 'chosen0' }] },
   jailbreak: { slug: 'jailbreak', name: 'jailbreak', color: 'yellow', type: 'action', cost: 3, text: '',
@@ -265,5 +265,34 @@ describe('yellow-conversion vocabulary (V3-6)', () => {
     expect(s.upgrades[up].attachedTo).toBe(scav)
     expect(s.upgrades[up].owner).toBe(me)                 // the sword changes hands
     expect(before - s.sides[me].resources.filter(r => !r.exhausted).length).toBe(2)
+  })
+})
+
+describe('Prison Warrant redesign (PR #53): condition + recurring income', () => {
+  it('targets only damaged or ≤2-health enemies; the warrant pays 1/round while held', () => {
+    let s = v3game3()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const warden = put(s, me, 'guardian', me === 0 ? 0 : 2)
+    const healthy = put(s, them, 'brute', me === 0 ? 0 : 2)         // 4/3 untouched — illegal target
+    const wounded = put(s, them, 'brute', me === 0 ? 0 : 2, { damage: 1 })
+    const card = give3(s, me, 'warrant')
+    expect(() => applyAction(s, { type: 'play', card, targets: [{ kind: 'unit', id: warden }, { kind: 'unit', id: healthy }] }, me))
+      .toThrow(/damaged or/)
+    s = applyAction(s, { type: 'play', card, targets: [{ kind: 'unit', id: warden }, { kind: 'unit', id: wounded }] }, me).state
+    expect(s.captives[wounded]?.income).toBe(1)
+    const before = s.influence
+    // both pass → round ends → my start step pays the warrant
+    s = applyAction(s, { type: 'pass' }, s.actorSeat).state
+    s = applyAction(s, { type: 'pass' }, s.actorSeat).state
+    while (s.phase === 'bank') s = applyAction(s, { type: 'skipResource' }, s.actorSeat).state
+    expect(s.influence).toBe(me === 0 ? before + 1 : before - 1)
+    // the holder dies → captive freed → income stops
+    destroyUnit(s, s.units[warden], 'slain')
+    expect(s.captives[wounded]).toBeUndefined()
+    const after = s.influence
+    s = applyAction(s, { type: 'pass' }, s.actorSeat).state
+    s = applyAction(s, { type: 'pass' }, s.actorSeat).state
+    while (s.phase === 'bank') s = applyAction(s, { type: 'skipResource' }, s.actorSeat).state
+    expect(s.influence).toBe(after)
   })
 })

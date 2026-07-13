@@ -52,7 +52,6 @@
 |---|---|---|---|---|---|---|
 | [Iron Plating](yellow/iron-discipline.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. |
 | [Oath of Order](yellow/oath-of-order.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gains Guard. |
-| [Prison Warrant](yellow/prison-warrant.md) | 1 | action | — |  | canon | Target unit you control captures target enemy unit with 2 or less Power. Gain 1 Influence. |
 | [Vanguard Sentinel](yellow/vanguard-sentinel.md) | 1 | unit | 1/2 | guard | canon | Guard. When this defends, gain 2 Influence. |
 | [Binding Light](yellow/binding-light.md) | 2 | action | — |  | canon | Exhaust target enemy unit with 4 or less Power. |
 | [Containment Priest](yellow/containment-priest.md) | 2 | unit | 2/3 | capture | canon | When this enters play, it captures target enemy unit with 2 or less Power. |
@@ -65,6 +64,7 @@
 | [Chain of Law](yellow/chain-of-law.md) | 3 | upgrade | — |  | canon | Attached unit has Guard and Armor 1. Gain 1 Influence. |
 | [Justicar Enforcer](yellow/justicar-enforcer.md) | 3 | unit | 3/4 | guard | canon | Guard. When this defends, gain 3 Influence. |
 | [Noble Purifier](yellow/noble-purifier.md) | 3 | unit | 3/3 |  | canon | When this kills a unit, gain 2 Influence. |
+| [Prison Warrant](yellow/prison-warrant.md) | 3 | action | — |  | canon | Target unit you control captures target damaged enemy unit or unit with 2 or less Health. Gain 1 Influence at the beginning of each round where the target unit is still captured. |
 | [Sanctified Bastion](yellow/sanctified-bastion.md) | 3 | unit | 1/6 | cantAttack | canon | This can't attack. Other friendly units in this zone have Armor 1. |
 | [Subjugate](yellow/subjugate.md) | 3 | action | — |  | canon | Target enemy unit gets −2 Power permanently. Gain 1 Influence. |
 | [Unwavering Faith](yellow/unwavering-faith.md) | 3 | action | — |  | canon | Heal 3 damage from target unit. Gain 1 Influence. |
