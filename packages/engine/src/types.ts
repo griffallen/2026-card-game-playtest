@@ -99,7 +99,7 @@ export interface CardDef {
   /** v3 Sneak payload (decision 60): exhaust-activated, targets constrained to the unit's zone */
   sneak?: { targets?: TargetSpec[]; ops: Op[] }
   /** v3 modal actions (spec §3, PR #13): the player declares one mode at cast time; each mode owns its targets+ops */
-  modes?: { label: string; targets?: TargetSpec[]; ops: Op[] }[]
+  modes?: { label: string; text?: string; targets?: TargetSpec[]; ops: Op[] }[]
   kw?: KeywordSpec[]
   targets?: TargetSpec[]     // play-time targets (upgrades: attach target is implicit and NOT listed)
   onPlay?: Op[]              // action body; unit/upgrade enter-play effects

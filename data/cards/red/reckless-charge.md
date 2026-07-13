@@ -5,7 +5,7 @@ cost: 0
 pips: red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"modes":[{"label":"Charge","targets":[{"t":"unit","side":"friendly"},{"t":"zone","adjacentToFirst":true}],"ops":[{"op":"move","t":"chosen0","to":"chosenZone"}]},{"label":"Pack fury","targets":[{"t":"unit","side":"friendly"}],"ops":[{"op":"countBuff","t":"chosen0","per":{"color":"red","side":"all","zone":"ofTarget","other":true},"p":1,"dur":"round"}]}]}
+effects: {"modes":[{"label":"Charge","text":"Move one of your units one zone, even if exhausted — this doesn't exhaust it.","targets":[{"t":"unit","side":"friendly"},{"t":"zone","adjacentToFirst":true}],"ops":[{"op":"move","t":"chosen0","to":"chosenZone"}]},{"label":"Pack fury","text":"Target unit gets +1 Power this round for each other red unit in its zone (either side's).","targets":[{"t":"unit","side":"friendly"}],"ops":[{"op":"countBuff","t":"chosen0","per":{"color":"red","side":"all","zone":"ofTarget","other":true},"p":1,"dur":"round"}]}]}
 ---
 Choose one — move one of your units one zone, even if exhausted (this doesn't exhaust it); OR target unit gets +1 Power this round for each other red unit in its zone (either side's).
 

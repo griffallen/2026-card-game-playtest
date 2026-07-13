@@ -3,6 +3,7 @@
   "modes": [
    {
     "label": "Charge",
+    "text": "Move one of your units one zone, even if exhausted — this doesn't exhaust it.",
     "targets": [
      {
       "t": "unit",
@@ -23,6 +24,7 @@
    },
    {
     "label": "Pack fury",
+    "text": "Target unit gets +1 Power this round for each other red unit in its zone (either side's).",
     "targets": [
      {
       "t": "unit",

@@ -662,17 +662,23 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       })()}
       {selection?.kind === 'mode' && (() => {
         const def = DEMO_CARDS[state.cardOf[selection.card]]
-        const modes = (def?.modes ?? []) as { label?: string }[]
+        const modes = (def?.modes ?? []) as { label?: string; text?: string }[]
         return (
           <div className="flex flex-wrap items-center gap-1.5 text-xs">
             <span className="text-goldbright">Choose a mode for <b>{def?.name}</b>:</span>
             {modes.map((m, i) => {
               const legal = playActionsFor(selection.card).some(a => a.mode === i)
+              // #43: the button carries its half of the card text — hover to read what each mode does
               return legal
-                ? <button key={i} className="btn btn-primary !py-1 text-xs" onClick={() => pickMode(selection.card, i)}>{m.label ?? `Mode ${i + 1}`}</button>
-                : <button key={i} className="btn !py-1 text-xs opacity-50" disabled title="no legal target right now">{m.label ?? `Mode ${i + 1}`}</button>
+                ? <button key={i} className="btn btn-primary !py-1 text-xs" title={m.text} onClick={() => pickMode(selection.card, i)}>{m.label ?? `Mode ${i + 1}`}</button>
+                : <button key={i} className="btn !py-1 text-xs opacity-50" disabled title={m.text ? `${m.text} — no legal target right now` : 'no legal target right now'}>{m.label ?? `Mode ${i + 1}`}</button>
             })}
             <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
+            {modes.some(m => m.text) && (
+              <div className="w-full text-[11.5px] leading-snug text-dim">
+                {modes.map((m, i) => m.text && <div key={i}><b className="text-body/90">{m.label ?? `Mode ${i + 1}`}:</b> {m.text}</div>)}
+              </div>
+            )}
           </div>
         )
       })()}
