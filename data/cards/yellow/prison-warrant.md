@@ -1,14 +1,14 @@
 ---
 name: Prison Warrant
 type: action
-cost: 1
+cost: 3
 influenceTrigger: onPlay
 pips: yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"friendly"},{"t":"unit","side":"enemy","maxPower":2}],"onPlay":[{"op":"capture","t":"chosen1","by":"chosen0"},{"op":"influence","n":1}]}
 ---
-Target unit you control captures target enemy unit with 2 or less Power. Gain 1 Influence.
+Target unit you control captures target damaged enemy unit or unit with 2 or less Health. Gain 1 Influence at the beginning of each round where the target unit is still captured.
 
 ## Design notes
 
