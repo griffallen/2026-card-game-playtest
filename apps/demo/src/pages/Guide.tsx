@@ -29,8 +29,9 @@ export function Guide() {
       <h1 className="mt-1 font-display text-3xl font-bold text-parchment">The Sellsword's Primer</h1>
       <p className="mt-2 text-sm italic text-dim">
         Being the collected opinions of <b>Old Varga</b>, who fought eleven years under the red banner,
-        four under the yellow, and will not say how long under the purple. She is paid by the page and
-        wrong about at least one thing below — finding it is your first lesson. The{' '}
+        four under the yellow, and will not say how long under the purple. She is paid by the page,
+        opinionated to a fault, and expects to be outgrown — the day you can say <i>why</i> one of her
+        rules doesn't fit your game is the day you've stopped needing her. The{' '}
         <Link to="/rules" className="text-goldbright underline decoration-goldbright/40 hover:decoration-goldbright">Rulebook</Link>{' '}
         tells you what's legal; this tells you what's smart.
       </p>
