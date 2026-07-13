@@ -520,6 +520,15 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     else setSelection({ kind: 'targeting', card: cardId, collected: [], mode })
   }
 
+  // Blaine: Enter should also confirm the opening bank — shared by the button and the key
+  const trySetupBank = () => {
+    if (view.phase !== 'setup' || !myWindow) return
+    const owed = state.rules.mulliganStyle === 'london' ? state.mulligans[seat] * state.rules.mulliganPenalty : 0
+    if (setupPicks.length !== setupN || setupBottoms.length !== owed) return
+    apply({ type: 'setupBank', cards: setupPicks, ...(owed ? { bottom: setupBottoms } : {}) }, seat)
+    setSetupPicks([]); setSetupBottoms([])
+  }
+
   // #27's confirmation rail, shared by the Pass button and the P hotkey: a pass that ends
   // the round with actions still on the table asks first.
   const tryPass = () => {
@@ -546,7 +555,11 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       return
     }
     if (e.repeat) return
-    if (!myWindow || lethalPlay || view.phase === 'setup') return
+    if (!myWindow || lethalPlay) return
+    if (view.phase === 'setup') {
+      if (e.key === 'Enter') { e.preventDefault(); trySetupBank() }
+      return
+    }
     if ((e.key === 'p' || e.key === 'P') && !selection && confirming === null) {
       tryPass()
       return
@@ -635,12 +648,9 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           <button
             className="btn btn-primary !py-1 text-xs"
             disabled={setupPicks.length !== setupN || setupBottoms.length !== owed}
-            onClick={() => {
-              apply({ type: 'setupBank', cards: setupPicks, ...(owed ? { bottom: setupBottoms } : {}) }, seat)
-              setSetupPicks([]); setSetupBottoms([])
-            }}
+            onClick={trySetupBank}
           >
-            Bank these {setupN} ⬢{owed ? ` + bottom ${owed}` : ''}
+            Bank these {setupN} ⬢{owed ? ` + bottom ${owed}` : ''} <span className="opacity-60 max-lg:hidden">⏎</span>
           </button>
         )
       })()}
@@ -743,19 +753,19 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           <span className="max-w-40 truncate text-xs text-dim">{DEMO_CARDS[state.cardOf[selection.id]]?.name}</span>
           {playActionsFor(selection.id).length > 0 && (
             <button className="btn btn-primary !py-1 text-xs" onClick={() => beginPlay(selection.id)}>
-              Play ({DEMO_CARDS[state.cardOf[selection.id]]?.cost})
+              Play ({DEMO_CARDS[state.cardOf[selection.id]]?.cost}) <span className="opacity-60 max-lg:hidden">⏎</span>
             </button>
           )}
           {resourceActionFor(selection.id) && (
             <button className="btn btn-primary !py-1 text-xs" onClick={() => apply({ type: 'resource', card: selection.id }, seat)}>
-              Bank as resource
+              Bank as resource <span className="opacity-60 max-lg:hidden">⏎</span>
             </button>
           )}
           {whyUnplayable(selection.id) && (
             <span className="w-full text-[12.5px] text-[#e5a99f]">Can't play: {whyUnplayable(selection.id)}.</span>
           )}
           <button className="btn !py-1 text-xs" onClick={() => setInspect({ kind: 'card', slug: state.cardOf[selection.id] })}>ⓘ details</button>
-          <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel</button>
+          <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel <span className="opacity-60 max-lg:hidden">esc</span></button>
           <span className="w-full text-[11px] text-dim/70 max-lg:hidden">⏎ Enter confirms · Esc cancels</span>
         </div>
       )}
@@ -801,7 +811,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
           {selection.ids.length === 1 && (
             <button className="btn !py-1 text-xs" onClick={() => setInspect({ kind: 'unit', id: selection.ids[0] })}>ⓘ details</button>
           )}
-          <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel</button>
+          <button className="btn !py-1 text-xs" onClick={() => setSelection(null)}>Cancel <span className="opacity-60 max-lg:hidden">esc</span></button>
         </div>
       )}
       {selection?.kind === 'targeting' && targetingCard && (() => {
@@ -1180,7 +1190,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                   )
                 }
                 return (
-                  <button className="btn !py-1 text-xs" title="hotkey: P" onClick={tryPass}>Pass</button>
+                  <button className="btn !py-1 text-xs" title="hotkey: P" onClick={tryPass}><u className="underline-offset-2">P</u>ass</button>
                 )
               })()}
               {state.winner === null && history.length > 0 && config.mode !== 'watch' && (
