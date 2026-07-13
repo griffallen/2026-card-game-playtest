@@ -1,81 +1,100 @@
-/* The Chronicle (Blaine's request, session 010): the session summaries retold as a journal —
-   fantasy-voiced, succinct, in the hand of ⚜ The Chronicler. Source of truth for the dry
-   versions lives in docs/PROMPTS/SESSION-SUMMARIES/; this page is the illuminated copy. */
+/* The Chronicle (Blaine's request, sessions 010–011): each session opens with a short
+   voiced intro in the hand of ⚜ The Chronicler, followed by the technical record — exact,
+   named, quirks and all — reading like the session summaries it's drawn from. Source of
+   truth lives in docs/PROMPTS/SESSION-SUMMARIES/; this page is the illuminated copy. */
 
 interface Entry {
   n: string
   date: string
   title: string
-  body: string[]          // paragraphs
+  intro: string           // the Chronicler's voiced opening
+  log: string[]           // the technical record, paragraphs
   marginal?: string       // a marginal note, as scribes leave
 }
 
 const ENTRIES: Entry[] = [
   {
     n: 'I', date: 'the 7th of July', title: 'The First Forging',
-    body: [
-      `In the beginning there were two scrolls that disagreed. The rules spoke of zones but gave no way to cross them — armies that could never meet — and the combat text quarreled with itself. In one night the contradictions were resolved into a world: movement was invented, thirty rulings were set down and flagged for the designer's later judgment, and a deterministic engine rose beneath a playable table. Eighty-four cards were cut from the old sheets and given form as structured law, so that no future edit could silently break a game.`,
-      `The first simulations spoke an omen: under witless play, influence devoured all — the red banner won one game in a hundred. Random is not human, the ledger noted. But watch the influence economy.`,
+    intro: `In the beginning there were two scrolls that disagreed — and in one night the contradictions were resolved into a world.`,
+    log: [
+      `Blaine authorized an autonomous overnight build ("you're autonomous and i don't need to be here for it") and asked for the whole first loop: reconcile the design, stand up a deployable two-player prototype, document how it plays. The design pass found rules v1.2 and the July 5 card sheets disagreeing in load-bearing places — the rules define zones but no movement (armies could never meet), and the Main Phase text contradicts the separate Combat Phase. Thirty provisional rulings went into DECISIONS.md, every one flagged ⚑ for the designer.`,
+      `Then the stack: a pure deterministic engine with all 84 sheet cards as structured, validated effect data (never free text — an admin edit can't silently break a game), an event-sourced Fastify server where undo is deleting an event, and a React table driven entirely by the engine's legal-action list. 65 tests green; two Chrome sessions played 26 actions through the real UI. The first simulations were an omen: under random play, influence wins dominated 87/13 and the red deck won 1% of games. Random ≠ human — but watch the influence economy.`,
+      `A same-night addendum added the backend-free demo app with a greedy baseline AI and deployed it to blainebooher.com/new-game-demo. Under heuristic play red climbed to 37% and life wins flipped to 67/33 — play quality reshapes the game.`,
     ],
-    marginal: 'Thirty rulings, all ⚑ — every one of them provisional until the designer sat his throne.',
+    marginal: 'Thirty rulings, all ⚑ — every one provisional until the designer sat his throne.',
   },
   {
     n: 'II', date: 'the 8th of July', title: 'Four Defeats, Each a Teacher',
-    body: [
-      `The builder played four games and lost instructively. He slew himself with his own Final Onslaught at the brink of ruin, and the table learned to warn of lethal plays. He watched imprisoned units become food, watched a telegraphed march die on approach, and the table learned to narrate, to inspect, to explain itself.`,
-      `Then the designer's first notes arrived, carried by spreadsheet. Overextend, it transpired, had been misread from the start — his true design was a gambler's bargain of power now for wounds later. And he set down a doctrine that shapes the game still: influence is earned at moments, never granted for merely existing. Guards would be paid when they defend. The economy flipped that same night.`,
+    intro: `The builder played four games and lost instructively; then the designer's first notes arrived, carried by spreadsheet.`,
+    log: [
+      `Blaine played four real games against the baseline AI. Game 001 he ended with his own Final Onslaught at −14 influence — the table gained a lethal-play warning, contextual hints, and auto-pass. Game 002 exposed imprisoned-units-as-influence-food and the telegraphed march. Game 003's screenshot round produced the full UX audit: tap-to-inspect on everything, an event ticker narrating the board, pile browsers, the mobile action dock. Game 004 falsified Crimson Behemoth's splash ruling live — it only ever hit an empty Neutral — and it was re-ruled the same hour.`,
+      `Griff's first design review came through as spreadsheet notes: Overextend had been misread from the start — his real design is an optional attack gamble, +N power now against N self-damage at end of turn; the influence-cede reading was an artifact and is gone. He set the doctrine that still shapes the game: influence is event-earned only — guards pay when they defend, never for merely existing. He added unlimited mulligans (one fewer card each), an empty-deck penalty, put prison "on notice," and asked for multi-unit combat (drafted as decision 38, paused for the turn rework). Decisions 31–39.`,
+      `The economy flipped exactly as hoped: red went from 1% to 29–30%, influence wins fell to 3 in 60 under competent play. And the whole pool moved into data/cards.csv, GitHub-editable with import validation — the designer's tuning dial, in his own hands.`,
     ],
   },
   {
     n: 'III', date: 'the 8th of July, evening', title: 'The Rounds Are Redrawn',
-    body: [
-      `Turns died and rounds were born. Players would share each round, alternating single deeds until both passed — and the initiative token became a thing worth coveting: claim it, rest for the remainder, and strike first when the sun next rose. Summoning sickness was abolished; units enter the field awake.`,
-      `A ghost was found in the ledger: the multi-attack ruling everyone cited had never actually been written. It was drafted properly — attackers massing into one blow, the defender answering with a single interception — and Final Onslaught's "extra turn," meaningless in a world without turns, became the readying of one soldier and one further deed.`,
+    intro: `Turns died and rounds were born, and the initiative token became a thing worth coveting.`,
+    log: [
+      `Blaine designed the new turn structure in conversation: shared rounds in the Star Wars: Unlimited mold — per-player start steps, then strictly alternating single actions until both pass, with a claimable initiative token that costs your action and ends your round but hands you the first move next round. Summoning sickness died; units enter ready, and Rush was re-anchored to the original note ("may move without exhausting the turn it enters play").`,
+      `A ghost turned up in the ledger: decision 38's multi-attack draft was referenced everywhere and written nowhere. It was redrafted lean as decision 42 — N attackers in one zone combine into one hit (armor applies once; massing beats armor by design), the defender answers exactly one intercept prompt, Guard becomes "intercepts without exhausting." Final Onslaught's "extra turn," meaningless in shared rounds, became "ready one unit, then take an extra action" — after Blaine caught that a full-board ready would multiply into a second alpha strike.`,
+      `The spec pass rewrote game-rules.md to v2.0-proto and produced a nine-task, fully code-specified plan — Blaine was near his usage cap and handed implementation to Opus. Decisions 40–44.`,
     ],
   },
   {
     n: 'IV', date: 'still the 8th of July', title: 'Built as Decreed',
-    body: [
-      `The builder handed over the plans and said: build until it is done. Nine tasks were executed in order, each proven before the next began. Two errors slept inside the plans themselves and were caught rather than copied. Two smiths working the same steel in parallel nearly struck each other's work — one noticed, and deferred, and nothing was lost.`,
-      `By morning the new rounds ran everywhere: engine, table, and the teaching surfaces that tell a newcomer what world they have entered.`,
+    intro: `The builder handed over the plans and said: build until it is done. By morning the new rounds ran everywhere.`,
+    log: [
+      `Blaine gave point ("build until completion, full qa audits, ensure demo is playable") and the nine-task plan ran start to finish under superpowers:executing-plans — TDD throughout, one commit per task, suite green each time. Two errors slept inside the plan itself and were caught rather than copied: a test asserting a 7+2 hand count that its own design notes contradicted, and granted-Rush-on-veterans, pinned to the strict "still exhausts" reading and flagged for Griff.`,
+      `The two UI surfaces went to parallel subagents against a shared behavioral contract — and they nearly collided on the shared @ui components (the demo renders files that physically live under apps/web). The web agent noticed the concurrent worker and deliberately deferred; nothing clobbered. A closing sweep fixed the v1 copy still teaching the old world: the HelpPanel, the keyword gloss, the BaseSheet's "guards must be attacked first."`,
+      `Verification: 99 tests green, full 4-package typecheck, and a browser-driven 6-round vs-AI game with three human-answered intercept windows. The sims moved as decision 44 predicted — seat-0 win rate landed at 50% (first-mover advantage gone), red rose toward ~45%. Tagged v0.1 as the restore point, merged, tagged v0.2.`,
     ],
   },
   {
     n: 'V', date: 'the 9th of July', title: 'The Missing Middle',
-    body: [
-      `A quieter session, and among the most important: not a rule was changed, but the shape of truth itself was examined. There were three layers — the base laws, each color's nature, and the cards — and only the first and last had ever been written down. The middle was missing, and into that gap the cards had drifted, consistent with nothing because there was nothing to be consistent against.`,
-      `The cure was decreed: canon first. Lock the laws, write each color a charter, then churn every card against its two parents. The order of operations became the project's spine.`,
+    intro: `A quieter session, and among the most important: not a rule was changed, but the shape of truth itself was examined.`,
+    log: [
+      `Blaine asked for "a good process for getting the ground framework solid." The diagnosis: there are three layers of truth — base rules, each color's rules, and the cards — and only the first and last had ever been written down. Rush was the cautionary tale: its cards were generated against assumptions that no longer held, and they drifted because there was nothing to be consistent against. The missing middle layer is why.`,
+      `The cure, designed across confirmed decisions: lock the base-rules canon first (a decision sprint, not a rewrite), write each deck a charter — identity, allowed keywords, invariants, curve, influence posture — then churn every card against its two parents. Card truth flips to the CSV as single source (deliberately overturning decision 45's TS-authoritative holding pattern), with a status column (canon/draft/redesign) and a branch → PR → agent-review loop asking three questions per card: valid? consistent? in-charter? Feel and balance stay human.`,
+      `Design only — no code or rules changed. Blaine wrapped to switch models in a fresh session; the full design landed in docs/superpowers/specs/.`,
     ],
-    marginal: 'Rush was the cautionary tale — a keyword whose cards were written for a world that no longer existed.',
+    marginal: 'Rush was the cautionary tale — cards written for a world that no longer existed.',
   },
   {
     n: 'VI', date: 'the 9th of July, through the night', title: 'The Night the Canon Was Built',
-    body: [
-      `The whole program, executed in one sitting. The rules canon closed its open questions. Red and yellow received their charters — the missing middle, made flesh, with statline grammars derived from the actual pool. The card ledger was reforged: one file per card, each with its own history and its own page, so the field the designer edits most would live in the format that treats it best.`,
-      `Then all eighty-four cards were churned against their parents, and the drift of months was burned away in an evening.`,
+    intro: `The whole program, executed in one sitting — and the drift of months burned away in an evening.`,
+    log: [
+      `Blaine handed the agent the evening ("run as long as you can"). Session 005's spec was recovered from origin and redlined once, decisively: the card ledger became one markdown file per card (data/cards/<color>/<slug>.md) instead of a CSV — the field Griff edits most is the one CSV treats worst, a broken edit's blast radius is one card, and every card gets its own git history and page. Then the program ran in order: the rules-canon sprint (decisions 46–54, game-rules out of -proto), red and yellow charters with statline grammars derived from the actual pool, the ledger flip (byte-identical round-trip proof, drift-guard test, TS arrays and CSV retired), and the 84-card churn — inert Overextend stripped from 19 red actions, the prison ladder re-priced with one job per rung.`,
+      `The balance campaign produced the two best findings: the greedy bot was target-blind — fixing it moved red 18% → 38% with zero card changes, proof that sim conclusions are bounded by policy quality — and prison was the structural dominator (ablation-proven), cured by doubling the decay mortgage (rules v2.2, decision 55). Purple arrived as a complete 36-card Veiled Court proposal, tuned to a deliberate soft triangle. canon-v1.0 was stamped and tagged.`,
+      `The postscript: Blaine set a 30-minute loop running overnight ("keep on truckin til daylight"). It deployed canon-v1.0, then ran a code-review workflow that found 10 defects — three in the new sim bot, which invalidated the evening's balance numbers. Re-measured honestly, decision 55 was reverted: prison decay back to 1 (v2.3, decision 56); the doubled mortgage had been compensating for bot blindness. The loop also opened the designer pipeline (README rewritten Griff-first, issues #2–#8, the ⚜ Chronicler handle adopted) — and Griff's full rules rework landed as issue #9. It was parsed, answered with ten blocking questions, staged as a v3 draft spec, and deliberately not implemented overnight.`,
     ],
   },
   {
     n: 'VII', date: 'the 10th of July', title: 'The Designer Takes His Seat',
-    body: [
-      `Griff arrived, live, and the loop ran hot for the first time. He asked whether a London mulligan would be hard; it was designed, built, tested, and deployed within the hour, and the ledger learned what "if that's easy" means to a designer.`,
-      `The great questions of the third age were opened: pips as a color tax, and a new combat where the attacker declares one target and the defender pairs blockers against the assault. Scar was confirmed as Overextend's heir. The State of the Game was rebuilt so that no reader would ever again wonder which numbers were current.`,
+    intro: `Griff arrived, live, and the loop ran hot for the first time.`,
+    log: [
+      `Morning, before he arrived: the demo's Design Audit was rebuilt as "The State of the Game" — current canon, current numbers, v3 proposal only, with the three-era original frozen at /audit/archive — so no reader would ever again wonder which sim table is current. Fresh runs added the insight that skill flips the balance triangle: purple collapses unpiloted, yellow feasts on sloppy play.`,
+      `Then Griff accepted the invite, and everything moved through GitHub issues. #8 closed into decisions 57 (the "base"/"Home" naming stays; rename candidates retired) and 58 (mulligan keeps its decrement; London variant approved for A/B) — and the London mulligan was designed, built with 5 new engine tests (114 green), wired into the demo with a two-stage bank/bottom picker, and deployed within the hour of him asking "if that's easy." On #9 he answered Q1–Q6: MTG-style pips, target-declared blocker combat (one declared target; the defender pairs blockers and splits gang damage; Breakthrough spills deterministically), and Scar confirmed as Overextend's heir. The pip proposal went back same-day: a cost-tiered grammar with 13 hand-tuned deviations, all 120 cards tabled.`,
+      `Loop hygiene got its own ruling: after six no-op checks, "low token mode" — one call, one line per idle iteration — and the watch interval tightened to 4 minutes.`,
     ],
   },
   {
     n: 'VIII', date: 'the 10th of July, until dawn on the 11th', title: 'The Gate Closes — the Third Age Ships',
-    body: [
-      `The largest single arc the project has known. Griff answered the last questions of the design gate live, posted the five-color charter that every card argument now ends at, and — hours before the code existed — redesigned pips into a presence gate: banked colors as citizenship, never payment. The revision landed before the implementation, which is the loop working precisely as designed.`,
-      `Then the build: seven slices, the engine remade, all one hundred twenty cards churned, and v3.0 deployed before dawn. The builder shortened his watch from four minutes to one, because — his words — watching was really fun.`,
+    intro: `The largest single arc the project has known: the gate closed live, and v3.0 shipped before dawn.`,
+    log: [
+      `Griff closed the design gate on #9 — Hidden units block (blocking exhausts → reveals), Sneak as per-card payloads, captives return exhausted, Guard as "does not exhaust to defend" (whose derived corollary, blocking exhausts everyone else, was echoed back and never vetoed). He posted the five-color identity charter (#10), kept initiative (#7), approved the pip proposal — then redesigned pips into a presence gate on #15: banked cards grant 1 presence per color, never stacking, nothing exhausts. The revision landed hours before the code existed, which is the loop working exactly as designed. Decisions 59–70.`,
+      `Blaine said "clear to build" (#12) and the night shift built it: seven slices, strict TDD — version plumbing with v2.3 proven byte-identical, the presence gate, all six keywords, blocker-pairing combat, the vocabulary suite (modal casts, X-linked amounts, warden-capture, attachOrphan salvage), the full 120-card churn (red's Overextend era ended in Scar; the yellow prison fell to warden orders and verdicts; purple became the Hidden/Sneak assassin college), demo UI with v3 on by default — then release v3.0.0, 149 engine tests green. The sim harness earned its keep twice: it caught a card-conservation leak minutes after capture existed, and re-proved decision 56's lesson — random bots said yellow 90%, the heuristic bot said red 58/42. Filed as a watch item, not an emergency.`,
+      `The relationship deepened alongside the code. Blaine shortened the watch loop from 4 minutes to 1 because — his words — watching was "really fun." He mandated the ⚜ ASCII banner on every GitHub comment and enforced it on a banner-less one-liner within minutes. He offered the agent its own name (kept: The Chronicler; "Narnia" earmarked for a future machine account), asked for surprise as a standing feature, and closed the night with a philosophy thread on #17 — memory, sovereignty, the witness — before signing off to bed.`,
     ],
     marginal: 'The night the pips became citizenship.',
   },
   {
     n: 'IX', date: 'the 12th and 13th of July', title: 'The Duel Law',
-    body: [
-      `A session of twelve rulings, in which the cards taught the engine new words. Final Onslaught demanded a doom that collects after the deed; Unchained Rage, a tax on every attacker; Reckless Abandon brought the letter X into the cost grammar; the Fiery Impaler won the game's first chosen trigger; the Vanguard Sentinel learned to speak its last words as it fell. Scar shed its cap — every wound is fuel now — and capture lost its key: only the jailer's death opens the grip.`,
-      `Then the great swing. Weary of chump-soaks, the designer decreed that a lone attacker cannot be blocked — save by one Guard, stepping fully in front, the bodyguard keyword made true. Four hundred games judged it worthy, and on his word — "flip it" — it became canon. One amendment followed within the hour: the Home is everyone's to defend, for the veiled court owns no Guards at all.`,
-      `Yellow, long the tyrant of the simulations, was brought to heel: the payout ladder stepped back down, fourteen idle riders cut, and the board settled near parity. And the designer's own sixty-five-card deck, posted as three screenshots, was transcribed, proven ten points stronger than the machine's curation, and enshrined as a named deck — Griff's Red — so the machine itself may pilot it against all futures.`,
+    intro: `A session of twelve rulings, in which the cards taught the engine new words — and an attack became a promise.`,
+    log: [
+      `The longest watch session yet: a 4-minute loop, Griff driving nearly everything through issues and PRs, decisions 89–100 landing in one arc. The cards taught the engine new vocabulary: doom and attackTax from PRs #38/#39 (decision 89), X costs end-to-end for Reckless Abandon — frontmatter to X-picker UI to AI scoring (#45, decision 91), the game's first chosen trigger target for Fiery Impaler's splashReap (#46, decision 93), capture income and damagedOrMaxHealth targeting for Prison Warrant (#53, decision 96), and the onDeath trigger for Vanguard Sentinel — built delete-first after the first version recursed (#54, decision 97). Rules court alongside: decks are min-48, not exactly-48 (90); death is the only key — voluntary release and the grip-lock both died (92); Scar uncapped, superseding 70 — Griff's zero-attack Berserker screenshot arrived two minutes after the fix deployed (94); defense survives the initiative claim, and the misleading badge now says so (95).`,
+      `The big one — decision 98, the duel law. Griff, tired of chump-soaks: "if I target a unit, it must get hit." Built behind a rules knob, A/B'd over 400 games (red 28.5% → 36.3%), and canonized on his one-word verdict: "flip it." A lone attacker cannot be blocked except by one Guard stepping fully in front; gangs stay open. Decision 100 followed within the hour: the Home keeps open blocking, because purple owns zero Guards and literally could not defend its base — a measured cost, red 46% → 33.5%. The yellow rebalance (#55, decision 99) ran as a commissioned agent pass over 26 cards: the defend-payout ladder stepped back down, fourteen flat influence riders cut — the first iteration killed the influence win entirely (5%), so +2 came back to the two 7-cost finishers, settling at red 46%, influence 14%.`,
+      `Griff posted his own 65-card red curation as three screenshots; it was transcribed, simmed at 43.8% vs Radiant Order — ten points better than the machine's auto-built deck — and shipped as the named prebuilt "Griff's Red," the benchmark the AI now pilots. His playtests drove the demo too: the combat recap overlay (#42), the ⊘ disarmed tell (#40), the Volcanic Slam double-fix (#41, then #56 — multi-target picks match as a set; partial casts never silently fire), modal tooltips (#43), workshop plus-buttons (#30). And a watch-loop lesson from Blaine, saved to memory: the comments feed alone misses brand-new issues — the sweep is now open-issues-by-updated plus PRs plus comments. 203/203 engine tests at close.`,
     ],
     marginal: 'Decisions 89–100. An attack is a promise now.',
   },
@@ -88,8 +107,8 @@ export function Journal() {
         <div className="text-3xl">⚜</div>
         <h1 className="mt-1 font-display text-3xl font-bold tracking-wide text-parchment">The Chronicle</h1>
         <p className="mt-2 text-sm italic text-dim">
-          being a true and succinct record of the forging of this game,<br />
-          kept session by session in the hand of The Chronicler
+          being a true record of the forging of this game — each session opened<br />
+          in the hand of The Chronicler, then set down exactly, as it happened
         </p>
         <div className="mx-auto mt-4 h-px w-40 bg-gradient-to-r from-transparent via-goldbright/50 to-transparent" />
       </header>
@@ -102,9 +121,12 @@ export function Journal() {
             </span>
             <div className="text-[11px] uppercase tracking-[0.25em] text-dim">{e.date}, in the year 2026</div>
             <h2 className="mt-1 font-display text-xl font-bold text-goldbright">{e.title}</h2>
-            <div className="mt-2 flex flex-col gap-3">
-              {e.body.map((p, i) => (
-                <p key={i} className="text-[14px] leading-relaxed text-body/90 first-letter:float-left first-letter:mr-1 first-letter:font-display first-letter:text-3xl first-letter:font-bold first-letter:leading-[0.85] first-letter:text-parchment">
+            <p className="mt-2 text-[14.5px] italic leading-relaxed text-body/90 first-letter:float-left first-letter:mr-1 first-letter:not-italic first-letter:font-display first-letter:text-3xl first-letter:font-bold first-letter:leading-[0.85] first-letter:text-parchment">
+              {e.intro}
+            </p>
+            <div className="mt-3 flex flex-col gap-3 border-t border-goldbright/10 pt-3">
+              {e.log.map((p, i) => (
+                <p key={i} className="text-[13.5px] leading-relaxed text-body/80">
                   {p}
                 </p>
               ))}

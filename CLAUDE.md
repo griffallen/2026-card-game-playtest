@@ -67,9 +67,11 @@ Project state lives in `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md`. **Read it at th
 
 2. Overwrite `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md` with the Hand-off section.
 3. Add the session's entry to **The Chronicle** (`apps/demo/src/pages/Journal.tsx`) — the
-   demo's illuminated journal. Fantasy-voiced, succinct (2–3 short paragraphs), in the hand
-   of ⚜ The Chronicler; a marginal note where one fits. The dry summary is the record; the
-   Chronicle is the story. Deploy so it's live before the session closes.
+   demo's illuminated journal. Two parts per entry (Blaine, session 011): a one-sentence
+   fantasy-voiced **intro** in the hand of ⚜ The Chronicler, then a technical **log** (2–3
+   paragraphs) that reads like the session summary — exact, naming Blaine/Griff, with
+   decision numbers, issue/PR refs, sim numbers, and the quirks. A marginal note where one
+   fits. Deploy so it's live before the session closes.
 4. Offer to commit everything, with a suggested message.
 
 ## Working principles
