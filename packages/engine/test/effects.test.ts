@@ -61,18 +61,18 @@ describe('influence effects', () => {
     const raider = put(s, p1, 'berserker', 1)
     s = act(s, p2, { type: 'pass' })
     s = act(s, p1, { type: 'attack', attackers: [raider], target: { kind: 'unit', id: victim } })
-    expect(influenceFor(s, p2)).toBe(2)                    // Bulwark defended → +2 (decision 85 ladder)
+    expect(influenceFor(s, p2)).toBe(1)                    // Bulwark defended → +1 (issue #55: ladder pulled back)
   })
 
   it('influence win threshold ends the game', () => {
     let { s, p1, p2 } = arena()
-    s.influence = p2 === 0 ? 13 : -13
+    s.influence = p2 === 0 ? 14 : -14
     const detain = toHand(s, p2, 'detain')
     const warden = put(s, p2, 'bulwark-protector', 1)
     const target = put(s, p1, 'berserker', 1)
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: detain, targets: [{ kind: 'unit', id: warden }, { kind: 'unit', id: target }] })
-    // +1 (detain) → 14, not a win yet
+    // issue #55: Detain's flat rider is cut — the capture pays nothing; still 14, not a win
     expect(s.winner).toBeNull()
     expect(influenceFor(s, p2)).toBe(14)
     const sanctify = toHand(s, p2, 'sanctify')
@@ -288,8 +288,8 @@ describe('start-of-round engines', () => {
     const before = influenceFor(s, p2)
     s = act(s, p1, { type: 'attack', attackers: [raider], target: { kind: 'unit', id: wearer } })
     if (s.phase === 'intercept') s = act(s, p2, { type: 'declineIntercept' })
-    // custodian's own onDefend (+3) plus the aura's onDefend (+3) — decision 85 ladder
-    expect(influenceFor(s, p2)).toBe(before + 6)
+    // custodian's own onDefend (+2) plus the aura's onDefend (+2) — issue #55 ladder pull
+    expect(influenceFor(s, p2)).toBe(before + 4)
   })
 })
 

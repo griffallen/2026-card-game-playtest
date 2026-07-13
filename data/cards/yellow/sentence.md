@@ -1,7 +1,7 @@
 ---
 name: Sentence
 type: action
-cost: 4
+cost: 5
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
@@ -14,3 +14,4 @@ Target unit you control captures target enemy unit. Draw a card.
 Session 006, prison ladder: Sentence 4 = imprison that replaces itself. The old 10+ rider duplicated what imprisonment already does.
 
 2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 4: the full sentence — any prisoner, plus the paperwork (draw).
+2026-07-13 (agent pass, issue #55 — designer commission: "take a crack at modifying all Yellow cards"): 4 → 5: capture-anything plus a draw was priced under voluntary release; death-only (decision 92) made it premium removal. ⚑ ratify/veto.

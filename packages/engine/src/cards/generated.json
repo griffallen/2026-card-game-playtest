@@ -1195,10 +1195,6 @@
      "k": "guard"
     },
     "dur": "perm"
-   },
-   {
-    "op": "influence",
-    "n": 1
    }
   ],
   "slug": "hold-the-line",
@@ -1206,11 +1202,11 @@
   "color": "yellow",
   "type": "action",
   "cost": 2,
-  "text": "Choose a zone. Your units there gain Guard. Gain 1 Influence.",
+  "text": "Choose a zone. Your units there gain Guard.",
   "pips": [
    "yellow"
   ],
-  "designerNote": "Decision 52: \"this zone\" on an action means \"choose a zone\" — the text now says so.",
+  "designerNote": "Decision 52: \"this zone\" on an action means \"choose a zone\" — the text now says so.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/hold-the-line.jpg"
  },
  "radiant-aegis": {
@@ -1226,10 +1222,6 @@
     "t": "chosen0",
     "armor": 2,
     "dur": "perm"
-   },
-   {
-    "op": "influence",
-    "n": 1
    }
   ],
   "slug": "radiant-aegis",
@@ -1237,18 +1229,18 @@
   "color": "yellow",
   "type": "action",
   "cost": 2,
-  "text": "Target unit gets Armor 2, permanently. Gain 1 Influence.",
+  "text": "Target unit gets Armor 2, permanently.",
   "pips": [
    "yellow"
   ],
-  "designerNote": "Session 006: 1 → 2 mana. Armor 2 blanks red's whole cheap-burn suite; at 1 mana it was the best card in the pool. The armor ladder: Aegis 2 (Armor 2, one unit), Radiant Wall 5 (Armor 3), Command Edict 7 (Armor 1, everyone).",
+  "designerNote": "Session 006: 1 → 2 mana. Armor 2 blanks red's whole cheap-burn suite; at 1 mana it was the best card in the pool. The armor ladder: Aegis 2 (Armor 2, one unit), Radiant Wall 5 (Armor 3), Command Edict 7 (Armor 1, everyone).\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/radiant-aegis.jpg"
  },
  "sunguard-defender": {
   "onDefend": [
    {
     "op": "influence",
-    "n": 2
+    "n": 1
    }
   ],
   "slug": "sunguard-defender",
@@ -1258,7 +1250,7 @@
   "cost": 2,
   "power": 2,
   "health": 3,
-  "text": "Guard. When this defends, gain 2 Influence.",
+  "text": "Guard. When this defends, gain 1 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1267,14 +1259,14 @@
   "pips": [
    "yellow"
   ],
-  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.",
   "artUrl": "/cards/sunguard-defender.jpg"
  },
  "aura-of-resolve": {
   "onDefend": [
    {
     "op": "influence",
-    "n": 3
+    "n": 2
    }
   ],
   "slug": "aura-of-resolve",
@@ -1282,19 +1274,19 @@
   "color": "yellow",
   "type": "upgrade",
   "cost": 3,
-  "text": "Attach to unit. When this unit defends, gain 3 Influence.",
+  "text": "Attach to unit. When this unit defends, gain 2 Influence.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006 redesign: was \"at the start of your round, gain 1 Influence\" — passive income, illegal under the yellow charter (influence is event-earned, decision 34). Now it pays when the wearer defends: put it on a Guard and get paid for every intercept.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
+  "designerNote": "Session 006 redesign: was \"at the start of your round, gain 1 Influence\" — passive income, illegal under the yellow charter (influence is event-earned, decision 34). Now it pays when the wearer defends: put it on a Guard and get paid for every intercept.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.",
   "artUrl": "/cards/aura-of-resolve.jpg"
  },
  "bulwark-protector": {
   "onDefend": [
    {
     "op": "influence",
-    "n": 2
+    "n": 1
    }
   ],
   "slug": "bulwark-protector",
@@ -1304,7 +1296,7 @@
   "cost": 3,
   "power": 2,
   "health": 5,
-  "text": "Guard. When this defends, gain 2 Influence.",
+  "text": "Guard. When this defends, gain 1 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1314,7 +1306,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.",
   "artUrl": "/cards/bulwark-protector.jpg"
  },
  "chain-of-law": {
@@ -1343,19 +1335,19 @@
   "color": "yellow",
   "type": "upgrade",
   "cost": 3,
-  "text": "Attached unit has Guard and Armor 1. Gain 1 Influence.",
+  "text": "Attached unit has Guard and Armor 1.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Untargetable is purple's (as Hidden) now; the chain deputizes instead — Guard + Armor 1, and in v3 orphaned chains are salvageable (decision 67).",
+  "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Untargetable is purple's (as Hidden) now; the chain deputizes instead — Guard + Armor 1, and in v3 orphaned chains are salvageable (decision 67).\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/chain-of-law.jpg"
  },
  "justicar-enforcer": {
   "onDefend": [
    {
     "op": "influence",
-    "n": 3
+    "n": 2
    }
   ],
   "slug": "justicar-enforcer",
@@ -1365,7 +1357,7 @@
   "cost": 3,
   "power": 3,
   "health": 4,
-  "text": "Guard. When this defends, gain 3 Influence.",
+  "text": "Guard. When this defends, gain 2 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1375,7 +1367,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006 balance pass: payout restored to 2 — this is yellow's dedicated influence-engine guard (the vanilla walls pay 1). Sims: without real influence payouts yellow's second win axis never fires.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
+  "designerNote": "Session 006 balance pass: payout restored to 2 — this is yellow's dedicated influence-engine guard (the vanilla walls pay 1). Sims: without real influence payouts yellow's second win axis never fires.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.",
   "artUrl": "/cards/justicar-enforcer.jpg"
  },
  "noble-purifier": {
@@ -1473,10 +1465,6 @@
     "t": "chosen0",
     "p": -2,
     "dur": "perm"
-   },
-   {
-    "op": "influence",
-    "n": 1
    }
   ],
   "slug": "subjugate",
@@ -1484,12 +1472,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 3,
-  "text": "Target enemy unit gets −2 Power permanently. Gain 1 Influence.",
+  "text": "Target enemy unit gets −2 Power permanently.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006, prison ladder: Subjugate 3 = unrestricted imprison that leaves a mark — the prisoner comes back weaker. The old \"if your Influence is 5 or less\" condition was noise; the rider is now unconditional.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 3: the breaking — permanent humiliation instead of walls.",
+  "designerNote": "Session 006, prison ladder: Subjugate 3 = unrestricted imprison that leaves a mark — the prisoner comes back weaker. The old \"if your Influence is 5 or less\" condition was noise; the rider is now unconditional.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 3: the breaking — permanent humiliation instead of walls.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/subjugate.jpg"
  },
  "unwavering-faith": {
@@ -1504,10 +1492,6 @@
     "op": "heal",
     "t": "chosen0",
     "n": 3
-   },
-   {
-    "op": "influence",
-    "n": 1
    }
   ],
   "slug": "unwavering-faith",
@@ -1515,12 +1499,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 3,
-  "text": "Heal 3 damage from target unit. Gain 1 Influence.",
+  "text": "Heal 3 damage from target unit.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006: became unit-only. The old targeting technically allowed healing the enemy base — the engine can't say \"any unit or YOUR base\" in one target, and the flexible version was dishonest text.",
+  "designerNote": "Session 006: became unit-only. The old targeting technically allowed healing the enemy base — the engine can't say \"any unit or YOUR base\" in one target, and the flexible version was dishonest text.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/unwavering-faith.jpg"
  },
  "absolution": {
@@ -1537,10 +1521,6 @@
    },
    {
     "op": "freeCaptives"
-   },
-   {
-    "op": "influence",
-    "n": 1
    }
   ],
   "slug": "absolution",
@@ -1548,12 +1528,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 4,
-  "text": "Remove all negative effects from target unit you control. Free all your captured units. Gain 1 Influence.",
+  "text": "Remove all negative effects from target unit you control. Free all your captured units.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006: 7 → 3 mana and the text now says what removeNegative actually does (it is primarily a jailbreak). A situational cleanse was priced like a bomb.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The jailbreak: the first freeCaptives card — your people come home (originally dazed; ready since decision 73).",
+  "designerNote": "Session 006: 7 → 3 mana and the text now says what removeNegative actually does (it is primarily a jailbreak). A situational cleanse was priced like a bomb.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The jailbreak: the first freeCaptives card — your people come home (originally dazed; ready since decision 73).\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/absolution.jpg"
  },
  "devout-intervention": {
@@ -1561,10 +1541,6 @@
    {
     "op": "preventBase",
     "n": 3
-   },
-   {
-    "op": "influence",
-    "n": 1
    }
   ],
   "slug": "devout-intervention",
@@ -1572,12 +1548,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 4,
-  "text": "Prevent the next 3 damage to your base this round. Gain 1 Influence.",
+  "text": "Prevent the next 3 damage to your base this round.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006: 6 → 3 mana. A one-round shield priced like a wall.",
+  "designerNote": "Session 006: 6 → 3 mana. A one-round shield priced like a wall.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/devout-intervention.jpg"
  },
  "disarming-order": {
@@ -1678,7 +1654,7 @@
   "onDefend": [
    {
     "op": "influence",
-    "n": 3
+    "n": 2
    }
   ],
   "slug": "high-justiciar",
@@ -1688,7 +1664,7 @@
   "cost": 4,
   "power": 3,
   "health": 5,
-  "text": "Guard. When this defends, gain 3 Influence.",
+  "text": "Guard. When this defends, gain 2 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1698,7 +1674,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 51 text (deterministic pick, stated on the card).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Guard is free blocking in v3 — the Justiciar holds the line and the court pays it.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
+  "designerNote": "Decision 51 text (deterministic pick, stated on the card).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Guard is free blocking in v3 — the Justiciar holds the line and the court pays it.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.",
   "artUrl": "/cards/high-justiciar.jpg"
  },
  "lawbringer": {
@@ -1742,10 +1718,6 @@
     "t": "chosen0",
     "p": 3,
     "dur": "round"
-   },
-   {
-    "op": "influence",
-    "n": 1
    }
   ],
   "slug": "light-of-authority",
@@ -1753,12 +1725,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 4,
-  "text": "Target unit gets +3 Power this round. Gain 1 Influence.",
+  "text": "Target unit gets +3 Power this round.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006: 6 → 3 mana (red's Cataclysmic Charge gives +3 AND Breakthrough 3 at 4 — yellow's pump can cost less because it converts defense, not kills).",
+  "designerNote": "Session 006: 6 → 3 mana (red's Cataclysmic Charge gives +3 AND Breakthrough 3 at 4 — yellow's pump can cost less because it converts defense, not kills).\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/light-of-authority.jpg"
  },
  "resolve-banner": {
@@ -1781,41 +1753,6 @@
   ],
   "designerNote": "Session 006: 6 → 4 mana (red gets the same aura board-wide ON a 5/5 body for 6 — Warlord Garok).",
   "artUrl": "/cards/resolve-banner.jpg"
- },
- "sentence": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "friendly"
-   },
-   {
-    "t": "unit",
-    "side": "enemy"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "capture",
-    "t": "chosen1",
-    "by": "chosen0"
-   },
-   {
-    "op": "draw",
-    "n": 1
-   }
-  ],
-  "slug": "sentence",
-  "name": "Sentence",
-  "color": "yellow",
-  "type": "action",
-  "cost": 4,
-  "text": "Target unit you control captures target enemy unit. Draw a card.",
-  "pips": [
-   "yellow",
-   "yellow"
-  ],
-  "designerNote": "Session 006, prison ladder: Sentence 4 = imprison that replaces itself. The old 10+ rider duplicated what imprisonment already does.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 4: the full sentence — any prisoner, plus the paperwork (draw).",
-  "artUrl": "/cards/sentence.jpg"
  },
  "censer-of-purity": {
   "startOfRound": {
@@ -1850,7 +1787,7 @@
   "onDefend": [
    {
     "op": "influence",
-    "n": 3
+    "n": 2
    }
   ],
   "slug": "custodian-of-law",
@@ -1860,7 +1797,7 @@
   "cost": 5,
   "power": 4,
   "health": 6,
-  "text": "Guard. When this defends, gain 3 Influence.",
+  "text": "Guard. When this defends, gain 2 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1870,7 +1807,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.",
   "artUrl": "/cards/custodian-of-law.jpg"
  },
  "dawnspear-paladin": {
@@ -1911,10 +1848,6 @@
     "op": "capture",
     "t": "chosen1",
     "by": "chosen0"
-   },
-   {
-    "op": "influence",
-    "n": 2
    }
   ],
   "slug": "imprisonment-chamber",
@@ -1922,12 +1855,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 5,
-  "text": "Target unit you control captures target enemy unit. Gain 2 Influence.",
+  "text": "Target unit you control captures target enemy unit.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006, prison ladder: Chamber 5 = the political win — imprison plus the pool's biggest single influence payout. The old text restated the global decay rule (§1.11) as if it were a card effect; the ledger stopped lying.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 5: the chamber — capture as civic spectacle.",
+  "designerNote": "Session 006, prison ladder: Chamber 5 = the political win — imprison plus the pool's biggest single influence payout. The old text restated the global decay rule (§1.11) as if it were a card effect; the ledger stopped lying.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 5: the chamber — capture as civic spectacle.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat +2 rider is cut — under death-only capture (decision 92) and the duel law, the effect alone carries the cost. ⚑ ratify/veto.",
   "artUrl": "/cards/imprisonment-chamber.jpg"
  },
  "radiant-judgment": {
@@ -2014,6 +1947,41 @@
   "designerNote": "Session 006: 6 → 4 mana, influence 2 → 1 (life-gain shouldn't also be the biggest influence payout — that belongs to the prison ladder's Chamber).",
   "artUrl": "/cards/sanctify.jpg"
  },
+ "sentence": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   },
+   {
+    "t": "unit",
+    "side": "enemy"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "capture",
+    "t": "chosen1",
+    "by": "chosen0"
+   },
+   {
+    "op": "draw",
+    "n": 1
+   }
+  ],
+  "slug": "sentence",
+  "name": "Sentence",
+  "color": "yellow",
+  "type": "action",
+  "cost": 5,
+  "text": "Target unit you control captures target enemy unit. Draw a card.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
+  "designerNote": "Session 006, prison ladder: Sentence 4 = imprison that replaces itself. The old 10+ rider duplicated what imprisonment already does.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 4: the full sentence — any prisoner, plus the paperwork (draw).\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): 4 → 5: capture-anything plus a draw was priced under voluntary release; death-only (decision 92) made it premium removal. ⚑ ratify/veto.",
+  "artUrl": "/cards/sentence.jpg"
+ },
  "unshakable-wall": {
   "statics": [
    {
@@ -2062,10 +2030,6 @@
     "op": "heal",
     "t": "selfBase",
     "n": 3
-   },
-   {
-    "op": "influence",
-    "n": 1
    }
   ],
   "slug": "detain",
@@ -2073,19 +2037,19 @@
   "color": "yellow",
   "type": "action",
   "cost": 6,
-  "text": "Target unit you control captures target enemy unit. Your Home heals 3. Gain 1 Influence.",
+  "text": "Target unit you control captures target enemy unit. Your Home heals 3.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006, prison ladder: Detain 6 = the stabilizer — lock the threat away and bind the wound it left. Was a plain imprison+1 at 6 mana, strictly worse than the cheaper rungs.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 6: order restored — the arrest, the healing, the standing.",
+  "designerNote": "Session 006, prison ladder: Detain 6 = the stabilizer — lock the threat away and bind the wound it left. Was a plain imprison+1 at 6 mana, strictly worse than the cheaper rungs.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 6: order restored — the arrest, the healing, the standing.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/detain.jpg"
  },
  "gateward-colossus": {
   "onDefend": [
    {
     "op": "influence",
-    "n": 2
+    "n": 1
    }
   ],
   "slug": "gateward-colossus",
@@ -2095,7 +2059,7 @@
   "cost": 6,
   "power": 3,
   "health": 9,
-  "text": "Guard. Armor 2. Can't attack. When this defends, gain 2 Influence.",
+  "text": "Guard. Armor 2. Can't attack. When this defends, gain 1 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -2113,7 +2077,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The wall keeps its post; imprisonWatcher dies with prison. Armor 2 + free blocks = the gate that holds.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
+  "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The wall keeps its post; imprisonWatcher dies with prison. Armor 2 + free blocks = the gate that holds.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.",
   "artUrl": "/cards/gateward-colossus.jpg"
  },
  "hierophant": {
@@ -2200,10 +2164,6 @@
      "k": "guard"
     },
     "dur": "perm"
-   },
-   {
-    "op": "influence",
-    "n": 1
    }
   ],
   "slug": "mobilize-the-faithful",
@@ -2211,12 +2171,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 6,
-  "text": "Your units get +1 Power and gain Guard, permanently. Gain 1 Influence.",
+  "text": "Your units get +1 Power and gain Guard, permanently.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006: 4 → 6 mana. A permanent board-wide pump plus mass Guard was priced like a trick; it is a haymaker (red's Warpath gives +1 for one round at 2).",
+  "designerNote": "Session 006: 4 → 6 mana. A permanent board-wide pump plus mass Guard was priced like a trick; it is a haymaker (red's Warpath gives +1 for one round at 2).\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/mobilize-the-faithful.jpg"
  },
  "archon-of-order": {
@@ -2254,7 +2214,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 51 text (deterministic pick per zone; zones with no eligible enemies are skipped). The mass-jailer — remember each prisoner costs 1 Influence per round.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The 7-cost does a lot (decision 68): a 7/7 that arrests anyone on arrival, publicly.",
+  "designerNote": "Decision 51 text (deterministic pick per zone; zones with no eligible enemies are skipped). The mass-jailer — remember each prisoner costs 1 Influence per round.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The 7-cost does a lot (decision 68): a 7/7 that arrests anyone on arrival, publicly.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat +2 rider is cut — under death-only capture (decision 92) and the duel law, the effect alone carries the cost. ⚑ ratify/veto.\n\nSecond thought same pass: the +2 returns — influence as a FINISHER'S reward on the 7s, not a dribble on every spell (the first sim killed the influence win entirely: 5% of games).",
   "artUrl": "/cards/archon-of-order.jpg"
  },
  "champion-of-the-faith": {
@@ -2289,10 +2249,6 @@
     },
     "armor": 1,
     "dur": "perm"
-   },
-   {
-    "op": "influence",
-    "n": 2
    }
   ],
   "slug": "command-edict",
@@ -2300,13 +2256,13 @@
   "color": "yellow",
   "type": "action",
   "cost": 7,
-  "text": "Your units get Armor 1, permanently. Gain 2 Influence.",
+  "text": "Your units get Armor 1, permanently.",
   "pips": [
    "yellow",
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006 redesign: was +2 Armor for one round at 7 — a fog effect priced like a finisher. Now the fortress decree: permanent board-wide Armor 1.",
+  "designerNote": "Session 006 redesign: was +2 Armor for one round at 7 — a fog effect priced like a finisher. Now the fortress decree: permanent board-wide Armor 1.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat +2 rider is cut — under death-only capture (decision 92) and the duel law, the effect alone carries the cost. ⚑ ratify/veto.",
   "artUrl": "/cards/command-edict.jpg"
  },
  "prison-of-light": {
@@ -2339,7 +2295,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006, prison ladder: Prison of Light 7 = the zone-wide haymaker. Remember the mortgage: every prisoner costs you 1 Influence per round, so caging an army is a serious bet.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 7: the light holds a whole district still for a round — and in v3 a stilled zone cannot block.",
+  "designerNote": "Session 006, prison ladder: Prison of Light 7 = the zone-wide haymaker. Remember the mortgage: every prisoner costs you 1 Influence per round, so caging an army is a serious bet.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 7: the light holds a whole district still for a round — and in v3 a stilled zone cannot block.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat +2 rider is cut — under death-only capture (decision 92) and the duel law, the effect alone carries the cost. ⚑ ratify/veto.\n\nSecond thought same pass: the +2 returns — influence as a FINISHER'S reward on the 7s, not a dribble on every spell (the first sim killed the influence win entirely: 5% of games).",
   "artUrl": "/cards/prison-of-light.jpg"
  },
  "radiant-citadel": {
@@ -2387,7 +2343,7 @@
    {
     "op": "damage",
     "t": "chosen0",
-    "n": 2
+    "n": 3
    },
    {
     "op": "exhaust",
@@ -2396,7 +2352,7 @@
    {
     "op": "damage",
     "t": "chosen1",
-    "n": 2
+    "n": 3
    }
   ],
   "slug": "supreme-sentence",
@@ -2404,20 +2360,20 @@
   "color": "yellow",
   "type": "action",
   "cost": 7,
-  "text": "Up to two target enemy units anywhere are exhausted and take 2 damage each.",
+  "text": "Up to two target enemy units anywhere are exhausted and take 3 damage each.",
   "pips": [
    "yellow",
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006 redesign under decision 50 (no dead thresholds): the old \"if your Influence is 15 or more\" could never fire — 15 is the win. Now it simply passes two sentences anywhere on the board.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 8: the highest court — two verdicts, anywhere, with teeth.",
+  "designerNote": "Session 006 redesign under decision 50 (no dead thresholds): the old \"if your Influence is 15 or more\" could never fire — 15 is the win. Now it simply passes two sentences anywhere on the board.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 8: the highest court — two verdicts, anywhere, with teeth.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): damage 2 → 3 per target: a 7-cost under the decision-68 convex curve should end two threats, not inconvenience them. ⚑ ratify/veto.",
   "artUrl": "/cards/supreme-sentence.jpg"
  },
  "light-s-vanguard": {
   "onDefend": [
    {
     "op": "influence",
-    "n": 3
+    "n": 2
    }
   ],
   "slug": "light-s-vanguard",
@@ -2427,7 +2383,7 @@
   "cost": 8,
   "power": 7,
   "health": 8,
-  "text": "Guard. Armor 1. Shielded. When this defends, gain 3 Influence.",
+  "text": "Guard. Armor 1. Shielded. When this defends, gain 2 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -2445,7 +2401,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Flying is canon (decision 48): may move to any zone, ignoring adjacency.\n\n2026-07-11 (v3 churn pass 4): flying is cut — the Vanguard lands and becomes the great shield: 7/8 Guard (free blocks in v3), Armor 1, Shielded, and the court pays 2 when it holds the line. An 8-cost that does a lot (decision 68).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
+  "designerNote": "Flying is canon (decision 48): may move to any zone, ignoring adjacency.\n\n2026-07-11 (v3 churn pass 4): flying is cut — the Vanguard lands and becomes the great shield: 7/8 Guard (free blocks in v3), Armor 1, Shielded, and the court pays 2 when it holds the line. An 8-cost that does a lot (decision 68).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.",
   "artUrl": "/cards/light-s-vanguard.jpg"
  },
  "glimpse": {
