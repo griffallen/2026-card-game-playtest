@@ -53,3 +53,8 @@ major mechanics design (new keywords, combat reworks like decision 102), the #68
 (judgment + benchmark discipline), architecture calls, and cross-surface audit passes.
 Within a Fable session, big implementation slices can also be delegated to Opus subagents
 (Agent tool, model override) — worth it for large builds, not for chat-sized replies.
+The reverse is the cheaper default: an **Opus watch session delegates UP to Fable** when a
+ticket is mechanics-shaped — spawn a Fable subagent (Agent tool, `model: 'fable'`) with a
+brief pointing at the issue + DECISIONS + spec, or keep one alive across ticks via
+SendMessage as a standing design consultant. The always-on context stays at Opus prices;
+Fable sees only the design subset. The Fable-shaped list above is the triage rubric.
