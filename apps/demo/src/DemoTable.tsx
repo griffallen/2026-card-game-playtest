@@ -134,6 +134,15 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   function apply(action: GameAction, actor: Seat) {
     try {
       const { state: next, events } = applyAction(state, action, actor)
+      // #67 (Blaine): the chronicle shows what was banked but not what the options were —
+      // in vs-AI, the human's bank lines note the hand they kept, so a pasted log carries
+      // the decision context. Demo-only annotation; hotseat stays hand-hidden, the AI
+      // neither reads nor writes it, and replays rebuild without it.
+      if (config.mode === 'vs-ai' && actor === seat
+        && (action.type === 'resource' || action.type === 'setupBank')) {
+        const kept = next.sides[seat].hand.map(id => DEMO_CARDS[next.cardOf[id]]?.name ?? '?')
+        next.log.push({ t: next.round, seat, msg: `  (kept in hand: ${kept.length ? kept.join(' · ') : 'nothing'})` })
+      }
       setState(next)
       setHistory(h => [...h, { seat: actor, action, rngAfter: currentRng }])
       setSelection(null)
