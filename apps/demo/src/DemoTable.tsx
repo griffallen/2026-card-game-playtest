@@ -1097,6 +1097,24 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             onBase={() => setInspect({ kind: 'base', seat })}
           />
 
+          {/* #64 (Blaine): a captured unit is easy to lose track of — your bar names the jailer */}
+          {(() => {
+            const held = view.zones.flatMap((zn, zi) => zn.units.flatMap(u =>
+              u.captives.filter(c => c.owner === seat).map(c => ({ c, captor: u, zi }))))
+            if (!held.length) return null
+            const zoneLabel = (zi: number) => zi === 1 ? 'the Neutral zone' : zi === (seat === 0 ? 0 : 2) ? 'your Home' : 'their Home'
+            return (
+              <p className="mt-1 text-[11.5px] text-dim">
+                ⛓ {held.map(({ c, captor, zi }) => (
+                  <span key={c.id}><b className="text-body">{c.name}</b> is held by{' '}
+                    <button className="underline decoration-dotted hover:text-body" onClick={() => setInspect({ kind: 'unit', id: captor.id })}>{captor.name}</button>{' '}
+                    in {zoneLabel(zi)}</span>
+                )).reduce((acc: React.ReactNode[], el, i) => (i ? [...acc, ' · ', el] : [el]), [])}
+                {' '}— kill the jailer to free the prisoner.
+              </p>
+            )
+          })()}
+
           {bankMode && (
             <div className="mt-1.5 flex flex-wrap items-center gap-2 rounded-md border border-[#c98a27] bg-[#c98a27]/10 px-2 py-1.5 text-xs">
               <span className="text-goldbright">⬢ <b>Banking step</b> — tap a card below to bank it as a resource (not play it), or</span>
