@@ -134,15 +134,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   function apply(action: GameAction, actor: Seat) {
     try {
       const { state: next, events } = applyAction(state, action, actor)
-      // #67 (Blaine): the chronicle shows what was banked but not what the options were —
-      // in vs-AI, the human's bank lines note the hand they kept, so a pasted log carries
-      // the decision context. Demo-only annotation; hotseat stays hand-hidden, the AI
-      // neither reads nor writes it, and replays rebuild without it.
-      if (config.mode === 'vs-ai' && actor === seat
-        && (action.type === 'resource' || action.type === 'setupBank')) {
-        const kept = next.sides[seat].hand.map(id => DEMO_CARDS[next.cardOf[id]]?.name ?? '?')
-        next.log.push({ t: next.round, seat, msg: `  (kept in hand: ${kept.length ? kept.join(' · ') : 'nothing'})` })
-      }
+      noteKeptHand(next, actor, action, state)
       setState(next)
       setHistory(h => [...h, { seat: actor, action, rngAfter: currentRng }])
       setSelection(null)
@@ -156,11 +148,37 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     }
   }
 
+  // #67 (Blaine): the chronicle doubles as bot-tuning telemetry — decision lines carry the
+  // options that were on the table, human AND bot. Banks note the hand kept; block windows
+  // note who could have blocked vs who was sent (the #68 investigation's exact question);
+  // passes note what was passed up. Demo-only, non-hotseat; the AI never reads it; replays
+  // rebuild without it.
+  function noteKeptHand(next: GameState, actor: Seat, action: GameAction, prev: GameState) {
+    if (config.mode === 'hotseat') return
+    const note = (msg: string) => next.log.push({ t: next.round, seat: actor, msg })
+    if (action.type === 'resource' || action.type === 'setupBank') {
+      const kept = next.sides[actor].hand.map(id => DEMO_CARDS[next.cardOf[id]]?.name ?? '?')
+      note(`  (kept in hand: ${kept.length ? kept.join(' · ') : 'nothing'})`)
+    } else if (action.type === 'block') {
+      const offered = [...new Set(viewFor(prev, actor).actions
+        .flatMap(a => (a.type === 'block' ? a.pairs.map(pr => pr.blocker) : []))
+        .map(id => DEMO_CARDS[prev.cardOf[id]]?.name ?? '?'))]
+      const sent = action.pairs.map(pr => DEMO_CARDS[prev.cardOf[pr.blocker]]?.name ?? '?')
+      if (offered.length) note(`  (could block with: ${offered.join(' · ')} — sent: ${sent.length ? sent.join(' · ') : 'none, let it through'})`)
+    } else if (action.type === 'pass') {
+      const acts = viewFor(prev, actor).actions
+      const playable = new Set(acts.filter(a => a.type === 'play').map(a => a.card)).size
+      const attackers = new Set(acts.filter(a => a.type === 'attack').flatMap(a => a.attackers)).size
+      if (playable + attackers > 0) note(`  (passed with ${playable} playable card${playable === 1 ? '' : 's'}, ${attackers} ready attacker${attackers === 1 ? '' : 's'})`)
+    }
+  }
+
   function aiStep() {
     if (!aiWindow) return
     const policy = POLICIES[state.actorSeat === 0 ? config.policyA : config.policyB]
     const [action, nextRng] = policy(state, state.actorSeat, currentRng)
     const { state: next, events } = applyAction(state, action, state.actorSeat)
+    noteKeptHand(next, state.actorSeat, action, state)
     setState(next)
     setHistory(h => [...h, { seat: state.actorSeat, action, rngAfter: nextRng }])
     queueRecap(events, lostMine(state, next))          // #42: let the human read what the AI did
