@@ -113,8 +113,10 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const canPass = actions.some(a => a.type === 'pass')
   const canClaim = actions.some(a => a.type === 'claimInitiative')
 
-  // #57 (Blaine): influence rides in the recap too — guard-payouts were deciding games invisibly
-  const COMBAT_RE = /damage|destroyed|blocks|attacks|intercepts|retaliat|spill|captiv|captur|released|freed|suffers|overextend|onslaught|rage|falls|influence/i
+  // #57 (Blaine): the recap is the primary source in a fast round — every consequence a card or
+  // combat inflicts must pass this filter. Audited against the engine's full log vocabulary;
+  // deliberately excluded: movement, draws, banking, round headers (visible on board / pure noise).
+  const COMBAT_RE = /damage|destroyed|blocks|attacks|volleys|sneaks|intercepts|retaliat|spill|captiv|captur|released|freed|suffers|overextend|onslaught|rage|falls|fell|influence|absorbs|heals|cleansed|gains|gets \+|power|ordered down|readies|ready for|extra action|made whole|wards/i
   const BIG_RE = /destroyed|captures|released|freed|falls/i   // #44: one of these alone still deserves the stage
   function queueRecap(events: { msg: string }[], mustAck = false) {
     if (speed === 'fast') return                       // watching at speed — the log suffices
