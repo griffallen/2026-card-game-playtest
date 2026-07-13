@@ -83,9 +83,11 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const [inspect, setInspect] = useState<Inspect>(null)
   const [setupPicks, setSetupPicks] = useState<string[]>([])
   const [armOverextend, setArmOverextend] = useState(false)
-  // #42: combat resolves inside ONE action — replay its event lines slowly enough to read
+  // #42: combat resolves inside ONE action — replay its event lines slowly enough to read.
+  // When something of YOURS leaves play, the recap holds until you acknowledge it (Griff).
   const [recap, setRecap] = useState<{ msg: string }[]>([])
   const [recapShown, setRecapShown] = useState(0)
+  const [recapAck, setRecapAck] = useState(false)
   const logRef = useRef<HTMLDivElement>(null)
 
   // Policy rng travels WITH the history (snapshot after every action), so stepping
@@ -113,11 +115,18 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
 
   const COMBAT_RE = /damage|destroyed|blocks|attacks|intercepts|retaliat|spill|captiv|captur|released|freed|suffers|overextend|onslaught|rage|falls/i
   const BIG_RE = /destroyed|captures|released|freed|falls/i   // #44: one of these alone still deserves the stage
-  function queueRecap(events: { msg: string }[]) {
+  function queueRecap(events: { msg: string }[], mustAck = false) {
     if (speed === 'fast') return                       // watching at speed — the log suffices
     const combat = events.filter(e => COMBAT_RE.test(e.msg))
-    if (combat.length >= 2 || combat.some(e => BIG_RE.test(e.msg))) { setRecap(combat); setRecapShown(1) }
+    if (mustAck || combat.length >= 2 || combat.some(e => BIG_RE.test(e.msg))) {
+      setRecap(combat.length ? combat : events)
+      setRecapShown(1)
+      setRecapAck(mustAck)
+    }
   }
+  // #42 second pass: did the viewer lose a unit (destroyed OR captured) inside this action?
+  const lostMine = (prev: GameState, next: GameState) =>
+    config.mode === 'vs-ai' && Object.values(prev.units).some(u => u.owner === seat && !next.units[u.id])
 
   function apply(action: GameAction, actor: Seat) {
     try {
@@ -125,7 +134,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       setState(next)
       setHistory(h => [...h, { seat: actor, action, rngAfter: currentRng }])
       setSelection(null)
-      if (action.type === 'block' || action.type === 'intercept') queueRecap(events)
+      if (action.type === 'block' || action.type === 'intercept') queueRecap(events, lostMine(state, next))
       const s = SFX_BY_ACTION[action.type]
       if (s) sfx(s)
     } catch (e) {
@@ -142,7 +151,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     const { state: next, events } = applyAction(state, action, state.actorSeat)
     setState(next)
     setHistory(h => [...h, { seat: state.actorSeat, action, rngAfter: nextRng }])
-    queueRecap(events)                                 // #42: let the human read what the AI did
+    queueRecap(events, lostMine(state, next))          // #42: let the human read what the AI did
     const s = SFX_BY_ACTION[action.type]
     if (s) sfx(s)
   }
@@ -155,16 +164,18 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, aiWindow, paused, speed, config.mode, recap.length])
 
-  // #42: the recap reveals one line at a time, lingers, then clears itself
+  // #42: the recap reveals one line at a time, lingers, then clears itself — unless it holds
+  // one of YOUR losses, in which case it waits for your acknowledgment (no timer)
   useEffect(() => {
     if (!recap.length) return
     if (recapShown < recap.length) {
-      const t = setTimeout(() => setRecapShown(n => n + 1), speed === 'slow' ? 1300 : 900)
+      const t = setTimeout(() => setRecapShown(n => n + 1), speed === 'slow' ? 1400 : 1000)
       return () => clearTimeout(t)
     }
-    const t = setTimeout(() => { setRecap([]); setRecapShown(0) }, 1700)
+    if (recapAck) return                               // held for the human — Continue clears it
+    const t = setTimeout(() => { setRecap([]); setRecapShown(0) }, 2000)
     return () => clearTimeout(t)
-  }, [recap, recapShown, speed])
+  }, [recap, recapShown, recapAck, speed])
 
   // Quality of life (bullet 6): auto-pass NOTHING by default. "Auto-pass empty windows" is opt-in,
   // meaningful only while you're still in the round, and only fires on windows whose sole legal
@@ -864,14 +875,24 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
             )}
             {recap.length > 0 && (
               <div className="absolute inset-x-0 top-[18%] z-40 flex justify-center">
-                <div onClick={() => { setRecap([]); setRecapShown(0) }} title="tap to dismiss"
-                  className="max-w-[520px] cursor-pointer rounded-lg border border-goldbright/30 bg-black/85 px-4 py-2.5 shadow-xl backdrop-blur">
-                  <div className="mb-1 text-center text-[10px] uppercase tracking-[0.25em] text-goldbright/80">⚔ combat</div>
+                <div onClick={() => { setRecap([]); setRecapShown(0); setRecapAck(false) }} title="tap to dismiss"
+                  className={`max-w-[520px] cursor-pointer rounded-lg border bg-black/85 px-4 py-2.5 shadow-xl backdrop-blur ${recapAck ? 'border-[#e5735f]/60' : 'border-goldbright/30'}`}>
+                  <div className={`mb-1 text-center text-[10px] uppercase tracking-[0.25em] ${recapAck ? 'text-[#e5a99f]' : 'text-goldbright/80'}`}>
+                    {recapAck ? '☠ your losses' : '⚔ combat'}
+                  </div>
                   {recap.slice(0, recapShown).map((l, i) => (
                     <div key={i} className={`text-[13px] leading-relaxed ${i === recapShown - 1 ? 'text-parchment' : 'text-body/60'}`}>
                       {/destroyed|falls/i.test(l.msg) ? '☠' : /damage|suffers/i.test(l.msg) ? '💥' : '⚔'} {l.msg}
                     </div>
                   ))}
+                  {recapAck && recapShown >= recap.length && (
+                    <div className="mt-2 text-center">
+                      <button className="btn btn-primary !px-4 !py-1 text-xs"
+                        onClick={e => { e.stopPropagation(); setRecap([]); setRecapShown(0); setRecapAck(false) }}>
+                        ✓ Continue
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

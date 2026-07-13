@@ -39,7 +39,8 @@ async function main() {
     if (won) break
 
     // #42: a combat recap holds the AI until read — tap it through like an impatient human
-    const recapPanel = await vis(/⚔ combat/)
+    // (the ack variant, "your losses", holds indefinitely until dismissed)
+    const recapPanel = await vis(/⚔ combat|☠ your losses/)
     if (recapPanel) { await recapPanel.click().catch(() => {}); await page.waitForTimeout(120); continue }
 
     // v2 intercept window (decision 42): let the assault through to keep the drive moving
