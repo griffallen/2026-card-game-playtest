@@ -74,6 +74,12 @@ Cost and color are now two separate checks:
    the original declared target**. No choices; fully deterministic. *(Decision 75: the eleven red
    cards that still printed "Breakthrough N" — eight carriers, three grants — shed their
    numbers; the printed cap was already dead under this rule.)*
+   **[Decision 102 (issue #66, designer) — the siege clause:** a Breakthrough attacker fighting
+   **in the opponent's Home** leaves no damage behind: excess past the declared **unit** target
+   pours on into the **base**. The chain is blockers → declared target → Home. When breakthrough
+   and plain damage arrive at the target together, the plain damage is absorbed first (it has
+   nowhere else to go); a shield eats the whole combined hit, so a shielded target spills
+   nothing. Outside the enemy Home, excess still stops at the declared target.]**
 6. **[Decision 74 — "a kill is a kill" (issue #24 Q2, designer)]** "When this defeats a unit"
    triggers fire for the unit whose combat damage felled the victim, on either side of the
    pairing: an attacker credits each blocker it fells, blockers credit the attacker they fell,

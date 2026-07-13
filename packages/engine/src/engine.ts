@@ -705,7 +705,21 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
     if (pa.target.kind === 'base') {
       damageBase(state, pa.target.seat, toTarget, unblockedNames.join(', ') || 'breakthrough')
     } else if (targetUnit && state.units[targetUnit.id]) {
+      // decision 102 (issue #66, designer): a Breakthrough attacker besieging the enemy Home
+      // leaves no damage behind — excess past the declared target pours into the base.
+      // Non-breakthrough damage is absorbed by the target first (it has nowhere else to go);
+      // a shield eats the whole combined hit, so a shielded target spills nothing.
+      const siege = targetUnit.zone === homeZone(targetUnit.owner)
+      const btPortion = targetSpill
+        + plans.reduce((n, p) => n + (!p.blockers.length && hasKw(state, p.a, 'breakthrough') ? p.aPower : 0), 0)
+      const gross = targetUnit.shielded
+        ? toTarget
+        : Math.max(0, effHealth(state, targetUnit) - targetUnit.damage) + effArmor(state, targetUnit)
       damageUnit(state, targetUnit, toTarget, unblockedNames.join(', ') || 'breakthrough')
+      if (siege && btPortion > 0) {
+        const spillToBase = Math.max(0, btPortion - Math.max(0, gross - (toTarget - btPortion)))
+        if (spillToBase > 0) damageBase(state, targetUnit.owner, spillToBase, 'the breakthrough siege')
+      }
       if (felled(targetUnit.id)) {
         // credit only attackers whose damage actually reached the target — idle blocked
         // attackers stop collecting on their allies' kills (decision 74)

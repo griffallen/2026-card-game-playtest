@@ -48,7 +48,7 @@ function V3Content() {
 
       <H>Keywords in one line</H>
       <p className="mt-2 text-[13px] leading-relaxed text-body/90">
-        <b>Rush</b> one free move on arrival · <b>Breakthrough</b> kills its blocker → <i>all</i> excess pushes to the original target ·
+        <b>Rush</b> one free move on arrival · <b>Breakthrough</b> kills its blocker → <i>all</i> excess pushes to the original target (and in the enemy Home, past a killed unit target into the base) ·
         <b> Ranged N</b> exhaust to volley N at any enemy unit, any zone (its attacks are ordinary) · <b>Guard</b> the only block against a lone attacker on a unit (base attacks stay open to all); always blocks free ·
         <b> Hidden</b> while ready it can't be targeted or attacked; exhausting reveals it · <b>Infiltrate</b> deploys to any zone ·
         <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under until the holder dies; it returns ready ·

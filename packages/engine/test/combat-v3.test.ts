@@ -124,3 +124,37 @@ describe('pair isolation and counter attribution (issue #58, Griff)', () => {
     expect(msgs.some(m => /the blockers/.test(m))).toBe(false)
   })
 })
+
+describe('siege breakthrough (decision 102, issue #66)', () => {
+  // Griff: "no damage should be left behind from a Breakthrough attacker in an opponent's
+  // Home" — excess pours through blockers, then the declared target, then into the base.
+  it('in the enemy Home, breakthrough excess past the unit target hits the base', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const enemyHome = (me === 0 ? 2 : 0) as 0 | 2
+    const big = put(s, me, 'crusher', enemyHome)     // 3/3 breakthrough
+    const chaff = put(s, me, 'pawn', enemyHome)      // 1/1 rides along — opens the pairing
+    const blocker = put(s, them, 'pawn', enemyHome)  // 1/1 blocks the crusher
+    const victim = put(s, them, 'pawn', enemyHome)   // 1/1 declared target
+    const lifeBefore = s.sides[them].life
+    s = applyAction(s, { type: 'attack', attackers: [big, chaff], target: { kind: 'unit', id: victim } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker, onto: big }] }, them).state
+    // crusher 3 → blocker absorbs 1, spill 2; chaff's 1 (no breakthrough) fills the target
+    // first; the 2 breakthrough points pass whole into the base
+    expect(s.units[victim]).toBeUndefined()
+    expect(s.sides[them].life).toBe(lifeBefore - 2)
+  })
+  it('outside the enemy Home, excess still stops at the declared target', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const big = put(s, me, 'crusher', 1)
+    const chaff = put(s, me, 'pawn', 1)
+    const blocker = put(s, them, 'pawn', 1)
+    const victim = put(s, them, 'pawn', 1)
+    const lifeBefore = s.sides[them].life
+    s = applyAction(s, { type: 'attack', attackers: [big, chaff], target: { kind: 'unit', id: victim } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker, onto: big }] }, them).state
+    expect(s.units[victim]).toBeUndefined()
+    expect(s.sides[them].life).toBe(lifeBefore)      // Neutral: nothing reaches the base
+  })
+})

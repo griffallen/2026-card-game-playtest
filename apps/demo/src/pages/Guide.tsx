@@ -68,7 +68,7 @@ export function Guide() {
         <LI><B>The target always hits back</B> — full power, even exhausted. Do the arithmetic in both directions before you swing: <i>my power against their health, their power against my health.</i> Equal trades are for players who are ahead.</LI>
         <LI><B>Gangs open the defense</B> — two or more attackers and the defender pairs freely. That's the price of numbers. But it's also how you beat walls: pour order means their armor shrinks one blow, not three.</LI>
         <LI><B>Bases are always defended ground.</B> Any ready unit may block a base attack, however few you send. A siege works when their board is exhausted or dead — which is why killing a defender isn't just an answer; it's how the gate gets opened.</LI>
-        <LI><B>Breakthrough is a gang keyword.</B> Solo, your damage either lands whole or dies on a Guard. In a gang or against blockers, the spill reaches what you actually wanted dead.</LI>
+        <LI><B>Breakthrough is a siege keyword.</B> Solo, your damage either lands whole or dies on a Guard. In a gang or against blockers, the spill reaches what you actually wanted dead — and <B>in their Home, nothing is left behind</B>: excess past a killed unit target pours into the base itself.</LI>
         <LI><B>Claim the initiative when your hand is spent</B>, or when striking first next round wins you a trade you'd otherwise lose. It ends your round — but your units still defend while you rest, so a claim behind a wall costs less than it looks.</LI>
       </ul>
 

@@ -9,7 +9,7 @@ import { SLEEVE_EDGE, SLEEVE_TAB, sleeveFor, type Sleeve } from './sleeves.ts'
  *  full inspector; this is the glance-level reminder. */
 const KW_GLOSS: Record<string, string> = {
   guard: 'the only unit that may block a lone attack on a unit, and it never exhausts to block',
-  breakthrough: 'kills its blocker → all excess damage spills to the declared target',
+  breakthrough: 'kills its blocker → all excess spills to the declared target — and in the enemy Home, past a killed target into the base',
   rush: 'its first move is free the round it arrives',
   ranged: 'exhaust to volley that much damage at any enemy unit, any zone',
   armor: 'every hit it takes is reduced by that much',

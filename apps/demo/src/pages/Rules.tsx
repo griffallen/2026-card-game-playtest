@@ -14,7 +14,7 @@ const KEYWORDS: [string, string][] = [
   ['Armor N', 'Every hit this unit takes is reduced by N — and combat resolves in separate pairings, so N comes off each attacker’s blow individually. Two exceptions arrive as one combined hit, shrunk by N once: a gang of blockers striking back at their attacker, and multiple unblocked attackers landing on the same target.'],
   ['Rush', 'The round it’s played, its first move is free — that one move doesn’t exhaust it, so it can reposition and still fight. Just the one, though: a second move the same round exhausts it like any unit. (Every unit can otherwise act the round it arrives; Rush frees that first move.)'],
   ['Ranged N', 'An ability used as your turn: exhaust this unit to deal N damage to one enemy unit in any zone — the volley. It’s a chosen shot, so a ready Hidden unit refuses it, and a lethal volley counts as a kill. The unit’s regular attacks are ordinary in every way: same zone, blockable, bases included. Archers carry small blades and big bows.'],
-  ['Breakthrough', 'When this attacker kills its blocker, all the leftover damage pushes through to whatever it was originally attacking — unit or base. No number, no cap: everything spills.'],
+  ['Breakthrough', 'When this attacker kills its blocker, all the leftover damage pushes through to whatever it was originally attacking — unit or base. And in the OPPONENT\u2019S HOME, nothing is left behind: excess past a killed unit target pours on into their base. No number, no cap: everything spills.'],
   ['Can’t attack', 'A defensive body — it can hold a zone and block, but never attacks.'],
   ['Hidden', 'While this unit is ready, enemy actions can’t target it and enemy attacks can’t be declared at it. It can still block — blocking isn’t being targeted — but anything that exhausts it (attacking, blocking, a Sneak) reveals it until it readies again. Strike, vanish, repeat. One limit: Hidden beats choices, not consequences — effects that don’t choose (“all”, whole-zone damage, automatic picks) still reach it.'],
   ['Infiltrate', 'May be played into any zone — not just your Home.'],
@@ -175,7 +175,8 @@ export function Rules() {
       </ul>
       <P>
         If an attacker with <B>Breakthrough</B> kills its blocker, the leftover damage pushes through to the original
-        target. Damage <B>stays</B> on units between rounds; a unit is destroyed when its damage reaches its Health and
+        target — and <B>in the opponent’s Home, through the target too</B>: excess past a killed unit target pours
+        into their base (blockers → target → Home; a shield still eats the whole hit). Damage <B>stays</B> on units between rounds; a unit is destroyed when its damage reaches its Health and
         goes to the discard — leaving any upgrades it wore <B>orphaned</B> in the zone, salvageable by either side.
       </P>
 
