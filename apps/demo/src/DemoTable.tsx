@@ -268,6 +268,18 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   }
 
   // ── affordances (same model as the server table, sourced locally) ──
+  // #56: a count-N spec's targets are interchangeable — the enumerator emits each pair once
+  // ([A,B], never [B,A]), so positional prefix-matching silently forecloses when the player
+  // picks the later-ordered unit first. Interchangeable slots match as a SET instead.
+  const interchangeableSlots = (cardId: string) => {
+    const specs = DEMO_CARDS[state.cardOf[cardId]]?.targets ?? []
+    return specs.length === 1 && (specs[0].count ?? 1) > 1
+  }
+  const targetsMatch = (a: { targets?: TargetRef[] }, collected: TargetRef[], inter: boolean) =>
+    inter
+      ? collected.every(t => (a.targets ?? []).some(x => sameRef(x, t)))
+      : collected.every((t, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], t))
+
   const playActionsFor = (cardId: string) =>
     actions.filter((a): a is Extract<GameAction, { type: 'play' }> => a.type === 'play' && a.card === cardId)
   const resourceActionFor = (cardId: string) => actions.find(a => a.type === 'resource' && a.card === cardId)
@@ -319,15 +331,18 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
   const highlights: TargetRef[] = useMemo(() => {
     if (!myWindow || !selection) return []
     if (selection.kind === 'targeting') {
+      const inter = interchangeableSlots(selection.card)
       const matching = playActionsFor(selection.card).filter(a =>
         (selection.mode === undefined || a.mode === selection.mode)
         && (selection.x === undefined || a.x === selection.x)
-        && selection.collected.every((c, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], c)))
+        && targetsMatch(a, selection.collected, inter))
       const idx = selection.collected.length
       const refs: TargetRef[] = []
       for (const a of matching) {
-        const ref = (a.targets ?? [])[idx]
-        if (ref && !refs.some(r => sameRef(r, ref))) refs.push(ref)
+        const next = inter
+          ? (a.targets ?? []).filter(t => !selection.collected.some(cc => sameRef(cc, t)))
+          : [(a.targets ?? [])[idx]].filter(Boolean) as TargetRef[]
+        for (const ref of next) if (!refs.some(r => sameRef(r, ref))) refs.push(ref)
       }
       return refs
     }
@@ -397,12 +412,15 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     }
     if (selection.kind === 'targeting') {
       const collected = [...selection.collected, ref]
-      const candidates = playActionsFor(selection.card).filter(a =>
+      const inter = interchangeableSlots(selection.card)
+      const forCard = playActionsFor(selection.card).filter(a =>
         (selection.mode === undefined || a.mode === selection.mode)
-        && (selection.x === undefined || a.x === selection.x)
-        && collected.every((c, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], c)))
-      const needed = Math.max(collected.length, ...candidates.map(a => a.targets?.length ?? 0))
-      if (collected.length >= needed)
+        && (selection.x === undefined || a.x === selection.x))
+      const candidates = forCard.filter(a => targetsMatch(a, collected, inter))
+      // #56: never silently fire while the CARD could take more targets — even if THIS pick
+      // foreclosed the pair (wrong zone), the player confirms via ✓ Cast instead
+      const cardMax = Math.max(collected.length, ...forCard.map(a => a.targets?.length ?? 0))
+      if (collected.length >= cardMax)
         apply({ type: 'play', card: selection.card, targets: collected, ...(selection.mode !== undefined ? { mode: selection.mode } : {}), ...(selection.x !== undefined ? { x: selection.x } : {}) }, seat)
       else setSelection({ kind: 'targeting', card: selection.card, collected, mode: selection.mode, x: selection.x })
       return
@@ -693,14 +711,18 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         </div>
       )}
       {selection?.kind === 'targeting' && targetingCard && (() => {
+        const inter = interchangeableSlots(selection.card)
         const done = selection.collected.length > 0 && playActionsFor(selection.card).some(a =>
           (selection.mode === undefined || a.mode === selection.mode)
           && (selection.x === undefined || a.x === selection.x)
           && (a.targets?.length ?? 0) === selection.collected.length
-          && selection.collected.every((t, i) => (a.targets ?? [])[i] && sameRef((a.targets ?? [])[i], t)))
+          && targetsMatch(a, selection.collected, inter))
+        const foreclosed = done && highlights.length === 0
         return (
           <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
-            <span>Choose {selection.collected.length > 0 ? 'the next' : 'a'} target for <b>{targetingCard.name}</b>…</span>
+            <span>{foreclosed
+              ? <>No further legal target for <b>{targetingCard.name}</b> — cast with what you have, or cancel.</>
+              : <>Choose {selection.collected.length > 0 ? 'the next' : 'a'} target for <b>{targetingCard.name}</b>…</>}</span>
             {done && (
               <button className="btn btn-primary !py-1 text-xs"
                 onClick={() => apply({ type: 'play', card: selection.card, targets: selection.collected, ...(selection.mode !== undefined ? { mode: selection.mode } : {}), ...(selection.x !== undefined ? { x: selection.x } : {}) }, seat)}>

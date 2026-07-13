@@ -38,6 +38,10 @@ async function main() {
     won = await page.getByText(/wins —|Rematch|Play again/i).first().isVisible().catch(() => false)
     if (won) break
 
+    // #56: multi-target casts confirm explicitly now — press ✓ when the picker is satisfied
+    const castNow = await vis(/✓ Cast with/)
+    if (castNow) { await castNow.click().catch(() => {}); await page.waitForTimeout(150); continue }
+
     // #42: a combat recap holds the AI until read — tap it through like an impatient human
     // (the ack variant, "your losses", holds indefinitely until dismissed)
     const recapPanel = await vis(/⚔ combat|☠ your losses/)
