@@ -12,6 +12,9 @@ export interface FxCtx {
   controller: Seat
   /** unit the effect belongs to (unit triggers), or the carrier for upgrade effects */
   sourceUnit?: string
+  /** issue #64: name the card behind automatic ticks — start-of-round heals and influence
+   *  logged bare read as invisible magic ("I figured they were playing actions to heal") */
+  srcLabel?: string
   /** play-time chosen targets, in TargetSpec order */
   targets?: TargetRef[]
   /** during combat: the attack target */
@@ -242,7 +245,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
           const side = state.sides[controller]
           const healed = Math.min(state.rules.startingLife, side.life + op.n) - side.life
           side.life += healed
-          if (healed > 0) log(state, controller, `${side.name} heals ${healed} (${side.life} life)`)
+          if (healed > 0) log(state, controller, `${side.name} heals ${healed} (${side.life} life)` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
           break
         }
         const ref = ctx.targets?.[0]
@@ -250,7 +253,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
           const side = state.sides[ref.seat]
           const healed = Math.min(state.rules.startingLife, side.life + op.n) - side.life
           side.life += healed
-          if (healed > 0) log(state, ref.seat, `${side.name} heals ${healed} (${side.life} life)`)
+          if (healed > 0) log(state, ref.seat, `${side.name} heals ${healed} (${side.life} life)` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
         } else {
           const u = resolveUnitTarget(ctx, 'chosen0')
           if (u) {
@@ -264,7 +267,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
       case 'draw': draw(state, controller, op.n); log(state, controller, `${state.sides[controller].name} draws ${op.n}`); break
       case 'influence': {
         addInfluence(state, controller, op.n)
-        log(state, controller, `${state.sides[controller].name} ${op.n >= 0 ? 'gains' : 'cedes'} ${Math.abs(op.n)} influence (${influenceFor(state, controller)})`)
+        log(state, controller, `${state.sides[controller].name} ${op.n >= 0 ? 'gains' : 'cedes'} ${Math.abs(op.n)} influence (${influenceFor(state, controller)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
         break
       }
       case 'imprison': {

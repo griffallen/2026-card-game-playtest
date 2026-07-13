@@ -21,12 +21,13 @@ function runStartStepAuto(state: GameState, seat: Seat) {
     if (u.imprisoned) continue
     const own = defOf(state, u.id).startOfRound
     if (own && condHolds(state, seat, own.cond)) {
-      runOps({ state, controller: seat, sourceUnit: u.id, actorSeat: seat }, own.ops)
+      // #64: automatic ticks name their card, or they read as invisible magic
+      runOps({ state, controller: seat, sourceUnit: u.id, actorSeat: seat, srcLabel: defOf(state, u.id).name }, own.ops)
     }
     for (const upId of u.upgrades) {
       const up = defOf(state, upId).startOfRound
       if (up && condHolds(state, seat, up.cond)) {
-        runOps({ state, controller: seat, sourceUnit: u.id, actorSeat: seat }, up.ops)
+        runOps({ state, controller: seat, sourceUnit: u.id, actorSeat: seat, srcLabel: defOf(state, upId).name }, up.ops)
       }
     }
   }
