@@ -1,34 +1,55 @@
-# Current hand-off (after session 009, 2026-07-13)
+# Current hand-off (after session 010, 2026-07-13)
 
-**Phase:** Playtest & iterate. **Next in the chair:** likely Griff (via GitHub issues/PRs)
-with Blaine's 4-minute watch loop; read `docs/PROMPTS/SESSION-SUMMARIES/009.md` and
-`docs/DESIGN/DECISIONS.md` entries 89–100 first.
+**Phase:** Playtest & iterate. **Next in the chair:** either — Griff owes #55 (yellow ⚑
+ratify) and a #58 verdict after testing the pairing UI; the #66 splash-in-other-zones
+question awaits **Blaine's** answer (Griff asked him directly; sideways splash would be a
+new keyword — the Chronicler's note is on the thread).
 
-**State of the game:** v3 canon now includes the **duel law** (decision 98: a lone attacker
-is unblockable except by ONE Guard — full redirect, no exhaust; gangs stay open) with the
-**Home carve-out** (100: base attacks keep open blocking), **uncapped Scar** (94),
-**death-only capture** (92: no voluntary release, no grip-lock), and the **rebalanced
-yellow** (99: ladder −1, fourteen flat influence riders cut, ⚑ wholesale). New engine
-vocabulary this session: `doom`, `attackTax`, X costs (`xSurge`), chosen splash
-(`splashReap` + attack-carried `splash`), capture `income`, `damagedOrMaxHealth`, `onDeath`.
+**Read first:** `docs/PROMPTS/SESSION-SUMMARIES/010.md` → `docs/DESIGN/DECISIONS.md`
+101–102 → issue #68 (the bot defect, with its benchmark-invalidation caveat) → #66's open
+question.
 
-**Numbers (400-game A/Bs, heuristic bots, both seat orders):** prebuilt red 33.5% /
-**Griff's Red 43.8%** (his 65-card curation, now shipped as a named prebuilt) vs Radiant
-Order; influence wins ~20%; ~13 rounds. 203/203 engine tests; demo deployed clean.
+**State:** 206 engine + 8 server tests green; typecheck gate green again; demo deployed
+clean at every step (last deploy includes the telemetry chronicle). Rules v3.0 + duel law
++ Home carve-out + **siege clause (decision 102)** live. The Sellsword's Primer v1.0 is
+the demo's Guide tab (stamped against decisions through 100 — bump to 102 next content
+pass). The chronicle doubles as bot-tuning telemetry in vs-AI/watch modes: banks note the
+hand kept, block windows note could-have-blocked vs sent, passes note options passed up.
 
-**Awaiting Griff:**
-- #55: ratify/veto the 26-card yellow ⚑ pass; the ±20 influence musing was advised against
-  (the clock slowed at the source); a "copy deck list" workshop export button was offered,
-  not yet built.
-- #50: Breakthrough deserves a card-pass re-read (its job shrank under 98, partly returned
-  with 100); the board is close enough that single cards move it.
-- Standing ⚑ stacks: decisions 89/91/93/96/99 assumptions; older: purple Ranged redesigns,
-  Politician carriers.
+**Session-010 texture worth knowing:** most of the day's twelve issues (#57–#68) were the
+table failing to say what it knew — recap filter audited against the engine's full log
+vocabulary, damage and automatic ticks now name their sources, block windows show their
+math and pairings, gray orphans name their failing gate, keywords gloss on hover, captives
+tracked on the player bar. UX shipped same-hour: amber bank mode, Enter/Esc/P keys (marked
+on buttons, #65), cyan selection glow, six pickable sleeves, workshop type chips + lg
+preview + fresh-deck option.
 
-**Backlog:** multiplayer v3 port (#23 — now much bigger: duel law, splash picks, X costs,
-doom, undo decision 82), purple in the sim rotation (#5), State-of-the-Game rewrite.
+**Open, in priority order:**
+1. **#66** — Griff's "should other zones' excess hit another unit?" awaits Blaine; if
+   adopted it's a new keyword decision, not a Breakthrough edit.
+2. **#68** — the bot defense fix (declined free blocks, banks its Guard under siege —
+   erratic policy, not missing capability): block scoring, lethal awareness, garrison
+   value. A deliberate builder session WITH `sim:matchups` re-run and fresh A/B baselines
+   in the same commit — every quoted balance number is bounded by bot quality.
+3. #55 yellow ⚑ ratify · #58 Griff's pairing-UI verdict · #5 purple verdict · #10
+   color-identity follow-ups.
+4. Primer maintenance (WRITTEN_AGAINST bump); State-of-the-Game rewrite (backlog).
+5. The telemetry corpus: build → play → copy-chronicle → issue yields self-grading logs;
+   tune the #68 fix against them.
 
-**Builder notes:** three keyword whitelists (types/cardfile/validate) must stay in sync;
-onDeath is delete-first (body leaves play before its ops run); DemoTable's
-`interchangeableSlots` governs multi-target pick matching (issue #56); the watch-loop sweep
-is open-issues-by-updated (50) + open PRs + the comments feed — comments alone miss new issues.
+**Standing agreements:** ⚜ banner on every GitHub comment, zero exceptions · The
+Chronicler signs, Blaine is `-BB` · deploy freely · fold accepted rulings without
+re-asking · sweep = open-issues-by-updated (50) + open PRs + comments feed · no
+"load-bearing"/AI-isms in writing · Chronicle entries = one-sentence voiced intro + 2–3
+paragraph technical log · surprises welcome, riding on green tests.
+
+**Watch loop:** session-local 4-minute cron; it died with session 010's terminal. Re-arm
+with the WATCH prompt (see session summaries 009/010) via /loop 4m.
+
+**Model economics (Blaine, session 010 close):** run the watch loop and routine ticket
+work in an **Opus** session — sweeps, triage, UX folds, thread replies are Opus-class, and
+this handoff is the complete brief a fresh session needs. Reserve **Fable** sessions for:
+major mechanics design (new keywords, combat reworks like decision 102), the #68 AI fix
+(judgment + benchmark discipline), architecture calls, and cross-surface audit passes.
+Within a Fable session, big implementation slices can also be delegated to Opus subagents
+(Agent tool, model override) — worth it for large builds, not for chat-sized replies.
