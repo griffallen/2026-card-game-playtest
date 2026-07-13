@@ -310,11 +310,19 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       ? [...new Set(actions.flatMap(a => (a.type === 'block' && a.pairs.length === 1 ? [a.pairs[0].blocker] : [])))]
       : []),
     [actions, isBlock, myWindow])
+  // issue #58 (Griff): the defender chooses who fights whom. A tap sends a blocker in
+  // (onto the least-covered attacker); tapping it again cycles it to the next attacker;
+  // cycling past the last pulls it back out. The banner names every pairing.
   const toggleBlocker = (id: string) => {
     setBlockPairs(prev => {
-      if (prev.some(p => p.blocker === id)) return prev.filter(p => p.blocker !== id)
       const attackers = (pendingAttack?.attackers ?? []).filter(a => view.zones.some(z => z.units.some(u => u.id === a)))
       if (!attackers.length) return prev
+      const mine = prev.find(p => p.blocker === id)
+      if (mine) {
+        const next = attackers.indexOf(mine.onto) + 1
+        if (next >= attackers.length || attackers.length === 1) return prev.filter(p => p.blocker !== id)
+        return prev.map(p => (p.blocker === id ? { blocker: id, onto: attackers[next] } : p))
+      }
       const load = (a: string) => prev.filter(p => p.onto === a).length
       const onto = attackers.slice().sort((x, y) => load(x) - load(y))[0]
       return [...prev, { blocker: id, onto }]
@@ -507,21 +515,38 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
     else setSelection({ kind: 'targeting', card: cardId, collected: [], mode })
   }
 
-  // #57 (Blaine): confirm without the cross-screen mouse trip — Enter fires the selected
-  // hand card's one obvious action (Play, or Bank during the bank step); Esc backs out of
-  // whatever is open. The lethal-play rail stays click-only: a reflex Enter must never be
-  // the keystroke that loses the game.
+  // #27's confirmation rail, shared by the Pass button and the P hotkey: a pass that ends
+  // the round with actions still on the table asks first.
+  const tryPass = () => {
+    if (!myWindow || !canPass) return
+    const endsRound = state.passStreak >= 1 || view.outOfRound[foe]
+    const readyLeft = view.zones.flatMap(z => z.units).filter(u => u.owner === seat && unitActionable(u.id)).length
+    const playableLeft = new Set(actions.filter(a => a.type === 'play').map(a => a.card)).size
+    if (endsRound && readyLeft + playableLeft > 0) setConfirming('pass')
+    else apply({ type: 'pass' }, seat)
+  }
+
+  // #57 (Blaine, then Griff): confirm without the cross-screen mouse trip — Enter fires the
+  // selected hand card's one obvious action (Play, or Bank during the bank step), P passes,
+  // Esc backs out of whatever is open. The dangerous confirmations stay click-only: a reflex
+  // keystroke must never be the one that ends the round by surprise or loses the game.
   const keyHandler = useRef<(e: KeyboardEvent) => void>(() => {})
   keyHandler.current = e => {
     const t = e.target as HTMLElement | null
     if (t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return
+    if (e.metaKey || e.ctrlKey || e.altKey) return
     if (e.key === 'Escape') {
       if (inspect) { setInspect(null); return }
       setLethalPlay(null); setConfirming(null); setSelection(null)
       return
     }
-    if (e.key !== 'Enter' || e.repeat) return
+    if (e.repeat) return
     if (!myWindow || lethalPlay || view.phase === 'setup') return
+    if ((e.key === 'p' || e.key === 'P') && !selection && confirming === null) {
+      tryPass()
+      return
+    }
+    if (e.key !== 'Enter') return
     if (selection?.kind === 'hand') {
       e.preventDefault()
       if (playActionsFor(selection.id).length > 0) beginPlay(selection.id)
@@ -640,11 +665,22 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         <b>{pendingAttack ? refName(pendingAttack.target) : 'you'}</b>. Assign blockers — gangs allowed; blocking exhausts (Guards stay ready).
       </p>
       <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-        <span className="text-[12.5px] text-dim">Tap glowing units to toggle them in ({blockPairs.length} assigned).</span>
+        <span className="text-[12.5px] text-dim">
+          Tap a glowing unit to send it in{(pendingAttack?.attackers.length ?? 0) > 1 ? ' — tap it again to switch which attacker it fights; one more pulls it out' : ' — tap again to pull it out'}.
+        </span>
         <button className="btn !py-0.5 text-xs" onClick={() => apply({ type: 'block', pairs: blockPairs }, seat)}>
           {blockPairs.length ? `Block with ${blockPairs.length}` : 'Let it through'}
         </button>
       </div>
+      {blockPairs.length > 0 && (
+        <p className="mt-1.5 text-[12.5px] text-parchment">
+          {blockPairs.map(p => `${unitName(p.blocker)} ⚔ ${unitName(p.onto)}`).join(' · ')}
+          {(() => {
+            const open = (pendingAttack?.attackers ?? []).filter(a => view.zones.some(z => z.units.some(u => u.id === a)) && !blockPairs.some(p => p.onto === a))
+            return open.length ? ` — ${open.map(unitName).join(', ')} unblocked → hits ${pendingAttack ? refName(pendingAttack.target) : 'the target'}` : ''
+          })()}
+        </p>
+      )}
     </div>
   ) : isIntercept && myWindow ? (
     <div className="rounded-md border border-[#c98a27] bg-[#c98a27]/10 p-2 text-xs">
@@ -1065,11 +1101,9 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                   onClick={() => apply({ type: 'claimInitiative' }, seat)}>Claim initiative ⚑</button>
               )}
               {myWindow && canPass && (() => {
-                // #27: a pass that ENDS the round with actions still on the table asks first
-                const endsRound = state.passStreak >= 1 || view.outOfRound[foe]
+                // #27: tryPass opened the confirmation — this renders it
                 const readyLeft = view.zones.flatMap(z => z.units).filter(u => u.owner === seat && unitActionable(u.id)).length
                 const playableLeft = new Set(actions.filter(a => a.type === 'play').map(a => a.card)).size
-                const leftovers = readyLeft + playableLeft
                 if (confirming === 'pass') {
                   const what = [
                     readyLeft && `${readyLeft} unit${readyLeft > 1 ? 's' : ''} can still act`,
@@ -1084,10 +1118,7 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                   )
                 }
                 return (
-                  <button className="btn !py-1 text-xs" onClick={() => {
-                    if (endsRound && leftovers > 0) setConfirming('pass')
-                    else apply({ type: 'pass' }, seat)
-                  }}>Pass</button>
+                  <button className="btn !py-1 text-xs" title="hotkey: P" onClick={tryPass}>Pass</button>
                 )
               })()}
               {state.winner === null && history.length > 0 && config.mode !== 'watch' && (

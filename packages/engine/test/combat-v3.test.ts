@@ -97,3 +97,30 @@ describe('blocker-pairing combat (v3)', () => {
     expect(s.units[archer]).toBeUndefined()         // decision 84: the attacked always fight back — 4 power fells the 2/2
   })
 })
+
+describe('pair isolation and counter attribution (issue #58, Griff)', () => {
+  // Griff's report: two attackers on his Home, two 1v1 blocks — the recap's twin
+  // "takes N damage from the blockers" lines read as one combined pool hitting both
+  // attackers. The damage was per-pair all along; the LOG must say who hit whom.
+  it('1v1 pairs on a base attack resolve in isolation, and counters name the blocker', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const enemyHome = (me === 0 ? 2 : 0) as 0 | 2
+    const a1 = put(s, me, 'pawn', enemyHome)        // 1/1
+    const a2 = put(s, me, 'brute', enemyHome)       // 4/3
+    const b1 = put(s, them, 'soldier', enemyHome)   // 2/2 blocks a1
+    const b2 = put(s, them, 'soldier', enemyHome)   // 2/2 blocks a2
+    const lifeBefore = s.sides[them].life
+    s = applyAction(s, { type: 'attack', attackers: [a1, a2], target: { kind: 'base', seat: them } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: b1, onto: a1 }, { blocker: b2, onto: a2 }] }, them).state
+    // per-pair isolation: each attacker eats ONLY its own blocker's counter
+    expect(s.units[a1]).toBeUndefined()             // the pawn died to its soldier's 2
+    expect(s.units[a2].damage).toBe(2)              // the brute took ITS soldier's 2 and lives — a
+                                                    // combined 2+2 pool (Griff's read) would kill it
+    expect(s.sides[them].life).toBe(lifeBefore)     // both attackers blocked — the base untouched
+    // attribution: the counter lines name the blocker, not "the blockers"
+    const msgs = s.log.map(l => l.msg)
+    expect(msgs.some(m => /pawn takes 2 damage from soldier/.test(m))).toBe(true)
+    expect(msgs.some(m => /the blockers/.test(m))).toBe(false)
+  })
+})

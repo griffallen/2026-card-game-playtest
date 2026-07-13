@@ -672,7 +672,9 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       targetSpill += dmg; p.spilled = true   // v3: no N — all excess pushes through
       if (p.a.id === doomId) doomToTarget += dmg
     }
-    if (p.counter > 0) unitHits.push([p.a, p.counter, 'the blockers'])
+    // issue #58 (Griff): name the counter's source — twin "from the blockers" lines read as
+    // one combined pool hitting every attacker, when each pair resolves in isolation
+    if (p.counter > 0) unitHits.push([p.a, p.counter, p.blockers.map(b => defOf(state, b.id).name).join(' + ')])
   }
 
   const targetUnit = pa.target.kind === 'unit' ? state.units[pa.target.id] : undefined
