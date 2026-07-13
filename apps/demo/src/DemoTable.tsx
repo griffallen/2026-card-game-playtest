@@ -1052,12 +1052,23 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
                     {view.zones[z].orphans.map(o => {
                       const salvages = myWindow ? salvageActionsFor(o.id) : []
                       const active = selection?.kind === 'orphan' && selection.id === o.id
+                      // #61 (Blaine): a gray orphan names its failing gate, not the whole rulebook
+                      const whyNot = (() => {
+                        if (salvages.length) return null
+                        const def = DEMO_CARDS[o.slug]
+                        const ready = my.resources.filter(r => !r.exhausted).length
+                        if (!myWindow || view.phase !== 'loop') return 'salvaging is a full action — wait for your turn in the action loop'
+                        if (!units.some(u => u.owner === seat)) return 'you need a unit of yours standing in this zone'
+                        if (def && def.cost > ready) return `it costs ${def.cost} and you have ${ready} ready resource${ready === 1 ? '' : 's'}`
+                        if (def?.pips?.length) return `your bank is missing its pips (needs ${def.pips.join(' + ')})`
+                        return 'not salvageable right now'
+                      })()
                       return (
                         <button key={o.id}
                           className={`shrink-0 rounded-md border border-dashed px-1.5 py-1 text-left text-[10px] leading-tight ${active ? 'glow-selected border-goldbright text-goldbright' : salvages.length ? 'border-goldbright/60 text-goldbright hover:border-goldbright' : 'hairline text-dim'}`}
                           title={salvages.length
                             ? `${o.name} — tap to salvage it onto one of your units here (you pay its full cost and pips).`
-                            : `${o.name} — an orphaned upgrade. Either player may salvage it onto a unit of theirs in this zone, paying its full cost and pips. Right now you can't: you need a unit standing here, enough ready resources, and the pips.`}
+                            : `${o.name} — an orphaned upgrade (either player may salvage it here, paying its full cost and pips). Grayed because ${whyNot}. Tap to read the card.`}
                           onClick={e => {
                             e.stopPropagation()
                             if (salvages.length) setSelection(active ? null : { kind: 'orphan', id: o.id })
