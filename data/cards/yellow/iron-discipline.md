@@ -1,5 +1,5 @@
 ---
-name: Iron Discipline
+name: Iron Plating
 type: upgrade
 cost: 1
 influenceTrigger: onPlay
@@ -8,7 +8,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"aura","scope":"attached","armor":1}],"onPlay":[{"op":"influence","n":1}]}
 ---
-Attach to unit. This unit gets Armor 1. Gain 1 Influence.
+Attach to unit. This unit gets Armor 1.
 
 ## Design notes
 
