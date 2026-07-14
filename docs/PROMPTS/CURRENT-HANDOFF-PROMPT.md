@@ -1,60 +1,27 @@
-# Current hand-off (after session 010, 2026-07-13)
+# Current hand-off (after session 011, 2026-07-14)
 
-**Phase:** Playtest & iterate. **Next in the chair:** either — Griff owes #55 (yellow ⚑
-ratify) and a #58 verdict after testing the pairing UI; the #66 splash-in-other-zones
-question awaits **Blaine's** answer (Griff asked him directly; sideways splash would be a
-new keyword — the Chronicler's note is on the thread).
+**Phase:** Playtest & iterate. **Next in the chair:** likely **Blaine** (deploy + merge/land calls) then **Griff** (finishing his card queue + building a tuned yellow deck). Model split: run the watch loop, triage, thread replies, and UX folds on **Opus**, delegating **up to Fable** for mechanics-shaped work (the yellow wiring, the summon feature, benchmark discipline).
 
-**Read first:** `docs/PROMPTS/SESSION-SUMMARIES/010.md` → `docs/DESIGN/DECISIONS.md`
-101–102 → issue #68 (the bot defect, with its benchmark-invalidation caveat) → #66's open
-question.
+**⚠ FIRST — unblock the demo deploy. Everything waits on it.** `apps/demo` publishes via `scripts/deploy-demo.sh` (build → Playwright playability gate on `localhost:4199` → force-push `dist` to the public `booherbg/new-game-demo` Pages repo → https://booherbg.github.io/new-game-demo/). The gate needs localhost, which the agent's session environment **network-isolates per-process** (server binds, nothing else can reach it — confirmed for the main shell *and* a subagent, sandboxed and not). So **Blaine must run `./scripts/deploy-demo.sh` from his own shell** (or explicitly OK a gate bypass). `main` already contains the block-UI (#58) + the bot-defense fix (#68), verified, ready to ship the moment it's deployed.
 
-**State:** 206 engine + 8 server tests green; typecheck gate green again; demo deployed
-clean at every step (last deploy includes the telemetry chronicle). Rules v3.0 + duel law
-+ Home carve-out + **siege clause (decision 102)** live. The Sellsword's Primer v1.0 is
-the demo's Guide tab (stamped against decisions through 100 — bump to 102 next content
-pass). The chronicle doubles as bot-tuning telemetry in vs-AI/watch modes: banks note the
-hand kept, block windows note could-have-blocked vs sent, passes note options passed up.
+**Read first:** `docs/PROMPTS/SESSION-SUMMARIES/011.md` → `010.md` → open PRs #69–80 (the yellow rebalance) → issues #74 (demo UX) and #81 (Griff's yellow deck *beats* red).
 
-**Session-010 texture worth knowing:** most of the day's twelve issues (#57–#68) were the
-table failing to say what it knew — recap filter audited against the engine's full log
-vocabulary, damage and automatic ticks now name their sources, block windows show their
-math and pairings, gray orphans name their failing gate, keywords gloss on hover, captives
-tracked on the player bar. UX shipped same-hour: amber bank mode, Enter/Esc/P keys (marked
-on buttons, #65), cyan selection glow, six pickable sleeves, workshop type chips + lg
-preview + fresh-deck option.
+**State:** `main` = block-UI + bot-defense fix, **209 engine tests green**, undeployed. Branches:
+- `feat/per-attacker-influence` — decisions 103 (`per` count op) + 104 (no caps on life/influence) + #70–73 wired. **It over-corrects balance (red 53–60% vs the 46% target even with a competent bot) — do NOT merge until re-tuned via a real deck.**
+- `feat/card-icons` — needs a small update to the locked set **🧍 unit · 🏃 action · ↑ upgrade** (flat arrow, color pinned to survive night mode).
+- `fix/bot-defense` — merged to main.
+
+Scratchpad (session dir) holds the full benchmark tables and every card's corrected-effects JSON.
 
 **Open, in priority order:**
-1. **#66** — Griff's "should other zones' excess hit another unit?" awaits Blaine; if
-   adopted it's a new keyword decision, not a Breakthrough edit.
-2. **#68** — the bot defense fix (declined free blocks, banks its Guard under siege —
-   erratic policy, not missing capability): block scoring, lethal awareness, garrison
-   value. A deliberate builder session WITH `sim:matchups` re-run and fresh A/B baselines
-   in the same commit — every quoted balance number is bounded by bot quality.
-3. #55 yellow ⚑ ratify · #58 Griff's pairing-UI verdict · #5 purple verdict · #10
-   color-identity follow-ups.
-4. Primer maintenance (WRITTEN_AGAINST bump); State-of-the-Game rewrite (backlog).
-5. The telemetry corpus: build → play → copy-chronicle → issue yields self-grading logs;
-   tune the #68 fix against them.
+1. **Deploy the demo** (above) — gates block-UI, the bot-defense fix reaching Griff's games, the icons, and the AI-feedback work.
+2. **Wire the 12-card yellow batch** in one pass once Griff says his queue is empty (#69–73 wired; #75–80 reviewed, not yet). Per-card notes are on each PR. Modal cards are supported; confirm the small new bits per card (a "damaged" target filter, an "influence below 0" cond, pip-count scaling, enemy-target upgrades).
+3. **#69 Radiant Citadel — the summon feature** (self-cloning: on-play, if it's your only copy, create 2 copies at 0 Power / 1 Health; the "only copy" clause is the recursion fuse). Design locked with Griff; it's the game's **first unit-creation mechanic** — an architecture call for Blaine before building.
+4. **Yellow re-tune (no stat sweep yet).** After wiring: build a proper yellow deck (Griff's — the stock deck's curve is the real weakness), add the **"copy deck list"** workshop button so he can export it, and re-benchmark vs the competent bot + his Red. Decision 99's target is red ≈46%.
+5. **Demo UX backlog (#74, one thread):** AI-turn readability — damage provenance in the action pop-up first (the log already names the source), then dead-card fade, then the card-appears-in-target-zone flourish — plus the icon set and the copy-deck-list button. Batch and deploy together.
 
-**Standing agreements:** ⚜ banner on every GitHub comment, zero exceptions · The
-Chronicler signs, Blaine is `-BB` · deploy freely · fold accepted rulings without
-re-asking · sweep = open-issues-by-updated (50) + open PRs + comments feed · no
-"load-bearing"/AI-isms in writing · Chronicle entries = one-sentence voiced intro + 2–3
-paragraph technical log · surprises welcome, riding on green tests.
+**Assigned to Blaine:** #58, #69, #68. **#68 stays open** until the fix is live in Griff's demo.
 
-**Watch loop:** session-local 4-minute cron; it died with session 010's terminal. Re-arm
-with the WATCH prompt (see session summaries 009/010) via /loop 4m.
+**Decisions this session:** 103 (count-scaled `per` op) and 104 (no caps on life/influence) — both drafted on `feat/per-attacker-influence`, **not yet in main's DECISIONS.md** (land them when the yellow batch merges). The bot-defense fix is in main but has no decision number yet.
 
-**Model economics (Blaine, session 010 close):** run the watch loop and routine ticket
-work in an **Opus** session — sweeps, triage, UX folds, thread replies are Opus-class, and
-this handoff is the complete brief a fresh session needs. Reserve **Fable** sessions for:
-major mechanics design (new keywords, combat reworks like decision 102), the #68 AI fix
-(judgment + benchmark discipline), architecture calls, and cross-surface audit passes.
-Within a Fable session, big implementation slices can also be delegated to Opus subagents
-(Agent tool, model override) — worth it for large builds, not for chat-sized replies.
-The reverse is the cheaper default: an **Opus watch session delegates UP to Fable** when a
-ticket is mechanics-shaped — spawn a Fable subagent (Agent tool, `model: 'fable'`) with a
-brief pointing at the issue + DECISIONS + spec, or keep one alive across ticks via
-SendMessage as a standing design consultant. The always-on context stays at Opus prices;
-Fable sees only the design subset. The Fable-shaped list above is the triage rubric.
+**Standing agreements:** ⚜ ASCII banner on every GitHub comment, zero exceptions · Chronicler signs, Blaine is `-BB` · deploy freely (via `deploy-demo.sh`) · fold accepted rulings without re-asking · sweep = open-issues-by-updated (50) + open PRs + comments feed · no "load-bearing"/AI-isms · Chronicle entry per session (voiced intro + technical log) in `apps/demo/src/pages/Journal.tsx` · surprises welcome, riding on green tests · the watch loop is session-local (re-arm with `/loop 4m` + the WATCH prompt; it was stopped at wrap).
