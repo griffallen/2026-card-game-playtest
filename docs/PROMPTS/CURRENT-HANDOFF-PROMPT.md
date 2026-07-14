@@ -10,7 +10,7 @@
 
 **State:** `main` = block-UI + bot-defense fix, **209 engine tests green, DEPLOYED.** Branches:
 - `feat/per-attacker-influence` — decisions 103 (`per` count op) + 104 (no caps on life/influence) + #70–73 wired. **Over-corrects balance (red 53–60% vs the 46% target even with a competent bot) — do NOT merge until re-tuned via a real deck.**
-- `feat/card-icons` — **stale** (cut before #58/#68 merged; `git diff main..` pulls in `ai.ts`, `Journal.tsx`, `BlockModal.tsx`). Needs a **rebase onto main** before the small ↑-arrow fix (#74: locked set **🧍 unit · 🏃 action · ↑ upgrade**, flat monochrome arrow pinned to survive night mode) can land.
+- `feat/card-icons` — **superseded.** The #74 icon set (**🧍 unit · 🏃 action · ↑ upgrade**) was re-implemented directly on main (`a416ca5`, deployed) instead of rebasing this stale branch — it's local-only and now carries no unique work. **Safe to delete** (`git branch -D feat/card-icons`, Blaine's call).
 - `fix/bot-defense` — merged to main.
 
 Scratchpad (session dir) holds the full benchmark tables and every card's corrected-effects JSON.
@@ -20,7 +20,7 @@ Scratchpad (session dir) holds the full benchmark tables and every card's correc
 2. **Wire the 12-card yellow batch** in one pass once Griff says his queue is empty (#69–73 wired; #75–80 reviewed, not yet). Per-card notes on each PR. Confirm the small new bits per card (a "damaged" target filter, an "influence below 0" cond, pip-count scaling, enemy-target upgrades). Mechanics-shaped → good Fable delegation.
 3. **#69 Radiant Citadel — the summon feature** (self-cloning: on-play, if it's your only copy, create 2 copies at 0 Power / 1 Health; the "only copy" clause is the recursion fuse). Design locked with Griff; the game's **first unit-creation mechanic** — architecture call for Blaine before building.
 4. **Yellow re-tune (no stat sweep yet).** After wiring: build a proper yellow deck (Griff's — the stock deck's curve is the real weakness), add the **"copy deck list"** workshop button (#55, Griff ratified) so he can export it, and re-benchmark vs the fixed bot + his Red. Decision 99's target is red ≈46%.
-5. **Demo UX backlog (#74, one thread):** the ↑-icon fix (rebase `feat/card-icons` first), the copy-deck-list button, then AI-turn readability — damage provenance in the action pop-up (the log already names the source), dead-card fade, the card-appears-in-target-zone flourish. Batch and deploy together.
+5. **Demo UX backlog (#74, one thread):** ✅ the ↑-icon set is **live** (`a416ca5`, 🧍·🏃·↑). Remaining: the copy-deck-list button, then AI-turn readability — damage provenance in the action pop-up (the log already names the source), dead-card fade, the card-appears-in-target-zone flourish. Batch and deploy together.
 
 **Assigned to Blaine:** #58, #69, #68. **#68 stays open** until Blaine confirms the now-live fix defending in a game; **#58** likewise (block pop-up now live).
 
