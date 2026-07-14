@@ -1095,7 +1095,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
                             if (salvages.length) setSelection(active ? null : { kind: 'orphan', id: o.id })
                             else setInspect({ kind: 'card', slug: o.slug })
                           }}>
-                          ⬥ {o.name}
+                          ↑ {o.name}
                           <span className="block text-[8.5px] uppercase tracking-wide opacity-70">{salvages.length ? 'orphaned · tap to salvage' : 'orphaned'}</span>
                         </button>
                       )

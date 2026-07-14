@@ -40,7 +40,7 @@ function V3Content() {
         <Row icon="💨" title="Rush ready">Its <b>one free move</b> the round it arrived — move <i>without</i> exhausting, then it can still fight.</Row>
         <Row icon="⛨" title="Shielded">Carries its shield token: the <b>first</b> hit is prevented entirely, then the ⛨ disappears — what you see is what's live.</Row>
         <Row icon="⛓" title="Captives">A ⛓ on a unit means it holds an enemy unit <b>under it</b>, off the board. The grip breaks only one way: <b>when the capturer dies</b>, the captive returns to that zone, <b>ready</b>. There is no letting go — kill the jailer to free the prisoner.</Row>
-        <Row icon="⬥" title="Orphaned upgrades">When a unit dies, its upgrades stay <b>lying in the zone</b> as dashed ⬥ tokens. Either player may tap one to <b>salvage</b> it onto their own unit there — paying its full cost and pips, as if played.</Row>
+        <Row icon="↑" title="Orphaned upgrades">When a unit dies, its upgrades stay <b>lying in the zone</b> as dashed ↑ tokens. Either player may tap one to <b>salvage</b> it onto their own unit there — paying its full cost and pips, as if played.</Row>
         <Row icon="🛡" title="Guard">The <b>bodyguard</b>: the only unit that may block a <b>lone</b> attacker striking a unit — stepping fully in front of the target — and it blocks <b>without exhausting</b>, in duels or gangs. (Lone attacks on a <b>base</b> are open to every ready unit.) ◈ is armor: every hit is reduced by that much.</Row>
         <Row icon="⊘" title="Can't attack">This unit <b>can't attack right now</b> — either its own card forbids it (walls), or an enemy effect <b>disarmed it for the round</b>. It can still move and block.</Row>
         <Row icon="⚑" title="Flagged card">A prototype ruling was needed for this card's printed text — hover/long-press to read it.</Row>
@@ -91,7 +91,7 @@ function V2Content() {
         <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
         <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives a unit one free move the round it arrives.</Row>
         <Row icon="⚔" title="Attack">Pick <b>one or more ready units in the same zone</b> — they strike together as one combined hit. Then the defender chooses: <b>intercept</b> (throw a ready unit in front — free if it's a Guard) or let it through. In a multi-attack, the counter lands on the <b>highest-power attacker</b>. You can only strike the enemy <b>base</b> from inside <i>their</i> Home zone. Massing attackers is the answer to armor — armor is subtracted once from the whole hit.</Row>
-        <Row icon="⬥" title="Upgrade pressure">A classic-only tax: whenever a unit gains its <b>second (or later) upgrade</b>, your opponent gains 1 Influence. Greed is noticed.</Row>
+        <Row icon="↑" title="Upgrade pressure">A classic-only tax: whenever a unit gains its <b>second (or later) upgrade</b>, your opponent gains 1 Influence. Greed is noticed.</Row>
       </div>
 
       <H>Reading the board</H>

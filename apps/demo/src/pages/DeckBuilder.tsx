@@ -18,9 +18,11 @@ const colorText = (c: string) =>
 /* #59-adjacent (Blaine): the pool rows say their type at a glance — same palette the cards
    themselves wear (unit steel-blue, action violet, upgrade gold). */
 const TYPE_CHIP: Record<string, { icon: string; cls: string }> = {
-  unit: { icon: '⚔', cls: 'bg-[#31435c]/60 text-[#b9cbe4] ring-[#4d6787]' },
-  action: { icon: '✦', cls: 'bg-[#4d2f63]/60 text-[#d5b5ef] ring-[#7b4f9e]' },
-  upgrade: { icon: '⬥', cls: 'bg-[#5c4a1e]/60 text-[#ecd9a0] ring-[#96793a]' },
+  // #74 (Griff, locked): 🧍 unit · 🏃 action · ↑ upgrade. Emoji unit/action carry their own
+  // colour; the flat ↑ wears the chip's gold instead of the emoji arrow's blue box — survives night mode.
+  unit: { icon: '🧍', cls: 'bg-[#31435c]/60 text-[#b9cbe4] ring-[#4d6787]' },
+  action: { icon: '🏃', cls: 'bg-[#4d2f63]/60 text-[#d5b5ef] ring-[#7b4f9e]' },
+  upgrade: { icon: '↑', cls: 'bg-[#5c4a1e]/60 text-[#ecd9a0] ring-[#96793a]' },
 }
 const TypeChip = ({ t }: { t: string }) => {
   const m = TYPE_CHIP[t] ?? TYPE_CHIP.unit

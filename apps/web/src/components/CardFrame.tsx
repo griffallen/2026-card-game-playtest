@@ -61,9 +61,10 @@ const frameTint: Record<string, string> = {
 
 // type reads at a glance via one color-coded chip on the art (icon + label). Faction owns the frame.
 const typeMeta: Record<string, { icon: string; label: string; chip: string }> = {
-  unit: { icon: '⚔', label: 'Unit', chip: 'bg-[#24476f] text-[#dbe8fa] ring-[#4d7cb0]' },
-  action: { icon: '✦', label: 'Action', chip: 'bg-[#6a2557] text-[#f6cce9] ring-[#a94a8c]' },
-  upgrade: { icon: '⬥', label: 'Upgrade', chip: 'bg-[#356a22] text-[#d6f5c6] ring-[#5aa53e]' },
+  // #74 (Griff, locked): 🧍 unit · 🏃 action · ↑ upgrade — flat ↑ wears the chip colour, no emoji blue box.
+  unit: { icon: '🧍', label: 'Unit', chip: 'bg-[#24476f] text-[#dbe8fa] ring-[#4d7cb0]' },
+  action: { icon: '🏃', label: 'Action', chip: 'bg-[#6a2557] text-[#f6cce9] ring-[#a94a8c]' },
+  upgrade: { icon: '↑', label: 'Upgrade', chip: 'bg-[#356a22] text-[#d6f5c6] ring-[#5aa53e]' },
 }
 
 /** One component renders any card at any size — hand, browser, admin preview. */

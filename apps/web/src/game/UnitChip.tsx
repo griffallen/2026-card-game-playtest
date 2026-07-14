@@ -106,7 +106,7 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, s
           <span className="absolute right-0.5 top-0.5 rounded bg-black/60 px-1 text-[10px]">⟳</span>
         )}
         {unit.upgrades.length > 0 && (
-          <span className="absolute left-0.5 top-0.5 rounded bg-black/60 px-1 text-[10px] text-goldbright">⬥{unit.upgrades.length}</span>
+          <span className="absolute left-0.5 top-0.5 rounded bg-black/60 px-1 text-[10px] text-goldbright">↑{unit.upgrades.length}</span>
         )}
       </div>
       <div className="truncate px-0.5 text-center text-[9px] leading-tight text-parchment/90">{unit.name}</div>
