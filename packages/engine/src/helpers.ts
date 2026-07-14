@@ -1,5 +1,5 @@
 import type {
-  CardDef, Color, Cond, GameState, KeywordName, Mod, Seat, Static, UnitInstance, ZoneId,
+  CardDef, Color, Cond, GameState, KeywordName, KeywordSpec, Mod, Seat, Static, UnitInstance, ZoneId,
 } from './types.ts'
 import { EngineError } from './types.ts'
 
@@ -97,8 +97,12 @@ function activeMods(state: GameState, unit: UnitInstance): Mod[] {
   return unit.mods.filter(m => condHolds(state, unit.owner, m.cond))
 }
 
+/** The unit's printed keyword line — created copies (#69) may carry their own, replacing the card's. */
+export const printedKw = (state: GameState, unit: UnitInstance): KeywordSpec[] =>
+  unit.created?.kw ?? defOf(state, unit.id).kw ?? []
+
 export function effPower(state: GameState, unit: UnitInstance): number {
-  const base = defOf(state, unit.id).power ?? 0
+  const base = unit.created?.p ?? defOf(state, unit.id).power ?? 0
   const mods = activeMods(state, unit)
   const add = mods.reduce((s, m) => s + (m.p ?? 0), 0)
   const up = upgradeGrants(state, unit)
@@ -111,12 +115,12 @@ export function effPower(state: GameState, unit: UnitInstance): number {
 }
 
 export function effHealth(state: GameState, unit: UnitInstance): number {
-  const base = defOf(state, unit.id).health ?? 0
+  const base = unit.created?.h ?? defOf(state, unit.id).health ?? 0
   return Math.max(0, base + activeMods(state, unit).reduce((s, m) => s + (m.h ?? 0), 0))
 }
 
 export function effArmor(state: GameState, unit: UnitInstance): number {
-  const own = (defOf(state, unit.id).kw ?? []).filter(k => k.k === 'armor').reduce((s, k) => s + (k.n ?? 0), 0)
+  const own = printedKw(state, unit).filter(k => k.k === 'armor').reduce((s, k) => s + (k.n ?? 0), 0)
   const mods = activeMods(state, unit).reduce((s, m) => s + (m.armor ?? 0) + (m.kw?.k === 'armor' ? m.kw.n ?? 0 : 0), 0)
   return own + mods + upgradeGrants(state, unit).armor + aurasFor(state, unit).armor
     + upgradeGrants(state, unit).kws.filter(k => k.k === 'armor').reduce((s, k) => s + (k.n ?? 0), 0)
@@ -132,7 +136,7 @@ export function kwOf(state: GameState, unit: UnitInstance, k: KeywordName): numb
     has = true
     if (spec.n !== undefined) values.push(spec.n)
   }
-  for (const spec of defOf(state, unit.id).kw ?? []) consider(spec)
+  for (const spec of printedKw(state, unit)) consider(spec)
   for (const m of activeMods(state, unit)) consider(m.kw)
   for (const spec of upgradeGrants(state, unit).kws) consider(spec)
   for (const spec of aurasFor(state, unit).kws) consider(spec)

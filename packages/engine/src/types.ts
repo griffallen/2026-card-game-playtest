@@ -66,6 +66,7 @@ export type Op =
   | { op: 'doom'; t: 'chosen0' }                                  // PR #38 (Final Onslaught): after the extra action, the unit and its attack's victims die
   | { op: 'xSurge'; t: 'chosen0' }                                // issue #45 (Reckless Abandon): lose X influence; +X power and Breakthrough this round
   | { op: 'splashReap'; n: number; influence: number }            // PR #46 (Fiery Impaler): on attack, n damage to the declared splash victim; +influence if it dies
+  | { op: 'createCopies'; n: number; p?: number; h?: number; kw?: KeywordSpec[]; ifOnlyCopy?: boolean }  // #69 (Radiant Citadel): summon n ready copies of the source unit's card in the controller's Home. p/h/kw shape the copies' body (omitted = the printed card). ifOnlyCopy: fires only while the controller owns exactly one copy — the recursion fuse. Created units are not deck cards; they vanish when they die.
 
 export type Static =
   | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; armor?: number; kw?: KeywordSpec; cond?: Cond }
@@ -207,6 +208,9 @@ export interface UnitInstance {
   overextendedBy: number
   /** v3 Shielded: entered with a shield token; first damage instance is prevented and this flips */
   shielded: boolean
+  /** #69 (createCopies): minted by an effect, never a deck card. Present = the unit vanishes on
+   *  death (no discard). p/h/kw, when set, replace the printed body/keyword line. */
+  created?: { p?: number; h?: number; kw?: KeywordSpec[] }
 }
 
 export interface UpgradeInstance {

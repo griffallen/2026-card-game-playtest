@@ -92,18 +92,8 @@ describe('influence effects', () => {
     expect(events.some(e => /takes \d+ damage from Searing Bolt/.test(e.msg))).toBe(true)
   })
 
-  it('Radiant Citadel: opponent must reach 17', () => {
-    let { s, p1, p2 } = arena()
-    put(s, p1, 'radiant-citadel', homeZone(p1))          // p1 controls the citadel
-    s.influence = p2 === 0 ? 15 : -15                    // would normally be a p2 win
-    const bolt = toHand(s, p1, 'devastating-strike')
-    const chump = put(s, p2, 'bulwark-protector', 1)
-    s = act(s, p1, { type: 'play', card: bolt, targets: [{ kind: 'unit', id: chump }] })
-    expect(s.winner).toBeNull()                          // 15 < 17 with citadel up
-    s.influence = p2 === 0 ? 17 : -17
-    s = act(s, p2, { type: 'pass' })
-    expect(s.winner).toBe(p2)
-  })
+  // Radiant Citadel's oppThreshold static is gone (#69): the card became yellow's summoning
+  // wall — behavior pinned in create-units.test.ts, including "the threshold no longer moves".
 })
 
 describe('the capture era (v3 churn pass 3 — prison is gone from canon)', () => {

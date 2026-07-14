@@ -2302,10 +2302,24 @@
   "artUrl": "/cards/prison-of-light.jpg"
  },
  "radiant-citadel": {
-  "statics": [
+  "onPlay": [
    {
-    "s": "oppThreshold",
-    "n": 2
+    "op": "createCopies",
+    "n": 2,
+    "p": 0,
+    "h": 1,
+    "kw": [
+     {
+      "k": "guard"
+     },
+     {
+      "k": "politician"
+     },
+     {
+      "k": "cantAttack"
+     }
+    ],
+    "ifOnlyCopy": true
    }
   ],
   "slug": "radiant-citadel",
@@ -2314,11 +2328,21 @@
   "type": "unit",
   "cost": 7,
   "power": 1,
-  "health": 8,
-  "text": "This can't attack. While this is in play, your opponent's Influence win threshold is increased by 2.",
+  "health": 4,
+  "text": "This can't attack. When it enters play, if it's the only Radiant Citadel you own in play, it raises two 0/1 copies of itself in your Home — ready, with Guard and Politician, unable to attack. Copies vanish when they die.",
   "kw": [
    {
+    "k": "guard"
+   },
+   {
+    "k": "politician"
+   },
+   {
     "k": "cantAttack"
+   },
+   {
+    "k": "armor",
+    "n": 2
    }
   ],
   "pips": [
@@ -2326,7 +2350,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 49: the card now says exactly what the static does (the old \"maximum Influence\" text meant nothing on a shared track).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.",
+  "designerNote": "2026-07-14 (#69, Griff): the summoning wall replaces the old threshold static — decision 49's\noppThreshold +2 is dropped, and the old 1/8 body becomes 1/4 with Armor 2 (Griff ruled the\nstats at 18:11). One cast, three walls: the entry check counts only YOUR Radiant Citadels, so\nthe two copies enter, run the same check against a board of three, and fizzle — that's the\nwhole recursion fuse. An opponent's Citadels never touch your check. Copies are born ready in\nyour Home at 0/1 with Guard/Politician/cantAttack and no Armor (only the body was respecified;\nthe parent keeps Armor 2). Copies were never deck cards: they vanish on death, touching no\ndiscard pile.",
   "artUrl": "/cards/radiant-citadel.jpg"
  },
  "supreme-sentence": {

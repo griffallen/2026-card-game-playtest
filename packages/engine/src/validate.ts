@@ -1,7 +1,7 @@
 import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 
 const KEYWORDS = new Set(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
-const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap'])
+const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
 const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
@@ -150,6 +150,16 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
     case 'extraAction': break
     case 'preventBase': if (!isInt(op.n, 1, 30)) err('bad preventBase'); break
     case 'removeNegative': checkTargetRef(op.t); break
+    case 'createCopies':   // #69: copies of the source unit — needs one, so actions can't carry it
+      if (def.type === 'action') err('createCopies needs a source unit — actions have none')
+      if (!isInt(op.n, 1, 5)) err('bad copy count')
+      if (op.p !== undefined && !isInt(op.p, 0, 99)) err('bad copy power')
+      if (op.h !== undefined && !isInt(op.h, 1, 99)) err('bad copy health')
+      for (const kw of op.kw ?? []) {
+        if (!KEYWORDS.has(kw.k)) err(`unknown copy keyword ${kw.k}`)
+        if (kw.n !== undefined && !isInt(kw.n, 0, 99)) err(`bad copy keyword value ${kw.k} ${kw.n}`)
+      }
+      break
   }
   return errors
 }

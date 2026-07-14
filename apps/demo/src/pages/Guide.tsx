@@ -118,7 +118,7 @@ export function Guide() {
         <CardTip name="Exemplar Knight (4 · 4/4, +2 power attacking, pays on kills)" tip="the honest body that punches up a weight class and tips the track doing it." />
         <CardTip name="Prison Warrant (3 · capture a damaged unit, rent every round)" tip="removal that pays a salary. The grip only breaks when the jailer dies — so guard the jailer." />
         <CardTip name="Supreme Sentence (7 · exhaust two units anywhere, 3 damage each)" tip="the verdict: it un-readies whatever was about to matter — Guards lose their vigil, Hidden units lose their veil — and the 3 damage marks two heads for your knights. Yellow's act-three answer." />
-        <CardTip name="Radiant Citadel (7 · 1/8, opponent's influence threshold +2)" tip="raises the price of beating you by two more tolls — cruelest in the mirror and against purple. A wall that moves the finish line." />
+        <CardTip name="Radiant Citadel (7 · 1/4, Armor 2, Guard · raises two 0/1 copies of itself)" tip="one cast, three walls. It lands and clones twice — two 0/1 Guards in your Home that can't attack but soak blows and pay when they defend. The copies check the same clause and don't chain; they vanish when they die. A turn-seven fortress that turns one card into a wall of tolls." />
       </ul>
 
       <H2 id="purple">Purple — the contract killer</H2>

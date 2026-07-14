@@ -1,7 +1,7 @@
 import type {
   AutoPick, GameState, Op, Seat, TargetRef, UnitFilter, UnitInstance, ZoneId,
 } from './types.ts'
-import { EngineError, adjacent } from './types.ts'
+import { EngineError, adjacent, homeZone } from './types.ts'
 import {
   addInfluence, checkWin, condHolds, defOf, draw, effArmor, effHealth, effPower,
   idNum, influenceFor, log, other, thresholds, unitsInZone, unitsOf,
@@ -27,6 +27,9 @@ export interface FxCtx {
   splashChoice?: Record<string, string>
   /** v3 "that much" link: written by clearDamage, read by damage n:'linked' (spec §3) */
   linked?: number
+  /** #69 (createCopies): generations of effect-created units above this context. The ifOnlyCopy
+   *  gate is the real fuse; this cap only stops a future mis-gated card from looping forever. */
+  spawnDepth?: number
   actorSeat: Seat
 }
 
@@ -389,6 +392,44 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         }
         break
       }
+      case 'createCopies': {
+        // #69 (Radiant Citadel): the game's first unit-creation op. Copies share the source's
+        // slug (they ARE that card for counting, art, and name) but carry their own body via
+        // UnitInstance.created — never a deck card, born ready in the controller's Home.
+        const src = ctx.sourceUnit ? unitById(state, ctx.sourceUnit) : undefined
+        if (!src) break
+        const depth = ctx.spawnDepth ?? 0
+        if (depth > 4) break   // hard fuse: a mis-gated future card must not spiral
+        if (op.ifOnlyCopy && unitsOf(state, controller).filter(u => u.slug === src.slug).length !== 1) break
+        const kw = op.kw ?? defOf(state, src.id).kw ?? []
+        const born: UnitInstance[] = []
+        for (let i = 0; i < op.n; i++) {
+          const id = `c${state.nextId++}`   // deck ids come from the same counter — no collisions
+          state.cardOf[id] = src.slug
+          const copy: UnitInstance = {
+            id, slug: src.slug, owner: controller, zone: homeZone(controller),
+            damage: 0, exhausted: false, enteredRound: state.round, movedThisRound: false,
+            shielded: kw.some(k => k.k === 'shielded'),
+            imprisoned: null, upgrades: [], mods: [], overextendedBy: 0,
+            created: {
+              ...(op.p !== undefined ? { p: op.p } : {}),
+              ...(op.h !== undefined ? { h: op.h } : {}),
+              ...(op.kw ? { kw: op.kw } : {}),
+            },
+          }
+          state.units[id] = copy
+          born.push(copy)
+        }
+        const body = op.p !== undefined || op.h !== undefined ? ` (${op.p ?? '—'}/${op.h ?? '—'})` : ''
+        log(state, controller, `${name(state, src.id)} raises ${op.n} ${op.n === 1 ? 'copy' : 'copies'} of itself${body}`)
+        // the copies' own entry check runs too — against a board that now holds them, so a
+        // gated card fizzles here (Griff's fuse: one cast, three walls, no spiral)
+        for (const copy of born) {
+          if (!state.units[copy.id]) continue
+          fireTrigger({ state, actorSeat: ctx.actorSeat, srcLabel: name(state, copy.id), spawnDepth: depth + 1 }, copy, 'onPlay')
+        }
+        break
+      }
       case 'capture': {
         const t = resolveUnitTarget(ctx, op.t)
         if (!t) break
@@ -438,6 +479,12 @@ export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
   }
   unit.upgrades = []
   delete state.units[unit.id]
+  if (unit.created) {
+    // #69: created copies were never deck cards — no discard pile, no deck, no trace
+    log(state, unit.owner, `${name(state, unit.id)} is ${why} — the copy vanishes`)
+    delete state.cardOf[unit.id]
+    return
+  }
   state.sides[unit.owner].discard.push(unit.id)
   log(state, unit.owner, `${name(state, unit.id)} is ${why}`)
 }

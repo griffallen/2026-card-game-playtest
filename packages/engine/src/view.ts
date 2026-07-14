@@ -18,7 +18,7 @@ function unitView(state: GameState, id: string): UnitView {
   return {
     id, slug: u.slug, name: def.name, owner: u.owner, zone: u.zone,
     power: effPower(state, u), health: effHealth(state, u), damage: u.damage,
-    basePower: def.power ?? 0, baseHealth: def.health ?? 0, armor: effArmor(state, u),
+    basePower: u.created?.p ?? def.power ?? 0, baseHealth: u.created?.h ?? def.health ?? 0, armor: effArmor(state, u),  // #69: a created copy's printed line is its own body
     exhausted: u.exhausted,
     rushFreeMove: u.enteredRound === state.round && !u.movedThisRound && hasKw(state, u, 'rush') && !u.exhausted,
     imprisoned: !!u.imprisoned,
