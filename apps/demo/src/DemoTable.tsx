@@ -10,6 +10,7 @@ import { InfluenceTrack } from '@ui/game/InfluenceTrack.tsx'
 import { BaseSheet, CardSheet, EventTicker, PileSheet, UnitInspector, useValueFlash } from '@ui/game/Sheets.tsx'
 import { sleeveFor } from '@ui/game/sleeves.ts'
 import { DEMO_CARDS, aiControls, newLocalGame, type DemoConfig } from './local.ts'
+import { BlockModal } from './BlockModal.tsx'
 import { setSound, sfx, soundOn } from './sound.ts'
 
 const SFX_BY_ACTION: Partial<Record<GameAction['type'], 'play' | 'hit'>> = {
@@ -64,8 +65,8 @@ interface HistoryEntry { seat: Seat; action: GameAction; rngAfter: number }
 type Speed = 'slow' | 'normal' | 'fast'
 const SPEED_MS: Record<Speed, number> = { slow: 1400, normal: 500, fast: 140 }
 
-export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () => void }) {
-  const [state, setState] = useState<GameState>(() => newLocalGame(config))
+export function DemoTable({ config, onExit, initialState }: { config: DemoConfig; onExit: () => void; initialState?: GameState }) {
+  const [state, setState] = useState<GameState>(() => initialState ?? newLocalGame(config))
   const [history, setHistory] = useState<HistoryEntry[]>([])
   const [selection, setSelection] = useState<Selection>(null)
   const [setupBottoms, setSetupBottoms] = useState<string[]>([])
@@ -342,6 +343,23 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       ? [...new Set(actions.flatMap(a => (a.type === 'block' && a.pairs.length === 1 ? [a.pairs[0].blocker] : [])))]
       : []),
     [actions, isBlock, myWindow])
+  // issue #58 (Griff): which attacker each ready blocker may legally cover, read straight off
+  // the single-pair legal actions (so the duel law — lone attacker → Guards only — is honoured
+  // without re-deriving it). The spatial block modal uses this to gate its drop slots.
+  const blockAllowedOnto = useMemo(() => {
+    const m = new Map<string, Set<string>>()
+    if (isBlock && myWindow) for (const a of actions) {
+      if (a.type === 'block' && a.pairs.length === 1) {
+        const { blocker, onto } = a.pairs[0]
+        if (!m.has(blocker)) m.set(blocker, new Set())
+        m.get(blocker)!.add(onto)
+      }
+    }
+    return m
+  }, [actions, isBlock, myWindow])
+  // start every block window with a clean assignment (the modal builds it up from empty)
+  useEffect(() => { if (!(isBlock && myWindow)) setBlockPairs([]) }, [isBlock, myWindow])
+
   // issue #58 (Griff): the defender chooses who fights whom. A tap sends a blocker in
   // (onto the least-covered attacker); tapping it again cycles it to the next attacker;
   // cycling past the last pulls it back out. The banner names every pairing.
@@ -699,57 +717,11 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
         })()}
       </span>
     </div>
-  ) : isBlock && myWindow ? (() => {
-    // #62 (Blaine): the block window is a decision — show the numbers it turns on, live.
-    const atk = (pendingAttack?.attackers ?? []).map(id => unitViewOf(id)).filter((u): u is NonNullable<typeof u> => !!u)
-    const tgt = pendingAttack?.target
-    const tgtView = tgt?.kind === 'unit' ? unitViewOf(tgt.id) : undefined
-    const open = atk.filter(a => !blockPairs.some(p => p.onto === a.id))
-    const openPower = open.reduce((s, a) => s + a.power, 0)
-    const armor = tgtView?.armor ?? 0
-    const landing = tgtView?.shielded ? 0 : Math.max(0, openPower - armor)  // combined hit, armor once
-    return (
-      <div className="rounded-md border border-[#c98a27] bg-[#c98a27]/10 p-2 text-xs">
-        <p className="text-goldbright">
-          ⚔ <b>{atk.map(a => `${a.name} (${a.power}⚔${a.keywords.some(k => k.startsWith('breakthrough')) ? ', breakthrough' : ''})`).join(' + ')}</b>{' '}
-          attack{atk.length === 1 ? 's' : ''} <b>{pendingAttack ? refName(pendingAttack.target) : 'you'}</b>.
-          Blockers exhaust (Guards stay ready), eat their attacker's damage, and counter with their own power.
-        </p>
-        <p className="mt-1 text-[12.5px] text-body/90">
-          {open.length === 0
-            ? 'Everything is blocked — nothing reaches the target.'
-            : tgt?.kind === 'base'
-              ? <>Let through: <b className="text-parchment">{openPower} damage to your base</b> → you'd be at {Math.max(0, my.life - openPower)} life. (Bases never strike back.)</>
-              : <>Let through: <b className="text-parchment">{landing} lands on {tgtView?.name ?? 'the target'}</b>
-                {tgtView?.shielded ? ' — its ⛨ shield eats this entire hit' : armor > 0 ? ` (${openPower} shrunk once by armor ${armor})` : ''}
-                {tgtView && !tgtView.shielded && landing >= tgtView.health - tgtView.damage ? ' — lethal' : ''}
-                {tgtView ? <> — and it strikes back: each unblocked attacker takes <b className="text-parchment">{tgtView.power}</b>, even while exhausted.</> : null}</>}
-        </p>
-        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-          <span className="text-[12.5px] text-dim">
-            Tap a glowing unit to send it in{atk.length > 1 ? ' — tap it again to switch which attacker it fights; one more pulls it out' : ' — tap again to pull it out'}.
-          </span>
-          <button className="btn !py-0.5 text-xs" onClick={() => apply({ type: 'block', pairs: blockPairs }, seat)}>
-            {blockPairs.length ? `Block with ${blockPairs.length}` : 'Let it through'}
-          </button>
-        </div>
-        {blockPairs.length > 0 && (
-          <p className="mt-1.5 text-[12.5px] text-parchment">
-            {blockPairs.map(p => `${unitName(p.blocker)} ⚔ ${unitName(p.onto)}`).join(' · ')}
-            {open.length ? ` — ${open.map(a => a.name).join(', ')} unblocked → hits ${pendingAttack ? refName(pendingAttack.target) : 'the target'}` : ''}
-            {/* #62: self-blocking is legal but subtle — it punches either way; the block buys armor-per-hit and costs readiness */}
-            {tgt?.kind === 'unit' && blockPairs.some(p => p.blocker === tgt.id) && tgtView && (
-              <span className="block text-dim">
-                {tgtView.name} is blocking its own attacker — it punches back either way; the block makes its armor
-                shrink each hit separately instead of once{tgtView.armor > 0 || tgtView.shielded ? '' : ' (it has no armor, so that buys nothing)'},
-                {tgtView.keywords.includes('guard') ? ' and as a Guard it stays ready.' : ' at the price of exhausting it.'}
-              </span>
-            )}
-          </p>
-        )}
-      </div>
-    )
-  })() : isIntercept && myWindow ? (
+  ) : isBlock && myWindow ? (
+    // issue #58 (Griff): the block window is now a spatial modal (see <BlockModal>, rendered as a
+    // full overlay below). No side-panel banner — the modal is the whole interaction.
+    null
+  ) : isIntercept && myWindow ? (
     <div className="rounded-md border border-[#c98a27] bg-[#c98a27]/10 p-2 text-xs">
       <p className="text-goldbright">
         ⚔ <b>{pendingAttack ? pendingAttack.attackers.map(unitName).join(', ') : 'The enemy'}</b>{' '}
@@ -981,6 +953,18 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       if (canClaim) hints.push('You can claim the initiative: it spends your round, but you act first next round (and locks the token to you).')
     }
   }
+
+  // issue #58: props for the spatial block modal (rendered as a full overlay near the end).
+  const blockAttackers = isBlock && myWindow && pendingAttack
+    ? pendingAttack.attackers.map(id => unitViewOf(id)).filter((u): u is NonNullable<typeof u> => !!u)
+    : []
+  const blockDefenders = isBlock && myWindow
+    ? blockerIds.map(id => unitViewOf(id)).filter((u): u is NonNullable<typeof u> => !!u)
+    : []
+  // duel law mirrors the engine (issue #50): a lone attacker on a unit admits one Guard at most.
+  const duelBlock = isBlock && myWindow && state.rules.singleAttackerDuels
+    && !!pendingAttack && pendingAttack.target.kind === 'unit'
+    && pendingAttack.attackers.filter(id => unitViewOf(id)).length === 1
 
   return (
     <div className="flex h-full flex-col max-lg:block max-lg:h-auto">
@@ -1339,6 +1323,27 @@ export function DemoTable({ config, onExit }: { config: DemoConfig; onExit: () =
       )}
 
       {showHelp && <HelpPanel edition={state.rules.combatModel === 'blockerPairing' ? 'v3' : 'v2.3'} keyboard onClose={() => setShowHelp(false)} />}
+
+      {/* issue #58 (Griff): blocking is a spatial act — attackers in a row, defenders dropped
+          under each. Emits the identical block action; the engine's resolution is untouched. */}
+      {isBlock && myWindow && pendingAttack && (
+        <BlockModal
+          attackers={blockAttackers}
+          target={pendingAttack.target}
+          targetName={refName(pendingAttack.target)}
+          targetView={pendingAttack.target.kind === 'unit' ? unitViewOf(pendingAttack.target.id) : undefined}
+          defenders={blockDefenders}
+          allowedOnto={blockAllowedOnto}
+          duel={duelBlock}
+          myLife={my.life}
+          pairs={blockPairs}
+          onChange={setBlockPairs}
+          onConfirm={pairs => apply({ type: 'block', pairs }, seat)}
+          onCancel={() => apply({ type: 'block', pairs: [] }, seat)}
+          sleeveOf={sleeveOf}
+          onInspect={id => setInspect({ kind: 'unit', id })}
+        />
+      )}
 
       {view.winner !== null && !overlayDismissed && (
         <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4">
