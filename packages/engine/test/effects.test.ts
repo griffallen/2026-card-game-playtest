@@ -82,6 +82,16 @@ describe('influence effects', () => {
     expect(s.winReason).toBe('influence')
   })
 
+  it('#74: effect damage from a played card names the card as its source', () => {
+    // Griff (#74): the AI-turn pop-up "doesn't mention where the damage comes from."
+    // The recap renders the log's damage line verbatim — so the line itself must name the card.
+    let { s, p1, p2 } = arena()
+    const bolt = toHand(s, p1, 'searing-bolt')
+    const victim = put(s, p2, 'bulwark-protector', 1)     // 2/2 Armor 1 — takes 1, survives, logs the hit
+    const { events } = applyAction(s, { type: 'play', card: bolt, targets: [{ kind: 'unit', id: victim }] }, p1)
+    expect(events.some(e => /takes \d+ damage from Searing Bolt/.test(e.msg))).toBe(true)
+  })
+
   it('Radiant Citadel: opponent must reach 17', () => {
     let { s, p1, p2 } = arena()
     put(s, p1, 'radiant-citadel', homeZone(p1))          // p1 controls the citadel

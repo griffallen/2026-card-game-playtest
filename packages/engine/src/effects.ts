@@ -169,17 +169,18 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
     switch (op.op) {
       case 'damage': {
         const base = op.n === 'linked' ? (ctx.linked ?? 0) : op.n   // v3: "that much" (spec §3)
-        if (op.t === 'enemyBase') { if (base > 0) damageBase(state, other(controller), base, ''); break }
-        if (op.t === 'selfBase') { if (base > 0) damageBase(state, controller, base, ''); break }
+        const src = ctx.srcLabel ?? ''   // #74: name the card behind effect damage so the recap can show it
+        if (op.t === 'enemyBase') { if (base > 0) damageBase(state, other(controller), base, src); break }
+        if (op.t === 'selfBase') { if (base > 0) damageBase(state, controller, base, src); break }
         // chosen targets may be a base ref
         if ((op.t === 'chosen0' || op.t === 'chosen1')) {
           const ref = ctx.targets?.[op.t === 'chosen0' ? 0 : 1]
-          if (ref?.kind === 'base') { if (base > 0) damageBase(state, ref.seat, base, ''); break }
+          if (ref?.kind === 'base') { if (base > 0) damageBase(state, ref.seat, base, src); break }
         }
         const u = resolveUnitTarget(ctx, op.t)
         // v3 conditional bonus (Devastating Strike): read the target's state BEFORE the hit
         const n = u && op.bonusIfDamaged && u.damage > 0 ? base + op.bonusIfDamaged : base
-        if (u && n > 0) damageUnit(state, u, n, '')
+        if (u && n > 0) damageUnit(state, u, n, src)
         break
       }
       case 'exhaust': {
@@ -237,7 +238,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'damageFilter': {
-        for (const u of filterUnits(ctx, op.f)) damageUnit(state, u, op.n, '')
+        for (const u of filterUnits(ctx, op.f)) damageUnit(state, u, op.n, ctx.srcLabel ?? '')
         break
       }
       case 'heal': {

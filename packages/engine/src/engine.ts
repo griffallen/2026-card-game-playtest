@@ -355,7 +355,7 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     state.upgrades[action.card] = { id: action.card, slug: def.slug, owner: seat, attachedTo: carrier.id }
     carrier.upgrades.push(action.card)
     log(state, seat, `${side.name} attaches ${def.name} to ${defOf(state, carrier.id).name}`)
-    if (def.onPlay?.length) runOps({ state, controller: seat, sourceUnit: carrier.id, targets: targets.slice(1), actorSeat: seat }, def.onPlay)
+    if (def.onPlay?.length) runOps({ state, controller: seat, sourceUnit: carrier.id, targets: targets.slice(1), actorSeat: seat, srcLabel: def.name }, def.onPlay)
     return
   }
 
@@ -387,14 +387,14 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     }
     log(state, seat, `${side.name} deploys ${def.name}`)
     const unit = state.units[action.card]
-    if (def.onPlay?.length) runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat, x: action.x }, def.onPlay)
+    if (def.onPlay?.length) runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat, x: action.x, srcLabel: def.name }, def.onPlay)
     if (def.onEnterZone?.length && state.units[unit.id]) {
       fireTrigger({ state, targets, enteredZone: zone, actorSeat: seat }, unit, 'onEnterZone')
     }
   } else {
     // action card
     log(state, seat, `${side.name} plays ${def.name}${mode ? ` — ${mode.label}` : ''}${def.xCost ? ` (X=${action.x})` : ''}`)
-    runOps({ state, controller: seat, targets, actorSeat: seat, x: action.x }, mode ? mode.ops : (def.onPlay ?? []))
+    runOps({ state, controller: seat, targets, actorSeat: seat, x: action.x, srcLabel: def.name }, mode ? mode.ops : (def.onPlay ?? []))
     side.discard.push(action.card)
   }
 }
