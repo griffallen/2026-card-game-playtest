@@ -2,8 +2,8 @@
 name: Noble Purifier
 type: unit
 cost: 3
-power: 3
-health: 3
+power: 4
+health: 1
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

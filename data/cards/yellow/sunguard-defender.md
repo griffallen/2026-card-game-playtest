@@ -2,16 +2,16 @@
 name: Sunguard Defender
 type: unit
 cost: 2
-power: 2
-health: 3
-keywords: guard
+power: 1
+health: 1
+keywords: guard, shielded
 influenceTrigger: onDefend
 pips: yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onDefend":[{"op":"influence","n":1}]}
 ---
-Guard. When this defends, gain 1 Influence.
+Guard. Shielded. When this unit defends, gain 1 Influence.
 
 ## Design notes
 

@@ -1248,12 +1248,15 @@
   "color": "yellow",
   "type": "unit",
   "cost": 2,
-  "power": 2,
-  "health": 3,
-  "text": "Guard. When this defends, gain 1 Influence.",
+  "power": 1,
+  "health": 1,
+  "text": "Guard. Shielded. When this unit defends, gain 1 Influence.",
   "kw": [
    {
     "k": "guard"
+   },
+   {
+    "k": "shielded"
    }
   ],
   "pips": [
@@ -1295,11 +1298,15 @@
   "type": "unit",
   "cost": 3,
   "power": 2,
-  "health": 5,
-  "text": "Guard. When this defends, gain 1 Influence.",
+  "health": 2,
+  "text": "Guard. Armor 1. When this unit defends, gain 1 Influence.",
   "kw": [
    {
     "k": "guard"
+   },
+   {
+    "k": "armor",
+    "n": 1
    }
   ],
   "pips": [
@@ -1382,8 +1389,8 @@
   "color": "yellow",
   "type": "unit",
   "cost": 3,
-  "power": 3,
-  "health": 3,
+  "power": 4,
+  "health": 1,
   "text": "When this kills a unit, gain 2 Influence.",
   "pips": [
    "yellow",
@@ -2087,7 +2094,7 @@
     "scope": "otherFriendly",
     "p": 1,
     "cond": {
-     "influenceAtLeast": 10
+     "influenceAtLeast": 1
     }
    }
   ],
@@ -2096,9 +2103,9 @@
   "color": "yellow",
   "type": "unit",
   "cost": 6,
-  "power": 3,
-  "health": 7,
-  "text": "Politician. Other friendly units get +1 Power while your Influence is 10 or more.",
+  "power": 2,
+  "health": 4,
+  "text": "Politician. Other friendly units get +1 Power while your Influence is positive.",
   "kw": [
    {
     "k": "politician"
@@ -2190,10 +2197,6 @@
    {
     "op": "capture",
     "t": "chosen0"
-   },
-   {
-    "op": "influence",
-    "n": 2
    }
   ],
   "slug": "archon-of-order",
@@ -2201,9 +2204,9 @@
   "color": "yellow",
   "type": "unit",
   "cost": 7,
-  "power": 7,
-  "health": 7,
-  "text": "When this enters play, it captures target enemy unit. Gain 2 Influence.",
+  "power": 3,
+  "health": 4,
+  "text": "When this enters play, it captures target enemy unit.",
   "kw": [
    {
     "k": "capture"

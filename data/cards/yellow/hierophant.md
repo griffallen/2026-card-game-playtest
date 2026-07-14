@@ -2,15 +2,15 @@
 name: Hierophant
 type: unit
 cost: 6
-power: 3
-health: 7
+power: 2
+health: 4
 keywords: politician
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"aura","scope":"otherFriendly","p":1,"cond":{"influenceAtLeast":10}}]}
+effects: {"statics":[{"s":"aura","scope":"otherFriendly","p":1,"cond":{"influenceAtLeast":1}}]}
 ---
-Politician. Other friendly units get +1 Power while your Influence is 10 or more.
+Politician. Other friendly units get +1 Power while your Influence is positive.
 
 ## Design notes
 

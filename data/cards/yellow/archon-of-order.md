@@ -2,15 +2,15 @@
 name: Archon of Order
 type: unit
 cost: 7
-power: 7
-health: 7
+power: 3
+health: 4
 keywords: capture
 pips: yellow, yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"capture","t":"chosen0"},{"op":"influence","n":2}]}
+effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"capture","t":"chosen0"}]}
 ---
-When this enters play, it captures target enemy unit. Gain 2 Influence.
+When this enters play, it captures target enemy unit.
 
 ## Design notes
 

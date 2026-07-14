@@ -69,7 +69,7 @@ describe('splashReap (Fiery Impaler, PR #46, decision 93)', () => {
     let s = g()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const imp = put(s, me, 'fiery-impaler', 1)
-    const wall = put(s, them, 'bulwark-protector', 1, { exhausted: true })  // alone in the zone
+    const wall = put(s, them, 'gateward-colossus', 1, { exhausted: true })  // alone in the zone; tanky (9hp/armor2) so it survives the hit — Bulwark now dies at 2hp
     s = applyAction(s, { type: 'attack', attackers: [imp], target: { kind: 'unit', id: wall } }, me).state
     expect(s.units[wall].damage).toBeGreaterThan(0)
   })

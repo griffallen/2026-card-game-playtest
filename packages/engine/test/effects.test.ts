@@ -50,13 +50,13 @@ describe('influence effects', () => {
     expect(influenceFor(s, p2)).toBe(0)                    // entering play pays nothing now
     // red spells no longer cede influence (decision 35 removed the artifact reading)
     const bolt = toHand(s, p1, 'searing-bolt')
-    // Bulwark Protector (2/5 guard): survives the bolt — Searing Bolt deals 2 since PR #34.
+    // Bulwark Protector (2/2 guard, Armor 1 since #77): survives the bolt — Searing Bolt's 2 is reduced to 1 by armor.
     // The duel lives in the NEUTRAL zone so no home-zone ally can open an intercept window
     // (deck sizes shift the seeded initiative — issue #30 made red 49 cards).
     const victim = put(s, p2, 'bulwark-protector', 1)
     s = act(s, p1, { type: 'play', card: bolt, targets: [{ kind: 'unit', id: victim }] })
     expect(influenceFor(s, p2)).toBe(0)
-    expect(s.units[victim].damage).toBe(2)
+    expect(s.units[victim].damage).toBe(1)                 // Armor 1 (#77) reduces the bolt's 2 to 1; still survives
     // but being ATTACKED triggers the guard's influence
     const raider = put(s, p1, 'berserker', 1)
     s = act(s, p2, { type: 'pass' })
@@ -151,17 +151,17 @@ describe('the capture era (v3 churn pass 3 — prison is gone from canon)', () =
 })
 
 describe('auras and upgrades', () => {
-  it('Warlord Garok pumps other friendlies; Hierophant only at 10+ influence', () => {
+  it('Warlord Garok pumps other friendlies; Hierophant only while Influence is positive', () => {
     let { s, p1, p2 } = arena()
     const grunt = put(s, p1, 'cinder-initiate', 1)         // 2 power since the v3 churn
     put(s, p1, 'warlord-garok', 1)
     expect(effPower(s, s.units[grunt])).toBe(3)
     const hiero = put(s, p2, 'hierophant', 2)
     const wall = put(s, p2, 'bulwark-protector', 2)        // 2 power
-    expect(effPower(s, s.units[wall])).toBe(2)             // influence < 10 → no buff
-    s.influence = p2 === 0 ? 10 : -10
+    expect(effPower(s, s.units[wall])).toBe(2)             // influence 0 → not positive → no buff
+    s.influence = p2 === 0 ? 1 : -1                        // p2 to +1: the new positive threshold (#73)
     expect(effPower(s, s.units[wall])).toBe(3)
-    expect(effPower(s, s.units[hiero])).toBe(3)            // "other" excludes self (3/7 since session 006)
+    expect(effPower(s, s.units[hiero])).toBe(2)            // "other" excludes self (2/4 since #73)
   })
 
   it('upgrades grant stats/keywords, pressure influence on the second, and die with Pillage', () => {
