@@ -95,6 +95,14 @@ body {
 }
 .round-banner { animation: round-banner 1.9s ease-in-out forwards; }
 
+/* #74: a destroyed unit fades where it stood — desaturate + slight shrink so the eye
+   catches the trade before the board reflows. Ratified feel: ~700ms, no red tint. */
+@keyframes unit-ghost-fade {
+  from { opacity: 1; filter: grayscale(0); transform: scale(1); }
+  to { opacity: 0; filter: grayscale(1); transform: scale(0.95); }
+}
+.unit-ghost { animation: unit-ghost-fade 700ms ease-out forwards; pointer-events: none; }
+
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb { background: #3a3021; border-radius: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

@@ -89,6 +89,13 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   const [recap, setRecap] = useState<{ msg: string }[]>([])
   const [recapShown, setRecapShown] = useState(0)
   const [recapAck, setRecapAck] = useState(false)
+  // #74 (Griff): a destroyed unit lingers and fades in its zone so the eye can catch the trade —
+  // ~700ms, desaturate + slight shrink, plays UNDER the recap hold (no double-delay). Destroyed
+  // only; captured units slide to the tray, a different motion. The win is on AI-unit deaths,
+  // where nothing pauses today. Ratified on #74.
+  type GhostUnit = ReturnType<typeof viewFor>['zones'][number]['units'][number]
+  const [ghosts, setGhosts] = useState<{ key: string; zone: ZoneId; unit: GhostUnit; mine: boolean }[]>([])
+  const ghostSeq = useRef(0)
   const logRef = useRef<HTMLDivElement>(null)
 
   // Policy rng travels WITH the history (snapshot after every action), so stepping
@@ -132,11 +139,26 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   const lostMine = (prev: GameState, next: GameState) =>
     config.mode === 'vs-ai' && Object.values(prev.units).some(u => u.owner === seat && !next.units[u.id])
 
+  // #74: snapshot any unit that was on screen and is now DESTROYED (gone from units AND not a new
+  // captive — captives move to the tray) so it can fade in place. Uses the viewer's prev view, so
+  // only units the viewer could actually see fade; hidden units don't.
+  function noteDeaths(prev: GameState, next: GameState) {
+    const pv = viewFor(prev, seat)
+    const dead = ([0, 1, 2] as ZoneId[]).flatMap(z => pv.zones[z].units
+      .filter(vu => !next.units[vu.id] && !next.captives[vu.id])
+      .map(vu => ({ key: `${vu.id}-${ghostSeq.current++}`, zone: z, unit: vu, mine: vu.owner === seat })))
+    if (!dead.length) return
+    setGhosts(g => [...g, ...dead])
+    const keys = new Set(dead.map(d => d.key))
+    setTimeout(() => setGhosts(g => g.filter(x => !keys.has(x.key))), 760)  // outlast the 700ms fade
+  }
+
   function apply(action: GameAction, actor: Seat) {
     try {
       const { state: next, events } = applyAction(state, action, actor)
       noteKeptHand(next, actor, action, state)
       setState(next)
+      noteDeaths(state, next)                            // #74: fade any unit that just died
       setHistory(h => [...h, { seat: actor, action, rngAfter: currentRng }])
       setSelection(null)
       if (action.type === 'block' || action.type === 'intercept') queueRecap(events, lostMine(state, next))
@@ -181,6 +203,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     const { state: next, events } = applyAction(state, action, state.actorSeat)
     noteKeptHand(next, state.actorSeat, action, state)
     setState(next)
+    noteDeaths(state, next)                             // #74: fade the AI's kills (and its own dead)
     setHistory(h => [...h, { seat: state.actorSeat, action, rngAfter: nextRng }])
     queueRecap(events, lostMine(state, next))          // #42: let the human read what the AI did
     const s = SFX_BY_ACTION[action.type]
@@ -1070,6 +1093,12 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
                           }} />
                       )
                     })}
+                    {/* #74: the just-fallen, fading out where they stood — no interaction, purely to read */}
+                    {ghosts.filter(g => g.zone === z).map(g => (
+                      <div key={g.key} className="unit-ghost shrink-0" aria-hidden>
+                        <UnitChip unit={g.unit} mine={g.mine} glow="none" sleeve={sleeveOf(g.unit.owner)} />
+                      </div>
+                    ))}
                     {view.zones[z].orphans.map(o => {
                       const salvages = myWindow ? salvageActionsFor(o.id) : []
                       const active = selection?.kind === 'orphan' && selection.id === o.id
@@ -1100,7 +1129,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
                         </button>
                       )
                     })}
-                    {!units.length && !view.zones[z].orphans.length && <span className="text-xs text-dim/50">—</span>}
+                    {!units.length && !view.zones[z].orphans.length && !ghosts.some(g => g.zone === z) && <span className="text-xs text-dim/50">—</span>}
                   </div>
                 </div>
               )
