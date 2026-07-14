@@ -56,6 +56,23 @@ async function main() {
   await shot(page, 'block-c-gang')
   console.log('(c) click-assigned DEF_2 → Behemoth (gang of 2)')
 
+  // peek: hide the modal to see the whole board, then return — the partial assignment must survive
+  await page.getByRole('button', { name: /View board/ }).click()
+  await page.waitForTimeout(300)
+  const headerWhilePeeking = await page.getByText('assign your blockers').count()
+  const backBtnVisible = await page.getByRole('button', { name: /Back to blocking/ }).isVisible()
+  console.log('while peeking — modal header present?', headerWhilePeeking, '| back control visible?', backBtnVisible)
+  await shot(page, 'block-peek-board-view')
+  await page.getByRole('button', { name: /Back to blocking/ }).click()
+  await page.waitForTimeout(300)
+  const headerRestored = await page.getByText('assign your blockers').count()
+  const confirmLabel = await page.locator('[data-block-confirm]').innerText()
+  const def1StillAssigned = (await page.locator('[data-def-id="DEF_1"]').count()) === 0
+  const def2StillAssigned = (await page.locator('[data-def-id="DEF_2"]').count()) === 0
+  console.log('after back — modal restored?', headerRestored, '| confirm label:', JSON.stringify(confirmLabel),
+    '| gang intact (DEF_1 & DEF_2 still assigned)?', def1StillAssigned && def2StillAssigned)
+  await shot(page, 'block-peek-restored')
+
   // (d) explicit wave-through: block Warcry, then wave it past to the base; life-loss preview shows
   await page.locator('[data-def-id="DEF_3"]').click()
   await page.locator('[data-atk-slot="ATK_B"]').click()
@@ -72,6 +89,9 @@ async function main() {
   await shot(page, 'block-e-log')
   const log = await page.locator('body').innerText()
   const checks = {
+    'peek hides the modal': headerWhilePeeking === 0 && backBtnVisible,
+    'back restores the modal': headerRestored === 1,
+    'assignments survive the peek': def1StillAssigned && def2StillAssigned && /block with 2/.test(confirmLabel),
     'per-pair source (Behemoth)': /takes \d+ damage from Crimson Behemoth/.test(log),
     'combined counter names both blockers': /Crimson Behemoth takes \d+ damage from Noble Purifier \+ Exemplar Knight/.test(log),
     'waved attacker hit the base': /from Warcry Leader/.test(log),

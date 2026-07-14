@@ -39,6 +39,10 @@ export function BlockModal({
   // hand-rolled pointer drag (works with mouse AND touch — HTML5 DnD skips touch)
   const [drag, setDrag] = useState<{ id: string; x: number; y: number; moved: boolean } | null>(null)
   const [hoverAtk, setHoverAtk] = useState<string | null>(null)
+  // Griff (issue #58): peek at the whole board mid-assignment. Pure visibility toggle — the
+  // component stays mounted, so blockPairs (owned by DemoTable) and every in-progress selection
+  // survive untouched; we just render a compact "back" control instead of the panel.
+  const [peeking, setPeeking] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
 
   const targetIsBase = target.kind === 'base'
@@ -114,13 +118,40 @@ export function BlockModal({
       ? (openPower ? `Let it through — lose ${lifeLoss} life` : 'Let it through')
       : 'Let it through'
 
+  // Peek mode: hide the panel so the whole board shows through. A transparent scrim keeps the
+  // board view-only (a stray board tap must not mutate the in-progress assignment); the floating
+  // control brings the modal back with everything intact.
+  if (peeking) {
+    const blocking = new Set(pairs.map(p => p.blocker)).size
+    return (
+      <>
+        <div className="fixed inset-0 z-40" aria-hidden onClick={() => { /* swallow board taps while peeking */ }} />
+        <div className="fixed inset-x-0 bottom-4 z-50 flex justify-center px-3">
+          <div className="panel flex items-center gap-3 !border-[#c98a27] px-4 py-2 shadow-2xl">
+            <span className="text-[12.5px] text-body/90">
+              👁 Viewing the board — <b className="text-parchment">{blocking}</b> blocking
+              {unblocked.length
+                ? <>, <b className="text-parchment">{unblocked.length}</b> through{targetIsBase && lifeLoss ? ` (−${lifeLoss} life)` : ''}</>
+                : null}
+            </span>
+            <button className="btn btn-primary !py-1 text-xs" onClick={() => setPeeking(false)}>← Back to blocking</button>
+          </div>
+        </div>
+      </>
+    )
+  }
+
   return (
     <div ref={rootRef} className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 backdrop-blur-sm"
       onPointerMove={onPointerMove} onPointerUp={onPointerUp}>
       <div className="panel flex max-h-full w-full max-w-3xl flex-col overflow-hidden !border-[#c98a27] shadow-2xl">
         {/* header */}
         <div className="border-b hairline bg-[#c98a27]/10 px-4 py-2.5">
-          <div className="font-display text-lg font-bold text-goldbright">⚔ Incoming attack — assign your blockers</div>
+          <div className="flex items-start justify-between gap-3">
+            <div className="font-display text-lg font-bold text-goldbright">⚔ Incoming attack — assign your blockers</div>
+            <button className="btn !py-1 text-xs shrink-0" title="Peek at the whole board — your assignments are kept"
+              onClick={() => setPeeking(true)}>👁 View board</button>
+          </div>
           <p className="mt-0.5 text-[12.5px] text-body/90">
             {attackers.length === 1 ? 'An attacker strikes' : `${attackers.length} attackers strike`}{' '}
             <b className="text-parchment">{friendlyTarget}</b>.{' '}
