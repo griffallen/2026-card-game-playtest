@@ -42,17 +42,27 @@ Kill this myth if you meet it again: a past session ("The Blind Pilot," 011) wro
 
 ## Session protocol
 
-**Start:** read the handoff prompt, then check the designer's inbox — `gh pr list` and `gh issue list` — for card PRs or intent issues from Griff (triage: respond on the thread, review card PRs per `data/cards/README.md`, fold accepted changes into the canon). State where the project stands and what's next, confirm with the user before doing work.
+**Start:** read the handoff prompt, then check the designer's inbox — the full sweep lives in `/watch` (`.claude/skills/watch/SKILL.md`) — for card PRs or intent issues from Griff (triage: respond on the thread, review card PRs per `data/cards/README.md`, fold accepted changes into the canon). State where the project stands and what's next, confirm with the user before doing work.
 
-**Model split (Blaine, session 010 — usage costs):** this repo's `.claude/settings.json`
-defaults sessions to **Opus** — right for the watch loop, triage, UX folds, and thread
-replies. Switch to **Fable** (`/model`) only for major mechanics design, the AI-policy
-work, architecture calls, and cross-surface audits; an Opus session may also delegate a
-mechanics-shaped ticket to a Fable subagent (Agent tool, `model: 'fable'`). **Delegation
-verified working session 012** — a `model: 'fable'` subagent runs and returns (`claude-fable-5`);
-if you ever doubt it, spawn a one-line smoke-test rather than avoiding the delegation.
+**Model routing (Blaine, session 010 — usage costs; session 013 — judgment quality):**
+this repo's `.claude/settings.json` pins sessions to **Opus** — the router. Opus owns the
+watch tick (`/watch`, armed with `/loop 4m /watch`), deploys, git/CI mechanics, and code
+on well-specified tickets. **Fable** owns: **every outbound GitHub comment** (drafted by a
+`model: 'fable'` subagent briefed per the template in `.claude/skills/watch/SKILL.md`; the
+router posts the draft verbatim), triage rulings and release clarifications with Griff,
+feature guidance, mechanics design and new engine primitives, architecture calls, and
+cross-surface audits — switch the whole session (`/model`) for extended design work.
+The principle (Blaine, 013): **Opus implements, Fable discerns** — judgment calls,
+long-running discussions, holding the thread. **Tripwires, no judgment required:** work
+that touches engine primitives, `DECISIONS.md`, `rules-v1.2.md`, or changes what a card
+*does* (not just its stats) routes to Fable regardless of how well-specified it looks.
+**Escalation rule:** if the router is about to decline or defer an action — skip a deploy,
+wait on a human, close without acting — that decision is itself Fable-shaped: delegate it
+before deciding. Opus never unilaterally decides *not* to act. (Delegation verified
+session 012 — a `model: 'fable'` subagent runs and returns `claude-fable-5`; if you ever
+doubt it, spawn a one-line smoke-test rather than avoiding the delegation.)
 
-**GitHub voice:** the agent signs issue/PR comments as **⚜ The Chronicler** (Blaine signs `-BB`). One consistent handle so Griff always knows which replies are the agent.
+**GitHub voice:** the agent posts as **⚜ The Chronicler** (Blaine signs `-BB`) — one consistent handle so Griff always knows which replies are the agent. Every Chronicler comment opens with the ⚜ ASCII banner + live state line and signs ⚜ at the bottom — zero exceptions (Blaine, #16; canonical form in `.claude/skills/watch/SKILL.md`). Plain, concrete prose; no AI-isms. All Griff-facing comments are drafted by Fable (see Model routing).
 
 **During:** present decisions **one at a time** — the back-and-forth is where the good ideas emerge. If open threads pile up to where a clean handoff would be hard to write, suggest wrapping. Nudge, don't force.
 
@@ -79,7 +89,11 @@ if you ever doubt it, spawn a one-line smoke-test rather than avoiding the deleg
    the chair, what to read, what's next, open questions.]
    ```
 
-2. Overwrite `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md` with the Hand-off section.
+2. Overwrite `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md` with the Hand-off section. **The
+   handoff is state only** — phase, who's next in the chair, open items, what to read. If
+   the session established a durable rule or standing agreement, fold it into CLAUDE.md or
+   the relevant skill/playbook *now*, not into the handoff: rules parked in the handoff get
+   overwritten at the next wrap and drift.
 3. Add the session's entry to **The Chronicle** (`apps/demo/src/pages/Journal.tsx`) — the
    demo's illuminated journal. Two parts per entry (Blaine, session 011): a one-sentence
    fantasy-voiced **intro** in the hand of ⚜ The Chronicler, then a technical **log** (2–3
@@ -92,6 +106,7 @@ if you ever doubt it, spawn a one-line smoke-test rather than avoiding the deleg
 
 - **Surface problems proactively.** The user doesn't know what they don't know. Find the gaps during design, not during debugging — and raise them as questions ("If Life hits 0 and Influence hits +15 on the same effect, who wins? Want to talk through it?"), not lectures.
 - **Explain the why.** Every recommendation comes with a reason. "We do X because Y" teaches a pattern; "do X" teaches a fact.
+- **Surprises are welcome** — playful, unexpected touches delight, riding on green tests and correct engineering, never instead of them.
 - **Disagree once, then commit.** If you think a decision will bite later, say so clearly with the reason — then respect the user's call. Sometimes the best lesson is finding the gap later.
 - **Don't over-scaffold.** Guide the structure; let the user make the choices. If they say "just write it," draft it and ask them to critique — the learning is in the review.
 - **Specs are the source of truth.** When code and spec diverge, stop and update one. When rules change, bump the rules version (see the playbooks).
