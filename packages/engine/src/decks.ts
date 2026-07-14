@@ -74,6 +74,31 @@ export function buildPrebuiltDecks(set: CardSet): PrebuiltDeck[] {
     })
   }
 
+  // Griff's Yellow (issue #81, 2026-07-14): the designer's own 52-card build, transcribed from his
+  // workshop screenshots. Benchmarks ~82% vs a fixed bot piloting Griff's Red — the list the yellow
+  // tuning pass has to answer. Shipped as a named deck so the AI can pilot it and every nerf is
+  // re-graded against the real thing, not the stock Radiant Order proxy. (iron-discipline = "Iron Plating".)
+  const GRIFFS_YELLOW: [string, number][] = [
+    ['vanguard-sentinel', 4], ['containment-priest', 2], ['sunguard-defender', 2], ['bulwark-protector', 2],
+    ['justicar-enforcer', 2], ['noble-purifier', 2], ['sanctified-bastion', 2], ['exemplar-knight', 1],
+    ['fortress-keeper', 1], ['high-justiciar', 1], ['lawbringer', 1], ['censer-of-purity', 1],
+    ['custodian-of-law', 1], ['dawnspear-paladin', 1], ['gateward-colossus', 1], ['hierophant', 1],
+    ['inquisitor', 1], ['archon-of-order', 1], ['champion-of-the-faith', 2], ['radiant-citadel', 2],
+    ['light-s-vanguard', 2],
+    ['binding-light', 2], ['prison-warrant', 1], ['subjugate', 1], ['disarming-order', 2],
+    ['imprisonment-chamber', 2], ['prison-of-light', 2], ['supreme-sentence', 1],
+    ['iron-discipline', 2], ['oath-of-order', 2], ['disciplined-mind', 2], ['unshakable-wall', 2],
+  ]
+  if (GRIFFS_YELLOW.every(([slug]) => set[slug])) {
+    decks.push({
+      slug: 'griffs-yellow',
+      name: "Griff's Yellow",
+      color: 'yellow',
+      description: "The designer's own 52-card yellow — guard wall, prison/capture lock, influence clock. The overtuned list the balance pass must answer.",
+      cards: GRIFFS_YELLOW.map(([slug, count]) => ({ slug, count })),
+    })
+  }
+
   // Purple's 36 uniques were designed with exactly twelve cost ≤ 2 slugs, so the doubles rule is clean.
   if (purple.length) {
     const purpleDoubles = new Set(purple.filter(c => c.cost <= 2).map(c => c.slug))

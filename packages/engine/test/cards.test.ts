@@ -39,7 +39,7 @@ describe('card set', () => {
 
 describe('prebuilt decks', () => {
   it('all prebuilt decks are legal, min-48 lists (issue #30: larger is allowed)', () => {
-    expect(PREBUILT_DECKS.length).toBe(4)   // +Griff's Red (issue #50)
+    expect(PREBUILT_DECKS.length).toBe(5)   // +Griff's Red (#50), +Griff's Yellow (#81)
     for (const deck of PREBUILT_DECKS) {
       const slugs = deckSlugs(deck)
       expect(slugs.length).toBeGreaterThanOrEqual(48)
