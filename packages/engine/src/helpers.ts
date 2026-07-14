@@ -85,6 +85,10 @@ function upgradeGrants(state: GameState, unit: UnitInstance): AuraGrant {
     for (const st of defOf(state, upId).statics ?? []) {
       if (st.s === 'aura' && st.scope === 'attached') {
         acc.p += st.p ?? 0
+        // #80 (Subjugate): ±1 power per pip in the CARRIER's cost — read live, so a salvaged
+        // upgrade (decision 67) re-fits its new host; pips never change, so while attached
+        // the value is permanent without any snapshot state.
+        if (st.pPerHostPip) acc.p += st.pPerHostPip * (defOf(state, unit.id).pips?.length ?? 0)
         acc.armor += st.armor ?? 0
         if (st.kw) acc.kws.push(st.kw)
       }

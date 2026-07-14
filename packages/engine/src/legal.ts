@@ -170,7 +170,12 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     if (up.attachedTo !== null || up.orphanedIn === undefined) continue
     const def = defOf(state, up.id)
     if (def.cost > readyRes || !pipGateSatisfied(state, seat, def)) continue
-    for (const u of unitsInZone(state, up.orphanedIn, seat)) {
+    // #80: an enemy-attach upgrade salvages onto units hostile to the salvager (mirrors attachOrphan)
+    const pool = (def.attach?.side ?? 'friendly') === 'friendly'
+      ? unitsInZone(state, up.orphanedIn, seat)
+      : unitsInZone(state, up.orphanedIn, other(seat)).filter(u =>
+          !hasKw(state, u, 'untargetable') && !(!u.exhausted && hasKw(state, u, 'hidden')))
+    for (const u of pool) {
       out.push({ type: 'attachOrphan', upgrade: up.id, unit: u.id })
     }
   }
@@ -304,7 +309,12 @@ function enumerateTargets(state: GameState, seat: Seat, card: string): TargetRef
   const slotChoices: TargetRef[][][] = []
 
   if (def.type === 'upgrade') {
-    const carriers = unitsOf(state, seat)
+    // #80: enemy-attach upgrades enumerate hostile carriers, minus the protected
+    // (untargetable; ready Hidden, decision 59) — mirrors playCard's gate exactly
+    const carriers = (def.attach?.side ?? 'friendly') === 'friendly'
+      ? unitsOf(state, seat)
+      : unitsOf(state, other(seat)).filter(u =>
+          !hasKw(state, u, 'untargetable') && !(!u.exhausted && hasKw(state, u, 'hidden')))
     if (!carriers.length) return []
     slotChoices.push(carriers.map(u => [{ kind: 'unit', id: u.id } as TargetRef]))
   }

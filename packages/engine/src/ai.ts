@@ -347,6 +347,17 @@ function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'p
       }
     }
   }
+  // #80 (Subjugate): an enemy-attach upgrade is removal by degrees — value the power it actually
+  // strips from the chosen host. Guarded on attach.side, so the shipped bot's arithmetic for
+  // every existing card (and the frozen sim baselines) stays bit-identical.
+  if (def.attach?.side === 'enemy') {
+    const host = unitAt(0)
+    if (host) for (const st of def.statics ?? []) {
+      if (st.s !== 'aura' || st.scope !== 'attached') continue
+      const strip = -((st.p ?? 0) + (st.pPerHostPip ?? 0) * (defOf(state, host.id).pips?.length ?? 0))
+      if (strip > 0) score += Math.min(strip, effPower(state, host)) * 2
+    }
+  }
   return score
 }
 

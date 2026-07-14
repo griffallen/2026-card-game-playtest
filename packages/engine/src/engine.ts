@@ -244,9 +244,16 @@ function attachOrphan(state: GameState, action: Extract<GameAction, { type: 'att
   const up = state.upgrades[action.upgrade] ?? fail('no-upgrade', 'no such upgrade')
   if (up.attachedTo !== null || up.orphanedIn === undefined) fail('not-orphaned', 'that upgrade is not lying free')
   const unit = state.units[action.unit] ?? fail('no-unit', 'no such unit')
-  if (unit.owner !== seat) fail('not-yours', 'attach to your own unit')
-  if (unit.zone !== up.orphanedIn) fail('bad-zone', 'salvage happens where it fell')
   const def = defOf(state, up.id)
+  if ((def.attach?.side ?? 'friendly') === 'friendly') {
+    if (unit.owner !== seat) fail('not-yours', 'attach to your own unit')
+  } else {
+    // #80: an enemy-attach upgrade salvages the way it plays — onto a unit hostile to the salvager
+    if (unit.owner === seat) fail('bad-targets', `${def.name} attaches to an enemy unit`)
+    if (hasKw(state, unit, 'untargetable')) fail('bad-targets', `${defOf(state, unit.id).name} cannot be targeted`)
+    if (!unit.exhausted && hasKw(state, unit, 'hidden')) fail('bad-targets', `${defOf(state, unit.id).name} is hidden`)
+  }
+  if (unit.zone !== up.orphanedIn) fail('bad-zone', 'salvage happens where it fell')
   if (!pipGateSatisfied(state, seat, def)) fail('pip-gate', `${def.name} needs banked color sources for its pips (decision 69)`)
   payCost(state, seat, def.cost)
   // upgrade pressure applies to salvage too — the greed tax doesn't care how the second upgrade arrived (#23 sweep)
@@ -340,10 +347,18 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
 
   if (def.type === 'upgrade') {
     // implicit attach target first, then any card-specific targets
+    const attachSide = def.attach?.side ?? 'friendly'   // #80: enemy attach is per-card, never the default
     const attachRef = targets[0]
-    if (!attachRef || attachRef.kind !== 'unit') fail('bad-targets', 'upgrades attach to a friendly unit')
+    if (!attachRef || attachRef.kind !== 'unit') fail('bad-targets', `upgrades attach to a ${attachSide} unit`)
     const carrier = state.units[attachRef.id] ?? fail('bad-targets', 'no such unit')
-    if (carrier.owner !== seat) fail('bad-targets', 'upgrades attach to a friendly unit')
+    if (attachSide === 'friendly') {
+      if (carrier.owner !== seat) fail('bad-targets', 'upgrades attach to a friendly unit')
+    } else {
+      if (carrier.owner === seat) fail('bad-targets', `${def.name} attaches to an enemy unit`)
+      // a hostile attach IS enemy targeting — the standing protections apply
+      if (hasKw(state, carrier, 'untargetable')) fail('bad-targets', `${defOf(state, carrier.id).name} cannot be targeted`)
+      if (!carrier.exhausted && hasKw(state, carrier, 'hidden')) fail('bad-targets', `${defOf(state, carrier.id).name} is hidden`)
+    }
     validateTargets(state, seat, def.targets ?? [], targets.slice(1), def.name)
     payCost(state, seat, def.cost)
     side.hand.splice(idx, 1)

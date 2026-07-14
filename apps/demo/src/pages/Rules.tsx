@@ -71,7 +71,7 @@ export function Rules() {
       <ul className="ml-5 list-disc">
         <LI><B>Units</B> have <B>Power</B> (damage they deal) and <B>Health</B>. They stay on the board, hold zones, and fight.</LI>
         <LI><B>Actions</B> resolve their effect once, then go to the discard.</LI>
-        <LI><B>Upgrades</B> attach to one of your units and buff it. If the wearer dies, the upgrade survives — it stays in that zone, <B>orphaned</B>, and either player may later spend a turn to <B>salvage</B> it: attach it to a unit they control in that zone by paying its full cost (resources <i>and</i> pips) again. A fallen champion’s sword is anyone’s prize.</LI>
+        <LI><B>Upgrades</B> attach to a unit and change it — most buff one of yours, though a few (like Subjugate) clamp onto an enemy to weaken it. If the wearer dies, the upgrade survives — it stays in that zone, <B>orphaned</B>, and either player may later spend a turn to <B>salvage</B> it back onto a valid unit in that zone by paying its full cost (resources <i>and</i> pips) again. A fallen champion’s sword is anyone’s prize.</LI>
       </ul>
       <P>Every card has a <B>cost</B>, paid with <B>resources</B>, and may have colored <B>pips</B>, a check on what your bank contains (both below). Cards can carry <B>keywords</B> — the shorthand abilities listed at the bottom of this page.</P>
 
@@ -138,7 +138,7 @@ export function Rules() {
       <ul className="ml-5 list-disc">
         <LI>Each resource pays <B>1</B> toward a card’s cost. To play a cost-3 card, <B>exhaust 3</B> ready resources — <B>any</B> 3; color never matters for payment.</LI>
         <LI>Resources are <B>permanent</B> — the banked card is gone for good, but it pays every round forever. Banking is your economy; most rounds, bank.</LI>
-        <LI>A <B>unit enters ready</B> — it can move or attack that same round (each of those still exhausts it as usual). Upgrades attach to a friendly unit.</LI>
+        <LI>A <B>unit enters ready</B> — it can move or attack that same round (each of those still exhausts it as usual). Upgrades attach to a friendly unit — though a rare card clamps onto an enemy instead.</LI>
       </ul>
 
       <H2 id="pips">Colors &amp; pips</H2>

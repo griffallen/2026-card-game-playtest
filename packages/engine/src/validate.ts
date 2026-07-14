@@ -41,6 +41,12 @@ export function validateCardSet(cards: CardSet): string[] {
       if (kw.n !== undefined && !isInt(kw.n, 0, 99)) err(slug, `bad keyword value ${kw.k} ${kw.n}`)
     }
 
+    // #80 (Subjugate): attach side — upgrades only, friendly|enemy
+    if (def.attach !== undefined) {
+      if (def.type !== 'upgrade') err(slug, 'attach is only for upgrades')
+      if (!['friendly', 'enemy'].includes(def.attach?.side as string)) err(slug, `bad attach side ${def.attach?.side}`)
+    }
+
     const chosenSlots = (def.targets ?? []).reduce((s, t) => s + (t.count ?? 1), 0)
     for (const t of def.targets ?? []) errors.push(...validateTargetSpec(slug, t))
 
@@ -169,7 +175,11 @@ function validateStatic(slug: string, st: Static): string[] {
   if (!STATICS.has(st.s)) { errors.push(`${slug}: unknown static ${(st as { s: string }).s}`); return errors }
   if (st.s === 'aura') {
     if (!AURA_SCOPES.has(st.scope)) errors.push(`${slug}: bad aura scope ${st.scope}`)
-    if (st.p === undefined && st.armor === undefined && !st.kw) errors.push(`${slug}: aura grants nothing`)
+    if (st.p === undefined && st.pPerHostPip === undefined && st.armor === undefined && !st.kw) errors.push(`${slug}: aura grants nothing`)
+    if (st.pPerHostPip !== undefined) {   // #80 (Subjugate): host-pip scaling reads the carrier — attached scope only
+      if (st.scope !== 'attached') errors.push(`${slug}: pPerHostPip needs scope attached (got ${st.scope})`)
+      if (!isInt(st.pPerHostPip, -5, 5) || st.pPerHostPip === 0) errors.push(`${slug}: bad pPerHostPip ${st.pPerHostPip}`)
+    }
     if (st.kw && !KEYWORDS.has(st.kw.k)) errors.push(`${slug}: unknown aura keyword ${st.kw.k}`)
     for (const k of Object.keys(st.cond ?? {})) if (!COND_KEYS.has(k)) errors.push(`${slug}: unknown condition ${k}`)
   }

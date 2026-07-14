@@ -69,7 +69,9 @@ export type Op =
   | { op: 'createCopies'; n: number; p?: number; h?: number; kw?: KeywordSpec[]; ifOnlyCopy?: boolean }  // #69 (Radiant Citadel): summon n ready copies of the source unit's card in the controller's Home. p/h/kw shape the copies' body (omitted = the printed card). ifOnlyCopy: fires only while the controller owns exactly one copy — the recursion fuse. Created units are not deck cards; they vanish when they die.
 
 export type Static =
-  | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; armor?: number; kw?: KeywordSpec; cond?: Cond }
+  /** pPerHostPip (#80, Subjugate): power scaled by the CARRIER's pip count — attached scope only,
+   *  computed live so a salvaged upgrade (decision 67) re-fits its new host. */
+  | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; pPerHostPip?: number; armor?: number; kw?: KeywordSpec; cond?: Cond }
   | { s: 'oppThreshold'; n: number }      // opponent's win threshold raised by n
   | { s: 'imprisonWatcher'; n: number }   // controller gains n influence whenever any unit is imprisoned
 
@@ -107,6 +109,9 @@ export interface CardDef {
   /** cost is printed "X": the player declares how many resources to pay at cast (issue #45) */
   xCost?: boolean
   kw?: KeywordSpec[]
+  /** #80 (Subjugate): which side's units this upgrade attaches to — absent = friendly, the
+   *  standing law for every other upgrade. Per-card; enemy attach is never the default. */
+  attach?: { side: 'friendly' | 'enemy' }
   targets?: TargetSpec[]     // play-time targets (upgrades: attach target is implicit and NOT listed)
   onPlay?: Op[]              // action body; unit/upgrade enter-play effects
   onEnterZone?: Op[]         // fires on play AND every zone entry (targets always auto-picked)
