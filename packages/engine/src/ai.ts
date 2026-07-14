@@ -168,7 +168,13 @@ function blockScore(state: GameState, seat: Seat, action: GameAction & { type: '
     for (const b of blockers) {
       const gross = Math.max(0, effHealth(state, b) - b.damage) + effArmor(state, b)
       const chunk = Math.min(dmg, gross)
-      if (gross > 0 && chunk >= gross) score -= val(b) * (hasKw(state, b, 'guard') ? 1.6 : 2)
+      if (gross > 0 && chunk >= gross) {
+        // #68: charge the death penalty by REMAINING stock, not full sticker price — a two-sevenths
+        // wall is nearly spent, so spending it on a winning block is cheap. frac=1 for fresh blockers
+        // (undamaged) → their scores stay bit-identical, no regression.
+        const frac = Math.max(0, effHealth(state, b) - b.damage) / Math.max(1, effHealth(state, b))
+        score -= val(b) * (hasKw(state, b, 'guard') ? 1.6 : 2) * frac
+      }
       dmg -= chunk
       if (!hasKw(state, b, 'guard')) score -= 2   // the readiness spent
     }
@@ -222,7 +228,20 @@ function activateScore(state: GameState, seat: Seat, action: GameAction & { type
 
 function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'play' }): number {
   const def = defOf(state, action.card)
-  if (def.type === 'unit') return 45 + def.cost * 3 // develop the board, biggest first
+  if (def.type === 'unit') {
+    let score = 45 + def.cost * 3 // develop the board, biggest first
+    // #68 (bounded): value yellow's defensive tools by the SITUATION, not just by size, so the bot
+    // plays them instead of hoarding bigger bodies. A defender is worth deploying when threatened;
+    // a capture-on-arrival is removal — worth the stock of whoever it arrests.
+    const underThreat = unitsInZone(state, homeZone(seat), other(seat)).length > 0 || state.sides[seat].life <= 10
+    if (underThreat && (def.kw ?? []).some(k => k.k === 'guard' || k.k === 'cantAttack')) score += 14
+    if ((def.onPlay ?? []).some(op => op.op === 'capture')) {
+      const r = action.targets?.[0]
+      const u = r?.kind === 'unit' ? state.units[r.id] : undefined
+      if (u && u.owner !== seat) score += (defOf(state, u.id).cost + effPower(state, u)) * 1.5
+    }
+    return score
+  }
 
   // actions/upgrades: score the ops against the actual chosen targets —
   // a target-blind bot burns 1/1s and jails tokens, and every sim conclusion inherits that.
@@ -390,7 +409,14 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
         const ready = state.sides[seat].resources.filter(r => !r.exhausted).length
         // bank early and when flooded; slow down once the economy is online
         score = ready < 4 ? 55 : handSize >= 5 ? 40 : 12
-        score -= defOf(state, action.card).cost // prefer banking cheap spares, keep the threats
+        const card = defOf(state, action.card)
+        score -= card.cost // prefer banking cheap spares, keep the threats
+        // #68: don't turn a needed defender into copper. When enemies stand in our Home or we're
+        // low on life, a Guard/wall in hand is a shield, not a spare — tax banking it away.
+        const isDefender = card.type === 'unit' && (card.kw ?? []).some(k => k.k === 'guard' || k.k === 'cantAttack')
+        if (isDefender && (unitsInZone(state, homeZone(seat), other(seat)).length > 0 || state.sides[seat].life <= 8)) {
+          score -= 40
+        }
         break
       }
       case 'skipResource': score = 8; break
