@@ -21,18 +21,27 @@ Anything newer is a finding.
 
 ## Build labels (tick-side) — see `docs/AGENT/build-workflow.md`
 
-Every tick also checks the build flag:
+Every tick, on top of the sweep:
 
-```bash
-gh issue list --label build-now --json number      # is a build triggered?
-```
+1. **Classify new/unlabeled work.** Apply `backlog` or a tier (`patch`|`minor`|`major`) per
+   the test — tripwire? → `major`; one contained thing? → `patch`; else → `minor`. If it's
+   blocked on a human, **assign** them (#91).
+2. **Ship patches on sight.** A `patch` needs no trigger: build + `npm test` (green first) +
+   `./scripts/deploy-demo.sh`, `shipped` + close, write the `RELEASES.md` patch line.
+3. **Honor `build-now`** on `minor`/`major`:
 
-If `build-now` is set anywhere: sweep everything `queued`, build + `npm test` (green first) +
-`./scripts/deploy-demo.sh` in one pass, add a `RELEASES.md` line + bump the version, close the
-shipped issues, and **remove `build-now`** (empty queue → just remove it + post one line). The
-agent owns all state motion — move an item to `building` while it ships, closed when done.
-Blaine's only two moves are `queued` (lock) and `build-now` (fire); never wait on him to move
-the others. Label changes count as handled activity — don't re-trigger on your own edits.
+   ```bash
+   gh issue list --label build-now --json number
+   ```
+   - `minor` → build the whole `minor` batch.
+   - `major` → verify the flag's labeler was Blaine (`gh api .../issues/{n}/events`, `labeled`
+     actor); if not, hold + post a note. Then build that major.
+   - After shipping: set `building` during the pass, then `shipped` + close, write the release
+     line, **remove `build-now`**.
+
+Deferred/wontfix/dup → close as **"not planned"** (no `shipped`). The agent owns all label
+motion; Blaine/Griff only set a tier or drop `build-now`. Label changes you make count as
+handled activity — don't re-trigger on your own edits.
 
 ## Routing
 

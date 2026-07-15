@@ -58,11 +58,11 @@ The two-player online prototype (accounts, remote play over websockets, spectato
 hall for cards/decks/rules) lives in `apps/server` + `apps/web`; deploy notes in
 `README-DEPLOY.md`.
 
-**How builds ship.** Work moves through four GitHub labels: `backlog` (noted) → `queued` (in
-the next batch) → `building` (shipping now) → closed (shipped). Blaine's whole interface is two
-verbs — add **`queued`** to lock something into the next build, add **`build-now`** on any issue
-to run the batch immediately. The agent builds + tests + deploys, logs the release in
-[`RELEASES.md`](RELEASES.md), and clears the flag. Full spec: [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
+**How builds ship.** Work is labelled by size, and the size sets who ships it: a **`patch`**
+(one self-contained fix) the agent ships on sight; a **`minor`** batch fires when Blaine or
+Griff drop **`build-now`**; a **`major`** (a rules/engine change) waits for Blaine only. The
+lifecycle is `backlog` → a tier → `building` → `shipped`, logged in [`RELEASES.md`](RELEASES.md).
+Full spec: [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 ## What's in here
 

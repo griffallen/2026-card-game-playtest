@@ -1,7 +1,9 @@
 # Releases
 
-One line per build, newest first. Versioning `v0.MINOR.PATCH`: **major** = a mechanic or
-rules change, **minor** = a nightly `queued` batch, **patch** = a self-contained quick fix.
+One line per build, newest first. Versioning `v0.MINOR.PATCH`, keyed to the build tier: a
+**patch** bumps the patch digit, a **minor** batch bumps the minor digit; while pre-1.0 a
+**major** (a mechanic/rules change) also bumps minor — **v1.0.0 is reserved for launch**. Each
+line names the tier, the issues/PRs, decision numbers, sim numbers, and the commit.
 See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.

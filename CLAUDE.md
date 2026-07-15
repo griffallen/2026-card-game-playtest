@@ -42,21 +42,26 @@ Kill this myth if you meet it again: a past session ("The Blind Pilot," 011) wro
 
 ## Build workflow (Blaine + Fable, #92)
 
-The board is four labels; the release ledger is `RELEASES.md`. **Full spec + rationale:
-`docs/AGENT/build-workflow.md`** — read it before touching the flow. In brief:
+The labels are the board; the **tier is the trigger**. Release ledger: `RELEASES.md`.
+**Full spec + rationale: `docs/AGENT/build-workflow.md`** — read it before touching the flow.
+In brief:
 
-- **State labels** (at most one per issue/PR, agent-owned): `backlog` (noted, never ships) →
-  `queued` (in the next batch) → `building` (shipping now) → **closed = shipped**.
-- **`build-now`** (flag, Blaine sets on any open issue): the next tick sweeps everything
-  `queued`, builds + tests + deploys in one pass, writes the release line, closes the shipped
-  issues, and **removes `build-now`** (the label coming off is the receipt).
-- **Blaine's whole interface is two verbs:** add `queued` (lock), add `build-now` (fire).
-  The agent owns every other label move. `build-now` never sweeps `backlog`; empty queue →
-  clear the label + post one line.
-- **Tier = version, not a label** (`v0.MINOR.PATCH`): major = a mechanic/rules change (own
-  build), minor = a `queued` batch, patch = a contained quick fix (ship inline). Recorded in
-  the release line at ship time. A patch may skip the batch; a major routes its design to
-  Fable first (tripwire).
+- **Lifecycle:** `backlog` (noted) → **one tier** `patch`|`minor`|`major` (classified + ready;
+  the tier replaces the old `queued`) → `building` → `shipped` + close.
+- **The tier decides who ships, and when** — the whole point:
+  - **patch** = one self-contained fix (stat tweak, card wiring, copy/bug fix, no tripwire) →
+    **the agent ships it immediately**; applying the label IS the go.
+  - **minor** = a batch worth shipping together (no tripwire) → **Blaine or Griff** fire it
+    with `build-now`.
+  - **major** = a **tripwire** (engine primitive, `rules-v1.2.md`/`DECISIONS.md`, or changes
+    what a card *does*) → **Blaine only** fires it with `build-now`; design routes to Fable
+    first. On a major fire the tick verifies the `build-now` actor was Blaine before building.
+- **Classify in order:** tripwire? → major. Else one contained thing? → patch. Else → minor.
+  Because major == tripwire, agent auto-ship only ever reaches genuinely contained work.
+- **Agent labels incoming work** each tick (`backlog` or a tier per the test) and **assigns**
+  the human who owns the next action (#91); a human may relabel anytime.
+- **shipped vs deferred:** `shipped` label + close = folded into a build; close as **"not
+  planned"** = deferred/wontfix/dup. `shipped` present → folded; closed without it → dropped.
 - Not a GitHub Action — the build runs in the laptop session, not CI.
 
 ## Session protocol
