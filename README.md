@@ -4,6 +4,8 @@ An original card game in development. **Griff designs, Blaine builds**, and an A
 Code) turns design conversations into specs, code, and a playable prototype — the whole loop runs
 through this repo.
 
+**`v0.1.0`** · 271 tests green · [▶ play the demo](https://blainebooher.com/new-game-demo/) · [what shipped →](RELEASES.md)
+
 ## 🎮 Play it right now — no install
 
 **https://blainebooher.com/new-game-demo/** — the full rules engine in your browser. Play hotseat
@@ -55,6 +57,12 @@ npm run cards          # compile data/cards/ → engine (cards:check is the PR g
 The two-player online prototype (accounts, remote play over websockets, spectators, undo, admin
 hall for cards/decks/rules) lives in `apps/server` + `apps/web`; deploy notes in
 `README-DEPLOY.md`.
+
+**How builds ship.** Work moves through four GitHub labels: `backlog` (noted) → `queued` (in
+the next batch) → `building` (shipping now) → closed (shipped). Blaine's whole interface is two
+verbs — add **`queued`** to lock something into the next build, add **`build-now`** on any issue
+to run the batch immediately. The agent builds + tests + deploys, logs the release in
+[`RELEASES.md`](RELEASES.md), and clears the flag. Full spec: [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 ## What's in here
 

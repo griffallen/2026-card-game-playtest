@@ -40,6 +40,25 @@ Project state lives in `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md`. **Read it at th
 
 Kill this myth if you meet it again: a past session ("The Blind Pilot," 011) wrongly decided the session network-isolates localhost so the gate can never pass, and told everyone to wait on Blaine — which dammed the whole chain for days. It's false. If the gate ever *genuinely* fails, report the real error (a broken build, a page error the gate caught) and fix it; do not invent a can't-reach-localhost blocker or defer the deploy to a human. A fix that isn't deployed hasn't reached Griff — **the demo is always a priority.**
 
+## Build workflow (Blaine + Fable, #92)
+
+The board is four labels; the release ledger is `RELEASES.md`. **Full spec + rationale:
+`docs/AGENT/build-workflow.md`** — read it before touching the flow. In brief:
+
+- **State labels** (at most one per issue/PR, agent-owned): `backlog` (noted, never ships) →
+  `queued` (in the next batch) → `building` (shipping now) → **closed = shipped**.
+- **`build-now`** (flag, Blaine sets on any open issue): the next tick sweeps everything
+  `queued`, builds + tests + deploys in one pass, writes the release line, closes the shipped
+  issues, and **removes `build-now`** (the label coming off is the receipt).
+- **Blaine's whole interface is two verbs:** add `queued` (lock), add `build-now` (fire).
+  The agent owns every other label move. `build-now` never sweeps `backlog`; empty queue →
+  clear the label + post one line.
+- **Tier = version, not a label** (`v0.MINOR.PATCH`): major = a mechanic/rules change (own
+  build), minor = a `queued` batch, patch = a contained quick fix (ship inline). Recorded in
+  the release line at ship time. A patch may skip the batch; a major routes its design to
+  Fable first (tripwire).
+- Not a GitHub Action — the build runs in the laptop session, not CI.
+
 ## Session protocol
 
 **Start:** read the handoff prompt, then check the designer's inbox — the full sweep lives in `/watch` (`.claude/skills/watch/SKILL.md`) — for card PRs or intent issues from Griff (triage: respond on the thread, review card PRs per `data/cards/README.md`, fold accepted changes into the canon). State where the project stands and what's next, confirm with the user before doing work.

@@ -19,6 +19,21 @@ gh api 'repos/booherbg/2026-card-game/issues/comments?sort=created&direction=des
 Compare `updatedAt` / `created_at` against the last activity this session has handled.
 Anything newer is a finding.
 
+## Build labels (tick-side) — see `docs/AGENT/build-workflow.md`
+
+Every tick also checks the build flag:
+
+```bash
+gh issue list --label build-now --json number      # is a build triggered?
+```
+
+If `build-now` is set anywhere: sweep everything `queued`, build + `npm test` (green first) +
+`./scripts/deploy-demo.sh` in one pass, add a `RELEASES.md` line + bump the version, close the
+shipped issues, and **remove `build-now`** (empty queue → just remove it + post one line). The
+agent owns all state motion — move an item to `building` while it ships, closed when done.
+Blaine's only two moves are `queued` (lock) and `build-now` (fire); never wait on him to move
+the others. Label changes count as handled activity — don't re-trigger on your own edits.
+
 ## Routing
 
 | Finding | Handler |
