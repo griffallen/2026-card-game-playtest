@@ -146,7 +146,7 @@ describe('Radiant Citadel — create-copies on entry (#69)', () => {
     expect(hasKw(s, u, 'politician')).toBe(true)
     expect(hasKw(s, u, 'cantAttack')).toBe(true)
     expect(CARD_SET['radiant-citadel'].statics ?? []).toEqual([])   // oppThreshold dropped (#69)
-    expect(thresholds(s)).toEqual([15, 15])              // nobody's bar moves while it stands
+    expect(thresholds(s)).toEqual([20, 20])              // nobody's bar moves while it stands (±20 since #91)
   })
 
   it('the view teaches the copies as 0/1 bodies, not 1/4 cards', () => {

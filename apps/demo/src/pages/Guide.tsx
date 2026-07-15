@@ -40,7 +40,7 @@ export function Guide() {
       <P>
         A game runs <B>ten to fourteen rounds</B>. Both players draw two cards every round, so nobody runs dry —
         the loser is the one who spent worse, not the one who drew worse. There are <B>two clocks</B>: 20 life,
-        and the influence track at ±15. Beginners watch life. Yellow players watch you watching life.
+        and the influence track at ±20. Beginners watch life. Yellow players watch you watching life.
         Neither number has a ceiling — <B>heal past 20 all you like, and a big swing can drive a base below zero</B> —
         they only <i>trigger</i>: you lose the instant your life hits 0, or the round your opponent's influence reaches their threshold.
         Check the influence track <B>every round</B>, the way you'd check your purse in a crowded market —
@@ -116,7 +116,7 @@ export function Guide() {
       </P>
       <ul className="ml-5 mt-2 list-disc">
         <CardTip name="Gateward Colossus (6 · 3/9, Guard, Armor 2, pays on defend)" tip="the whole strategy in one body. Park it, stay ready, and every solo attack into that zone becomes +1 influence and a bruise." />
-        <CardTip name="Dawnspear Paladin (5 · 5/5, +2 influence on attack)" tip="the closer — it wins by swinging, whether or not the swing lands well. Games end at 15 with this card mid-leap." />
+        <CardTip name="Dawnspear Paladin (5 · 5/5, +2 influence on attack)" tip="the closer — it wins by swinging, whether or not the swing lands well. Games end at 20 with this card mid-leap." />
         <CardTip name="Exemplar Knight (4 · 4/4, +2 power attacking, pays on kills)" tip="the honest body that punches up a weight class and tips the track doing it." />
         <CardTip name="Prison Warrant (3 · capture a damaged unit, rent every round)" tip="removal that pays a salary. The grip only breaks when the jailer dies — so guard the jailer." />
         <CardTip name="Supreme Sentence (7 · exhaust two units anywhere, 3 damage each)" tip="the verdict: it un-readies whatever was about to matter — Guards lose their vigil, Hidden units lose their veil — and the 3 damage marks two heads for your knights. Yellow's act-three answer." />

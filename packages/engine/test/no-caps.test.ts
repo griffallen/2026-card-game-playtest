@@ -56,10 +56,10 @@ describe('decision 104: no caps on life or influence', () => {
     let s = g()
     const me = s.actorSeat
     fuel(s, me, 5)
-    s.influence = me === 0 ? 14 : -14                // one below the 15 threshold, from me's side
+    s.influence = me === 0 ? 19 : -19                // one below the 20 threshold, from me's side
     const card = toHand(s, me, 'surge')
     s = act(s, me, { type: 'play', card, targets: [] })
-    expect(influenceFor(s, me)).toBe(19)            // +5 overshoots to 19 — NOT clamped to 15
+    expect(influenceFor(s, me)).toBe(24)            // +5 overshoots to 24 — NOT clamped to 20
     expect(s.winner).toBe(me)
     expect(s.winReason).toBe('influence')
   })

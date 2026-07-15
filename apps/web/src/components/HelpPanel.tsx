@@ -18,7 +18,7 @@ function V3Content() {
       <H>Winning</H>
       <div className="mt-2 flex flex-col gap-2">
         <Row icon="⚔" title="Life">Drop your opponent to 0 life (both start at 20).</Row>
-        <Row icon="☯" title="Influence">One shared tug-of-war track. Reach +15 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (Guards pay when they defend); purple profits from kills; red mostly ignores it.</Row>
+        <Row icon="☯" title="Influence">One shared tug-of-war track. Reach +20 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (Guards pay when they defend); purple profits from kills; red mostly ignores it.</Row>
       </div>
 
       <H>Your round</H>
@@ -79,7 +79,7 @@ function V2Content() {
       <H>Winning</H>
       <div className="mt-2 flex flex-col gap-2">
         <Row icon="⚔" title="Life">Drop your opponent to 0 life (both start at 20).</Row>
-        <Row icon="☯" title="Influence">One shared tug-of-war track. Reach +15 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (guards pay when they defend, Exemplar when it kills); red mostly ignores it. Its <b>Overextend</b> is a combat gamble now — self-damage, not an influence cost.</Row>
+        <Row icon="☯" title="Influence">One shared tug-of-war track. Reach +20 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (guards pay when they defend, Exemplar when it kills); red mostly ignores it. Its <b>Overextend</b> is a combat gamble now — self-damage, not an influence cost.</Row>
       </div>
 
       <H>Your round</H>

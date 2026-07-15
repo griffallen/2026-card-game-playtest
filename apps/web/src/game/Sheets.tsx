@@ -110,7 +110,7 @@ export function BaseSheet({ name, life, mine, handCount, deckCount, discardCount
       </div>
       <p className="mt-3 text-[11px] leading-relaxed text-dim">
         The base is the player — 0 life ends the game. Only enemy units standing in {mine ? 'your' : 'their'} Home can assault it
-        (a base never strikes back); ready Guards there defend it for free. Healing never exceeds the starting value.
+        (a base never strikes back); ready Guards there defend it for free. Healing has no ceiling — you can push past the starting value (decision 104).
       </p>
     </Sheet>
   )

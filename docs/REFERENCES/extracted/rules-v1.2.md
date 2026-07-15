@@ -7,7 +7,7 @@
 Win conditions:
 
 - Opponent's Life reaches 0
-- Influence reaches +15 in their favor
+- Influence reaches +20 in their favor
 - Influence reaches -15 in their opponent's favor
 
 These conditions are meant to represent a different play experience than all current deckbuilders. I want the game to be fun for all and reward those with skill. Often, I've found that other deck building games become inevitable. I want my game to feel like anything can be possible. That is the intention of the influence mechanic. It's meant to balance the game while still allowing for win conditions to take their course. Cards should use life and influence to help keep the game interesting, fun and with a feeling of 'anything can happen'.
@@ -15,7 +15,7 @@ These conditions are meant to represent a different play experience than all cur
 Influence is a shared value between both players and acts as a secondary win condition.
 
 - The game starts at 0 Influence
-- If Influence reaches +15, the controlling player wins
+- If Influence reaches +20, the controlling player wins
 - If Influence reaches -15, the opposing player wins
 
 ## Cards and Deck

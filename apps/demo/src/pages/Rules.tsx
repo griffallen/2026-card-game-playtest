@@ -43,7 +43,7 @@ export function Rules() {
         <P>
           Two players, two decks. You each start at <B>20 Life</B>. Play units into three zones, march them at your
           opponent, and attack — reduce their Life to <B>0</B> to win. Or win the other way: tug the shared{' '}
-          <B>Influence</B> track to <B>+15 on your side</B>. Players take turns — single actions —
+          <B>Influence</B> track to <B>+20 on your side</B>. Players take turns — single actions —
           across shared rounds. That’s the whole shape; the rest is detail.
         </P>
       </Card>
@@ -52,7 +52,7 @@ export function Rules() {
       <P>You win the instant either of these happens (checked after every single change):</P>
       <ul className="ml-5 list-disc">
         <LI><B>Life:</B> your opponent’s Life hits <B>0</B>.</LI>
-        <LI><B>Influence:</B> the shared track reaches <B>+15 on your side</B>. One number sits between you; pulling it to your end wins — even if you’re behind on Life.</LI>
+        <LI><B>Influence:</B> the shared track reaches <B>+20 on your side</B>. One number sits between you; pulling it to your end wins — even if you’re behind on Life.</LI>
       </ul>
       <P>If a single event would drop both players to 0 Life at once, the player who took the action wins.</P>
 
@@ -182,9 +182,9 @@ export function Rules() {
 
       <H2 id="influence">Influence</H2>
       <P>
-        Influence is <B>one shared track</B> you fight over — gain some and the marker slides toward your <B>+15</B>. It’s <B>earned by
+        Influence is <B>one shared track</B> you fight over — gain some and the marker slides toward your <B>+20</B>. It’s <B>earned by
         events</B>, never just by sitting there: a guard is paid when it <B>defends</B> — blocking <i>or</i> being the one attacked — a champion when it <B>kills</B>, and some cards pay
-        out when <B>played</B>. Get it to +15 on your side and you win, even while losing the fight for Life. (If one blow crosses <i>both</i> finish lines at once, <B>Life wins</B>.)
+        out when <B>played</B>. Get it to +20 on your side and you win, even while losing the fight for Life. (If one blow crosses <i>both</i> finish lines at once, <B>Life wins</B>.)
       </P>
 
       <H2 id="keywords">Keywords</H2>
@@ -205,7 +205,7 @@ export function Rules() {
       <H2 id="quick">Quick reference</H2>
       <Card>
         <ul className="ml-5 list-disc">
-          <LI><B>Win:</B> enemy to 0 Life, or Influence to +15 your side.</LI>
+          <LI><B>Win:</B> enemy to 0 Life, or Influence to +20 your side.</LI>
           <LI><B>Round vs turn:</B> a <B>round</B> is one full cycle; a <B>turn</B> is one action. A round is made of many turns.</LI>
           <LI><B>Round 1:</B> no start step — straight into turns with your opening hand and 2 resources.</LI>
           <LI><B>Every round after:</B> both players ready up, draw 2, bank up to 1 — then take turns until two passes in a row.</LI>

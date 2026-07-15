@@ -3,7 +3,7 @@ import type { RulesConfig } from './types.ts'
 /** Defaults per docs/SPECS/game-rules.md §2 — every value admin-tunable per rules version. */
 export const DEFAULT_RULES: RulesConfig = {
   startingLife: 20,
-  influenceWinThreshold: 15,
+  influenceWinThreshold: 20,
   startingHandSize: 7,
   startingResources: 2,
   chooseStartingResources: true,

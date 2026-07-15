@@ -66,15 +66,15 @@ describe('influence effects', () => {
 
   it('influence win threshold ends the game', () => {
     let { s, p1, p2 } = arena()
-    s.influence = p2 === 0 ? 14 : -14
+    s.influence = p2 === 0 ? 19 : -19                      // one below the ±20 win threshold (#91)
     const detain = toHand(s, p2, 'detain')
     const warden = put(s, p2, 'bulwark-protector', 1)
     const target = put(s, p1, 'berserker', 1)
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: detain, targets: [{ kind: 'unit', id: warden }, { kind: 'unit', id: target }] })
-    // issue #55: Detain's flat rider is cut — the capture pays nothing; still 14, not a win
+    // issue #55: Detain's flat rider is cut — the capture pays nothing; still 19, not a win
     expect(s.winner).toBeNull()
-    expect(influenceFor(s, p2)).toBe(14)
+    expect(influenceFor(s, p2)).toBe(19)
     const sanctify = toHand(s, p2, 'sanctify')
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: sanctify })
