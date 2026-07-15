@@ -27,7 +27,7 @@ export function glossFor(keyword: string): string {
 }
 
 export const STATUS_GLOSS = {
-  exhausted: 'Exhausted ⟳ — already acted; readies at the start of its owner\'s next round. It can\'t block for others, but if attacked directly it still strikes back at full power.',
+  exhausted: 'Exhausted ⟳ — already acted; readies at the start of its owner\'s next round. It can\'t block for others, but if attacked it still strikes back — full power to a lone attacker, or its power poured across a gang (biggest first).',
   rushFreeMove: 'Rush 💨 — its one free move this round (the one it arrived): move without exhausting, and it can still attack after. The 💨 clears once it moves.',
   imprisoned: 'Imprisoned ⛓ — cannot attack, move, or defend; abilities and Guard are switched off. Costs the jailer 1 influence each round; breaks if their influence goes negative. (Classic v2.3 only.)',
 } as const

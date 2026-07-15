@@ -187,14 +187,21 @@ function blockScore(state: GameState, seat: Seat, action: GameAction & { type: '
     const through = Math.max(0, unblockedPow - effArmor(state, target))
     if (through >= remaining) score -= val(target) * 2.5
     else score -= through * 1.5
-    // decision 84: whatever we DON'T block, our target punches back — count its kills as gain
+    // decision 84 + 105 (#84): whatever we DON'T block, our target punches back — but the strike
+    // is DIVIDED across the unblocked attackers, poured highest-power-first, so count only the kills
+    // the pool can actually pay for (the engine's default order; the bot never supplies its own).
     const retaliates = state.rules.retaliation === 'always' || (state.rules.retaliation === 'ready' && !target.exhausted)
     if (retaliates && through < remaining) {
-      const tPow = effPower(state, target)
-      for (const aid of pa.attackers) {
-        const a = state.units[aid]
-        if (!a || (byAttacker.get(aid) ?? []).length) continue
-        if (Math.max(0, tPow - effArmor(state, a)) >= effHealth(state, a) - a.damage) score += val(a) * 2
+      let pool = effPower(state, target)
+      const unblocked = pa.attackers
+        .map(aid => state.units[aid])
+        .filter((a): a is UnitInstance => !!a && (byAttacker.get(a.id) ?? []).length === 0)
+        .sort((x, y) => effPower(state, y) - effPower(state, x) || idNum(x.id) - idNum(y.id))
+      for (const a of unblocked) {
+        if (pool <= 0) break
+        const gross = Math.max(0, effHealth(state, a) - a.damage) + effArmor(state, a)
+        if (gross > 0 && pool >= gross) score += val(a) * 2   // the divided blow fells this one
+        pool -= Math.min(pool, gross)
       }
     }
   }

@@ -623,18 +623,31 @@ function applyBlockPhase(state: GameState, action: GameAction, seat: Seat) {
     seen.add(blocker)
     if (!pa.attackers.includes(onto)) fail('bad-block', 'that is not an attacker in this combat')
   }
+  // #84 (Griff, option A): the defender may aim the target's DIVIDED strike-back with an ordered
+  // list of attacker ids. Optional and validated — every id must be an attacker in this combat,
+  // no repeats. Absent → the engine's highest-power-first default.
+  if (action.retaliationOrder) {
+    const seenR = new Set<string>()
+    for (const id of action.retaliationOrder) {
+      if (!pa.attackers.includes(id)) fail('bad-retaliation-order', 'retaliation order must name attackers in this combat')
+      if (seenR.has(id)) fail('bad-retaliation-order', 'retaliation order repeats an attacker')
+      seenR.add(id)
+    }
+  }
   for (const { blocker } of action.pairs) {
     const b = state.units[blocker]!
     if (state.rules.blockingExhausts && !hasKw(state, b, 'guard')) b.exhausted = true
     log(state, seat, `${defOf(state, b.id).name} blocks${hasKw(state, b, 'guard') ? ' (guard — stays ready)' : ''}`)
   }
-  resolveBlockedAttack(state, action.pairs)
+  resolveBlockedAttack(state, action.pairs, action.retaliationOrder)
 }
 
 /** v3 (spec §1.3): paired simultaneous resolution — pour-order gang splits, breakthrough spill to the
  *  ORIGINAL declared target, unblocked attackers hit the target; blockers strike back, and under
- *  retaliation 'always' (decision 84) so does the declared target, exhausted or not. */
-function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: string }[]) {
+ *  retaliation 'always' (decision 84) so does the declared target, exhausted or not — its strike-back
+ *  DIVIDED across the unblocked attackers (decision 105, #84), poured highest-power-first (or the
+ *  defender's `retaliationOrder`). */
+function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: string }[], retaliationOrder?: string[]) {
   const pa = state.pendingAttack!
   state.pendingAttack = null
   state.phase = 'loop'
@@ -666,9 +679,10 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   const doomId = state.doom?.unit
   const doomCandidates = new Set<string>()
   let doomToTarget = 0
-  // #25 experiment: under 'always', the declared target strikes every unblocked attacker at its
-  // full snapshot power, exhausted or not; under 'ready', only while un-exhausted (the timing game
-  // survives). Cross-zone ranged never reaches this path — structural exemption.
+  // #25 experiment: under 'always', the declared target strikes back, exhausted or not; under
+  // 'ready', only while un-exhausted (the timing game survives). Its snapshot power is the pool;
+  // decision 105 (#84) DIVIDES that pool across the unblocked attackers (poured below), rather than
+  // dealing it in full to each. Cross-zone ranged never reaches this path — structural exemption.
   const preTarget = pa.target.kind === 'unit' ? state.units[pa.target.id] : undefined
   const retaliates = state.rules.retaliation === 'always'
     || (state.rules.retaliation === 'ready' && !!preTarget && !preTarget.exhausted)
@@ -678,8 +692,6 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       unblockedTotal += p.aPower
       unblockedNames.push(defOf(state, p.a.id).name)
       if (p.a.id === doomId) doomToTarget += p.aPower
-      if (retaliatePower > 0 && preTarget && p.a.id !== preTarget.id)
-        unitHits.push([p.a, retaliatePower, defOf(state, preTarget.id).name])
       continue
     }
     // pour the attacker's damage over its blockers in pair order (the defender chose the order)
@@ -699,6 +711,35 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
     // issue #58 (Griff): name the counter's source — twin "from the blockers" lines read as
     // one combined pool hitting every attacker, when each pair resolves in isolation
     if (p.counter > 0) unitHits.push([p.a, p.counter, p.blockers.map(b => defOf(state, b.id).name).join(' + ')])
+  }
+
+  // decision 105 (#84, Griff — amends decision 84): the declared target's strike-back is DIVIDED
+  // across the unblocked attackers, not dealt in full to each. Pour it like the gang-BLOCK pour
+  // above: order highest effective power first (ties by instance order) unless the defender named
+  // a `retaliationOrder`; each attacker takes up to what fells it through armor, the remainder
+  // spills to the next, until the pool is spent. The target never strikes itself. A lone attacker
+  // is the whole line, so it still soaks the full pool — single-attacker retaliation is unchanged.
+  const retaliationDealt = new Set<string>()
+  if (retaliatePower > 0 && preTarget) {
+    const orderRank = (id: string) => {
+      const i = retaliationOrder ? retaliationOrder.indexOf(id) : -1
+      return i >= 0 ? i : Infinity
+    }
+    const marks = plans
+      .filter(p => !p.blockers.length && p.a.id !== preTarget.id)
+      .map(p => p.a)
+      .sort((x, y) =>
+        orderRank(x.id) - orderRank(y.id)
+        || effPower(state, y) - effPower(state, x)
+        || idNum(x.id) - idNum(y.id))
+    let pool = retaliatePower
+    for (const a of marks) {
+      if (pool <= 0) break
+      const gross = Math.max(0, effHealth(state, a) - a.damage) + effArmor(state, a)  // what fells it through armor
+      const chunk = Math.min(pool, gross)
+      if (chunk > 0) { unitHits.push([a, chunk, defOf(state, preTarget.id).name]); retaliationDealt.add(a.id) }
+      pool -= chunk
+    }
   }
 
   const targetUnit = pa.target.kind === 'unit' ? state.units[pa.target.id] : undefined
@@ -766,7 +807,9 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       for (const b of p.blockers) if (state.units[b.id]) {
         fireTrigger({ state, attackTarget: { kind: 'unit', id: p.a.id }, actorSeat: seat }, b, 'onKill')
       }
-      if (!p.blockers.length && retaliatePower > 0 && preTarget && state.units[preTarget.id]) {
+      // decision 105: the target credits a kill only for an attacker its own divided blow actually
+      // struck — the pour may have run dry before reaching this one.
+      if (!p.blockers.length && retaliationDealt.has(p.a.id) && preTarget && state.units[preTarget.id]) {
         fireTrigger({ state, attackTarget: { kind: 'unit', id: p.a.id }, actorSeat: seat }, preTarget, 'onKill')
       }
     }

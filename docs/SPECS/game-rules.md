@@ -63,13 +63,21 @@ Cost and color are now two separate checks:
    power hits the attacker back.
 4. **[Q4 ✓] Unblocked attackers deal their full damage to the declared target** (unit or Home).
    **[Decision 84 (issues #25/#24, designer) — the attacked always fight back:** a unit that is
-   the declared target strikes **every unblocked attacker** back at its full power, **exhausted
-   or not**, simultaneously. Being attacked is never free for the attacker; exhaustion costs you
-   the *choice* of defense (blocking for others), not self-defense. Bases never strike back.
+   the declared target strikes back at its full power, **exhausted or not**, simultaneously.
+   Being attacked is never free for the attacker; exhaustion costs you the *choice* of defense
+   (blocking for others), not self-defense. Bases never strike back. Yellow's guard-payout ladder
+   and wall statlines moved up a notch in the same ruling.]**
+   **[Decision 105 (issue #84, designer — option A, amends 84) — the strike-back is DIVIDED:**
+   against a gang the target's power is a **single pool poured across the unblocked attackers**
+   (not dealt in full to each): ordered **highest effective power first** by default — or in the
+   **defender's chosen order** (the `block` action's optional `retaliationOrder`, validated) —
+   each attacker takes up to what fells it through armor, the remainder spilling to the next,
+   until the pool is spent. Same pour as the gang-block above. A 5-power wall ganged by three
+   2/2s fells two and wounds the third, not all three. A **lone attacker still soaks the whole
+   pool** (it is the entire line — single-attacker retaliation unchanged).]**
    Being the declared target also fires "when this defends" triggers whether or not damage got
    through (decision 85) — but **only once**: a self-blocking target's blocker-fire is its
-   target-fire (decision 86). Yellow's guard-payout ladder and wall statlines moved up a notch
-   in the same ruling.]**
+   target-fire (decision 86).
 5. **[Q6 ✓] Breakthrough** (no number): excess damage from a killed blocker pushes through **to
    the original declared target**. No choices; fully deterministic. *(Decision 75: the eleven red
    cards that still printed "Breakthrough N" — eight carriers, three grants — shed their

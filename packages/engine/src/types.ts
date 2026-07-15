@@ -301,7 +301,7 @@ export type GameAction =
   | { type: 'play'; card: string; targets?: TargetRef[]; zone?: ZoneId; mode?: number; x?: number }  // zone: v3 Infiltrate; mode: v3 modal cards; x: declared X cost (issue #45)
   | { type: 'activate'; unit: string; targets?: TargetRef[] }             // v3 Sneak (decision 60)
   | { type: 'releaseCaptive'; unit: string }                              // RETIRED (decision 92): kept for replay compat; always rejected
-  | { type: 'block'; pairs: { blocker: string; onto: string }[] }         // v3 combat: defender pairs blockers (empty = let it through); pour order = pair order
+  | { type: 'block'; pairs: { blocker: string; onto: string }[]; retaliationOrder?: string[] }  // v3 combat: defender pairs blockers (empty = let it through); pour order = pair order. #84: retaliationOrder aims the target's DIVIDED strike-back — ordered attacker ids; absent → highest-power-first
   | { type: 'attachOrphan'; upgrade: string; unit: string }               // v3 (decision 67): salvage an orphaned upgrade at full cost+pips
   | { type: 'attack'; attackers: string[]; target: TargetRef; overextend?: string[]; splash?: { by: string; unit: string }[] }  // splash: per-attacker chosen victims for splashReap triggers (PR #46, decision 24-compatible) // decision 42: 1+ attackers, one zone; overextend: subset taking the gamble
   | { type: 'move'; unit: string; to: ZoneId }

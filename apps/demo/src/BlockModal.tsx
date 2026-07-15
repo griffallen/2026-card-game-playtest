@@ -279,8 +279,9 @@ export function BlockModal({
                   ? <><b className="text-parchment">{landing}</b> lands on {targetView?.name ?? targetName}
                     {targetView && landing >= targetView.health - targetView.damage ? ' — lethal' : ''}. No life lost — they strike your unit.</>
                   : targetView?.shielded ? `${targetView.name}'s shield eats the whole hit.` : 'Nothing reaches your unit.'}
-                {targetView && unblocked.length > 0 &&
-                  <> And {targetView.name} strikes back: each unblocked attacker takes <b className="text-parchment">{targetView.power}</b>, even while exhausted.</>}
+                {targetView && unblocked.length > 0 && (unblocked.length === 1
+                  ? <> And {targetView.name} strikes back at <b className="text-parchment">{targetView.power}</b>, even while exhausted.</>
+                  : <> And {targetView.name} strikes back — its <b className="text-parchment">{targetView.power}</b> power poured across the unblocked attackers, biggest first, even while exhausted.</>)}
               </span>
             )}
           </div>

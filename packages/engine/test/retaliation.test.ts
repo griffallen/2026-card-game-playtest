@@ -10,9 +10,11 @@ import type { CardSet } from '../src/types.ts'
 const R: CardSet = { ...T, gwall: { slug: 'gwall', name: 'gwall', color: 'yellow', type: 'unit', cost: 2, power: 0, health: 5, text: '', kw: [{ k: 'cantAttack' }, { k: 'guard' }] } }
 
 // #25 (Griff): "a unit directly attacked always deals combat damage to the attackers,
-// whether it's exhausted or not." Experiment knob: rules.retaliation 'blockers' (current
-// law — fighting back IS blocking) vs 'always' (the declared target strikes every
-// unblocked attacker at full power, exhausted included). Off by default everywhere.
+// whether it's exhausted or not." Experiment knob: rules.retaliation 'blockers' (v2.3 law —
+// fighting back IS blocking) vs 'always' (the declared target strikes back, exhausted included).
+// Under decision 105 (#84) that strike-back is DIVIDED across the unblocked attackers — poured
+// highest-power-first — not dealt in full to each; see retaliation-divide.test.ts. These fixtures
+// use pools that exactly cover their gangs, so they read the same either way.
 function game(retaliation: 'blockers' | 'ready' | 'always'): GameState {
   let s = createGame({
     seed: 31,
@@ -43,7 +45,7 @@ describe('retaliation experiment (#25)', () => {
     expect(after.units[raider].damage).toBe(0)       // no strike-back without blocking
   })
 
-  it("'always': the exhausted target strikes EVERY unblocked attacker at full power", () => {
+  it("'always': the exhausted target's strike-back pool fells the whole gang when it covers them", () => {
     const s = game('always')
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const r1 = put(s, me, 'soldier', 1)              // 2/2
@@ -51,7 +53,8 @@ describe('retaliation experiment (#25)', () => {
     const sleepy = put(s, them, 'brute', 1, { exhausted: true })   // 4/3, asleep but angry
     const after = swing(s, me, [r1, r2], sleepy)
     expect(after.units[sleepy]).toBeUndefined()      // 2+2 ≥ 3 health: the brute falls
-    expect(after.units[r1]).toBeUndefined()          // but its 4 power fells each 2-health attacker
+    // decision 105: the 4 pours across the two 2/2s (2 + 2) — exactly enough to fell both
+    expect(after.units[r1]).toBeUndefined()
     expect(after.units[r2]).toBeUndefined()
   })
 
