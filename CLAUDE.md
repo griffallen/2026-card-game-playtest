@@ -42,29 +42,26 @@ Kill this myth if you meet it again: a past session ("The Blind Pilot," 011) wro
 
 ## Build workflow (Blaine + Fable, #92)
 
-The labels are the board; the **tier is the trigger**. Release ledger: `RELEASES.md`.
-**Full spec + rationale: `docs/AGENT/build-workflow.md`** — read it before touching the flow.
-In brief:
+The labels are the board, on **two orthogonal axes: scope ≠ approval**. Release ledger:
+`RELEASES.md`. **Full spec + rationale: `docs/AGENT/build-workflow.md`** — read it before
+touching the flow. In brief:
 
-- **Lifecycle:** `backlog` (noted) → **one tier** `patch`|`minor`|`major` (classified + ready;
-  the tier replaces the old `queued`) → `building` → `shipped` + close.
-- **The tier decides who ships, and when** — the whole point:
-  - **patch** = one self-contained fix (stat tweak, card wiring, copy/bug fix, no tripwire) →
-    **the agent ships it immediately**; applying the label IS the go.
-  - **minor** = a batch worth shipping together (no tripwire) → **Blaine or Griff** fire it
-    with `build-now`.
-  - **major** = a **tripwire** (engine primitive, `rules-v1.2.md`/`DECISIONS.md`, or changes
-    what a card *does*) → **Blaine only** fires it with `build-now`; design routes to Fable
-    first. On a major fire the tick verifies the `build-now` actor was Blaine before building.
-- **Classify in order:** tripwire? → major. Else one contained thing? → patch. Else → minor.
-  Because major == tripwire, agent auto-ship only ever reaches genuinely contained work.
-- **Agent labels incoming work** each tick (`backlog` or a tier per the test) and **assigns**
-  the human who owns the next action (#91); a human may relabel anytime.
-- **Every `minor`/`major` gets a scoping brief** posted on its thread (#92): an effort report
-  (what it touches, reused vs new) + side-effects/impacts (rule consequences, balance risk) —
-  the decision-support to weigh defer-vs-fire. Patches skip it (they ship).
-- **shipped vs deferred:** `shipped` label + close = folded into a build; close as **"not
-  planned"** = deferred/wontfix/dup. `shipped` present → folded; closed without it → dropped.
+- **Scope** (how big / who fires / version bump): `patch` = one self-contained fix →
+  **agent auto-ships**; `minor` = a batch → **Blaine or Griff** fire; `major` = a **tripwire**
+  (engine primitive, `rules-v1.2.md`/`DECISIONS.md`, or changes what a card *does*) →
+  **Blaine only** fires (tick verifies the actor). Classify: tripwire? → major; else one
+  contained thing? → patch; else → minor.
+- **Approval / lifecycle** (independent of scope): `backlog` (noted) → *(scope tag, no
+  `queued`)* = **scoped but unapproved** → `queued` = **approved + ready** → `building` →
+  `shipped` + close. A `major` can be fully scoped and never approved (never gets `queued`).
+- **`queued` vs `build-now`:** `queued` = approved and parked in the ready pool; `build-now`
+  = fire the queued work now, **tier-scoped** (a `minor` fire batches all queued minors, no
+  major rides along; a `major` fire builds that one major). patch self-approves and ships.
+- **Scoping brief on every `minor`/`major`** (#92): effort report + side-effects/impacts,
+  posted on the thread — the input to the human's `queued` (approve) decision. Patches skip it.
+- **Agent labels incoming work** each tick (`backlog`/scope tag) and **assigns** the human who
+  owns the next action (#91); a human may relabel anytime.
+- **shipped vs deferred:** `shipped` label + close = folded; close **"not planned"** = deferred.
 - Not a GitHub Action — the build runs in the laptop session, not CI.
 
 ## Session protocol

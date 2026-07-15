@@ -1,134 +1,124 @@
 # Build workflow
 
 How work moves from "an idea in an issue" to "shipped in the demo." Designed to be
-**simple enough to not have to remember**: a handful of GitHub labels, a release log, and
-one decision tree. If you're copying this into another repo, this file is self-contained.
+**simple enough to not have to remember**: two label axes, a scoping brief, a release log.
+If you're copying this into another repo, this file is self-contained.
 
-Ruled in #92 (Blaine + Fable, 2026-07-15). Two ideas carry it:
+Ruled in #92 (Blaine + Fable, 2026-07-15). Three ideas carry it:
 1. **The labels are the board** — Blaine's laptop runs the build, but the labels on GitHub
    mirror its state in real time, so the board never lies about what's cooking.
-2. **The tier is the trigger** — how big a change is decides *who* may ship it and *when*.
+2. **Scope and approval are different questions** — how *big* a change is (`patch`/`minor`/
+   `major`) is independent of whether it's *approved to build* (`queued`). A major can be
+   fully scoped and never approved.
+3. **The scope decides who fires it** — patch flows on its own; minor/major wait for a human.
 
-## The labels
+## Two axes
 
-| Label | Kind | Meaning |
-|-------|------|---------|
-| `backlog` | state | Noted, not yet classified. Never ships. |
-| `patch` | tier | One self-contained fix. **The agent ships it immediately** — applying the label *is* the go. |
-| `minor` | tier | A batch worth shipping together. **Blaine or Griff** fire it with `build-now`. |
-| `major` | tier | A tripwire (see below). **Blaine only** fires it with `build-now`. |
-| `building` | state | A build is on it **right now** (transient). |
-| `shipped` | terminal | Folded into a build; cross-refs its `RELEASES.md` line. Then the issue is closed. |
-| `build-now` | flag | "Fire it now" for a `minor`/`major` item (patches don't need it). |
-| `designer` | gate | Blocked on Griff's design call — not in the build pipeline until decided. |
+Every live item wears **one scope tag + one lifecycle state**. They move independently.
 
-An item wears **one** of `{backlog | patch | minor | major}` at a time (plus, briefly,
-`building`, ending at `shipped`). The tier label *replaces* the old `queued` — assigning a
-tier IS "classified and ready," so there's no separate queue label to keep true.
+**Axis 1 — Scope** (how big / who fires / which version bumps):
 
-## Lifecycle
+| Scope | one-line test | fired by |
+|-------|---------------|----------|
+| `patch` | one self-contained fix — a stat/number tweak, card wiring, copy fix, bugfix-with-test; no tripwire | **agent, automatically** |
+| `minor` | a batch worth shipping together (several cards/nerfs or a small feature); no tripwire | **Blaine or Griff** (`build-now`) |
+| `major` | a **tripwire** — engine primitive, `rules-v1.2.md`/`DECISIONS.md`, or changes what a card *does* | **Blaine only** (`build-now`) |
 
-```
-backlog ──classify──▶ patch│minor│major ──fire──▶ building ──ship──▶ shipped + close
- (noted)              (ready; tier = who fires)     (in flight)      (in RELEASES.md)
-```
+**Axis 2 — Lifecycle / approval** (where it is):
 
-A clear patch skips `backlog` entirely — it's classified and shipped in one motion.
+| State | Meaning |
+|-------|---------|
+| `backlog` | Noted, not yet scoped. |
+| *(scope tag, no `queued`)* | **Scoped but unapproved** — where a `major` sits while Blaine weighs its scoping brief. |
+| `queued` | **Approved and ready to build.** May park here, waiting to batch or for the right moment. |
+| `building` | Transient — shipping right now. |
+| `shipped` | Terminal (+ close); cross-refs its `RELEASES.md` line. |
 
-## The tier decides who ships, and when
+Plus one flag — `build-now` — and the `designer` gate (blocked on Griff's design call).
 
-| tier | one-line test | armed by | fired by | when |
-|------|---------------|----------|----------|------|
-| **patch** | one self-contained fix — a stat/number tweak, card wiring, copy fix, or bugfix-with-test; no rule/primitive change | agent or human | **agent, automatically** | on classification |
-| **minor** | a batch (several cards/nerfs or a small feature) worth shipping together; no tripwire | agent or human | **Blaine or Griff** (`build-now`) | enough accrue |
-| **major** | a **tripwire** — touches an engine primitive, `rules-v1.2.md`, or `DECISIONS.md`, or changes what a card *does* (new mechanic, keyword rework, combat change) | agent or human | **Blaine only** (`build-now`) | Blaine's call |
+## Classification test (scope)
 
-The asymmetry is the point: **patches flow with zero waiting; minor and major intentionally
-wait for a human to say go** — so only the work you *want* eyes on waits.
+In order: **tripwire? → `major`.** Else **one contained thing? → `patch`.** Else → `minor`.
+Because `major` == tripwire, the agent can only ever auto-ship (patch) genuinely contained
+work — a tripwire always stops for Blaine and Fable.
 
-**Classification test (in order):**
-1. Is it a **tripwire**? → `major`. (Design routes to Fable first; see CLAUDE.md → Model routing.)
-2. Else, is it **one contained thing**? → `patch`. (Agent ships it now.)
-3. Else → `minor`. (A batch; waits for a human `build-now`.)
+## Flow per tier
 
-Because `major` == tripwire, the agent can only ever auto-ship genuinely contained work — a
-tripwire always stops for Blaine and Fable. That boundary is what makes patch-autonomy safe.
+- **patch** — contained, so the agent **auto-approves and ships in one motion**. A patch is
+  self-approving; it never waits in `queued`. (`patch` → `building` → `shipped`.)
+- **minor** — agent/human scope-tags `minor` and posts the **scoping brief** → a **human adds
+  `queued`** to approve → queued minors accrue → **`build-now`** (Blaine or Griff) fires the
+  queued-`minor` batch.
+- **major** — scope-tags `major` + scoping brief → **Blaine adds `queued`** to approve →
+  **`build-now` (Blaine only)** fires that one major. A major too complicated to be worth it
+  simply never gets `queued` — scoped and on record, but unbuilt.
 
 ## The trigger — `build-now`
 
-**`build-now` is tier-scoped: what you drop it on decides what builds** (this is how you say
-"build the minors, not the majors" — no separate `queued` needed). Drop it on a `minor` or
-`major` item (patches never need it). On the next tick:
+`queued` and `build-now` are distinct: **`queued` = approved and in the ready pool** (it can
+park there); **`build-now` = fire the queued work now.** So Blaine can approve-and-park, then
+pull the trigger whenever. `build-now` is **tier-scoped** — what you drop it on decides what
+builds:
 
-- **`build-now` on a `minor`** → build **every `minor`** as one batch. **No `major` ever rides
-  along** — majors are never swept by a minor fire.
-- **`build-now` on a `major`** → build **that one major, alone**. Each major is fired
-  individually and deliberately. The tick first checks **who applied the flag**
-  (`gh api repos/booherbg/2026-card-game/issues/{n}/events`, `labeled` event actor); if it
-  wasn't Blaine, it holds and posts a Chronicler note. patch/minor run on trust.
-
-So the tier is the selector `queued` used to be: **to hold a `minor` out of the next batch,
-demote it to `backlog`** (if it's `minor`, it's declared ready to ship together). To build a
-specific major without touching anything else, flag just that major.
+- **`build-now` on a `queued` `minor`** → build **every `queued` minor** as one batch. **No
+  `major` rides along.**
+- **`build-now` on a `queued` `major`** → build **that one major, alone**. The tick first
+  verifies **who applied the flag** (`gh api repos/booherbg/2026-card-game/issues/{n}/events`,
+  `labeled` actor); if it wasn't Blaine, it holds and posts a note. patch/minor run on trust.
 
 Then the tick sets `building`, builds + tests (green first) + deploys, moves the item to
 `shipped`, closes it, writes the `RELEASES.md` line, and **removes `build-now`**. The label
-coming off is the receipt that the build ran — a comment can't be cleared, a label can.
+coming off is the receipt that the build ran.
 
 ## Scoping brief — every `minor` and `major` (#92)
 
-When an item is tagged **`minor`** or **`major`**, the agent posts a **scoping brief** on the
-thread — the decision-support a human needs to weigh *defer or fire now*:
+When an item is scope-tagged `minor` or `major`, the agent posts a **scoping brief** on the
+thread — the decision-support to weigh *approve (queue) or defer*:
 
-- **Effort report** — what it touches, how big, what rides on existing machinery vs. what's
-  genuinely new. Name the one or two real pieces; don't pad.
-- **Side effects / impacts** — rule consequences, new interactions, balance risk, and any
-  door it opens for the rest of the game.
+- **Effort report** — what it touches, how big, what rides on existing machinery vs. new. Name
+  the one or two real pieces; don't pad.
+- **Side effects / impacts** — rule consequences, new interactions, balance risk, doors it opens.
 
-`patch` needs no brief — it just ships. The brief is what makes a `minor`/`major` label
-actionable: the human reads it and drops `build-now` (or leaves it to accrue / defers). The
-[PR #86 scoping comment](https://github.com/booherbg/2026-card-game/pull/86) is the template.
+`patch` needs no brief — it just ships. The brief is the input to the `queued` (approval)
+decision. The [PR #86 scoping comment](https://github.com/booherbg/2026-card-game/pull/86) is
+the template.
 
 ## Shipped vs. deferred
 
-- **Shipped** — the `shipped` label, then close. It cross-refs the build's `RELEASES.md` line.
+- **Shipped** — the `shipped` label, then close. Cross-refs the build's `RELEASES.md` line.
 - **Deferred / wontfix / duplicate** — **close as "not planned"** (`gh issue close --reason "not planned"`).
-  GitHub renders that with a distinct icon.
 
-At a glance: `shipped` present → folded into a build; closed with **no** `shipped` → dropped
-for another reason. No separate `deferred` label needed.
+`shipped` present → folded into a build; closed with **no** `shipped` → dropped for another reason.
 
 ## Who owns the next action — assignees
 
 When an issue is waiting on a human, **assign it to that human** (Blaine or Griff) so the next
-action is unambiguous (#91). `designer` marks *what kind* of wait (a Griff design call);
-the assignee marks *who* is on the hook. An item with no assignee and a tier is the agent's to move.
+action is unambiguous (#91). `designer` marks *what kind* of wait; the assignee marks *who*.
 
 ## Standing rule — the agent labels incoming work
 
 Every tick, the agent reads any newly-arrived or unlabeled issue/PR and applies `backlog` or a
-tier per the classification test — and, if it's blocking on a human, assigns them. A patch it
-can classify, it ships; a `minor`/`major` gets its scoping brief posted (above). A human may
-relabel anything at any time. Blaine's whole interface stays
-two verbs: apply/leave a tier, and `build-now` to fire `minor`/`major`.
+scope tag per the classification test — and, if it's blocking on a human, assigns them. A
+`patch` it can classify, it ships; a `minor`/`major` gets its scoping brief posted (approval is
+then a human's `queued`). A human may relabel anything at any time.
 
 ## Versioning & the release log — `RELEASES.md`
 
-One greppable line per build, newest first, `v0.MINOR.PATCH`. While pre-1.0: a **patch** ship
-bumps the patch digit, a **minor** batch bumps the minor digit; a **major** also bumps minor
-pre-1.0 (v1.0.0 is reserved for launch). The line records the tier, the issues/PRs, decision
-numbers, sim numbers, and the commit.
+One greppable line per build, newest first, `v0.MINOR.PATCH`, keyed to scope: a **patch** bumps
+patch, a **minor** batch bumps minor; while pre-1.0 a **major** also bumps minor — **v1.0.0 is
+reserved for launch**. Each line names the scope, the issues/PRs, decision numbers, sim numbers,
+and the commit.
 
 ## Quick reference
 
 ```bash
-gh issue list --label minor       # what's waiting on a build-now
-gh issue list --label major       # tripwires awaiting Blaine
-gh issue list --label building    # shipping right now
-gh issue list --label backlog     # noted, not yet classified
-gh issue list --label build-now   # a build is triggered
+gh issue list --label queued              # approved + ready (the fire pool)
+gh issue list --label queued --label minor  # what a minor build-now would batch
+gh issue list --label major               # tripwires (scoped; queued ones are Blaine's to fire)
+gh issue list --label building            # shipping right now
+gh issue list --label build-now           # a build is triggered
 gh issue list --label shipped --state closed   # what's been folded
 ```
 
-Blaine/Griff: a tier is set (by you or the agent) when something's clear enough to move; drop
-`build-now` to fire a `minor`/`major`. Patches just go.
+Blaine/Griff: scope-tag sets who fires; add **`queued`** to approve; drop **`build-now`** to
+fire the queued work. Patches just go.

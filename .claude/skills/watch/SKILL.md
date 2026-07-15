@@ -21,25 +21,25 @@ Anything newer is a finding.
 
 ## Build labels (tick-side) — see `docs/AGENT/build-workflow.md`
 
-Every tick, on top of the sweep:
+Two axes: **scope** (`patch`|`minor`|`major`) and **approval** (`backlog`→`queued`→`building`
+→`shipped`). Every tick, on top of the sweep:
 
-1. **Classify new/unlabeled work.** Apply `backlog` or a tier (`patch`|`minor`|`major`) per
-   the test — tripwire? → `major`; one contained thing? → `patch`; else → `minor`. If it's
-   blocked on a human, **assign** them (#91). On a `minor`/`major`, post a **scoping brief**
-   (effort report + side-effects/impacts, Fable-drafted like any comment) so the human can
-   weigh defer-vs-fire (#92); patches skip it.
-2. **Ship patches on sight.** A `patch` needs no trigger: build + `npm test` (green first) +
-   `./scripts/deploy-demo.sh`, `shipped` + close, write the `RELEASES.md` patch line.
-3. **Honor `build-now`** on `minor`/`major`:
+1. **Scope-classify new/unlabeled work.** tripwire? → `major`; one contained thing? → `patch`;
+   else → `minor`. If blocked on a human, **assign** them (#91). On a `minor`/`major`, post a
+   **scoping brief** (effort + side-effects/impacts, Fable-drafted) — the input to the human's
+   `queued` (approval) call (#92); patches skip it.
+2. **Ship patches on sight.** A `patch` self-approves — no `queued`, no trigger: build +
+   `npm test` (green first) + `./scripts/deploy-demo.sh`, `shipped` + close, `RELEASES.md` line.
+3. **Honor `build-now`** — fires the **`queued`** work, tier-scoped:
 
    ```bash
    gh issue list --label build-now --json number
    ```
-   - `minor` → build the whole `minor` batch.
-   - `major` → verify the flag's labeler was Blaine (`gh api .../issues/{n}/events`, `labeled`
-     actor); if not, hold + post a note. Then build that major.
-   - After shipping: set `building` during the pass, then `shipped` + close, write the release
-     line, **remove `build-now`**.
+   - on a `queued` `minor` → build all `queued` minors as one batch (no major rides along).
+   - on a `queued` `major` → verify the flag's labeler was Blaine (`gh api .../issues/{n}/events`,
+     `labeled` actor); if not, hold + post a note. Then build that one major.
+   - After shipping: `building` during the pass, then `shipped` + close, release line,
+     **remove `build-now`**. (`queued` without `build-now` = approved but parked — don't fire.)
 
 Deferred/wontfix/dup → close as **"not planned"** (no `shipped`). The agent owns all label
 motion; Blaine/Griff only set a tier or drop `build-now`. Label changes you make count as
