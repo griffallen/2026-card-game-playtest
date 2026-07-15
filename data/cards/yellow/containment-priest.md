@@ -8,7 +8,7 @@ keywords: capture
 pips: yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"modes":[{"label":"Capture","targets":[{"t":"unit","side":"enemy","maxPower":2}],"ops":[{"op":"capture","t":"chosen0"}]},{"label":"Stand down","targets":[{"t":"unit","side":"enemy","mustBeDamaged":true}],"ops":[{"op":"exhaust","t":"chosen0"}]}]}
+effects: {"modes":[{"label":"Capture","text":"Capture target enemy unit with 2 or less Power.","targets":[{"t":"unit","side":"enemy","maxPower":2}],"ops":[{"op":"capture","t":"chosen0"}]},{"label":"Stand down","text":"Exhaust a damaged enemy unit.","targets":[{"t":"unit","side":"enemy","mustBeDamaged":true}],"ops":[{"op":"exhaust","t":"chosen0"}]}]}
 ---
 When this enters play, choose one: capture target enemy unit with 2 or less Power, or exhaust a damaged enemy unit.
 

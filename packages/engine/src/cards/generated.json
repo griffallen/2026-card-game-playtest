@@ -1131,6 +1131,7 @@
   "modes": [
    {
     "label": "Weak",
+    "text": "Exhaust an enemy unit with 4 or less Power.",
     "targets": [
      {
       "t": "unit",
@@ -1147,6 +1148,7 @@
    },
    {
     "label": "Cheap",
+    "text": "Exhaust an enemy unit that costs 4 or less.",
     "targets": [
      {
       "t": "unit",
@@ -1163,6 +1165,7 @@
    },
    {
     "label": "Overwhelm",
+    "text": "Exhaust any enemy unit — requires 8 or more Influence.",
     "cond": {
      "influenceAtLeast": 8
     },
@@ -1196,6 +1199,7 @@
   "modes": [
    {
     "label": "Capture",
+    "text": "Capture target enemy unit with 2 or less Power.",
     "targets": [
      {
       "t": "unit",
@@ -1212,6 +1216,7 @@
    },
    {
     "label": "Stand down",
+    "text": "Exhaust a damaged enemy unit.",
     "targets": [
      {
       "t": "unit",

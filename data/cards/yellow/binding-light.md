@@ -5,7 +5,7 @@ cost: 2
 pips: yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"modes":[{"label":"Weak","targets":[{"t":"unit","side":"enemy","maxPower":4}],"ops":[{"op":"exhaust","t":"chosen0"}]},{"label":"Cheap","targets":[{"t":"unit","side":"enemy","maxCost":4}],"ops":[{"op":"exhaust","t":"chosen0"}]},{"label":"Overwhelm","cond":{"influenceAtLeast":8},"targets":[{"t":"unit","side":"enemy"}],"ops":[{"op":"exhaust","t":"chosen0"}]}]}
+effects: {"modes":[{"label":"Weak","text":"Exhaust an enemy unit with 4 or less Power.","targets":[{"t":"unit","side":"enemy","maxPower":4}],"ops":[{"op":"exhaust","t":"chosen0"}]},{"label":"Cheap","text":"Exhaust an enemy unit that costs 4 or less.","targets":[{"t":"unit","side":"enemy","maxCost":4}],"ops":[{"op":"exhaust","t":"chosen0"}]},{"label":"Overwhelm","text":"Exhaust any enemy unit — requires 8 or more Influence.","cond":{"influenceAtLeast":8},"targets":[{"t":"unit","side":"enemy"}],"ops":[{"op":"exhaust","t":"chosen0"}]}]}
 ---
 Choose one — exhaust an enemy unit with 4 or less Power; exhaust an enemy unit that costs 4 or less; or, if you have 8 or more Influence, exhaust any enemy unit.
 
