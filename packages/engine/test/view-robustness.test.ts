@@ -16,8 +16,8 @@ describe('#90 viewFor fuzz across full V3 games', () => {
     for (let seed = 0; seed < 12; seed++) {
       let s: GameState = createGame({
         seed, rules: { ...V3_RULES, chooseStartingResources: false }, cardSet: CARD_SET,
-        players: [{ name: 'A', deck: deckSlugs(PREBUILT_DECKS.find(d => d.slug === 'griffs-yellow') ?? PREBUILT_DECKS[0]) },
-                  { name: 'B', deck: deckSlugs(PREBUILT_DECKS.find(d => d.slug === 'griffs-red') ?? PREBUILT_DECKS[1]) }],
+        players: [{ name: 'A', deck: deckSlugs(PREBUILT_DECKS.find(d => d.slug === 'radiant-order') ?? PREBUILT_DECKS[0]) },
+                  { name: 'B', deck: deckSlugs(PREBUILT_DECKS.find(d => d.slug === 'crimson-assault') ?? PREBUILT_DECKS[1]) }],
       })
       let rng = policyRngInit(seed)
       let steps = 0

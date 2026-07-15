@@ -6,6 +6,14 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.1.2 — 2026-07-15
+patch — demo decks (#94, Griff). Griff's own hand-curated lists are now the canonical
+prebuilt decks: **Crimson Assault** = his 65-card red (was `griffs-red`), **Radiant Order** =
+his 52-card yellow (was `griffs-yellow`). The stock auto-derived decks (every card in the
+color, workhorses doubled) are deleted and the `griffs-*` slugs retired — sims now grade the
+real decks under their names (crimson-assault vs radiant-order: red 43.5% / yellow 56.5%,
+N=200). Roster is now 3 decks (+ Veiled Court). 271 tests green.
+
 ## v0.1.1 — 2026-07-15
 patch — modal button help text (#93, Griff playtest). Binding Light (Weak / Cheap /
 Overwhelm) and Containment Priest (Capture / Stand down) gained per-mode `text`, so the

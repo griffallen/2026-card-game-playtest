@@ -56,7 +56,7 @@ describe('library', () => {
     const decks = await app.inject({ method: 'GET', url: '/api/decks', headers: cookieFor('boba') })
     const list = decks.json().decks
     expect(list.length).toBe(PREBUILT_DECKS.length)
-    // decks are min-48, not exactly-48 (decision 90) — red runs 49, Griff's Red 65
+    // decks are min-48, not exactly-48 (decision 90) — Crimson Assault (Griff's red) 65, Radiant Order 52 (#94)
     expect(list.every((d: { cardCount: number }) => d.cardCount >= 48)).toBe(true)
 
     const detail = await app.inject({ method: 'GET', url: `/api/decks/${list[0].id}`, headers: cookieFor('boba') })
