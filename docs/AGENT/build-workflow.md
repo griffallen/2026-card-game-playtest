@@ -47,28 +47,35 @@ work — a tripwire always stops for Blaine and Fable.
 - **patch** — contained, so the agent **auto-approves and ships in one motion**. A patch is
   self-approving; it never waits in `queued`. (`patch` → `building` → `shipped`.)
 - **minor** — agent/human scope-tags `minor` and posts the **scoping brief** → a **human adds
-  `queued`** to approve → queued minors accrue → **`build-now`** (Blaine or Griff) fires the
-  queued-`minor` batch.
-- **major** — scope-tags `major` + scoping brief → **Blaine adds `queued`** to approve →
-  **`build-now` (Blaine only)** fires that one major. A major too complicated to be worth it
+  `queued`** to approve → queued items accrue → **`build-now`** cuts a release of the queued set
+  (Blaine or Griff, if no `major` is queued).
+- **major** — scope-tags `major` + scoping brief → **Blaine adds `queued`** to approve → the
+  next release including it is **Blaine's to fire**. A major too complicated to be worth it
   simply never gets `queued` — scoped and on record, but unbuilt.
 
-## The trigger — `build-now`
+## The trigger — `build-now` cuts a release
 
 `queued` and `build-now` are distinct: **`queued` = approved and in the ready pool** (it can
-park there); **`build-now` = fire the queued work now.** So Blaine can approve-and-park, then
-pull the trigger whenever. `build-now` is **tier-scoped** — what you drop it on decides what
-builds:
+park there); **`build-now` = cut the release now.** So Blaine can approve-and-park, then pull
+the trigger whenever.
 
-- **`build-now` on a `queued` `minor`** → build **every `queued` minor** as one batch. **No
-  `major` rides along.**
-- **`build-now` on a `queued` `major`** → build **that one major, alone**. The tick first
-  verifies **who applied the flag** (`gh api repos/booherbg/2026-card-game/issues/{n}/events`,
-  `labeled` actor); if it wasn't Blaine, it holds and posts a note. patch/minor run on trust.
+**A release is the whole `queued` set, batched** — every approved-and-ready item built +
+tested + deployed in one pass (efficiency), and **only** what's `queued` (an un-ready feature
+that's still being discussed stays out of `queued`, so it never rides — build A and B, hold C).
+This is the standard release-lifecycle shape (#92): `queued` is the release candidate list.
 
-Then the tick sets `building`, builds + tests (green first) + deploys, moves the item to
-`shipped`, closes it, writes the `RELEASES.md` line, and **removes `build-now`**. The label
-coming off is the receipt that the build ran.
+**Authority to fire a release** follows the highest scope in the `queued` set:
+- queued set is **`minor`s only** → **Blaine or Griff** may drop `build-now`.
+- queued set **includes a `major`** → **Blaine only**; the tick verifies the `build-now`
+  actor (`gh api repos/booherbg/2026-card-game/issues/{n}/events`, `labeled`) and holds +
+  posts a note if it wasn't Blaine. (To ship minors *without* a ready major, just don't
+  `queue` the major yet.)
+
+`patch` is the fast lane — it self-approves and ships on sight, never waiting for a release.
+
+The tick sets `building` on the batch, builds + tests (green first) + deploys, moves each item
+to `shipped`, closes it, writes the `RELEASES.md` line (version bumped by the highest scope in
+the batch), and **removes `build-now`**. The label coming off is the receipt that the build ran.
 
 ## Scoping brief — every `minor` and `major` (#92)
 
@@ -112,13 +119,12 @@ and the commit.
 ## Quick reference
 
 ```bash
-gh issue list --label queued              # approved + ready (the fire pool)
-gh issue list --label queued --label minor  # what a minor build-now would batch
-gh issue list --label major               # tripwires (scoped; queued ones are Blaine's to fire)
+gh issue list --label queued              # the release candidate set (what build-now ships)
+gh issue list --label major               # tripwires (scoped; a queued one makes the release Blaine's)
 gh issue list --label building            # shipping right now
-gh issue list --label build-now           # a build is triggered
+gh issue list --label build-now           # a release is triggered
 gh issue list --label shipped --state closed   # what's been folded
 ```
 
-Blaine/Griff: scope-tag sets who fires; add **`queued`** to approve; drop **`build-now`** to
-fire the queued work. Patches just go.
+Blaine/Griff: scope-tag sets who fires + the version bump; add **`queued`** to approve into the
+next release; drop **`build-now`** to cut it. Patches just go.

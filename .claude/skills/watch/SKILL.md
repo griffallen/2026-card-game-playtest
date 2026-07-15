@@ -30,16 +30,19 @@ Two axes: **scope** (`patch`|`minor`|`major`) and **approval** (`backlog`→`que
    `queued` (approval) call (#92); patches skip it.
 2. **Ship patches on sight.** A `patch` self-approves — no `queued`, no trigger: build +
    `npm test` (green first) + `./scripts/deploy-demo.sh`, `shipped` + close, `RELEASES.md` line.
-3. **Honor `build-now`** — fires the **`queued`** work, tier-scoped:
+3. **Honor `build-now`** — cut a release of the **whole `queued` set**, batched:
 
    ```bash
-   gh issue list --label build-now --json number
+   gh issue list --label build-now --json number   # trigger present?
+   gh issue list --label queued --json number,labels   # the release contents
    ```
-   - on a `queued` `minor` → build all `queued` minors as one batch (no major rides along).
-   - on a `queued` `major` → verify the flag's labeler was Blaine (`gh api .../issues/{n}/events`,
-     `labeled` actor); if not, hold + post a note. Then build that one major.
-   - After shipping: `building` during the pass, then `shipped` + close, release line,
-     **remove `build-now`**. (`queued` without `build-now` = approved but parked — don't fire.)
+   - Build **all `queued`** items in one pass — only ready work ships. Authority by highest
+     scope in the set: minors-only → Blaine or Griff may fire; **includes a `queued` `major`**
+     → verify the labeler was Blaine (`gh api .../issues/{n}/events`, `labeled` actor); if not,
+     hold + post a note.
+   - After shipping: `building` on the batch → `shipped` + close each → `RELEASES.md` line
+     (version by highest scope) → **remove `build-now`**. (`queued` without `build-now` =
+     approved but parked — don't fire.)
 
 Deferred/wontfix/dup → close as **"not planned"** (no `shipped`). The agent owns all label
 motion; Blaine/Griff only set a tier or drop `build-now`. Label changes you make count as
@@ -88,8 +91,12 @@ starts blank — the brief is everything. It MUST contain:
      5 clean nerfs wired — 81.7% → 70.7%
    ```
 
-Before posting, check the banner is present (Blaine flags banner-less comments within
-minutes). Post with `gh issue comment N --body-file <file>` — verbatim, no router edits.
+Before posting, **re-fetch the thread** (`gh issue view N --comments`) and confirm no new
+comment landed while the draft was being written (Blaine, 2026-07-15) — a fresh reply can
+change or obsolete the draft (it happened: a `queued` reversal arrived mid-draft). If the
+context moved, revise before posting. Also check the banner is present (Blaine flags
+banner-less comments within minutes). Post with `gh issue comment N --body-file <file>` —
+verbatim, no router edits.
 
 ## Standing consultant for long threads
 

@@ -54,9 +54,10 @@ touching the flow. In brief:
 - **Approval / lifecycle** (independent of scope): `backlog` (noted) → *(scope tag, no
   `queued`)* = **scoped but unapproved** → `queued` = **approved + ready** → `building` →
   `shipped` + close. A `major` can be fully scoped and never approved (never gets `queued`).
-- **`queued` vs `build-now`:** `queued` = approved and parked in the ready pool; `build-now`
-  = fire the queued work now, **tier-scoped** (a `minor` fire batches all queued minors, no
-  major rides along; a `major` fire builds that one major). patch self-approves and ships.
+- **`queued` vs `build-now`:** `queued` = approved + parked in the ready pool; `build-now`
+  = **cut a release of the whole `queued` set** (batched — only ready work ships; hold a
+  feature out by not queuing it). Authority by highest scope in the batch: minors-only →
+  Blaine or Griff; a queued `major` → Blaine only (actor-verified). patch self-approves + ships.
 - **Scoping brief on every `minor`/`major`** (#92): effort report + side-effects/impacts,
   posted on the thread — the input to the human's `queued` (approve) decision. Patches skip it.
 - **Agent labels incoming work** each tick (`backlog`/scope tag) and **assigns** the human who
