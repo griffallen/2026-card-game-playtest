@@ -53,6 +53,21 @@ That's it. The agent reviews every card PR with three questions:
 Then the agent fixes up `effects` if needed, and merges. **Feel and balance stay yours** — the
 agent never rejects a card for being too strong, only for being broken, dishonest, or off-color.
 
+## Renaming a card — the file is its identity
+
+A card's **filename** is its permanent identity: the deck lists, the engine, the game log, and
+every test refer to a card by its file (`yellow/subjugate.md` → `subjugate`). Its **`name:` line
+is just the printed title** — the words on the card face — and the two don't have to match.
+
+So **retitling a card is a one-line edit to `name:`, and it breaks nothing**: change "Subjugate"
+to "Shackles" on that line and every deck that still lists `subjugate` keeps working, untouched.
+The one move to **avoid is renaming the _file_** — that's the only thing that would break
+references, and there's never a reason to: the file is a stable id, not the card's name.
+Re-theme the title as freely as you like; leave the filename alone.
+
+(A card can also carry an optional catalog code — an `AZ###` set/color/number — tracked in issue
+#83 as a possible `code:` field, deliberately kept *separate* from the filename for this reason.)
+
 ## Asking for a redesign — or anything bigger
 
 Don't fight the format — just write intent. Two channels, both dead simple:
