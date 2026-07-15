@@ -400,9 +400,10 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
       shielded: (def.kw ?? []).some(k => k.k === 'shielded'),
       imprisoned: null, upgrades: [], mods: [], overextendedBy: 0,
     }
-    log(state, seat, `${side.name} deploys ${def.name}`)
+    log(state, seat, `${side.name} deploys ${def.name}${mode ? ` — ${mode.label}` : ''}`)
     const unit = state.units[action.card]
-    if (def.onPlay?.length) runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat, x: action.x, srcLabel: def.name }, def.onPlay)
+    const onPlayOps = mode ? mode.ops : def.onPlay   // #75: a modal unit runs its DECLARED mode's ops on entry
+    if (onPlayOps?.length) runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat, x: action.x, srcLabel: def.name }, onPlayOps)
     if (def.onEnterZone?.length && state.units[unit.id]) {
       fireTrigger({ state, targets, enteredZone: zone, actorSeat: seat }, unit, 'onEnterZone')
     }

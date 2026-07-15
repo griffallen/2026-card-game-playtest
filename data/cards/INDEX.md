@@ -54,7 +54,7 @@
 | [Oath of Order](yellow/oath-of-order.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gains Guard. |
 | [Vanguard Sentinel](yellow/vanguard-sentinel.md) | 1 | unit | 1/1 | guard | canon | Guard. When this unit dies, gain 1 Influence. |
 | [Binding Light](yellow/binding-light.md) | 2 | action | — |  | canon | Exhaust target enemy unit with 4 or less Power. |
-| [Containment Priest](yellow/containment-priest.md) | 2 | unit | 2/3 | capture | canon | When this enters play, it captures target enemy unit with 2 or less Power. |
+| [Containment Priest](yellow/containment-priest.md) | 2 | unit | 2/2 | capture | canon | When this enters play, choose one: capture target enemy unit with 2 or less Power, or exhaust a damaged enemy unit. |
 | [Disciplined Mind](yellow/disciplined-mind.md) | 2 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. Draw a card. |
 | [Hold the Line](yellow/hold-the-line.md) | 2 | action | — |  | canon | Choose a zone. Your units there gain Guard. |
 | [Radiant Aegis](yellow/radiant-aegis.md) | 2 | action | — |  | canon | Target unit gets Armor 2, permanently. |

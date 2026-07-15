@@ -312,14 +312,34 @@ describe('base-assault splash (Crimson Behemoth, re-ruled playtest 004)', () => 
 })
 
 describe('zone-entry triggers on movement', () => {
-  it('Containment Priest captures a small enemy on entry (v3 churn)', () => {
+  it('Containment Priest mode 0: captures a small enemy on entry (v3 churn; #75 modal)', () => {
     let { s, p1, p2 } = arena()
     const small = put(s, p1, 'spark-hound', homeZone(p2))   // 2 power (raider is 4/1 since PR #33)
     const priest = toHand(s, p2, 'containment-priest')
     s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'play', card: priest, targets: [{ kind: 'unit', id: small }] })
+    s = act(s, p2, { type: 'play', card: priest, targets: [{ kind: 'unit', id: small }], mode: 0 })
     expect(s.units[small]).toBeUndefined()
     const priestUnit = Object.values(s.units).find(u => u.slug === 'containment-priest')!
     expect(s.captives[small]?.by).toBe(priestUnit.id)
+  })
+
+  it('Containment Priest mode 1 (#75): exhausts a DAMAGED enemy — and never captures it', () => {
+    let { s, p1, p2 } = arena()
+    const wounded = put(s, p1, 'berserker', homeZone(p2), { damage: 1 })  // a damaged enemy
+    const priest = toHand(s, p2, 'containment-priest')
+    s = act(s, p1, { type: 'pass' })
+    s = act(s, p2, { type: 'play', card: priest, targets: [{ kind: 'unit', id: wounded }], mode: 1 })
+    expect(s.units[wounded].exhausted).toBe(true)      // stood down
+    expect(s.captives[wounded]).toBeUndefined()        // mode 1 exhausts, it does not capture
+    expect(s.units[wounded]).toBeDefined()             // still on the board
+  })
+
+  it('Containment Priest mode 1 (#75): rejects an UNdamaged target (mustBeDamaged)', () => {
+    let { s, p1, p2 } = arena()
+    const healthy = put(s, p1, 'berserker', homeZone(p2))  // full health — illegal for mode 1
+    const priest = toHand(s, p2, 'containment-priest')
+    s = act(s, p1, { type: 'pass' })
+    expect(() => act(s, p2, { type: 'play', card: priest, targets: [{ kind: 'unit', id: healthy }], mode: 1 }))
+      .toThrow(/damaged/)
   })
 })
