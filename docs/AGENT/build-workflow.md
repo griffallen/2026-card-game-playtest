@@ -67,6 +67,20 @@ Then the tick sets `building`, builds + tests (green first) + deploys, moves the
 `shipped`, closes it, writes the `RELEASES.md` line, and **removes `build-now`**. The label
 coming off is the receipt that the build ran — a comment can't be cleared, a label can.
 
+## Scoping brief — every `minor` and `major` (#92)
+
+When an item is tagged **`minor`** or **`major`**, the agent posts a **scoping brief** on the
+thread — the decision-support a human needs to weigh *defer or fire now*:
+
+- **Effort report** — what it touches, how big, what rides on existing machinery vs. what's
+  genuinely new. Name the one or two real pieces; don't pad.
+- **Side effects / impacts** — rule consequences, new interactions, balance risk, and any
+  door it opens for the rest of the game.
+
+`patch` needs no brief — it just ships. The brief is what makes a `minor`/`major` label
+actionable: the human reads it and drops `build-now` (or leaves it to accrue / defers). The
+[PR #86 scoping comment](https://github.com/booherbg/2026-card-game/pull/86) is the template.
+
 ## Shipped vs. deferred
 
 - **Shipped** — the `shipped` label, then close. It cross-refs the build's `RELEASES.md` line.
@@ -86,7 +100,8 @@ the assignee marks *who* is on the hook. An item with no assignee and a tier is 
 
 Every tick, the agent reads any newly-arrived or unlabeled issue/PR and applies `backlog` or a
 tier per the classification test — and, if it's blocking on a human, assigns them. A patch it
-can classify, it ships. A human may relabel anything at any time. Blaine's whole interface stays
+can classify, it ships; a `minor`/`major` gets its scoping brief posted (above). A human may
+relabel anything at any time. Blaine's whole interface stays
 two verbs: apply/leave a tier, and `build-now` to fire `minor`/`major`.
 
 ## Versioning & the release log — `RELEASES.md`

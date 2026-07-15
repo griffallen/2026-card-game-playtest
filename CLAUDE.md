@@ -60,6 +60,9 @@ In brief:
   Because major == tripwire, agent auto-ship only ever reaches genuinely contained work.
 - **Agent labels incoming work** each tick (`backlog` or a tier per the test) and **assigns**
   the human who owns the next action (#91); a human may relabel anytime.
+- **Every `minor`/`major` gets a scoping brief** posted on its thread (#92): an effort report
+  (what it touches, reused vs new) + side-effects/impacts (rule consequences, balance risk) —
+  the decision-support to weigh defer-vs-fire. Patches skip it (they ship).
 - **shipped vs deferred:** `shipped` label + close = folded into a build; close as **"not
   planned"** = deferred/wontfix/dup. `shipped` present → folded; closed without it → dropped.
 - Not a GitHub Action — the build runs in the laptop session, not CI.

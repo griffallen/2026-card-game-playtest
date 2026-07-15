@@ -25,7 +25,9 @@ Every tick, on top of the sweep:
 
 1. **Classify new/unlabeled work.** Apply `backlog` or a tier (`patch`|`minor`|`major`) per
    the test — tripwire? → `major`; one contained thing? → `patch`; else → `minor`. If it's
-   blocked on a human, **assign** them (#91).
+   blocked on a human, **assign** them (#91). On a `minor`/`major`, post a **scoping brief**
+   (effort report + side-effects/impacts, Fable-drafted like any comment) so the human can
+   weigh defer-vs-fire (#92); patches skip it.
 2. **Ship patches on sight.** A `patch` needs no trigger: build + `npm test` (green first) +
    `./scripts/deploy-demo.sh`, `shipped` + close, write the `RELEASES.md` patch line.
 3. **Honor `build-now`** on `minor`/`major`:
