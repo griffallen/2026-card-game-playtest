@@ -110,6 +110,8 @@ export interface TargetSpec {
 export interface CardDef {
   slug: string
   name: string
+  /** #83 catalog code — free-form designer shorthand (e.g. "Y-12"); display/reference only, never read by the engine */
+  code?: string
   color: Color
   type: CardType
   cost: number

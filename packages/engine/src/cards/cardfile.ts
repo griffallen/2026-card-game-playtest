@@ -14,7 +14,7 @@ export const CARD_STATUSES = ['draft', 'redesign', 'canon'] as const
 export type CardStatus = (typeof CARD_STATUSES)[number]
 export interface CardFile { def: CardDef; status: CardStatus }
 
-const FIELD_KEYS = ['name', 'type', 'cost', 'power', 'health', 'keywords', 'pips', 'influenceTrigger', 'status', 'art', 'effects'] as const
+const FIELD_KEYS = ['name', 'code', 'type', 'cost', 'power', 'health', 'keywords', 'pips', 'influenceTrigger', 'status', 'art', 'effects'] as const
 type FieldKey = (typeof FIELD_KEYS)[number]
 const KW_NAMES = new Set<string>(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
 const INFLUENCE_TRIGGERS = ['onPlay', 'onDefend', 'onKill', 'onAttack', 'onDeath'] as const
@@ -148,6 +148,7 @@ export function parseCardFile(src: string, slug: string, color: Color): { card?:
     ...structural,
     slug,
     name: fields.name!.trim(),
+    ...(fields.code ? { code: fields.code.trim() } : {}),
     color,
     type: fields.type as CardDef['type'],   // value range re-checked by validateCardSet
     cost: cost!,
@@ -169,7 +170,9 @@ export function serializeCardFile(def: CardDef, status: CardStatus): string {
   if (/^(## |---\s*$)/m.test(def.text) || (def.designerNote && /^(## |---\s*$)/m.test(def.designerNote))) {
     throw new Error(`${def.slug}: text/notes may not contain "## " headings or --- fences`)
   }
-  const out = ['---', `name: ${def.name}`, `type: ${def.type}`, `cost: ${def.xCost ? 'X' : def.cost}`]
+  const out = ['---', `name: ${def.name}`]
+  if (def.code) out.push(`code: ${def.code}`)
+  out.push(`type: ${def.type}`, `cost: ${def.xCost ? 'X' : def.cost}`)
   if (def.power !== undefined) out.push(`power: ${def.power}`)
   if (def.health !== undefined) out.push(`health: ${def.health}`)
   const kwText = (def.kw ?? []).map(k => (k.n !== undefined ? `${k.k} ${k.n}` : k.k)).join(', ')

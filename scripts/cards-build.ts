@@ -52,10 +52,10 @@ const json = JSON.stringify(set, null, 1) + '\n'
 const ph = (d: CardDef) => (d.type === 'unit' ? `${d.power}/${d.health}` : '—')
 const kws = (d: CardDef) => (d.kw ?? []).map(k => (k.n !== undefined ? `${k.k} ${k.n}` : k.k)).join(', ')
 const row = (e: { def: CardDef; status: CardStatus }) =>
-  `| [${e.def.name}](${e.def.color}/${e.def.slug}.md) | ${e.def.cost} | ${e.def.type} | ${ph(e.def)} | ${kws(e.def)} | ${e.status} | ${e.def.text.replace(/\|/g, '\\|').replace(/\n/g, ' ')} |`
+  `| [${e.def.name}](${e.def.color}/${e.def.slug}.md) | ${e.def.code ?? '—'} | ${e.def.cost} | ${e.def.type} | ${ph(e.def)} | ${kws(e.def)} | ${e.status} | ${e.def.text.replace(/\|/g, '\\|').replace(/\n/g, ' ')} |`
 const table = (color: string) => [
   `## ${color[0].toUpperCase()}${color.slice(1)} (${entries.filter(e => e.def.color === color).length})`, '',
-  '| Card | Cost | Type | P/H | Keywords | Status | Text |', '|---|---|---|---|---|---|---|',
+  '| Card | Code | Cost | Type | P/H | Keywords | Status | Text |', '|---|---|---|---|---|---|---|---|',
   ...entries.filter(e => e.def.color === color).map(row), '',
 ].join('\n')
 const counts = COLORS.map(c => `${c}: ${entries.filter(e => e.def.color === c && e.status === 'canon').length}/${entries.filter(e => e.def.color === c).length} canon`).join(' · ')
