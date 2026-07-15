@@ -56,12 +56,20 @@ tripwire always stops for Blaine and Fable. That boundary is what makes patch-au
 
 ## The trigger — `build-now`
 
-Drop `build-now` on a `minor` or `major` item (patches never need it). On the next tick:
+**`build-now` is tier-scoped: what you drop it on decides what builds** (this is how you say
+"build the minors, not the majors" — no separate `queued` needed). Drop it on a `minor` or
+`major` item (patches never need it). On the next tick:
 
-- **`build-now` on a `minor`** → build the whole `minor` batch.
-- **`build-now` on a `major`** → build that one major. The tick first checks **who applied
-  the flag** (`gh api repos/booherbg/2026-card-game/issues/{n}/events`, `labeled` event
-  actor); if it wasn't Blaine, it holds and posts a Chronicler note. patch/minor run on trust.
+- **`build-now` on a `minor`** → build **every `minor`** as one batch. **No `major` ever rides
+  along** — majors are never swept by a minor fire.
+- **`build-now` on a `major`** → build **that one major, alone**. Each major is fired
+  individually and deliberately. The tick first checks **who applied the flag**
+  (`gh api repos/booherbg/2026-card-game/issues/{n}/events`, `labeled` event actor); if it
+  wasn't Blaine, it holds and posts a Chronicler note. patch/minor run on trust.
+
+So the tier is the selector `queued` used to be: **to hold a `minor` out of the next batch,
+demote it to `backlog`** (if it's `minor`, it's declared ready to ship together). To build a
+specific major without touching anything else, flag just that major.
 
 Then the tick sets `building`, builds + tests (green first) + deploys, moves the item to
 `shipped`, closes it, writes the `RELEASES.md` line, and **removes `build-now`**. The label
