@@ -150,7 +150,7 @@ describe('Devout Intervention (#88): a Home ward and a blocker ward, both one-sh
   it('Home ward feint: an attack that gets fully blocked leaves the ward armed', () => {
     let { s, me, them } = arena()
     const attacker = put(s, them, 'exemplar-knight', homeZone(me)) // 4/4, no breakthrough
-    const blocker = put(s, me, 'custodian-of-law', homeZone(me))   // 4/6 — soaks it whole
+    const blocker = put(s, me, 'custodian-of-law', homeZone(me))   // 3/6 — soaks it whole
     const devout = toHand(s, me, 'devout-intervention')
     s = act(s, me, { type: 'play', card: devout })
     s = act(s, them, { type: 'attack', attackers: [attacker], target: { kind: 'base', seat: me } })
@@ -165,13 +165,13 @@ describe('Devout Intervention (#88): a Home ward and a blocker ward, both one-sh
     {
       let { s, me, them } = arena(30)
       const attacker = put(s, them, 'worldrender', homeZone(me))    // 5/10
-      const blocker = put(s, me, 'custodian-of-law', homeZone(me))  // 4/6
+      const blocker = put(s, me, 'custodian-of-law', homeZone(me))  // 3/6
       s = act(s, me, { type: 'pass' })
       s = act(s, them, { type: 'attack', attackers: [attacker], target: { kind: 'base', seat: me } })
       s = act(s, me, { type: 'block', pairs: [{ blocker, onto: attacker }] })
       expect(s.units[blocker].damage).toBe(5)
     }
-    // warded: Devout stamps the blocker — it takes 0, but its 4 counter still lands
+    // warded: Devout stamps the blocker — it takes 0, but its 3 counter still lands
     let { s, me, them } = arena(30)
     const attacker = put(s, them, 'worldrender', homeZone(me))
     const blocker = put(s, me, 'custodian-of-law', homeZone(me))
@@ -181,7 +181,7 @@ describe('Devout Intervention (#88): a Home ward and a blocker ward, both one-sh
     s = act(s, them, { type: 'attack', attackers: [attacker], target: { kind: 'base', seat: me } })
     s = act(s, me, { type: 'block', pairs: [{ blocker, onto: attacker }] })
     expect(s.units[blocker].damage).toBe(0)      // warded — no damage
-    expect(s.units[attacker].damage).toBe(4)     // …but still strikes back (custodian power 4)
+    expect(s.units[attacker].damage).toBe(3)     // …but still strikes back (custodian power 3)
     expect(s.blockerWard[me]).toBe(false)        // ward consumed at block time
     expect(s.units[blocker].blockWard).toBeFalsy() // one-fight token cleared
     expect(s.sides[me].life).toBe(20)            // base untouched (worldrender fully blocked)
