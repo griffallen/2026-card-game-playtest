@@ -645,7 +645,12 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
     return { a, blockers, aPower: effPower(state, a), counter: blockers.reduce((s, b) => s + effPower(state, b), 0), spilled: false }
   })
   for (const p of plans) for (const b of p.blockers) {
-    fireTrigger({ state, attackTarget: { kind: 'unit', id: p.a.id }, actorSeat: seat }, b, 'onDefend')
+    // PR #70 `per:{count:'attackers'}`: a blocker faces the one attacker it's paired with — count 1.
+    // Edge ⚑ (decision 86, ratify): a self-blocking declared target fires only once (as a blocker),
+    // so it must count EVERY attacker facing it, not just the one it stepped in front of — the
+    // faithful reading of "each unit that attacks this unit."
+    const isDeclaredTarget = pa.target.kind === 'unit' && pa.target.id === b.id
+    fireTrigger({ state, attackTarget: { kind: 'unit', id: p.a.id }, actorSeat: seat, attackerCount: isDeclaredTarget ? attackers.length : 1 }, b, 'onDefend')
   }
 
   const unitHits: [UnitInstance, number, string][] = []
@@ -697,7 +702,8 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   // got through or its blockers ate everything ("no matter if it's targeted or if it defends").
   // decision 86: but only ONCE — a self-blocking target already fired as a blocker.
   if (targetUnit && !pairs.some(p => p.blocker === targetUnit.id)) {
-    fireTrigger({ state, attackTarget: { kind: 'unit', id: attackers[0]?.id ?? '' }, actorSeat: seat }, targetUnit, 'onDefend')
+    // PR #70: the declared target that didn't self-block is attacked by every declared attacker
+    fireTrigger({ state, attackTarget: { kind: 'unit', id: attackers[0]?.id ?? '' }, actorSeat: seat, attackerCount: attackers.length }, targetUnit, 'onDefend')
   }
 
   if (targetUnit && doomToTarget > 0) doomCandidates.add(targetUnit.id)
@@ -792,8 +798,9 @@ function resolveAttack(state: GameState, interceptorId: string | null) {
 
   const finalUnitId = finalRef.kind === 'unit' ? finalRef.id : null
   // onDefend fires for whoever ends up the final target (the interceptor, or the declared unit)
+  // PR #70: under the legacy intercept model all attackers land on the one final target
   if (attackers.length && finalUnitId && state.units[finalUnitId]) {
-    fireTrigger({ state, attackTarget: { kind: 'unit', id: attackers[0].id }, actorSeat: seat }, state.units[finalUnitId], 'onDefend')
+    fireTrigger({ state, attackTarget: { kind: 'unit', id: attackers[0].id }, actorSeat: seat, attackerCount: attackers.length }, state.units[finalUnitId], 'onDefend')
   }
 
   const alive = attackers.filter(u => state.units[u.id])

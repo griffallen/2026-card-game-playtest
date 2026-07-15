@@ -114,6 +114,18 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
     }
   }
 
+  // PR #70/#71: count-scaled `per` on influence/heal. 'attackers' only reads a count in onDefend;
+  // 'units' reuses the same object-filter validation the damageFilter/exhaust ops use.
+  const checkPer = (per: unknown) => {
+    if (per === undefined) return
+    const p = per as { count?: string; f?: unknown }
+    if (p.count === 'attackers') {
+      if (where !== 'onDefend') err("per:{count:'attackers'} only counts in onDefend")
+    } else if (p.count === 'units') {
+      checkTargetRef(p.f)
+    } else err(`bad per count ${String(p.count)}`)
+  }
+
   switch (op.op) {
     case 'damage': checkTargetRef(op.t); if (op.n !== 'linked' && !isInt(op.n, 0)) err('bad n'); if (op.bonusIfDamaged !== undefined && !isInt(op.bonusIfDamaged, 1, 10)) err('bad bonusIfDamaged'); break
     case 'capture': checkTargetRef(op.t); break
@@ -121,9 +133,9 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
     case 'countBuff': checkTargetRef(op.t); if (!isInt(op.p, 1, 10)) err('bad countBuff p'); break
     case 'exhaust': checkTargetRef(op.t); break
     case 'damageFilter': checkTargetRef(op.f); if (!isInt(op.n, 0)) err('bad n'); break
-    case 'heal': if (op.t !== 'selfBase') checkTargetRef(op.t); if (!isInt(op.n, 0)) err('bad n'); break
+    case 'heal': if (op.t !== 'selfBase') checkTargetRef(op.t); if (!isInt(op.n, 0)) err('bad n'); checkPer(op.per); break
     case 'draw': if (!isInt(op.n, 1, 10)) err('bad draw count'); break
-    case 'influence': if (!isInt(op.n, -20, 20) || op.n === 0) err('bad influence amount'); break
+    case 'influence': if (!isInt(op.n, -20, 20) || op.n === 0) err('bad influence amount'); checkPer(op.per); break
     case 'imprison':
       if (op.t === 'auto') {
         if (!op.auto && !op.f) err('auto imprison needs auto or f')

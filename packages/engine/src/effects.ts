@@ -1,5 +1,5 @@
 import type {
-  AutoPick, GameState, Op, Seat, TargetRef, UnitFilter, UnitInstance, ZoneId,
+  AutoPick, GameState, Op, PerCount, Seat, TargetRef, UnitFilter, UnitInstance, ZoneId,
 } from './types.ts'
 import { EngineError, adjacent, homeZone } from './types.ts'
 import {
@@ -19,6 +19,8 @@ export interface FxCtx {
   targets?: TargetRef[]
   /** during combat: the attack target */
   attackTarget?: TargetRef
+  /** during an onDefend trigger: how many units attack the defending unit (PR #70, `per:{count:'attackers'}`) */
+  attackerCount?: number
   /** zone just entered, for onEnterZone */
   enteredZone?: ZoneId
   /** declared X for xCost cards (issue #45) */
@@ -62,6 +64,14 @@ function filterUnits(ctx: FxCtx, f: UnitFilter): UnitInstance[] {
     }
     return true
   })
+}
+
+/** PR #70/#71: the multiplier for a count-scaled op. No `per` → 1 (flat, unchanged).
+ *  'attackers' reads the onDefend trigger's attacker count (0 outside combat); 'units' counts
+ *  in-play units matching the filter (reusing the same filter the exhaust/damageFilter ops use). */
+function perCount(ctx: FxCtx, per: PerCount | undefined): number {
+  if (!per) return 1
+  return per.count === 'attackers' ? (ctx.attackerCount ?? 0) : filterUnits(ctx, per.f).length
 }
 
 function resolveUnitTarget(ctx: FxCtx, t: string): UnitInstance | undefined {
@@ -245,9 +255,10 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'heal': {
+        const n = op.per ? op.n * perCount(ctx, op.per) : op.n   // PR #71: scale by unit count
         if (op.t === 'selfBase') {
           const side = state.sides[controller]
-          const healed = Math.min(state.rules.startingLife, side.life + op.n) - side.life
+          const healed = Math.min(state.rules.startingLife, side.life + n) - side.life
           side.life += healed
           if (healed > 0) log(state, controller, `${side.name} heals ${healed} (${side.life} life)` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
           break
@@ -255,13 +266,13 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         const ref = ctx.targets?.[0]
         if (ref?.kind === 'base') {
           const side = state.sides[ref.seat]
-          const healed = Math.min(state.rules.startingLife, side.life + op.n) - side.life
+          const healed = Math.min(state.rules.startingLife, side.life + n) - side.life
           side.life += healed
           if (healed > 0) log(state, ref.seat, `${side.name} heals ${healed} (${side.life} life)` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
         } else {
           const u = resolveUnitTarget(ctx, 'chosen0')
           if (u) {
-            const healed = Math.min(u.damage, op.n)
+            const healed = Math.min(u.damage, n)
             u.damage -= healed
             if (healed > 0) log(state, u.owner, `${name(state, u.id)} heals ${healed}`)
           }
@@ -270,8 +281,10 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
       }
       case 'draw': draw(state, controller, op.n); log(state, controller, `${state.sides[controller].name} draws ${op.n}`); break
       case 'influence': {
-        addInfluence(state, controller, op.n)
-        log(state, controller, `${state.sides[controller].name} ${op.n >= 0 ? 'gains' : 'cedes'} ${Math.abs(op.n)} influence (${influenceFor(state, controller)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
+        const n = op.per ? op.n * perCount(ctx, op.per) : op.n   // PR #70/#71: scale by attacker/unit count
+        if (n === 0) break                                       // per counted zero — a no-op, not a "gains 0" line
+        addInfluence(state, controller, n)
+        log(state, controller, `${state.sides[controller].name} ${n >= 0 ? 'gains' : 'cedes'} ${Math.abs(n)} influence (${influenceFor(state, controller)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
         break
       }
       case 'imprison': {

@@ -157,7 +157,21 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
   (decision-24-compatible — no mid-resolution pause). First customer: Griff's Reckless Charge
   rework (PR #13, held for this).
 - **Count-based pump op**: +N per unit matching a predicate (color/side/zone) — PR #13 needs
-  "+1 attack per other red unit in the same zone, either side's".
+  "+1 attack per other red unit in the same zone, either side's". *(Power only, via `countBuff`.)*
+- **[IMPLEMENTED — PR #70/#71, 2026-07-13] Count-scaled `per` modifier on `influence` and `heal`.**
+  An optional `per` field multiplies the op's `n` by a live count:
+  - `per: {count: 'attackers'}` — the number of units attacking the defending unit in the current
+    combat. Only meaningful in `onDefend` (0 elsewhere). First customer: **Light's Vanguard** —
+    "For each unit that attacks this unit, gain 1 Influence." A lone attacker pays 1; a gang pays
+    its size.
+  - `per: {count: 'units', f: UnitFilter}` — in-play units matching a filter (same `{side, zone}`
+    shape the `exhaust`/`damageFilter` ops resolve; `zone: 'chosenZone'` needs a zone target).
+    Readies **Prison of Light** (PR #71) — "+1 Influence per enemy exhausted, +1 Life per friendly
+    in that zone" — as a card-only follow-up (no further engine work).
+  - ⚑ **RATIFY (edge, decision 86):** a self-blocking declared target fires `onDefend` only once
+    (as its own blocker), and in that single fire it counts **every** attacker facing it, not just
+    the one it physically blocks — the faithful reading of "each unit that attacks this unit."
+  - A `per` count of 0 is a silent no-op (no "gains 0" log line).
 - **Linked-amount ops** ("X = the amount just healed/removed/dealt"): first customer is the
   designer's Blood Rush rewrite (issue #4) — "remove all damage from a unit you control, deal
   that much to your Home". Current ops take fixed `n` only.

@@ -40,12 +40,19 @@ export interface AutoPick {   // deterministic engine-chosen target(s): highest 
   scope: 'targetZone' | 'otherZone' | 'eachZone' | 'enteredZone'
 }
 
+/** v3 count-scaling (PR #70/#71): multiply the op's n by a live count. 'attackers' = units
+ *  attacking the defending unit in the current combat (onDefend); 'units' = in-play units
+ *  matching the filter (e.g. {side, zone:'chosenZone'} — the same shape exhaust filters on). */
+export type PerCount =
+  | { count: 'attackers' }
+  | { count: 'units'; f: UnitFilter }
+
 export type Op =
   | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number | 'linked'; bonusIfDamaged?: number }  // 'linked' = the amount from the previous linking op (v3, spec §3)  // autoSplash: strongest other enemy unit in the attack target's zone
   | { op: 'damageFilter'; f: UnitFilter; n: number }
-  | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number }         // chosen may be unitOrBase
+  | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number; per?: PerCount }  // chosen may be unitOrBase; per scales n (PR #71)
   | { op: 'draw'; n: number }
-  | { op: 'influence'; n: number }                                // + toward controller
+  | { op: 'influence'; n: number; per?: PerCount }                // + toward controller; per scales n (PR #70/#71)
   | { op: 'imprison'; t: OpTarget | 'auto'; f?: UnitFilter; auto?: AutoPick }
   | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'round' | 'perm'; cond?: Cond }
   | { op: 'double'; t: OpTarget | UnitFilter; rounds?: number }  // v3 (Unchained Rage): filter-wide, multi-round
