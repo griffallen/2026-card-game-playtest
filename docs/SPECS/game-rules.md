@@ -172,6 +172,11 @@ Hidden), the entire **prison** package (imprison/release ops, decay, release thr
     (as its own blocker), and in that single fire it counts **every** attacker facing it, not just
     the one it physically blocks — the faithful reading of "each unit that attacks this unit."
   - A `per` count of 0 is a silent no-op (no "gains 0" log line).
+- **[IMPLEMENTED — decision 104, 2026-07-13] Life and influence are uncapped values.** No heal
+  ceiling (overheal past starting life), no life floor at 0 (a base reads negative), no influence
+  clamp to the ±threshold band. `checkWin` is unchanged: a base at ≤0 life loses; influence at a
+  seat's threshold (incl. `oppThreshold` raises) wins. The validator's ±10 bound on the
+  `oppThreshold` *card field* stays — a card-authoring guardrail, not a value clamp.
 - **Linked-amount ops** ("X = the amount just healed/removed/dealt"): first customer is the
   designer's Blood Rush rewrite (issue #4) — "remove all damage from a unit you control, deal
   that much to your Home". Current ops take fixed `n` only.

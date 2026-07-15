@@ -94,7 +94,7 @@
 | [Archon of Order](yellow/archon-of-order.md) | 7 | unit | 3/4 | capture | canon | When this enters play, it captures target enemy unit. |
 | [Champion of the Faith](yellow/champion-of-the-faith.md) | 7 | unit | 7/7 |  | canon | When this attacks, gain 1 Influence. |
 | [Command Edict](yellow/command-edict.md) | 7 | action | — |  | canon | Your units get Armor 1, permanently. |
-| [Prison of Light](yellow/prison-of-light.md) | 7 | action | — |  | canon | Choose a zone: exhaust all enemy units there. Gain 2 Influence. |
+| [Prison of Light](yellow/prison-of-light.md) | 7 | action | — |  | canon | Choose a zone: exhaust all enemy units there. Gain 1 Influence for each enemy unit exhausted and 1 Life for each of your units in that area. |
 | [Radiant Citadel](yellow/radiant-citadel.md) | 7 | unit | 1/4 | guard, politician, cantAttack, armor 2 | canon | This can't attack. When it enters play, if it's the only Radiant Citadel you own in play, it raises two 0/1 copies of itself in your Home — ready, with Guard and Politician, unable to attack. Copies vanish when they die. |
 | [Supreme Sentence](yellow/supreme-sentence.md) | 7 | action | — |  | canon | Up to two target enemy units anywhere are exhausted and take 3 damage each. |
 | [Light's Vanguard](yellow/light-s-vanguard.md) | 8 | unit | 4/8 | guard, shielded | canon | Guard. Shielded. For each unit that attacks this unit, gain 1 Influence. |

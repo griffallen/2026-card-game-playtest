@@ -26,9 +26,8 @@ export function influenceFor(state: GameState, seat: Seat): number {
 
 export function addInfluence(state: GameState, seat: Seat, n: number) {
   if (n === 0) return
+  // decision 104: influence is uncapped — never clamped to the win band. Only checkWin ends the game.
   state.influence += seat === 0 ? n : -n
-  const [t0, t1] = thresholds(state)
-  state.influence = Math.max(-t1, Math.min(t0, state.influence))
 }
 
 /** Units sorted by instance id for deterministic iteration. */
@@ -175,7 +174,7 @@ export function draw(state: GameState, seat: Seat, n: number) {
       // decision 33: every card that fails to appear costs life and influence
       side.life -= state.rules.emptyDrawLifeLoss
       addInfluence(state, seat, -state.rules.emptyDrawInfluenceLoss)
-      log(state, seat, `${side.name}'s deck is empty — the missing card costs ${state.rules.emptyDrawLifeLoss} life and ${state.rules.emptyDrawInfluenceLoss} influence (${Math.max(0, side.life)} life)`)
+      log(state, seat, `${side.name}'s deck is empty — the missing card costs ${state.rules.emptyDrawLifeLoss} life and ${state.rules.emptyDrawInfluenceLoss} influence (${side.life} life)`)
       continue
     }
     side.hand.push(id)

@@ -4,7 +4,7 @@ import type {
 import { EngineError, adjacent, homeZone } from './types.ts'
 import {
   addInfluence, checkWin, condHolds, defOf, draw, effArmor, effHealth, effPower,
-  idNum, influenceFor, log, other, thresholds, unitsInZone, unitsOf,
+  idNum, influenceFor, log, other, unitsInZone, unitsOf,
 } from './helpers.ts'
 
 export interface FxCtx {
@@ -117,7 +117,7 @@ export function damageBase(state: GameState, seat: Seat, n: number, source: stri
   }
   if (dmg <= 0) return
   state.sides[seat].life -= dmg
-  log(state, seat, `${state.sides[seat].name} takes ${dmg} damage${source ? ` from ${source}` : ''} (${Math.max(0, state.sides[seat].life)} life)`)
+  log(state, seat, `${state.sides[seat].name} takes ${dmg} damage${source ? ` from ${source}` : ''} (${state.sides[seat].life} life)`)  // decision 104: life may read negative
 }
 
 export function imprisonUnit(ctx: FxCtx, unit: UnitInstance) {
@@ -258,17 +258,13 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         const n = op.per ? op.n * perCount(ctx, op.per) : op.n   // PR #71: scale by unit count
         if (op.t === 'selfBase') {
           const side = state.sides[controller]
-          const healed = Math.min(state.rules.startingLife, side.life + n) - side.life
-          side.life += healed
-          if (healed > 0) log(state, controller, `${side.name} heals ${healed} (${side.life} life)` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
+          if (n > 0) { side.life += n; log(state, controller, `${side.name} heals ${n} (${side.life} life)` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : '')) }  // decision 104: no life cap — overheal past starting life is allowed
           break
         }
         const ref = ctx.targets?.[0]
         if (ref?.kind === 'base') {
           const side = state.sides[ref.seat]
-          const healed = Math.min(state.rules.startingLife, side.life + n) - side.life
-          side.life += healed
-          if (healed > 0) log(state, ref.seat, `${side.name} heals ${healed} (${side.life} life)` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
+          if (n > 0) { side.life += n; log(state, ref.seat, `${side.name} heals ${n} (${side.life} life)` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : '')) }  // decision 104: no life cap
         } else {
           const u = resolveUnitTarget(ctx, 'chosen0')
           if (u) {
@@ -502,7 +498,7 @@ export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
   log(state, unit.owner, `${name(state, unit.id)} is ${why}`)
 }
 
-/** Deaths → prison releases → influence clamp → win check. Run after every batch of changes. */
+/** Deaths → prison releases → win check. Run after every batch of changes. */
 export function stateBasedCleanup(state: GameState, actorSeat: Seat) {
   // deaths (loop: destroying a unit can drop auras that change effHealth of others)
   for (let guard = 0; guard < 10; guard++) {
@@ -516,8 +512,8 @@ export function stateBasedCleanup(state: GameState, actorSeat: Seat) {
     if (u.imprisoned.source && !state.units[u.imprisoned.source]) { releaseUnit(state, u, 'its captor left play'); continue }
     if (influenceFor(state, u.imprisoned.by) < state.rules.prisonReleaseThreshold) releaseUnit(state, u, 'influence broke')
   }
-  const [t0, t1] = thresholds(state)
-  state.influence = Math.max(-t1, Math.min(t0, state.influence))
+  // decision 104: influence is an uncapped value — it is never clamped to the win band.
+  // Only checkWin ends the game (influence at/beyond threshold, or a base at/below 0 life).
   checkWin(state, actorSeat)
 }
 

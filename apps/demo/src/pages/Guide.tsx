@@ -41,6 +41,8 @@ export function Guide() {
         A game runs <B>ten to fourteen rounds</B>. Both players draw two cards every round, so nobody runs dry —
         the loser is the one who spent worse, not the one who drew worse. There are <B>two clocks</B>: 20 life,
         and the influence track at ±15. Beginners watch life. Yellow players watch you watching life.
+        Neither number has a ceiling — <B>heal past 20 all you like, and a big swing can drive a base below zero</B> —
+        they only <i>trigger</i>: you lose the instant your life hits 0, or the round your opponent's influence reaches their threshold.
         Check the influence track <B>every round</B>, the way you'd check your purse in a crowded market —
         by the time you feel it's light, the thief is three streets away.
         Past ±10, every action you take should either speed your clock or slow theirs.

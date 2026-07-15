@@ -89,16 +89,16 @@ describe('per: count-scaled influence/heal (PR #70/#71)', () => {
     expect(influenceFor(s, me)).toBe(3)
   })
 
-  it("count:'units' — heal scales with your units in the chosen zone", () => {
+  it("count:'units' — heal scales with your units in the chosen zone, overhealing past starting life (decision 104)", () => {
     let s = v3game()
     const me = s.actorSeat, them = (1 - me) as Seat
     fuel(s, me, 5)
-    s.sides[me].life = 10                       // room to heal (base cap is startingLife)
+    s.sides[me].life = 19                       // one below starting (20) — the heal must cross the old cap
     put(s, me, 'pawn', 1); put(s, me, 'soldier', 1)   // 2 friendlies in zone 1
     put(s, them, 'brute', 1)                    // an enemy there must not count
     const card = toHand(s, me, 'rally')
     s = act(s, me, { type: 'play', card, targets: [{ kind: 'zone', zone: 1 }] })
-    expect(s.sides[me].life).toBe(12)           // +1 per friendly in zone 1
+    expect(s.sides[me].life).toBe(21)           // 19 + 2 friendlies — no cap at 20
   })
 
   it("real card: Light's Vanguard pays 1 influence per attacker in a live v3 game (PR #70)", () => {

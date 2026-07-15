@@ -248,13 +248,13 @@ describe('tempo and timing', () => {
     expect(s.sides[p2].life).toBe(20 - (5 - 3))
   })
 
-  it('Sanctify heal caps at starting life', () => {
+  it('Sanctify overheals past starting life (decision 104: no life cap)', () => {
     let { s, p1, p2 } = arena()
     s.sides[p2].life = 18
-    const sanc = toHand(s, p2, 'sanctify')
+    const sanc = toHand(s, p2, 'sanctify')                 // heals 4
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: sanc })
-    expect(s.sides[p2].life).toBe(20)
+    expect(s.sides[p2].life).toBe(22)                      // 18 + 4, uncapped (was clamped to 20)
   })
 })
 
