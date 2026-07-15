@@ -42,9 +42,12 @@ export function validateCardSet(cards: CardSet): string[] {
     }
 
     // #80 (Subjugate): attach side — upgrades only, friendly|enemy
+    // #86 (Resolve Banner): optional pass cost + friendly-only salvage rule
     if (def.attach !== undefined) {
       if (def.type !== 'upgrade') err(slug, 'attach is only for upgrades')
       if (!['friendly', 'enemy'].includes(def.attach?.side as string)) err(slug, `bad attach side ${def.attach?.side}`)
+      if (def.attach.pass !== undefined && !isInt(def.attach.pass, 0, 30)) err(slug, `bad attach pass ${def.attach.pass}`)
+      if (def.attach.salvage !== undefined && def.attach.salvage !== 'freeFriendly') err(slug, `bad attach salvage ${def.attach.salvage}`)
     }
 
     const chosenSlots = (def.targets ?? []).reduce((s, t) => s + (t.count ?? 1), 0)
@@ -199,7 +202,8 @@ function validateStatic(slug: string, st: Static): string[] {
   if (!STATICS.has(st.s)) { errors.push(`${slug}: unknown static ${(st as { s: string }).s}`); return errors }
   if (st.s === 'aura') {
     if (!AURA_SCOPES.has(st.scope)) errors.push(`${slug}: bad aura scope ${st.scope}`)
-    if (st.p === undefined && st.pPerHostPip === undefined && st.armor === undefined && !st.kw) errors.push(`${slug}: aura grants nothing`)
+    if (st.p === undefined && st.pPerHostPip === undefined && st.armor === undefined && st.h === undefined && !st.kw) errors.push(`${slug}: aura grants nothing`)
+    if (st.h !== undefined && !isInt(st.h, -20, 20)) errors.push(`${slug}: bad aura h ${st.h}`)
     if (st.pPerHostPip !== undefined) {   // #80 (Subjugate): host-pip scaling reads the carrier — attached scope only
       if (st.scope !== 'attached') errors.push(`${slug}: pPerHostPip needs scope attached (got ${st.scope})`)
       if (!isInt(st.pPerHostPip, -5, 5) || st.pPerHostPip === 0) errors.push(`${slug}: bad pPerHostPip ${st.pPerHostPip}`)

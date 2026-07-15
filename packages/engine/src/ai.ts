@@ -445,6 +445,7 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
       case 'block': score = blockScore(state, seat, action); break
       case 'activate': score = activateScore(state, seat, action); break
       case 'attachOrphan': score = 10; break
+      case 'passUpgrade': score = 3; break   // #86: the bot rarely shuffles the banner — tempo self-regulates; never crash on it
       case 'concede': score = -Infinity; break
     }
     let jitter: number

@@ -49,11 +49,11 @@ export function condHolds(state: GameState, owner: Seat, cond: Cond | undefined)
   return true
 }
 
-interface AuraGrant { p: number; armor: number; kws: { k: KeywordName; n?: number }[] }
+interface AuraGrant { p: number; armor: number; h: number; kws: { k: KeywordName; n?: number }[] }
 
 /** Collect aura contributions applying to `unit` from all in-play sources (imprisoned sources are inert). */
 function aurasFor(state: GameState, unit: UnitInstance): AuraGrant {
-  const acc: AuraGrant = { p: 0, armor: 0, kws: [] }
+  const acc: AuraGrant = { p: 0, armor: 0, h: 0, kws: [] }
   const apply = (st: Static, anchor: UnitInstance) => {
     if (st.s !== 'aura') return
     if (!condHolds(state, anchor.owner, st.cond)) return
@@ -65,6 +65,7 @@ function aurasFor(state: GameState, unit: UnitInstance): AuraGrant {
     if (!hit) return
     acc.p += st.p ?? 0
     acc.armor += st.armor ?? 0
+    acc.h += st.h ?? 0
     if (st.kw) acc.kws.push(st.kw)
   }
   for (const anchor of unitsOf(state)) {
@@ -79,7 +80,7 @@ function aurasFor(state: GameState, unit: UnitInstance): AuraGrant {
 
 /** Static grants a unit receives from its own attached upgrades. */
 function upgradeGrants(state: GameState, unit: UnitInstance): AuraGrant {
-  const acc: AuraGrant = { p: 0, armor: 0, kws: [] }
+  const acc: AuraGrant = { p: 0, armor: 0, h: 0, kws: [] }
   for (const upId of unit.upgrades) {
     for (const st of defOf(state, upId).statics ?? []) {
       if (st.s === 'aura' && st.scope === 'attached') {
@@ -89,6 +90,7 @@ function upgradeGrants(state: GameState, unit: UnitInstance): AuraGrant {
         // the value is permanent without any snapshot state.
         if (st.pPerHostPip) acc.p += st.pPerHostPip * (defOf(state, unit.id).pips?.length ?? 0)
         acc.armor += st.armor ?? 0
+        acc.h += st.h ?? 0   // #86 (Resolve Banner): upgrade-granted Health, read live by effHealth
         if (st.kw) acc.kws.push(st.kw)
       }
     }
@@ -119,7 +121,10 @@ export function effPower(state: GameState, unit: UnitInstance): number {
 
 export function effHealth(state: GameState, unit: UnitInstance): number {
   const base = unit.created?.h ?? defOf(state, unit.id).health ?? 0
-  return Math.max(0, base + activeMods(state, unit).reduce((s, m) => s + (m.h ?? 0), 0))
+  const mods = activeMods(state, unit).reduce((s, m) => s + (m.h ?? 0), 0)
+  // #86 (Resolve Banner): attached upgrades and auras may grant Health, read live — so detaching
+  // (a pass, a destroyed carrier) recomputes lethality on the next state-based cleanup.
+  return Math.max(0, base + mods + upgradeGrants(state, unit).h + aurasFor(state, unit).h)
 }
 
 export function effArmor(state: GameState, unit: UnitInstance): number {

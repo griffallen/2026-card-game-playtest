@@ -85,8 +85,10 @@ export type Op =
 
 export type Static =
   /** pPerHostPip (#80, Subjugate): power scaled by the CARRIER's pip count — attached scope only,
-   *  computed live so a salvaged upgrade (decision 67) re-fits its new host. */
-  | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; pPerHostPip?: number; armor?: number; kw?: KeywordSpec; cond?: Cond }
+   *  computed live so a salvaged upgrade (decision 67) re-fits its new host.
+   *  h (#86, Resolve Banner): flat Health granted to the affected unit — the first upgrade-granted
+   *  Health. Read live through effHealth, so detaching the upgrade recomputes lethality at once. */
+  | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; pPerHostPip?: number; armor?: number; h?: number; kw?: KeywordSpec; cond?: Cond }
   | { s: 'oppThreshold'; n: number }      // opponent's win threshold raised by n
   | { s: 'imprisonWatcher'; n: number }   // controller gains n influence whenever any unit is imprisoned
 
@@ -129,8 +131,12 @@ export interface CardDef {
   xCost?: boolean
   kw?: KeywordSpec[]
   /** #80 (Subjugate): which side's units this upgrade attaches to — absent = friendly, the
-   *  standing law for every other upgrade. Per-card; enemy attach is never the default. */
-  attach?: { side: 'friendly' | 'enemy' }
+   *  standing law for every other upgrade. Per-card; enemy attach is never the default.
+   *  #86 (Resolve Banner): `pass` = resource cost to re-attach this upgrade to another friendly
+   *  unit in the same zone as an action (absent = not passable). `salvage: 'freeFriendly'` =
+   *  when orphaned it can be picked up only by a friendly unit, for 0 (an opponent cannot);
+   *  absent = the decision-67 default (either side, full cost + pips). */
+  attach?: { side: 'friendly' | 'enemy'; pass?: number; salvage?: 'freeFriendly' }
   targets?: TargetSpec[]     // play-time targets (upgrades: attach target is implicit and NOT listed)
   onPlay?: Op[]              // action body; unit/upgrade enter-play effects
   onEnterZone?: Op[]         // fires on play AND every zone entry (targets always auto-picked)
@@ -324,6 +330,7 @@ export type GameAction =
   | { type: 'releaseCaptive'; unit: string }                              // RETIRED (decision 92): kept for replay compat; always rejected
   | { type: 'block'; pairs: { blocker: string; onto: string }[]; retaliationOrder?: string[] }  // v3 combat: defender pairs blockers (empty = let it through); pour order = pair order. #84: retaliationOrder aims the target's DIVIDED strike-back — ordered attacker ids; absent → highest-power-first
   | { type: 'attachOrphan'; upgrade: string; unit: string }               // v3 (decision 67): salvage an orphaned upgrade at full cost+pips
+  | { type: 'passUpgrade'; upgrade: string; unit: string }                // #86 (Resolve Banner): move an attached, passable upgrade to another friendly unit in its zone — an action costing attach.pass, repeatable
   | { type: 'attack'; attackers: string[]; target: TargetRef; overextend?: string[]; splash?: { by: string; unit: string }[] }  // splash: per-attacker chosen victims for splashReap triggers (PR #46, decision 24-compatible) // decision 42: 1+ attackers, one zone; overextend: subset taking the gamble
   | { type: 'move'; unit: string; to: ZoneId }
   | { type: 'claimInitiative' }              // decision 40: take the token, leave the round

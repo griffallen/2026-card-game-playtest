@@ -145,7 +145,7 @@ describe('admin', () => {
     })
     expect(created.statusCode).toBe(200)
     expect(created.json().version.config.startingLife).toBe(10)
-    expect(created.json().version.config.influenceWinThreshold).toBe(15) // normalized against defaults
+    expect(created.json().version.config.influenceWinThreshold).toBe(20) // normalized against defaults (decision 106: ±20)
   })
 
   it('healthz is green', async () => {

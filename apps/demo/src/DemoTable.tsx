@@ -14,7 +14,7 @@ import { BlockModal } from './BlockModal.tsx'
 import { setSound, sfx, soundOn } from './sound.ts'
 
 const SFX_BY_ACTION: Partial<Record<GameAction['type'], 'play' | 'hit'>> = {
-  play: 'play', activate: 'play', attachOrphan: 'play', resource: 'play',
+  play: 'play', activate: 'play', attachOrphan: 'play', passUpgrade: 'play', resource: 'play',
   attack: 'hit', block: 'hit', intercept: 'hit',
 }
 
@@ -34,6 +34,7 @@ type Selection =
   | { kind: 'splash'; ids: string[]; target: TargetRef; picks: { by: string; unit: string }[]; oe: string[] }  // PR #46: skewer victims declared with the attack
   | { kind: 'sneaking'; unit: string }        // v3 Sneak: choosing the ability's target
   | { kind: 'orphan'; id: string }            // v3 salvage: choosing which unit picks the orphan up
+  | { kind: 'passing'; upgrade: string }      // #86 (Resolve Banner): choosing which friendly unit to pass the banner to
   | null
 
 /** Mobile browser chrome (Chrome's bottom bar, the keyboard) can overlay the layout
@@ -341,9 +342,15 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     actions.filter((a): a is Extract<GameAction, { type: 'activate' }> => a.type === 'activate' && a.unit === unitId)
   const salvageActionsFor = (upgradeId: string) =>
     actions.filter((a): a is Extract<GameAction, { type: 'attachOrphan' }> => a.type === 'attachOrphan' && a.upgrade === upgradeId)
+  // #86 (Resolve Banner): the pass-as-action affordances for one attached upgrade
+  const passActionsFor = (upgradeId: string) =>
+    actions.filter((a): a is Extract<GameAction, { type: 'passUpgrade' }> => a.type === 'passUpgrade' && a.upgrade === upgradeId)
 
   // ── unit lookups off the view (id → view / zone / display) ──
   const unitViewOf = (id: string) => view.zones.flatMap(z => z.units).find(u => u.id === id)
+  // #86 (Resolve Banner): upgrades on this unit that can be passed to a friendly unit right now
+  const passableUpgradesOf = (unitId: string) =>
+    (unitViewOf(unitId)?.upgrades ?? []).filter(up => passActionsFor(up.id).length > 0)
   const unitZone = (id: string): ZoneId | null => {
     for (const z of [0, 1, 2] as ZoneId[]) if (view.zones[z].units.some(u => u.id === id)) return z
     return null
@@ -456,6 +463,9 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     if (selection.kind === 'orphan') {
       return salvageActionsFor(selection.id).map(a => ({ kind: 'unit', id: a.unit }) as TargetRef)
     }
+    if (selection.kind === 'passing') {
+      return passActionsFor(selection.upgrade).map(a => ({ kind: 'unit', id: a.unit }) as TargetRef)
+    }
     return []
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection, view, myWindow])
@@ -512,6 +522,9 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     }
     if (selection.kind === 'orphan' && ref.kind === 'unit') {
       apply({ type: 'attachOrphan', upgrade: selection.id, unit: ref.id }, seat)
+    }
+    if (selection.kind === 'passing' && ref.kind === 'unit') {
+      apply({ type: 'passUpgrade', upgrade: selection.upgrade, unit: ref.id }, seat)
     }
   }
 
@@ -675,6 +688,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   const unitActionable = (unitId: string) =>
     actions.some(a => (a.type === 'move' && a.unit === unitId) || (a.type === 'attack' && a.attackers.includes(unitId))
       || (a.type === 'activate' && a.unit === unitId))
+    || passableUpgradesOf(unitId).length > 0   // #86: a banner-bearer can act by passing, even if spent
   const unitCanAttack = (unitId: string) =>
     actions.some(a => a.type === 'attack' && a.attackers.includes(unitId))
 
@@ -830,6 +844,11 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
               }}>{isSneak ? '✦ Use Sneak' : `🏹 Volley${rn ? ` (${rn})` : ''}`}</button>
             )
           })()}
+          {/* #86 (Resolve Banner): a bearer's passable upgrades — hand the standard to a neighbour */}
+          {selection.ids.length === 1 && passableUpgradesOf(selection.ids[0]).map(up => (
+            <button key={up.id} className="btn btn-primary !py-1 text-xs" title="pass this upgrade to a friendly unit in the same zone (2 resources)"
+              onClick={() => setSelection({ kind: 'passing', upgrade: up.id })}>⚑ Pass {up.name}</button>
+          ))}
           {selection.ids.length === 1 && (
             <button className="btn !py-1 text-xs" onClick={() => setInspect({ kind: 'unit', id: selection.ids[0] })}>ⓘ details</button>
           )}
@@ -922,6 +941,12 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
           <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
         </div>
       )}
+      {selection?.kind === 'passing' && (
+        <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
+          <span>Pass <b>{DEMO_CARDS[state.cardOf[selection.upgrade]]?.name}</b> — tap a glowing friendly unit in the same zone (costs 2 resources; the action passes with it).</span>
+          <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
+        </div>
+      )}
     </>
   ) : null
 
@@ -963,6 +988,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       const movers = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'move' }> => a.type === 'move').map(a => a.unit)).size
       const sneaks = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'activate' }> => a.type === 'activate').map(a => a.unit)).size
       const salvables = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'attachOrphan' }> => a.type === 'attachOrphan').map(a => a.upgrade)).size
+      const passables = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'passUpgrade' }> => a.type === 'passUpgrade').map(a => a.upgrade)).size
       const captors = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'releaseCaptive' }> => a.type === 'releaseCaptive').map(a => a.unit)).size
       const bits = [
         playable && `play ${playable} card${playable > 1 ? 's' : ''}`,
@@ -970,6 +996,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
         movers && `move ${movers} unit${movers > 1 ? 's' : ''}`,
         sneaks && `use ${sneaks} Sneak abilit${sneaks > 1 ? 'ies' : 'y'}`,
         salvables && `salvage ${salvables} orphaned upgrade${salvables > 1 ? 's' : ''}`,
+        passables && `pass ${passables} upgrade${passables > 1 ? 's' : ''}`,
         captors && `release a captive`,
       ].filter(Boolean)
       if (bits.length) hints.push(`Right now you can ${bits.join(' · ')} — or pass. ${ready} resource${ready === 1 ? '' : 's'} ready.`)

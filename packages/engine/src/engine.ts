@@ -188,6 +188,7 @@ function applyLoopPhase(state: GameState, action: GameAction, seat: Seat) {
     case 'activate': activateAbility(state, action, seat); break
     case 'releaseCaptive': fail('no-release', 'captives are freed only when their captor falls (decision 92)')
     case 'attachOrphan': attachOrphan(state, action, seat); break
+    case 'passUpgrade': passUpgrade(state, action, seat); break
     case 'move': moveUnit(state, action.unit, action.to, seat); break
     case 'attack': attackDeclare(state, action, seat); return // declare→intercept/resolve advances the window itself
     default: fail('bad-phase', `${(action as GameAction).type} is not a loop action`)
@@ -245,7 +246,12 @@ function attachOrphan(state: GameState, action: Extract<GameAction, { type: 'att
   if (up.attachedTo !== null || up.orphanedIn === undefined) fail('not-orphaned', 'that upgrade is not lying free')
   const unit = state.units[action.unit] ?? fail('no-unit', 'no such unit')
   const def = defOf(state, up.id)
-  if ((def.attach?.side ?? 'friendly') === 'friendly') {
+  const freeFriendly = def.attach?.salvage === 'freeFriendly'
+  if (freeFriendly) {
+    // #86 (Resolve Banner): only a unit friendly to the banner's OWNER may recover it, for 0 —
+    // an opponent cannot pick it up at all (overrides decision 67's either-side salvage).
+    if (seat !== up.owner || unit.owner !== seat) fail('not-yours', `${def.name} can only be recovered by its owner`)
+  } else if ((def.attach?.side ?? 'friendly') === 'friendly') {
     if (unit.owner !== seat) fail('not-yours', 'attach to your own unit')
   } else {
     // #80: an enemy-attach upgrade salvages the way it plays — onto a unit hostile to the salvager
@@ -254,8 +260,11 @@ function attachOrphan(state: GameState, action: Extract<GameAction, { type: 'att
     if (!unit.exhausted && hasKw(state, unit, 'hidden')) fail('bad-targets', `${defOf(state, unit.id).name} is hidden`)
   }
   if (unit.zone !== up.orphanedIn) fail('bad-zone', 'salvage happens where it fell')
-  if (!pipGateSatisfied(state, seat, def)) fail('pip-gate', `${def.name} needs banked color sources for its pips (decision 69)`)
-  payCost(state, seat, def.cost)
+  // #86: a free-friendly recovery is exactly that — 0 resources, no pip gate. Everything else pays.
+  if (!freeFriendly) {
+    if (!pipGateSatisfied(state, seat, def)) fail('pip-gate', `${def.name} needs banked color sources for its pips (decision 69)`)
+    payCost(state, seat, def.cost)
+  }
   // upgrade pressure applies to salvage too — the greed tax doesn't care how the second upgrade arrived (#23 sweep)
   if (unit.upgrades.length >= 1 && state.rules.upgradePressureInfluence > 0) {
     runOps({ state, controller: other(seat), actorSeat: seat }, [{ op: 'influence', n: state.rules.upgradePressureInfluence }])
@@ -266,6 +275,38 @@ function attachOrphan(state: GameState, action: Extract<GameAction, { type: 'att
   delete up.orphanedIn
   unit.upgrades.push(up.id)
   log(state, seat, `${state.sides[seat].name} salvages ${def.name} onto ${defOf(state, unit.id).name}`)
+}
+
+/** #86 (Resolve Banner): the game's first mid-game re-attachment. Pass an attached, passable
+ *  upgrade (attach.pass = the cost) to another friendly unit in the same zone — an action costing
+ *  that many resources, usable any number of times (tempo self-regulates). Pattern of attachOrphan:
+ *  detach from the current carrier, pay, re-attach, re-run the upgrade's onEnterZone, apply the
+ *  upgrade-pressure tax. Lethality is recomputed by the action-tail stateBasedCleanup, so a unit
+ *  standing only on a +Health upgrade falls the instant the banner leaves it. */
+function passUpgrade(state: GameState, action: Extract<GameAction, { type: 'passUpgrade' }>, seat: Seat) {
+  const up = state.upgrades[action.upgrade] ?? fail('no-upgrade', 'no such upgrade')
+  const def = defOf(state, up.id)
+  const cost = def.attach?.pass
+  if (cost === undefined) fail('cant-pass', `${def.name} cannot be passed`)
+  const carrier = up.attachedTo ? state.units[up.attachedTo] : undefined
+  if (!carrier) fail('not-attached', 'that upgrade is not on a unit')
+  if (up.owner !== seat || carrier.owner !== seat) fail('not-yours', 'pass only your own upgrade')
+  const unit = state.units[action.unit] ?? fail('no-unit', 'no such unit')
+  if (unit.owner !== seat) fail('not-yours', 'pass to a friendly unit')
+  if (unit.id === carrier.id) fail('bad-targets', 'pass it to a different unit')
+  if (unit.zone !== carrier.zone) fail('bad-zone', 'pass within the same zone')
+  payCost(state, seat, cost)
+  // upgrade pressure applies to the receiving unit's beyond-first upgrade (mirrors play + salvage)
+  if (unit.upgrades.length >= 1 && state.rules.upgradePressureInfluence > 0) {
+    runOps({ state, controller: other(seat), actorSeat: seat }, [{ op: 'influence', n: state.rules.upgradePressureInfluence }])
+    log(state, other(seat), `upgrade pressure: ${state.sides[other(seat)].name} gains ${state.rules.upgradePressureInfluence} influence`)
+  }
+  carrier.upgrades = carrier.upgrades.filter(id => id !== up.id)
+  up.attachedTo = unit.id
+  unit.upgrades.push(up.id)
+  log(state, seat, `${state.sides[seat].name} passes ${def.name} from ${defOf(state, carrier.id).name} to ${defOf(state, unit.id).name}`)
+  // #86: re-run the upgrade's own onEnterZone on its new carrier (Resolve Banner declares none)
+  if (def.onEnterZone?.length) runOps({ state, controller: seat, sourceUnit: unit.id, targets: [], actorSeat: seat, enteredZone: unit.zone, srcLabel: def.name }, def.onEnterZone)
 }
 
 // ─── Playing cards ───────────────────────────────────────────────────────────

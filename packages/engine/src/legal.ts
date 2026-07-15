@@ -170,6 +170,12 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   for (const up of Object.values(state.upgrades)) {
     if (up.attachedTo !== null || up.orphanedIn === undefined) continue
     const def = defOf(state, up.id)
+    if (def.attach?.salvage === 'freeFriendly') {
+      // #86 (Resolve Banner): only the banner's OWNER may recover it, for free — enemies see nothing
+      if (seat !== up.owner) continue
+      for (const u of unitsInZone(state, up.orphanedIn, seat)) out.push({ type: 'attachOrphan', upgrade: up.id, unit: u.id })
+      continue
+    }
     if (def.cost > readyRes || !pipGateSatisfied(state, seat, def)) continue
     // #80: an enemy-attach upgrade salvages onto units hostile to the salvager (mirrors attachOrphan)
     const pool = (def.attach?.side ?? 'friendly') === 'friendly'
@@ -178,6 +184,17 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
           !hasKw(state, u, 'untargetable') && !(!u.exhausted && hasKw(state, u, 'hidden')))
     for (const u of pool) {
       out.push({ type: 'attachOrphan', upgrade: up.id, unit: u.id })
+    }
+  }
+  // #86 (Resolve Banner): pass an attached, passable upgrade to another friendly unit in its zone
+  for (const up of Object.values(state.upgrades)) {
+    const cost = defOf(state, up.id).attach?.pass
+    if (cost === undefined || up.attachedTo === null || up.owner !== seat) continue
+    const carrier = state.units[up.attachedTo]
+    if (!carrier || carrier.owner !== seat || cost > readyRes) continue
+    for (const u of unitsInZone(state, carrier.zone, seat)) {
+      if (u.id === carrier.id) continue
+      out.push({ type: 'passUpgrade', upgrade: up.id, unit: u.id })
     }
   }
 
