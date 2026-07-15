@@ -10,6 +10,7 @@ import { AuditArchive } from './pages/AuditArchive.tsx'
 import { Guide } from './pages/Guide.tsx'
 import { Appendix } from './pages/Appendix.tsx'
 import { Journal } from './pages/Journal.tsx'
+import { ErrorBoundary } from './ErrorBoundary.tsx'
 
 /* The design/history docs live under one "Archive" sub-menu so the nav stays lean (session 010).
    The Rulebook stays top-level — it teaches the game; these document its making. */
@@ -77,6 +78,7 @@ export function App() {
         </nav>
       </header>
       <main className="min-h-0 flex-1 overflow-y-auto max-lg:overflow-visible">
+        <ErrorBoundary>
         <Routes>
           <Route path="/" element={<Navigate to="/play" replace />} />
           <Route path="/play" element={<Play />} />
@@ -91,6 +93,7 @@ export function App() {
           <Route path="/appendix" element={<Appendix />} />
           <Route path="*" element={<Navigate to="/play" replace />} />
         </Routes>
+        </ErrorBoundary>
       </main>
     </div>
   )
