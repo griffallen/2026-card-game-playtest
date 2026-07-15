@@ -8,6 +8,11 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.2.1 — 2026-07-15
+patch — **Copy Decklist** button in the deckbuilder (#95, Griff). Copies the current decklist
+to the clipboard as plain text (a `<name> — <n> cards` header + `Nx Card Name` lines).
+Export-to-file deferred per Griff ("keep it simple"). Demo-only, no engine touch.
+
 ## v0.2.0 — 2026-07-15
 major — **Resolve Banner + the pass-as-action primitive** (#86, PR by Griff, fired by Blaine).
 The game's first mid-game upgrade re-attachment: pass an attached upgrade to a friendly unit in

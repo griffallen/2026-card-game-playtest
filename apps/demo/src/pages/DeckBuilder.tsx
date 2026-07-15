@@ -137,6 +137,19 @@ export function DeckBuilder() {
     refresh()
   }
 
+  // #95 (Griff): copy the current decklist to the clipboard as plain text — "Nx Card Name" lines.
+  async function copyDecklist() {
+    if (total === 0) { setToast('add some cards first'); return }
+    const header = `${name.trim() || 'Untitled deck'} — ${total} cards`
+    const lines = deckList.map(({ def, count }) => `${count}x ${def?.name ?? 'unknown'}`)
+    try {
+      await navigator.clipboard.writeText([header, ...lines].join('\n'))
+      setToast('decklist copied to clipboard')
+    } catch {
+      setToast('copy failed — clipboard blocked')
+    }
+  }
+
   const base = decks.find(d => d.slug === baseSlug)
   const isCustomBase = !!base && 'custom' in base
   const previewDef = preview ? DEMO_CARDS[preview] : null
@@ -173,6 +186,7 @@ export function DeckBuilder() {
           {total} / {MIN_SIZE}+
         </div>
         <button className="btn btn-primary" disabled={total < MIN_SIZE || !name.trim()} onClick={save}>Save deck</button>
+        <button className="btn" disabled={total === 0} onClick={copyDecklist} title="Copy the decklist to your clipboard as text">Copy decklist</button>
         {isCustomBase && (
           <button className="btn btn-danger" onClick={() => { deleteCustomDeck(baseSlug); loadBase(PREBUILT_DECKS[0].slug); setToast('deleted'); refresh() }}>
             Delete this custom deck
