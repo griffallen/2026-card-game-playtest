@@ -50,6 +50,7 @@
 
 | Card | Cost | Type | P/H | Keywords | Status | Text |
 |---|---|---|---|---|---|---|
+| [Aura of Resolve](yellow/aura-of-resolve.md) | 0 | action | — |  | canon | For each friendly unit that has died or dies this round, gain 2 Life. For each enemy unit that has died or dies this round, your opponent loses 2 Life. |
 | [Iron Plating](yellow/iron-discipline.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. |
 | [Oath of Order](yellow/oath-of-order.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gains Guard. |
 | [Vanguard Sentinel](yellow/vanguard-sentinel.md) | 1 | unit | 1/1 | guard | canon | Guard. When this unit dies, gain 1 Influence. |
@@ -58,7 +59,6 @@
 | [Disciplined Mind](yellow/disciplined-mind.md) | 2 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. Draw a card. |
 | [Hold the Line](yellow/hold-the-line.md) | 2 | action | — |  | canon | Choose a zone. Your units there gain Guard. |
 | [Sunguard Defender](yellow/sunguard-defender.md) | 2 | unit | 1/1 | guard, shielded | canon | Guard. Shielded. When this unit defends, gain 1 Influence. |
-| [Aura of Resolve](yellow/aura-of-resolve.md) | 3 | upgrade | — |  | canon | Attach to unit. When this unit defends, gain 2 Influence. |
 | [Bulwark Protector](yellow/bulwark-protector.md) | 3 | unit | 2/2 | guard, armor 1 | canon | Guard. Armor 1. When this unit defends, gain 1 Influence. |
 | [Chain of Law](yellow/chain-of-law.md) | 3 | upgrade | — |  | canon | Attached unit has Guard and Armor 1. |
 | [Justicar Enforcer](yellow/justicar-enforcer.md) | 3 | unit | 3/4 | guard | canon | Guard. When this defends, gain 2 Influence. |
@@ -69,7 +69,7 @@
 | [Subjugate](yellow/subjugate.md) | 3 | upgrade | — |  | canon | Attach to an enemy unit. While attached, it gets −1 Power for each pip in its cost. |
 | [Unwavering Faith](yellow/unwavering-faith.md) | 3 | action | — |  | canon | Heal 3 damage from target unit. |
 | [Absolution](yellow/absolution.md) | 4 | action | — |  | canon | Remove all negative effects from target unit you control. Free all your captured units. |
-| [Devout Intervention](yellow/devout-intervention.md) | 4 | action | — |  | canon | Prevent the next 3 damage to your base this round. |
+| [Devout Intervention](yellow/devout-intervention.md) | 4 | action | — |  | canon | Prevent all damage to your Home from the next attack this round. Also, prevent all damage to your next blocking unit this round (it still deals its damage back). |
 | [Disarming Order](yellow/disarming-order.md) | 4 | action | — |  | canon | Target unit can't attack this round. Draw a card. |
 | [Exemplar Knight](yellow/exemplar-knight.md) | 4 | unit | 4/4 |  | canon | When this attacks, it gets +2 Power this round. When it defeats a unit, gain 1 Influence. |
 | [Fortress Keeper](yellow/fortress-keeper.md) | 4 | unit | 2/7 | cantAttack | canon | This can't attack. Other friendly units in this zone have Guard. |
@@ -81,7 +81,7 @@
 | [Custodian of Law](yellow/custodian-of-law.md) | 5 | unit | 4/6 | guard | canon | Guard. When this defends, gain 2 Influence. |
 | [Dawnspear Paladin](yellow/dawnspear-paladin.md) | 5 | unit | 5/5 |  | canon | When this attacks, gain 2 Influence. |
 | [Imprisonment Chamber](yellow/imprisonment-chamber.md) | 5 | action | — |  | canon | Target unit you control captures target enemy unit. |
-| [Radiant Judgment](yellow/radiant-judgment.md) | 5 | action | — |  | canon | Exhaust every enemy unit with 3 or less Power. Gain 2 Influence. |
+| [Radiant Judgment](yellow/radiant-judgment.md) | 5 | action | — |  | canon | Gain 1 Influence. Then exhaust every enemy unit whose cost is no more than your current Influence. If your Influence is below 1, gain 1 Influence for each enemy unit in your Home zone. |
 | [Radiant Wall](yellow/radiant-wall.md) | 5 | action | — |  | canon | Target unit gets Armor 3, permanently. Gain 1 Influence. |
 | [Sanctify](yellow/sanctify.md) | 5 | action | — |  | canon | Heal 4 damage from your base. Gain 1 Influence. |
 | [Sentence](yellow/sentence.md) | 5 | action | — |  | canon | Target unit you control captures target enemy unit. Draw a card. |

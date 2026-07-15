@@ -639,6 +639,16 @@ function applyBlockPhase(state: GameState, action: GameAction, seat: Seat) {
     if (state.rules.blockingExhausts && !hasKw(state, b, 'guard')) b.exhausted = true
     log(state, seat, `${defOf(state, b.id).name} blocks${hasKw(state, b, 'guard') ? ' (guard — stays ready)' : ''}`)
   }
+  // #88 (Devout Intervention, Ward 2): the seat's NEXT blocker is shielded for this fight — stamp
+  // the first blocker declared, spend the ward. It still deals its counter (below); it just takes 0.
+  if (state.blockerWard[seat] && action.pairs.length) {
+    const first = state.units[action.pairs[0].blocker]
+    if (first) {
+      first.blockWard = true
+      state.blockerWard[seat] = false
+      log(state, seat, `${defOf(state, first.id).name} steps in behind the ward`)
+    }
+  }
   resolveBlockedAttack(state, action.pairs, action.retaliationOrder)
 }
 
@@ -700,8 +710,12 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       if (dmg <= 0) break
       const gross = Math.max(0, effHealth(state, b) - b.damage) + effArmor(state, b)  // what it takes to fell it through armor
       const chunk = Math.min(dmg, gross)
-      if (chunk > 0) unitHits.push([b, chunk, defOf(state, p.a.id).name])
-      if (chunk > 0 && p.a.id === doomId) doomCandidates.add(b.id)
+      // #88 (Devout Intervention, Ward 2): a warded blocker soaks the attacker's power (so nothing
+      // spills past it) but takes no damage. One fight — the token clears here. Its counter is p.counter.
+      const warded = !!b.blockWard
+      if (warded) { b.blockWard = false; log(state, b.owner, `${defOf(state, b.id).name}'s ward turns aside the blow`) }
+      if (chunk > 0 && !warded) unitHits.push([b, chunk, defOf(state, p.a.id).name])
+      if (chunk > 0 && !warded && p.a.id === doomId) doomCandidates.add(b.id)
       dmg -= chunk
     }
     if (dmg > 0 && hasKw(state, p.a, 'breakthrough')) {
@@ -769,7 +783,7 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   const toTarget = unblockedTotal + targetSpill
   if (toTarget > 0) {
     if (pa.target.kind === 'base') {
-      damageBase(state, pa.target.seat, toTarget, unblockedNames.join(', ') || 'breakthrough')
+      damageBase(state, pa.target.seat, toTarget, unblockedNames.join(', ') || 'breakthrough', true)
     } else if (targetUnit && state.units[targetUnit.id]) {
       // decision 102 (issue #66, designer): a Breakthrough attacker besieging the enemy Home
       // leaves no damage behind — excess past the declared target pours into the base.
@@ -784,7 +798,7 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       damageUnit(state, targetUnit, toTarget, unblockedNames.join(', ') || 'breakthrough')
       if (siege && btPortion > 0) {
         const spillToBase = Math.max(0, btPortion - Math.max(0, gross - (toTarget - btPortion)))
-        if (spillToBase > 0) damageBase(state, targetUnit.owner, spillToBase, 'the breakthrough siege')
+        if (spillToBase > 0) damageBase(state, targetUnit.owner, spillToBase, 'the breakthrough siege', true)
       }
       if (felled(targetUnit.id)) {
         // credit only attackers whose damage actually reached the target — idle blocked
@@ -855,7 +869,7 @@ function resolveAttack(state: GameState, interceptorId: string | null) {
 
   if (finalRef.kind === 'base') {
     if (alive.length) {
-      damageBase(state, finalRef.seat, combined, alive.map(u => defOf(state, u.id).name).join(', '))
+      damageBase(state, finalRef.seat, combined, alive.map(u => defOf(state, u.id).name).join(', '), true)
       for (const u of alive) if (state.units[u.id]) fireTrigger({ state, attackTarget: finalRef, actorSeat: seat }, u, 'onAttackBase')
     }
   } else if (finalUnitId && state.units[finalUnitId]) {
@@ -879,7 +893,7 @@ function resolveAttack(state: GameState, interceptorId: string | null) {
     }, 0)
     if (btSum > 0 && dealt > defRemaining) {
       const excess = Math.min(btSum, dealt - defRemaining)
-      if (excess > 0) damageBase(state, defender.owner, excess, 'breakthrough')
+      if (excess > 0) damageBase(state, defender.owner, excess, 'breakthrough', true)
     }
 
     const died = defender.damage >= Math.max(0, effHealth(state, defender))

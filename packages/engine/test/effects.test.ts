@@ -5,6 +5,7 @@ import { DEFAULT_RULES } from '../src/rules.ts'
 import { CARD_SET } from '../src/cards/index.ts'
 import { PREBUILT_DECKS, deckSlugs } from '../src/decks.ts'
 import { effPower, effArmor, influenceFor, hasKw } from '../src/helpers.ts'
+import { destroyUnit } from '../src/effects.ts'
 import { homeZone } from '../src/types.ts'
 import type { GameState, Seat } from '../src/types.ts'
 import { fuel, put, toHand, toLoop } from './util.ts'
@@ -110,18 +111,19 @@ describe('the capture era (v3 churn pass 3 — prison is gone from canon)', () =
     expect(s.captives[small]?.income).toBe(1)              // 1/round while the warrant holds
   })
 
-  it('Radiant Judgment exhausts exactly the ≤3-power enemies, everywhere', () => {
+  it('Radiant Judgment: +1 lands first, then exhausts every enemy whose cost ≤ the NEW influence', () => {
     let { s, p1, p2 } = arena()
-    const small = put(s, p1, 'cinder-initiate', 1)   // 2 power (churned)
-    const mid = put(s, p1, 'berserker', 0)           // 3 power
-    const big = put(s, p1, 'worldrender', 2)         // 9 power (churned)
+    s.influence = p2 === 0 ? 3 : -3                   // p2 sits at 3 → 4 after the rider
+    const cheap = put(s, p1, 'cinder-initiate', 1)   // cost 1 → exhausted
+    const four = put(s, p1, 'exemplar-knight', 1)    // cost 4 → exhausted ONLY because the +1 ran first (4 > 3, ≤ 4)
+    const five = put(s, p1, 'custodian-of-law', 1)   // cost 5 → safe
     const judgment = toHand(s, p2, 'radiant-judgment')
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: judgment })
-    expect(s.units[small].exhausted).toBe(true)
-    expect(s.units[mid].exhausted).toBe(true)
-    expect(s.units[big].exhausted).toBe(false)
-    expect(influenceFor(s, p2)).toBe(2)
+    expect(s.units[cheap].exhausted).toBe(true)
+    expect(s.units[four].exhausted).toBe(true)
+    expect(s.units[five].exhausted).toBe(false)
+    expect(influenceFor(s, p2)).toBe(4)              // 3 + 1; the below-1 comeback stays silent above 0
   })
 
   it('Absolution frees your captured units, ready (decision 73)', () => {
@@ -238,14 +240,17 @@ describe('tempo and timing', () => {
     expect(s.pendingExtraAction).toBeNull()
   })
 
-  it('Devout Intervention absorbs base damage this round only', () => {
+  it('Devout Intervention: the Home ward fully turns aside the next attack, then is spent', () => {
     let { s, p1, p2 } = arena()
     const ward = toHand(s, p2, 'devout-intervention')
-    const sieger = put(s, p1, 'doombringer', homeZone(p2))
+    const sieger = put(s, p1, 'doombringer', homeZone(p2))   // 5/4, would deal 5 to the base
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: ward })
+    expect(s.homeWard[p2]).toBe(true)
     s = act(s, p1, { type: 'attack', attackers: [sieger], target: { kind: 'base', seat: p2 } })
-    expect(s.sides[p2].life).toBe(20 - (5 - 3))
+    if (s.phase === 'intercept') s = act(s, p2, { type: 'declineIntercept' })
+    expect(s.sides[p2].life).toBe(20)          // the whole assault is warded — not just 3
+    expect(s.homeWard[p2]).toBe(false)         // a real prevention spends the ward
   })
 
   it('Sanctify overheals past starting life (decision 104: no life cap)', () => {
@@ -278,18 +283,22 @@ describe('start-of-round engines', () => {
     expect(effPower(s, s.units[carrier])).toBe(before + 1)
   })
 
-  it('Aura of Resolve pays when the wearer defends (session-006 redesign)', () => {
+  it('Aura of Resolve: +2 Life per friendly death, opponent -2 per enemy death (this round)', () => {
     let { s, p1, p2 } = arena()
-    const raider = put(s, p1, 'flameblade-raider', homeZone(p2))
-    const wearer = put(s, p2, 'custodian-of-law', homeZone(p2))
+    const friend1 = put(s, p2, 'cinder-initiate', 1)
+    const friend2 = put(s, p2, 'spark-hound', 1)
+    const foe = put(s, p1, 'berserker', 1)
+    destroyUnit(s, s.units[friend1], 'test')
+    destroyUnit(s, s.units[friend2], 'test')
+    destroyUnit(s, s.units[foe], 'test')
+    expect(s.deaths[p2]).toBe(2)               // ledger, by owner side
+    expect(s.deaths[p1]).toBe(1)
+    const meLife = s.sides[p2].life, themLife = s.sides[p1].life
     const aura = toHand(s, p2, 'aura-of-resolve')
     s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'play', card: aura, targets: [{ kind: 'unit', id: wearer }] })
-    const before = influenceFor(s, p2)
-    s = act(s, p1, { type: 'attack', attackers: [raider], target: { kind: 'unit', id: wearer } })
-    if (s.phase === 'intercept') s = act(s, p2, { type: 'declineIntercept' })
-    // custodian's own onDefend (+2) plus the aura's onDefend (+2) — issue #55 ladder pull
-    expect(influenceFor(s, p2)).toBe(before + 4)
+    s = act(s, p2, { type: 'play', card: aura })
+    expect(s.sides[p2].life).toBe(meLife + 4)   // 2 friendly deaths × 2
+    expect(s.sides[p1].life).toBe(themLife - 2) // 1 enemy death × 2 (ordinary base damage)
   })
 })
 

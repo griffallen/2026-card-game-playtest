@@ -1025,6 +1025,40 @@
   "designerNote": "2026-07-11 (v3 churn pass 1): Overextend is cut (#9); the apex predator: 9/8, Breakthrough, Scar — a wounded god hits harder (to a survivor's limit).",
   "artUrl": "/cards/worldrender.jpg"
  },
+ "aura-of-resolve": {
+  "onPlay": [
+   {
+    "op": "heal",
+    "t": "selfBase",
+    "n": 2,
+    "per": {
+     "count": "deathsThisRound",
+     "side": "friendly"
+    }
+   },
+   {
+    "op": "damage",
+    "t": "enemyBase",
+    "n": 2,
+    "per": {
+     "count": "deathsThisRound",
+     "side": "enemy"
+    }
+   }
+  ],
+  "slug": "aura-of-resolve",
+  "name": "Aura of Resolve",
+  "color": "yellow",
+  "type": "action",
+  "cost": 0,
+  "text": "For each friendly unit that has died or dies this round, gain 2 Life. For each enemy unit that has died or dies this round, your opponent loses 2 Life.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
+  "designerNote": "Session 006 redesign: was \"at the start of your round, gain 1 Influence\" — passive income, illegal under the yellow charter (influence is event-earned, decision 34). Now it pays when the wearer defends: put it on a Guard and get paid for every intercept.\n\n2026-07-15 (#85, Griff ratified): rebuilt from an upgrade into a **cost-0 action** that reads the day's toll. It retroactively counts every death so far this round — 2 Life to you per friendly fallen, 2 Life off the opponent per enemy fallen. Griff asked for the count to be a **reusable primitive**: a per-round death ledger now lives on the board, incremented (by owner side) at the single choke point every death flows through, cleared each round boundary — created copies that vanish (decision #69) count as deaths too. The card exposes it via a new `deathsThisRound` per-count source on the heal/damage ops (heal is uncapped, decision 104; the life-loss is ordinary base damage, respecting prevention).",
+  "artUrl": "/cards/aura-of-resolve.jpg"
+ },
  "iron-discipline": {
   "statics": [
    {
@@ -1297,26 +1331,6 @@
   ],
   "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.",
   "artUrl": "/cards/sunguard-defender.jpg"
- },
- "aura-of-resolve": {
-  "onDefend": [
-   {
-    "op": "influence",
-    "n": 2
-   }
-  ],
-  "slug": "aura-of-resolve",
-  "name": "Aura of Resolve",
-  "color": "yellow",
-  "type": "upgrade",
-  "cost": 3,
-  "text": "Attach to unit. When this unit defends, gain 2 Influence.",
-  "pips": [
-   "yellow",
-   "yellow"
-  ],
-  "designerNote": "Session 006 redesign: was \"at the start of your round, gain 1 Influence\" — passive income, illegal under the yellow charter (influence is event-earned, decision 34). Now it pays when the wearer defends: put it on a Guard and get paid for every intercept.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.",
-  "artUrl": "/cards/aura-of-resolve.jpg"
  },
  "bulwark-protector": {
   "onDefend": [
@@ -1612,8 +1626,10 @@
  "devout-intervention": {
   "onPlay": [
    {
-    "op": "preventBase",
-    "n": 3
+    "op": "wardHome"
+   },
+   {
+    "op": "wardBlocker"
    }
   ],
   "slug": "devout-intervention",
@@ -1621,12 +1637,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 4,
-  "text": "Prevent the next 3 damage to your base this round.",
+  "text": "Prevent all damage to your Home from the next attack this round. Also, prevent all damage to your next blocking unit this round (it still deals its damage back).",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006: 6 → 3 mana. A one-round shield priced like a wall.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
+  "designerNote": "Session 006: 6 → 3 mana. A one-round shield priced like a wall.\n\n2026-07-15 (#88, Griff ratified): the flat \"prevent 3 base damage\" becomes two one-shot wards, still 4 mana / two yellow pips. **Home ward** — the next damaging *attack* on your Home is fully turned aside; it waits patiently, spending only when it actually prevents damage (a feint that gets fully blocked leaves the ward armed), and it does NOT stop direct-damage spells, only attacks. **Blocker ward** — your next blocking unit takes zero damage from that fight but still deals its counter, a one-fight shield stamped at block time (Griff confirmed: the block still strikes back). Both are new prevention primitives (`wardHome` / `wardBlocker`): per-seat one-shot state on the board, consumed in combat resolution and cleared at the round boundary.",
   "artUrl": "/cards/devout-intervention.jpg"
  },
  "disarming-order": {
@@ -1939,15 +1955,29 @@
  "radiant-judgment": {
   "onPlay": [
    {
+    "op": "influence",
+    "n": 1
+   },
+   {
     "op": "exhaust",
     "t": {
      "side": "enemy",
-     "maxPower": 3
+     "maxCostInfluence": true
     }
    },
    {
     "op": "influence",
-    "n": 2
+    "n": 1,
+    "cond": {
+     "influenceAtMost": 0
+    },
+    "per": {
+     "count": "units",
+     "f": {
+      "side": "enemy",
+      "zone": "controllerHome"
+     }
+    }
    }
   ],
   "slug": "radiant-judgment",
@@ -1955,12 +1985,12 @@
   "color": "yellow",
   "type": "action",
   "cost": 5,
-  "text": "Exhaust every enemy unit with 3 or less Power. Gain 2 Influence.",
+  "text": "Gain 1 Influence. Then exhaust every enemy unit whose cost is no more than your current Influence. If your Influence is below 1, gain 1 Influence for each enemy unit in your Home zone.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Mass judgment: the small are stilled everywhere.",
+  "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Mass judgment: the small are stilled everywhere.\n\n2026-07-15 (#89, Griff ratified): the flat \"≤3 Power, +2 Influence\" becomes a scaling verdict. The +1 lands FIRST, then the exhaust reads your *new* Influence as a live cost cap — at 3 Influence you gain 1 to reach 4 and still every enemy costing ≤4; the further ahead you are, the wider the judgment sweeps. The old flat +2 is gone; instead a catch-up clause: if you're still under 1 Influence after the gain, the verdict pays 1 per enemy standing in your Home — the deeper the invasion, the harder the comeback. Two new primitives: `maxCostInfluence` (an exhaust filter tied to the controller's live Influence) and a filter `zone: controllerHome` (the caster's own Home), feeding decision-103 per-op scaling on a `cond`-gated Influence gain.",
   "artUrl": "/cards/radiant-judgment.jpg"
  },
  "radiant-wall": {

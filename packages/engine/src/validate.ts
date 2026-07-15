@@ -1,7 +1,7 @@
 import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 
 const KEYWORDS = new Set(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
-const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies'])
+const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
 const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
@@ -113,7 +113,7 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
     } else if (t && typeof t === 'object') {
       const f = t as { side?: string; zone?: string }
       if (!['friendly', 'enemy', 'all'].includes(f.side ?? '')) err(`filter needs side (got ${f.side})`)
-      if (f.zone && !['sameAsSelf', 'chosenZone', 'adjacentToSelf', 'all'].includes(f.zone)) err(`bad filter zone ${f.zone}`)
+      if (f.zone && !['sameAsSelf', 'chosenZone', 'adjacentToSelf', 'all', 'controllerHome'].includes(f.zone)) err(`bad filter zone ${f.zone}`)
       if (f.zone === 'chosenZone' && !(def.targets ?? []).some(ts => ts.t === 'zone')) err('chosenZone filter without a zone target')
     } else {
       err('missing op target')
@@ -129,11 +129,13 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       if (where !== 'onDefend') err("per:{count:'attackers'} only counts in onDefend")
     } else if (p.count === 'units') {
       checkTargetRef(p.f)
+    } else if (p.count === 'deathsThisRound') {   // #85: the per-round death ledger
+      if (!['friendly', 'enemy'].includes((p as { side?: string }).side ?? '')) err("per:{count:'deathsThisRound'} needs side friendly|enemy")
     } else err(`bad per count ${String(p.count)}`)
   }
 
   switch (op.op) {
-    case 'damage': checkTargetRef(op.t); if (op.n !== 'linked' && !isInt(op.n, 0)) err('bad n'); if (op.bonusIfDamaged !== undefined && !isInt(op.bonusIfDamaged, 1, 10)) err('bad bonusIfDamaged'); break
+    case 'damage': checkTargetRef(op.t); if (op.n !== 'linked' && !isInt(op.n, 0)) err('bad n'); if (op.bonusIfDamaged !== undefined && !isInt(op.bonusIfDamaged, 1, 10)) err('bad bonusIfDamaged'); checkPer(op.per); break
     case 'capture': checkTargetRef(op.t); break
     case 'clearDamage': checkTargetRef(op.t); break
     case 'countBuff': checkTargetRef(op.t); if (!isInt(op.p, 1, 10)) err('bad countBuff p'); break

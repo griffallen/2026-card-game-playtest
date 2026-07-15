@@ -142,6 +142,13 @@ export function endRound(state: GameState, actorSeat: Seat) {
   stateBasedCleanup(state, actorSeat)
   if (state.winner !== null) return
 
+  // #88 (Devout Intervention) wards + #85 (Aura of Resolve) death ledger are per-round — clear them
+  // at the boundary, after this round's deaths (incl. end-of-round overextend kills) have been tallied.
+  state.homeWard = [false, false]
+  state.blockerWard = [false, false]
+  state.deaths = [0, 0]
+  for (const u of unitsOf(state)) if (u.blockWard) u.blockWard = false
+
   state.outOfRound = [false, false]
   state.claimedThisRound = false
   state.pendingExtraAction = null

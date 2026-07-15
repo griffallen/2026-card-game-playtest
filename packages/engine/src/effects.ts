@@ -56,8 +56,11 @@ function filterUnits(ctx: FxCtx, f: UnitFilter): UnitInstance[] {
     if (f.side === 'enemy' && u.owner === controller) return false
     if (f.other && u.id === ctx.sourceUnit) return false
     if (f.maxPower !== undefined && effPower(state, u) > f.maxPower) return false
+    // #89 (Radiant Judgment): cost cap tied to the controller's LIVE influence, read at resolution
+    if (f.maxCostInfluence && defOf(state, u.id).cost > influenceFor(state, controller)) return false
     if (f.zone === 'sameAsSelf' && (!src || u.zone !== src.zone)) return false
     if (f.zone === 'adjacentToSelf' && (!src || !adjacent(u.zone, src.zone))) return false
+    if (f.zone === 'controllerHome' && u.zone !== homeZone(controller)) return false
     if (f.zone === 'chosenZone') {
       const z = ctx.targets?.find(t => t.kind === 'zone') as { kind: 'zone'; zone: ZoneId } | undefined
       if (!z || u.zone !== z.zone) return false
@@ -71,7 +74,12 @@ function filterUnits(ctx: FxCtx, f: UnitFilter): UnitInstance[] {
  *  in-play units matching the filter (reusing the same filter the exhaust/damageFilter ops use). */
 function perCount(ctx: FxCtx, per: PerCount | undefined): number {
   if (!per) return 1
-  return per.count === 'attackers' ? (ctx.attackerCount ?? 0) : filterUnits(ctx, per.f).length
+  if (per.count === 'attackers') return ctx.attackerCount ?? 0
+  // #85 (Aura of Resolve): the per-round death ledger, from the controller's perspective
+  if (per.count === 'deathsThisRound') {
+    return ctx.state.deaths[per.side === 'friendly' ? ctx.controller : other(ctx.controller)]
+  }
+  return filterUnits(ctx, per.f).length
 }
 
 function resolveUnitTarget(ctx: FxCtx, t: string): UnitInstance | undefined {
@@ -107,8 +115,16 @@ export function damageUnit(state: GameState, unit: UnitInstance, n: number, sour
   log(state, unit.owner, `${name(state, unit.id)} takes ${dealt} damage${source ? ` from ${source}` : ''}`)
 }
 
-export function damageBase(state: GameState, seat: Seat, n: number, source: string) {
+export function damageBase(state: GameState, seat: Seat, n: number, source: string, fromAttack = false) {
   let dmg = n
+  // #88 (Devout Intervention, Ward 1): the next DAMAGING attack on this Home is fully warded and
+  // the ward is spent. Only real prevention consumes it — a feint (fully blocked, no base damage)
+  // never reaches here, so the ward waits. Direct-damage spells pass fromAttack=false → unaffected.
+  if (fromAttack && dmg > 0 && state.homeWard[seat]) {
+    state.homeWard[seat] = false
+    log(state, seat, `${state.sides[seat].name}'s ward turns the assault from the gates`)
+    return
+  }
   if (state.preventBase[seat] > 0) {
     const absorbed = Math.min(state.preventBase[seat], dmg)
     state.preventBase[seat] -= absorbed
@@ -181,7 +197,8 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
     if (state.winner !== null) return
     switch (op.op) {
       case 'damage': {
-        const base = op.n === 'linked' ? (ctx.linked ?? 0) : op.n   // v3: "that much" (spec §3)
+        const raw = op.n === 'linked' ? (ctx.linked ?? 0) : op.n     // v3: "that much" (spec §3)
+        const base = op.per ? raw * perCount(ctx, op.per) : raw       // #85: scale by a live count
         const src = ctx.srcLabel ?? ''   // #74: name the card behind effect damage so the recap can show it
         if (op.t === 'enemyBase') { if (base > 0) damageBase(state, other(controller), base, src); break }
         if (op.t === 'selfBase') { if (base > 0) damageBase(state, controller, base, src); break }
@@ -376,6 +393,16 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         log(state, controller, `${state.sides[controller].name} wards ${op.n} base damage this round`)
         break
       }
+      case 'wardHome': {   // #88 (Devout Intervention, Ward 1)
+        state.homeWard[controller] = true
+        log(state, controller, `${state.sides[controller].name} raises a ward over their Home — the next assault is turned aside`)
+        break
+      }
+      case 'wardBlocker': {   // #88 (Devout Intervention, Ward 2)
+        state.blockerWard[controller] = true
+        log(state, controller, `${state.sides[controller].name}'s next blocker will be shielded from harm`)
+        break
+      }
       case 'removeNegative': {
         const u = resolveUnitTarget(ctx, op.t)
         if (!u) break
@@ -464,6 +491,10 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
 
 export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
   if (!state.units[unit.id]) return
+  // #85 (Aura of Resolve): the per-round death ledger. Counted here — the single choke point every
+  // death flows through (combat, effects, state-based, doom, and the created-copy vanish below) —
+  // by OWNER seat, exactly once per death (the guard above blocks the re-entrant double-count).
+  state.deaths[unit.owner] += 1
   // PR #54 (onDeath): last words. The body leaves play FIRST — ops run over a state where the
   // unit is already gone, so the op-tail cleanup can't re-enter this death and recurse.
   // actorSeat attribution uses the owner (win-tie edge; today's onDeath ops are influence-only).

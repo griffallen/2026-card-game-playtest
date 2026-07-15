@@ -30,10 +30,13 @@ export interface Cond {
 export type OpTarget = 'chosen0' | 'chosen1' | 'self' | 'attached' | 'attackTarget'
 export interface UnitFilter {
   side: 'friendly' | 'enemy' | 'all'
-  /** zone constraint relative to the source unit / chosen zone target */
-  zone?: 'sameAsSelf' | 'chosenZone' | 'adjacentToSelf' | 'all'
+  /** zone constraint relative to the source unit / chosen zone target / the controller's own Home (#89) */
+  zone?: 'sameAsSelf' | 'chosenZone' | 'adjacentToSelf' | 'all' | 'controllerHome'
   other?: boolean            // exclude source unit
   maxPower?: number
+  /** #89 (Radiant Judgment): keep only units whose printed cost is ≤ the controller's LIVE influence.
+   *  A dynamic cost cap read at resolution time — the exhaust filter widens as the +1 rider lands. */
+  maxCostInfluence?: boolean
 }
 export interface AutoPick {   // deterministic engine-chosen target(s): highest power, ties → lowest id
   maxPower?: number
@@ -46,9 +49,12 @@ export interface AutoPick {   // deterministic engine-chosen target(s): highest 
 export type PerCount =
   | { count: 'attackers' }
   | { count: 'units'; f: UnitFilter }
+  /** #85 (Aura of Resolve): the per-round death ledger — units OWNED by the controller ('friendly')
+   *  or the opponent ('enemy') that have died so far this round (created copies that vanish count). */
+  | { count: 'deathsThisRound'; side: 'friendly' | 'enemy' }
 
 export type Op =
-  | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number | 'linked'; bonusIfDamaged?: number }  // 'linked' = the amount from the previous linking op (v3, spec §3)  // autoSplash: strongest other enemy unit in the attack target's zone
+  | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number | 'linked'; bonusIfDamaged?: number; per?: PerCount }  // 'linked' = the amount from the previous linking op (v3, spec §3)  // autoSplash: strongest other enemy unit in the attack target's zone  // per (#85): scale n by a live count (e.g. enemy deaths this round)
   | { op: 'damageFilter'; f: UnitFilter; n: number }
   | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number; per?: PerCount }  // chosen may be unitOrBase; per scales n (PR #71)
   | { op: 'draw'; n: number }
@@ -62,6 +68,8 @@ export type Op =
   | { op: 'ready'; side: 'friendly'; t?: 'chosen0' }             // with t: readies only that chosen unit (Final Onslaught)
   | { op: 'extraAction' }                                         // the same player immediately takes another action (decision 43)
   | { op: 'preventBase'; n: number }
+  | { op: 'wardHome' }        // #88 (Devout Intervention): arm a one-shot ward — the next DAMAGING attack on the controller's Home is fully prevented; spends only on real prevention (a feint leaves it armed), and never blocks direct-damage spells
+  | { op: 'wardBlocker' }     // #88 (Devout Intervention): arm a one-shot ward — the controller's next blocking unit takes no combat damage this fight, yet still deals its counter
   | { op: 'removeNegative'; t: OpTarget }
   | { op: 'clearDamage'; t: OpTarget }
   | { op: 'countBuff'; t: OpTarget; per: { color?: Color; side: 'all' | 'friendly' | 'enemy'; zone: 'ofTarget'; other?: boolean }; p: number; dur: 'round' | 'perm' }  // v3 (Reckless mode B): +p per matching unit                            // v3 (Blood Rush): remove ALL damage; the amount becomes the linked value
@@ -225,6 +233,9 @@ export interface UnitInstance {
   /** #69 (createCopies): minted by an effect, never a deck card. Present = the unit vanishes on
    *  death (no discard). p/h/kw, when set, replace the printed body/keyword line. */
   created?: { p?: number; h?: number; kw?: KeywordSpec[] }
+  /** #88 (Devout Intervention, Ward 2): stamped on the controller's next blocker — this unit takes
+   *  no damage in the coming combat resolution (it still deals its counter). One fight, then cleared. */
+  blockWard?: boolean
 }
 
 export interface UpgradeInstance {
@@ -280,6 +291,14 @@ export interface GameState {
   units: Record<string, UnitInstance>
   upgrades: Record<string, UpgradeInstance>
   preventBase: [number, number]       // remaining base-damage prevention this round
+  /** #88 (Devout Intervention): per-seat one-shot wards, cleared at the round boundary.
+   *  homeWard — the next damaging ATTACK on this seat's Home is fully prevented (spends only on
+   *  real prevention). blockerWard — this seat's next blocker is stamped `blockWard`. */
+  homeWard: [boolean, boolean]
+  blockerWard: [boolean, boolean]
+  /** #85 (Aura of Resolve): the per-round death ledger — units that have died this round, indexed
+   *  by OWNER seat (created copies that vanish are counted). Cleared at the round boundary. */
+  deaths: [number, number]
   winner: Seat | null
   winReason: 'life' | 'influence' | 'concede' | null
   log: LogLine[]
