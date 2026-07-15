@@ -76,6 +76,11 @@ export function validateCardSet(cards: CardSet): string[] {
       }
     }
     for (const st of def.statics ?? []) errors.push(...validateStatic(slug, st))
+    // v3 modal cards (PR #13): each mode carries its own targets; #87 adds an optional legality `cond`
+    for (const mode of def.modes ?? []) {
+      for (const t of mode.targets ?? []) errors.push(...validateTargetSpec(slug, t))
+      for (const k of Object.keys(mode.cond ?? {})) if (!COND_KEYS.has(k)) err(slug, `unknown condition ${k}`)
+    }
   }
   return errors
 }
@@ -85,6 +90,7 @@ function validateTargetSpec(slug: string, t: TargetSpec): string[] {
   if (!TARGET_KINDS.has(t.t)) errors.push(`${slug}: unknown target kind ${t.t}`)
   if (t.count !== undefined && !isInt(t.count, 1, 4)) errors.push(`${slug}: bad target count`)
   if (t.maxPower !== undefined && !isInt(t.maxPower, 0, 99)) errors.push(`${slug}: bad maxPower`)
+  if (t.maxCost !== undefined && !isInt(t.maxCost, 0, 30)) errors.push(`${slug}: bad maxCost`)
   if (t.damagedOrMaxHealth !== undefined && !isInt(t.damagedOrMaxHealth, 0, 99)) errors.push(`${slug}: bad damagedOrMaxHealth`)
   if (t.withKw && !KEYWORDS.has(t.withKw)) errors.push(`${slug}: unknown withKw ${t.withKw}`)
   return errors
@@ -135,7 +141,11 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
     case 'damageFilter': checkTargetRef(op.f); if (!isInt(op.n, 0)) err('bad n'); break
     case 'heal': if (op.t !== 'selfBase') checkTargetRef(op.t); if (!isInt(op.n, 0)) err('bad n'); checkPer(op.per); break
     case 'draw': if (!isInt(op.n, 1, 10)) err('bad draw count'); break
-    case 'influence': if (!isInt(op.n, -20, 20) || op.n === 0) err('bad influence amount'); checkPer(op.per); break
+    case 'influence':
+      if (!isInt(op.n, -20, 20) || op.n === 0) err('bad influence amount')
+      checkPer(op.per)
+      for (const k of Object.keys(op.cond ?? {})) if (!COND_KEYS.has(k)) err(`unknown condition ${k}`)   // #79: gated influence
+      break
     case 'imprison':
       if (op.t === 'auto') {
         if (!op.auto && !op.f) err('auto imprison needs auto or f')

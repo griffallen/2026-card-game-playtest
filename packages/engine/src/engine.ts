@@ -4,7 +4,7 @@ import type {
 import { EngineError, adjacent, homeZone } from './types.ts'
 import { shuffle } from './rng.ts'
 import {
-  addInfluence, defOf, effArmor, effHealth, effPower, hasKw, idNum, isSick, kwOf, log, other, pipGateSatisfied, unitsInZone,
+  addInfluence, condHolds, defOf, effArmor, effHealth, effPower, hasKw, idNum, isSick, kwOf, log, other, pipGateSatisfied, unitsInZone,
 } from './helpers.ts'
 import { damageBase, damageUnit, destroyUnit, fireTrigger, runOps, stateBasedCleanup } from './effects.ts'
 import { startRound, endRound, finishBankStep } from './round.ts'
@@ -324,6 +324,7 @@ function validateTargets(state: GameState, seat: Seat, specs: TargetSpec[], targ
       if (spec.side === 'enemy' && u.owner === seat) fail('bad-targets', 'must target an enemy unit')
       if (spec.side === 'friendly' && u.owner !== seat) fail('bad-targets', 'must target a friendly unit')
       if (spec.maxPower !== undefined && effPower(state, u) > spec.maxPower) fail('bad-targets', `target power exceeds ${spec.maxPower}`)
+      if (spec.maxCost !== undefined && defOf(state, u.id).cost > spec.maxCost) fail('bad-targets', `target cost exceeds ${spec.maxCost}`)
       if (spec.damagedOrMaxHealth !== undefined && u.damage <= 0 && effHealth(state, u) > spec.damagedOrMaxHealth)
         fail('bad-targets', `target must be damaged or have ${spec.damagedOrMaxHealth} or less health`)
       if (spec.withKw && !hasKw(state, u, spec.withKw)) fail('bad-targets', `target must have ${spec.withKw}`)
@@ -379,6 +380,8 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
       ? fail('bad-mode', `${def.name} is modal — declare a mode (0-${def.modes.length - 1})`)
       : def.modes[action.mode]
   ) : undefined
+  // #87 (Binding Light): a mode may be gated on the caster's state — an out-of-reach mode is unavailable
+  if (mode && !condHolds(state, seat, mode.cond)) fail('bad-mode', `${def.name}: the ${mode.label} mode is unavailable right now`)
   validateTargets(state, seat, (mode ? mode.targets : def.targets) ?? [], targets, def.name)
   // issue #45: an X card's cost is declared at cast — any number of ready resources
   if (def.xCost && (action.x === undefined || !Number.isInteger(action.x) || action.x < 0))

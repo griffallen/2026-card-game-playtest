@@ -277,6 +277,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
       }
       case 'draw': draw(state, controller, op.n); log(state, controller, `${state.sides[controller].name} draws ${op.n}`); break
       case 'influence': {
+        if (!condHolds(state, controller, op.cond)) break        // #79 (Radiant Aegis): the gain is gated on the controller's state
         const n = op.per ? op.n * perCount(ctx, op.per) : op.n   // PR #70/#71: scale by attacker/unit count
         if (n === 0) break                                       // per counted zero — a no-op, not a "gains 0" line
         addInfluence(state, controller, n)
@@ -330,6 +331,10 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         const targets = typeof op.t === 'string' ? [resolveUnitTarget(ctx, op.t)].filter(Boolean) as UnitInstance[] : filterUnits(ctx, op.t)
         for (const u of targets) {
           u.mods.push({ kw: op.kw, round: op.dur === 'round' })
+          // #79 (Radiant Aegis): Shielded is a live token, not a passive keyword — the keyword line
+          // above only *displays* it, so granting the ward must raise the actual token (the boolean
+          // damageUnit spends). The view drops the "shielded" tag the moment the token is gone.
+          if (op.kw.k === 'shielded') u.shielded = true
           log(state, u.owner, `${name(state, u.id)} gains ${op.kw.k}${op.kw.n !== undefined ? ` ${op.kw.n}` : ''}${op.dur === 'round' ? ' this round' : ''}`)
         }
         break

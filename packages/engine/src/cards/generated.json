@@ -1094,17 +1094,56 @@
   "artUrl": "/cards/vanguard-sentinel.jpg"
  },
  "binding-light": {
-  "targets": [
+  "modes": [
    {
-    "t": "unit",
-    "side": "enemy",
-    "maxPower": 4
-   }
-  ],
-  "onPlay": [
+    "label": "Weak",
+    "targets": [
+     {
+      "t": "unit",
+      "side": "enemy",
+      "maxPower": 4
+     }
+    ],
+    "ops": [
+     {
+      "op": "exhaust",
+      "t": "chosen0"
+     }
+    ]
+   },
    {
-    "op": "exhaust",
-    "t": "chosen0"
+    "label": "Cheap",
+    "targets": [
+     {
+      "t": "unit",
+      "side": "enemy",
+      "maxCost": 4
+     }
+    ],
+    "ops": [
+     {
+      "op": "exhaust",
+      "t": "chosen0"
+     }
+    ]
+   },
+   {
+    "label": "Overwhelm",
+    "cond": {
+     "influenceAtLeast": 8
+    },
+    "targets": [
+     {
+      "t": "unit",
+      "side": "enemy"
+     }
+    ],
+    "ops": [
+     {
+      "op": "exhaust",
+      "t": "chosen0"
+     }
+    ]
    }
   ],
   "slug": "binding-light",
@@ -1112,11 +1151,11 @@
   "color": "yellow",
   "type": "action",
   "cost": 2,
-  "text": "Exhaust target enemy unit with 4 or less Power.",
+  "text": "Choose one — exhaust an enemy unit with 4 or less Power; exhaust an enemy unit that costs 4 or less; or, if you have 8 or more Influence, exhaust any enemy unit.",
   "pips": [
    "yellow"
   ],
-  "designerNote": "Session 006, prison ladder: Binding Light 2 = midweight lockup, pure tempo (no influence rider). The old 10+ rider was dead text — prisoners already can't attack anything (decision 50 spirit).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 2: the verdict of stillness — exhaustion is the new soft lock (blocking costs ready units in v3, so this bites twice).",
+  "designerNote": "Session 006, prison ladder: Binding Light 2 = midweight lockup, pure tempo (no influence rider). The old 10+ rider was dead text — prisoners already can't attack anything (decision 50 spirit).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 2: the verdict of stillness — exhaustion is the new soft lock (blocking costs ready units in v3, so this bites twice).\n\n2026-07-15 (#87, Griff ratified — enemy-only confirmed): the single 'exhaust a ≤4-Power enemy' becomes **modal**, same cost 2 / one yellow pip. Choose one: **Weak** (exhaust an enemy with ≤4 Power — the original), **Cheap** (exhaust an enemy that costs ≤4 — a new angle: costly beaters can be low-power, cheap ones can hit hard, so the two filters catch different threats), or **Overwhelm** (exhaust ANY enemy — but only while you hold 8+ Influence, a reward for a commanding board). Two new primitives: `maxCost` on a target, and a `cond` that gates a whole mode's legality (Overwhelm isn't even offered below 8 Influence).",
   "artUrl": "/cards/binding-light.jpg"
  },
  "containment-priest": {
@@ -1229,33 +1268,6 @@
   ],
   "designerNote": "Decision 52: \"this zone\" on an action means \"choose a zone\" — the text now says so.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/hold-the-line.jpg"
- },
- "radiant-aegis": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "friendly"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "buff",
-    "t": "chosen0",
-    "armor": 2,
-    "dur": "perm"
-   }
-  ],
-  "slug": "radiant-aegis",
-  "name": "Radiant Aegis",
-  "color": "yellow",
-  "type": "action",
-  "cost": 2,
-  "text": "Target unit gets Armor 2, permanently.",
-  "pips": [
-   "yellow"
-  ],
-  "designerNote": "Session 006: 1 → 2 mana. Armor 2 blanks red's whole cheap-burn suite; at 1 mana it was the best card in the pool. The armor ladder: Aegis 2 (Armor 2, one unit), Radiant Wall 5 (Armor 3), Command Edict 7 (Armor 1, everyone).\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
-  "artUrl": "/cards/radiant-aegis.jpg"
  },
  "sunguard-defender": {
   "onDefend": [
@@ -1451,6 +1463,43 @@
   ],
   "designerNote": "Session 006, the prison ladder (each imprison action now has one job): Warrant 1 = small fry. The old \"in this zone\" was meaningless from hand (decision 52 context) and an unrestricted 1-mana imprison embarrassed Detain at 6.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 1: the small warrant — a warden order (first by-capture card). The captive is held until your warden readies or falls.\n\n2026-07-13 (designer, PR #53 — yellow rebalance pass, issue #50): 1 → 3, the power cap becomes\n\"damaged OR ≤2 health\" (new target vocabulary `damagedOrMaxHealth`), and the flat on-play\ninfluence becomes **1/round while the captive is held** (new capture `income` — pays at the\nholder's owner's start step, decision-71: so from round 2 on). ⚑ Agent reading: \"beginning of\neach round\" = your start step; the income dies with the holder (decision 92: so does the grip).",
   "artUrl": "/cards/prison-warrant.jpg"
+ },
+ "radiant-aegis": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "shielded"
+    },
+    "dur": "perm"
+   },
+   {
+    "op": "influence",
+    "n": 2,
+    "cond": {
+     "influenceAtMost": -1
+    }
+   }
+  ],
+  "slug": "radiant-aegis",
+  "name": "Radiant Aegis",
+  "color": "yellow",
+  "type": "action",
+  "cost": 3,
+  "text": "Give a friendly unit a Shield. If your Influence is below 0, gain 2 Influence.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
+  "designerNote": "Session 006: 1 → 2 mana. Armor 2 blanks red's whole cheap-burn suite; at 1 mana it was the best card in the pool. The armor ladder: Aegis 2 (Armor 2, one unit), Radiant Wall 5 (Armor 3), Command Edict 7 (Armor 1, everyone).\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.\n2026-07-14 (#79, ratified with Griff): the whole card is rebuilt off the armor ladder. Now 3 mana, two yellow pips. It no longer prints permanent Armor 2 — it grants a **Shield** (the one-time ward: the first hit is prevented, then the token is spent), a cleaner fit with yellow's defensive-tempo identity than a permanent stat bump. New rider, deliberately gated: **only when your Influence is below 0** do you gain 2 — a catch-up valve for when yellow has been pushed off the track, never a free stapled gain. Two new engine primitives: granting `shielded` now raises the real shield token (it was a no-op before — the keyword line displayed a ward that didn't exist), and the `influence` op can carry a `cond`.",
+  "artUrl": "/cards/radiant-aegis.jpg"
  },
  "sanctified-bastion": {
   "statics": [

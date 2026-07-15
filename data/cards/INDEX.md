@@ -53,11 +53,10 @@
 | [Iron Plating](yellow/iron-discipline.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. |
 | [Oath of Order](yellow/oath-of-order.md) | 1 | upgrade | — |  | canon | Attach to unit. This unit gains Guard. |
 | [Vanguard Sentinel](yellow/vanguard-sentinel.md) | 1 | unit | 1/1 | guard | canon | Guard. When this unit dies, gain 1 Influence. |
-| [Binding Light](yellow/binding-light.md) | 2 | action | — |  | canon | Exhaust target enemy unit with 4 or less Power. |
+| [Binding Light](yellow/binding-light.md) | 2 | action | — |  | canon | Choose one — exhaust an enemy unit with 4 or less Power; exhaust an enemy unit that costs 4 or less; or, if you have 8 or more Influence, exhaust any enemy unit. |
 | [Containment Priest](yellow/containment-priest.md) | 2 | unit | 2/2 | capture | canon | When this enters play, choose one: capture target enemy unit with 2 or less Power, or exhaust a damaged enemy unit. |
 | [Disciplined Mind](yellow/disciplined-mind.md) | 2 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. Draw a card. |
 | [Hold the Line](yellow/hold-the-line.md) | 2 | action | — |  | canon | Choose a zone. Your units there gain Guard. |
-| [Radiant Aegis](yellow/radiant-aegis.md) | 2 | action | — |  | canon | Target unit gets Armor 2, permanently. |
 | [Sunguard Defender](yellow/sunguard-defender.md) | 2 | unit | 1/1 | guard, shielded | canon | Guard. Shielded. When this unit defends, gain 1 Influence. |
 | [Aura of Resolve](yellow/aura-of-resolve.md) | 3 | upgrade | — |  | canon | Attach to unit. When this unit defends, gain 2 Influence. |
 | [Bulwark Protector](yellow/bulwark-protector.md) | 3 | unit | 2/2 | guard, armor 1 | canon | Guard. Armor 1. When this unit defends, gain 1 Influence. |
@@ -65,6 +64,7 @@
 | [Justicar Enforcer](yellow/justicar-enforcer.md) | 3 | unit | 3/4 | guard | canon | Guard. When this defends, gain 2 Influence. |
 | [Noble Purifier](yellow/noble-purifier.md) | 3 | unit | 4/1 |  | canon | When this kills a unit, gain 2 Influence. |
 | [Prison Warrant](yellow/prison-warrant.md) | 3 | action | — |  | canon | Target unit you control captures target damaged enemy unit or unit with 2 or less Health. Gain 1 Influence at the beginning of each round where the target unit is still captured. |
+| [Radiant Aegis](yellow/radiant-aegis.md) | 3 | action | — |  | canon | Give a friendly unit a Shield. If your Influence is below 0, gain 2 Influence. |
 | [Sanctified Bastion](yellow/sanctified-bastion.md) | 3 | unit | 1/6 | cantAttack | canon | This can't attack. Other friendly units in this zone have Armor 1. |
 | [Subjugate](yellow/subjugate.md) | 3 | upgrade | — |  | canon | Attach to an enemy unit. While attached, it gets −1 Power for each pip in its cost. |
 | [Unwavering Faith](yellow/unwavering-faith.md) | 3 | action | — |  | canon | Heal 3 damage from target unit. |

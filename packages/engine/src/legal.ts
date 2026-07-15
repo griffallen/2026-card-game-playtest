@@ -1,6 +1,6 @@
 import type { GameAction, GameState, Seat, TargetRef, TargetSpec, UnitInstance, ZoneId } from './types.ts'
 import { ZONES, adjacent, homeZone } from './types.ts'
-import { defOf, effHealth, effPower, hasKw, idNum, isSick, kwOf, other, pipGateSatisfied, unitsInZone, unitsOf } from './helpers.ts'
+import { condHolds, defOf, effHealth, effPower, hasKw, idNum, isSick, kwOf, other, pipGateSatisfied, unitsInZone, unitsOf } from './helpers.ts'
 import { interceptCandidates } from './engine.ts'
 
 /**
@@ -111,6 +111,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     const infiltrates = def.type === 'unit' && (def.kw ?? []).some(k => k.k === 'infiltrate')
     if (def.modes) {  // v3 modal cards: each mode enumerates with its own targets
       def.modes.forEach((mode, mi) => {
+        if (!condHolds(state, seat, mode.cond)) return   // #87: a gated mode is not offered until its condition holds
         for (const targets of enumerateTargetSpecs(state, seat, mode.targets ?? [])) {
           out.push(targets.length ? { type: 'play', card, mode: mi, targets } : { type: 'play', card, mode: mi })
         }
@@ -360,6 +361,7 @@ function candidatesFor(state: GameState, seat: Seat, spec: TargetSpec): TargetRe
     if (spec.side === 'enemy' && u.owner === seat) continue
     if (spec.side === 'friendly' && u.owner !== seat) continue
     if (spec.maxPower !== undefined && effPower(state, u) > spec.maxPower) continue
+    if (spec.maxCost !== undefined && defOf(state, u.id).cost > spec.maxCost) continue
     if (spec.damagedOrMaxHealth !== undefined && u.damage <= 0 && effHealth(state, u) > spec.damagedOrMaxHealth) continue
     if (spec.withKw && !hasKw(state, u, spec.withKw)) continue
     if (spec.mustBeDamaged && u.damage <= 0) continue

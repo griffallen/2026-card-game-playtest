@@ -52,7 +52,7 @@ export type Op =
   | { op: 'damageFilter'; f: UnitFilter; n: number }
   | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number; per?: PerCount }  // chosen may be unitOrBase; per scales n (PR #71)
   | { op: 'draw'; n: number }
-  | { op: 'influence'; n: number; per?: PerCount }                // + toward controller; per scales n (PR #70/#71)
+  | { op: 'influence'; n: number; per?: PerCount; cond?: Cond }   // + toward controller; per scales n (PR #70/#71); cond gates the gain (#79 Radiant Aegis)
   | { op: 'imprison'; t: OpTarget | 'auto'; f?: UnitFilter; auto?: AutoPick }
   | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'round' | 'perm'; cond?: Cond }
   | { op: 'double'; t: OpTarget | UnitFilter; rounds?: number }  // v3 (Unchained Rage): filter-wide, multi-round
@@ -88,6 +88,7 @@ export interface TargetSpec {
   side?: 'friendly' | 'enemy' | 'any'
   baseSide?: 'enemy' | 'any'
   maxPower?: number
+  maxCost?: number          // #87 (Binding Light): the target's printed cost must be ≤ this
   withKw?: KeywordName
   mustBeDamaged?: boolean
   damagedOrMaxHealth?: number  // PR #53 (Prison Warrant): legal if damaged OR effective health ≤ n
@@ -111,8 +112,9 @@ export interface CardDef {
   pips?: Color[]
   /** v3 Sneak payload (decision 60): exhaust-activated, targets constrained to the unit's zone */
   sneak?: { targets?: TargetSpec[]; ops: Op[] }
-  /** v3 modal actions (spec §3, PR #13): the player declares one mode at cast time; each mode owns its targets+ops */
-  modes?: { label: string; text?: string; targets?: TargetSpec[]; ops: Op[] }[]
+  /** v3 modal actions (spec §3, PR #13): the player declares one mode at cast time; each mode owns its targets+ops.
+   *  `cond` (#87 Binding Light) gates a mode's LEGALITY — it is only offered/playable while the condition holds. */
+  modes?: { label: string; text?: string; targets?: TargetSpec[]; ops: Op[]; cond?: Cond }[]
   /** cost is printed "X": the player declares how many resources to pay at cast (issue #45) */
   xCost?: boolean
   kw?: KeywordSpec[]
