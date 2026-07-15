@@ -50,12 +50,17 @@ watch tick (`/watch`, armed with `/loop 4m /watch`), deploys, git/CI mechanics, 
 on well-specified tickets. **Fable** owns: **every outbound GitHub comment** (drafted by a
 `model: 'fable'` subagent briefed per the template in `.claude/skills/watch/SKILL.md`; the
 router posts the draft verbatim), triage rulings and release clarifications with Griff,
-feature guidance, mechanics design and new engine primitives, architecture calls, and
-cross-surface audits — switch the whole session (`/model`) for extended design work.
-The principle (Blaine, 013): **Opus implements, Fable discerns** — judgment calls,
-long-running discussions, holding the thread. **Tripwires, no judgment required:** work
-that touches engine primitives, `DECISIONS.md`, `rules-v1.2.md`, or changes what a card
-*does* (not just its stats) routes to Fable regardless of how well-specified it looks.
+feature guidance, mechanics *design*, architecture calls, and the *judgment* in a
+cross-surface audit — switch the whole session (`/model`) for extended design work.
+The principle (Blaine, 013; sharpened by Blaine later): **Opus implements, Fable discerns.**
+Fable is for **decisions and communication only** — design rulings, judgment calls,
+long-running discussions, and every Griff-facing word. **Opus writes all the code —
+including new engine primitives and other tripwire work.** Fable rules on *how it should
+behave*; Opus builds it (Blaine: a Fable subagent costs ~150k tokens on a card build —
+don't spend one on implementation). **Tripwires** — work that touches engine primitives,
+`DECISIONS.md`, `rules-v1.2.md`, or changes what a card *does* (not just its stats) —
+route the **design decision** to Fable regardless of how well-specified it looks; once
+Fable (or Griff/Blaine) has ruled, **Opus implements it**.
 **Escalation rule:** if the router is about to decline or defer an action — skip a deploy,
 wait on a human, close without acting — that decision is itself Fable-shaped: delegate it
 before deciding. Opus never unilaterally decides *not* to act. (Delegation verified

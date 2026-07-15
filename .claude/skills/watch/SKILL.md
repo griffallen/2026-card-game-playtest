@@ -26,9 +26,9 @@ Anything newer is a finding.
 | Nothing new | End the tick. No Fable, no summary. |
 | Git/CI mechanics — conflicts, failing gate, labels, branch cleanup | Router, directly |
 | Well-specified code work — clear repro, agreed spec, stat-only card wiring | Router codes it (test-first; deploy after demo-facing changes) |
-| **Tripwire** — touches engine primitives, `DECISIONS.md`, `rules-v1.2.md`, or changes what a card *does* (not just its stats) | Fable, regardless of how well-specified it looks |
+| **Tripwire** — touches engine primitives, `DECISIONS.md`, `rules-v1.2.md`, or changes what a card *does* (not just its stats) | Fable rules on the **design/behavior**; then **Opus implements the code** (Blaine: don't spend a ~150k-token Fable subagent on a build) |
 | **Any outbound GitHub comment** — reply, ack, triage ruling, release clarification | **Fable drafts** (template below); router posts it verbatim |
-| Mechanics design, new engine primitive, architecture, cross-surface audit | Fable subagent — or switch the session (`/model`) for long design work |
+| Mechanics design, architecture call, the *judgment* in a cross-surface audit | Fable (decision only) — or switch the session (`/model`) for long design work; Opus writes any resulting code |
 | You're about to **decline, defer, or wait on a human** | Stop — that judgment is Fable's. Delegate the decision itself. |
 
 Accepted rulings from Griff or Blaine fold into canon without re-asking.
