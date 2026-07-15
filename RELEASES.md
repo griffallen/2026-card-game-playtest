@@ -8,6 +8,17 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.2.0 — 2026-07-15
+major — **Resolve Banner + the pass-as-action primitive** (#86, PR by Griff, fired by Blaine).
+The game's first mid-game upgrade re-attachment: pass an attached upgrade to a friendly unit in
+the same zone for its cost, as an action, uncapped (tempo self-regulates). Resolve Banner also
+gains **+1 Armor / +1 Health** on the carrier — the first upgrade-granted Health, read live so
+detaching recomputes lethality (a unit standing only on the banner falls the instant it leaves)
+— plus **free friendly-only salvage** (owner recovers for 0; enemy can't). New `passUpgrade`
+action + affordances (bot + demo) + demo pass UI. Test-first (`resolve-banner.test.ts` 8/8);
+engine 279/279, server 8/8. Not yet in a prebuilt deck, so sim baselines are bit-identical —
+balance gets measured when it's decked. commit `1c05640`.
+
 ## v0.1.2 — 2026-07-15
 patch — demo decks (#94, Griff). Griff's own hand-curated lists are now the canonical
 prebuilt decks: **Crimson Assault** = his 65-card red (was `griffs-red`), **Radiant Order** =
