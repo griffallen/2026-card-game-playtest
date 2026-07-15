@@ -61,6 +61,19 @@ don't spend one on implementation). **Tripwires** — work that touches engine p
 `DECISIONS.md`, `rules-v1.2.md`, or changes what a card *does* (not just its stats) —
 route the **design decision** to Fable regardless of how well-specified it looks; once
 Fable (or Griff/Blaine) has ruled, **Opus implements it**.
+**Where the build runs (Blaine — keep the router's context lean; it's re-read every tick):**
+Opus does the implementation, but *where* matters. Three modes:
+• **Inline** — router edits directly. Default for a *contained* change (a card wiring, a
+  small edit, a clean cherry-pick — a handful of files).
+• **Opus subagent** — a fresh `model: 'opus'` `general-purpose` subagent (or `fork` when it
+  needs the router's context) does a *sprawling* build (heavy multi-file reads, a
+  from-scratch primitive) and returns a diff + summary. Same model, so it honors "Opus
+  implements"; the file-reads stay in the subagent, not the router's window. Default for
+  anything file-heavy in a long loop.
+• **Fable build** — a `model: 'fable'` subagent builds it. **Not the default** (~150k/card),
+  but the **easy override**: when Blaine says **`fable-build`** (or "use a Fable build") on
+  an item, route that build to Fable — for its discernment on a novel/risky primitive.
+  Reverts to the Opus default on the next item unless he says otherwise.
 **Escalation rule:** if the router is about to decline or defer an action — skip a deploy,
 wait on a human, close without acting — that decision is itself Fable-shaped: delegate it
 before deciding. Opus never unilaterally decides *not* to act. (Delegation verified

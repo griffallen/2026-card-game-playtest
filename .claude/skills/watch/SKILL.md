@@ -26,7 +26,8 @@ Anything newer is a finding.
 | Nothing new | End the tick. No Fable, no summary. |
 | Git/CI mechanics — conflicts, failing gate, labels, branch cleanup | Router, directly |
 | Well-specified code work — clear repro, agreed spec, stat-only card wiring | Router codes it (test-first; deploy after demo-facing changes) |
-| **Tripwire** — touches engine primitives, `DECISIONS.md`, `rules-v1.2.md`, or changes what a card *does* (not just its stats) | Fable rules on the **design/behavior**; then **Opus implements the code** (Blaine: don't spend a ~150k-token Fable subagent on a build) |
+| **Tripwire** — touches engine primitives, `DECISIONS.md`, `rules-v1.2.md`, or changes what a card *does* (not just its stats) | Fable rules on the **design/behavior**; then **Opus implements the code** (not a ~150k Fable build) |
+| **Where the Opus build runs** | *Contained* edit → **inline**. *Sprawling* build (heavy multi-file reads / from-scratch primitive) → **Opus subagent** (`model:'opus'` general-purpose, or `fork`) so its reads stay out of the router's context. Override: Blaine says **`fable-build`** → route that one build to a `model:'fable'` subagent; reverts to Opus next item. (Canon: CLAUDE.md → Model routing.) |
 | **Any outbound GitHub comment** — reply, ack, triage ruling, release clarification | **Fable drafts** (template below); router posts it verbatim |
 | Mechanics design, architecture call, the *judgment* in a cross-surface audit | Fable (decision only) — or switch the session (`/model`) for long design work; Opus writes any resulting code |
 | You're about to **decline, defer, or wait on a human** | Stop — that judgment is Fable's. Delegate the decision itself. |
