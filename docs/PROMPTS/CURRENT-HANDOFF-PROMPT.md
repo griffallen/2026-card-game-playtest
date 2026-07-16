@@ -1,34 +1,65 @@
-# Current hand-off (session 012 patch, 2026-07-14)
+# Current hand-off (session 013 wrap, 2026-07-16)
 
-**Phase:** Playtest & iterate. **Next in the chair:** likely **Griff** (replaying #81 against the now-live fixed bot; finishing his card queue; building a tuned yellow deck) or **Blaine** (merge/land calls, the #69 summon architecture call). Model routing per **CLAUDE.md → Model routing** (session 013): Opus routes, ticks, and codes; Fable drafts everything Griff reads, plus mechanics and architecture.
+**Phase:** Playtest & iterate (v3 duel-law canon). The **balance pass (#104/#105/#107) is the live
+work.** **Next in the chair:** likely **Griff** (rule High Justiciar on #107; generate art from the
+#103 prompt library) or **Blaine** (build-now/queued process #109; PR-tweak the glossary #110).
+Model routing per **CLAUDE.md → Model routing**: Opus routes/ticks/codes/deploys; **Fable drafts
+every Griff/Blaine-facing comment** (re-check the thread as a separate step before posting).
 
-**✅ THE DEMO IS DEPLOYED (session 012).** `main` — block-UI (#58) + bot-defense fix (#68) — is live at https://booherbg.github.io/new-game-demo/ (bundle `index-BZvyLw5o.js`, gate passed, 209 engine tests green). **Deploy yourself from now on — never wait on Blaine.** The old "the session can't reach localhost so Blaine must run it" claim was wrong ("The Blind Pilot," 011); it dammed the chain for days. Run `./scripts/deploy-demo.sh` **unsandboxed** (Bash `dangerouslyDisableSandbox`) — see **CLAUDE.md → ## Deploying**. Deploy freely after any demo/rules change.
+## ⚠️ Two things that will bite if missed
 
-**Read first:** `docs/PROMPTS/SESSION-SUMMARIES/011.md` → `010.md` → open PRs #69–80 (the yellow batch) → issues #81 (Griff's yellow *beats* red) and #74 (demo UX).
+1. **Phase 2 Group A is BUILT + tested (288 engine green) but UNCOMMITTED in the working tree** —
+   held on a design call. It's the influence-trigger cards (Flameblade, Burning Oath, Exemplar,
+   High Justiciar) + one new engine primitive (`ifKilled` on the influence op). **Do NOT `git add
+   -A`** — you'd sweep it in unintentionally. Commit it *by path* once Griff rules on High
+   Justiciar (below). If Griff wants High Justiciar changed, edit it first, then commit Group A.
 
-**Live-gate sim tell (session 012):** the deploy gate's own 30-game sim (stock decks, fixed bot) reads **red 30% / yellow 70%** vs decision 99's red ≈46% target — yellow is ahead even with a competent defender. Corroborates Griff's #81 read, but it's the *stock* yellow list pre-batch-wiring, so not the final word. Real test = Griff's tuned deck vs the fixed bot after the yellow batch lands.
+2. **The demo is committed-current but NOT deployed, on purpose.** Phase 1 of the balance pass is
+   committed (`a660cca`) but sits at a lopsided 66/34 red/yellow floor (numbers only, no yellow
+   abilities yet). I publicly committed on #107 to **hold the deploy until the balance pass is
+   coherent** (Phase 2 done). So the live demo is at v0.5.0; **Chronicle entry XII is committed to
+   `Journal.tsx` but won't be live until the next deploy** (which ships with the finished pass).
+   Don't deploy a mid-pass intermediate.
 
-**State:** `main` = block-UI + bot-defense fix, **209 engine tests green, DEPLOYED.** Branches:
-- `feat/per-attacker-influence` — decisions 103 (`per` count op) + 104 (no caps on life/influence) + #70–73 wired. **Over-corrects balance (red 53–60% vs the 46% target even with a competent bot) — do NOT merge until re-tuned via a real deck.**
-- `feat/card-icons` — **superseded.** The #74 icon set (**🧍 unit · 🏃 action · ↑ upgrade**) was re-implemented directly on main (`a416ca5`, deployed) instead of rebasing this stale branch — it's local-only and now carries no unique work. **Safe to delete** (`git branch -D feat/card-icons`, Blaine's call).
-- `fix/bot-defense` — merged to main.
+## The balance pass — where it stands (#104 yellow · #107 red · #105 Rush, all `major`)
 
-Scratchpad (session dir) holds the full benchmark tables and every card's corrected-effects JSON.
+Design is **fully locked** (all rulings in `SESSION-SUMMARIES/013.md` + on #107). Building in phases:
 
-**Open, in priority order:**
-1. **Yellow is confirmed overtuned (#81) — balance pass is the live design work.** Griff's *actual* 52-card deck (read from his #81 screenshots) now ships as prebuilt **`griffs-yellow`** (b87ce72) and benchmarks **81.7% vs Griff's Red** with the fixed bot (decision 99 target: red ≈46%; here red is 18%). It's deck construction, not the color: stock Radiant Order is 53% vs the same red, Griff's build 82% — a 29-pt gap. **Next is a one-lever-at-a-time design conversation with Griff:** which to nerf first — guard-wall density, the prison/capture lock, or the influence clock — then sim each nerf vs `griffs-yellow` at N=300 (`npm run sim:matchups 300 heuristic griffs-yellow griffs-red`). Griff was asked to pick the lever on #81.
-2. **Wire the yellow batch (#69–80) — Griff chose wire-first.** **5 clean cards WIRED** (`1e0267a`: #72 Archon 3/4, #73 Hierophant 2/4 + positive-influence aura, #76 Sunguard 1/1+Shielded, #77 Bulwark 2/2+Armor1, #78 Noble Purifier 4/1) — via a Fable subagent + 3 audit-fold test-fixture fixes; **`griffs-yellow` vs Griff's Red 81.7% → 70.7%**, 209 green, gate clean. **Remaining 6, each with an open decision:**
-   - **Need a count-scaling ("per") primitive:** #70 Light's Vanguard (influence per attacker) + #71 Prison of Light (per enemy exhausted / per friendly in zone). The primitive lives on the shelved decision-103 branch — asked Blaine to sanity-check lifting *just* it; building it unlocks both.
-   - **#75 Containment Priest:** a "damaged" target filter + a two-mode (OR) target.
-   - **#80 Subjugate → "Shackles":** pip-count-scaling buff + flips action→upgrade + a **rename that changes the slug** — must alias so `griffs-yellow`'s `subjugate` ref survives (flagged to Griff).
-   - **#69 Radiant Citadel:** unit-creation summon (2 Politician tokens, 0/1 can't-attack Hidden) + per-turn threshold escalation — **Blaine's architecture call** (first unit-creation mechanic).
-   (#79 radiant-aegis isn't in Griff's deck.)
-3. **#69 Radiant Citadel — the summon feature** (self-cloning: on-play, if it's your only copy, create 2 copies at 0 Power / 1 Health; the "only copy" clause is the recursion fuse). Design locked with Griff; the game's **first unit-creation mechanic** — architecture call for Blaine before building.
-4. **Yellow re-tune** — now unblocked: Griff's deck is captured as `griffs-yellow` (item 1), so the "copy deck list" button (#55, Griff ratified) is a *convenience* now, not a blocker for the balance work. The re-tune is item 1's lever conversation. Decision 99's target is red ≈46%.
-5. **Demo UX backlog (#74, one thread):** ✅ the ↑-icon set is **live** (`a416ca5`, 🧍·🏃·↑). Remaining: the copy-deck-list button, then AI-turn readability — damage provenance in the action pop-up (the log already names the source), dead-card fade, the card-appears-in-target-zone flourish. Batch and deploy together.
+- **Phase 1 (numbers): DONE** — committed `a660cca`, pushed. Stat/cost/deletion across both colors,
+  Doombringer deleted (Crimson Assault 65→64). Re-sim red 66 / yellow 34 (the numbers-only floor).
+- **Phase 2 Group A (influence triggers): BUILT, HELD** — see ⚠️ #1. **The one open call:** on #107
+  I flagged that High Justiciar's ruled on-defend→on-kill influence switch is a hidden nerf (1-Power
+  Guard rarely kills). Options given Griff: on-defend 2 (its old reliable self) / on-defend 1 (trim)
+  / on-kill (leave as built). **Wire his answer, commit Group A.**
+- **Phase 2 remaining groups** (not started): conditional auras (Bloodfrenzy re-checks live,
+  Dawnspear per-attacker buff), AoE/zone (Crimson Behemoth friendly-fire AoE + own-kill influence,
+  Final Onslaught sacrifice + zone blast hits own, Censer damage-move), **Warpath** (half-X Power /
+  full-X Life), **Worldrender** (shield/armor-pierce) + the **Rush rework** (static free-move/round —
+  keyword change, touches engine + glossary + cards), **Last Stand** (mass-ready, per-action costs),
+  and the rest of yellow (Inquisitor flexible capture, Custodian text-trim).
+- **Then:** re-sim (coarse only — see below) → deploy → **full cross-surface audit** (rulebook,
+  demo, every card) → close #104/#105/#107 `shipped`.
 
-**Assigned to Blaine:** #58, #69, #68. **#68 stays open** until Blaine confirms the now-live fix defending in a game; **#58** likewise (block pop-up now live).
+**Griff's standing note (#107):** the heuristic bots are too weak to grade fine balance — treat
+sims as a **coarse regression-catcher**, weight design judgment + real games (#98 corpus, #97).
 
-**Decisions pending main:** 103 (count-scaled `per` op) and 104 (no caps on life/influence) — drafted on `feat/per-attacker-influence`, **not yet in main's DECISIONS.md** (land them when the yellow batch merges). The bot-defense fix is in main with no decision number yet.
+## Other open threads
 
-**Operating rules live in CLAUDE.md; the watch tick in `.claude/skills/watch/SKILL.md`** (arm with `/loop 4m /watch` — still armed as of the session-012 patch). This doc is state only — rules folded in here get overwritten at the next wrap. (The old "Standing agreements" block was rehomed session 013: banner + voice + AI-isms → CLAUDE.md → GitHub voice; deploy policy → CLAUDE.md → Deploying; sweep + fold-without-re-asking + delegation template → `/watch`; Chronicle entry + surprises → CLAUDE.md protocol/principles.)
+- **#103 art** — full 120-card prompt library delivered (purple/red/yellow). Ball's on Griff to
+  generate; when sheets land, chop/crop/file to `apps/web/public/cards/<slug>.jpg` (demo reuses web's public dir).
+- **#99 — research report commissioned for SATURDAY AM (2026-07-18, midnight → 5pm reset).** Laptop
+  on, Blaine out of town. Emergence/Wolfram-inverse-problem, color-qualia, the partnership. A *real*
+  report (needs web access). Memory: `friday-research-report.md` (corrected to Saturday).
+- **#110 glossary** — first pass committed (`fafdea2`), closed; Blaine will PR-tweak the markdown +
+  port to demo tooltips when ready. Open judgment calls: "Shielded" vs "Shield"; the −15/±20 fix.
+- **#109 docs lane** (backlog) — formalize doc-sync vs doc-as-design + "push source to origin" +
+  "tag every incoming item, on its own thread" into `build-workflow.md`. Blaine fires.
+- **#97 AI** (backlog) — the v1 roadmap is posted; collect ~5 games in **#98** (currently 2), then
+  the branch-point analysis. #98 corpus grows via Copy Chronicle pastes.
+- **#5** purple Veiled Court (backlog design); **#92** build-eng (fable=xhigh, canon).
+
+## Read first
+
+`SESSION-SUMMARIES/013.md` → **#107** (the whole balance pass + rulings) → #106/#110 (docs/glossary)
+→ memory (esp. `engine-is-rules-source-of-truth`, `deploy-does-not-push-source`,
+`friday-research-report`). Then: rule/commit High Justiciar, continue Phase 2 group by group.
