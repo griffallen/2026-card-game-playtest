@@ -38,6 +38,16 @@ Install [Claude Code](https://claude.com/claude-code), open this folder in a ter
 and takes it from there. Say **"let's wrap up"** when done and it writes the handoff for the next
 session.
 
+### How your idea becomes a feature
+
+Every idea starts the same way: say it in an [issue](../../issues/new), plain words. The agent sizes it and tells you which path it's on:
+
+- **A quick fix** — a number, a button, a bug. The agent just ships it and leaves you a note when it's live.
+- **A batch of small things** — clearly right, not urgent. They gather in a queue; when you or Blaine say "go," the whole batch ships together.
+- **A big change** — a new mechanic, smarter AI, a rules change. Before building anything, the agent writes you a short brief: what it'll take, what it might break, whether it's worth it. You read it and decide. Blaine pulls the final trigger on these.
+
+You never need to know the size in advance — just say the idea. The agent keeps you posted on the thread from there.
+
 **What the game is right now:** [`docs/GAME-FLOW.md`](docs/GAME-FLOW.md) — the rules as a story,
 every prototype ruling flagged ⚑. The locked baseline lives in
 [`docs/canon/CANON.md`](docs/canon/CANON.md); the why-log of every decision is
