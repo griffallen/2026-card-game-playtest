@@ -264,11 +264,11 @@ describe('tempo and timing', () => {
 })
 
 describe('start-of-round engines', () => {
-  it('Bloodfrenzy pumps only at ≤10 life; Censer trades influence for healing', () => {
+  // NOTE (#107 balance pass, phase 2): Bloodfrenzy's ≤10-life start-of-round pump was reworked
+  // into an Influence-conditional attached aura — see bloodfrenzy.test.ts. This test now covers
+  // only Censer's start-step engine, which is untouched here.
+  it('Censer trades influence for healing at the controller\'s start step', () => {
     let { s, p1, p2 } = arena()
-    const carrier = put(s, p1, 'berserker', 1)
-    const frenzyCard = toHand(s, p1, 'bloodfrenzy')
-    s = act(s, p1, { type: 'play', card: frenzyCard, targets: [{ kind: 'unit', id: carrier }] })
     put(s, p2, 'censer-of-purity', homeZone(p2))
     s.sides[p2].life = 15
     s.influence = p2 === 0 ? 3 : -3
@@ -276,11 +276,6 @@ describe('start-of-round engines', () => {
     s = toStartStepOf(s, p2)
     expect(influenceFor(s, p2)).toBe(2)
     expect(s.sides[p2].life).toBe(17)
-    // p1 at 20 life: frenzy silent. Drop p1 to 9 and reach p1's start step → frenzy fires (≤10 since session 006)
-    s.sides[p1].life = 9
-    const before = effPower(s, s.units[carrier])
-    s = toStartStepOf(s, p1)
-    expect(effPower(s, s.units[carrier])).toBe(before + 1)
   })
 
   it('Aura of Resolve: +2 Life per friendly death, opponent -2 per enemy death (this round)', () => {

@@ -21,7 +21,7 @@
 | [Flameblade Raider](red/flameblade-raider.md) | — | 2 | unit | 4/1 | rush, breakthrough | canon | Rush. Breakthrough. When this unit dies, gain 1 Influence — and 1 more if it died defeating a unit (a trade counts). |
 | [Pillage](red/pillage.md) | — | 2 | action | — |  | canon | Destroy target enemy upgrade. |
 | [Warpath](red/warpath.md) | — | 2 | action | — |  | canon | Your units get +1 Power this round. |
-| [Bloodfrenzy](red/bloodfrenzy.md) | — | 3 | upgrade | — |  | canon | Attached unit gets +1 Power and Armor 1. At the start of your round, if you have 10 or less life, attached unit gets +1 Power permanently. |
+| [Bloodfrenzy](red/bloodfrenzy.md) | — | 3 | upgrade | — |  | canon | Attached unit gets +1 Power and +1 Health and Breakthrough. If you have Influence 0 or less, this unit gets +2 Power and +2 Health instead. |
 | [Collateral Damage](red/collateral-damage.md) | — | 3 | action | — |  | canon | Deal 2 damage to two different target units. |
 | [Fiery Impaler](red/fiery-impaler.md) | — | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to a unit of your choice in the same zone. If that unit dies, gain +1 influence. |
 | [Rageforged Brute](red/rageforged-brute.md) | — | 3 | unit | 4/4 | breakthrough | canon | Breakthrough. |
@@ -72,7 +72,7 @@
 | [Disarming Order](yellow/disarming-order.md) | — | 4 | action | — |  | canon | Target unit can't attack this round. Draw a card. |
 | [Exemplar Knight](yellow/exemplar-knight.md) | — | 4 | unit | 4/4 |  | canon | When this unit defeats a unit, gain 1 Influence. |
 | [Fortress Keeper](yellow/fortress-keeper.md) | — | 4 | unit | 2/3 | cantAttack | canon | This can't attack. Other friendly units in this zone have Guard. |
-| [High Justiciar](yellow/high-justiciar.md) | — | 4 | unit | 1/4 | guard | canon | Guard. When this unit defeats a unit, gain 1 Influence. |
+| [High Justiciar](yellow/high-justiciar.md) | — | 4 | unit | 1/4 | guard | canon | Guard. When this unit defeats a unit, gain 2 Influence. |
 | [Lawbringer](yellow/lawbringer.md) | — | 4 | unit | 2/3 |  | canon | Whenever this enters a zone, exhaust target enemy unit. |
 | [Light of Authority](yellow/light-of-authority.md) | — | 4 | action | — |  | canon | Target unit gets +3 Power this round. |
 | [Resolve Banner](yellow/resolve-banner.md) | — | 4 | upgrade | — |  | canon | Attach to unit. This unit gains +1 Health and +1 Armor. Other friendly units in this zone get +1 Power. If this becomes unattached, it can be picked up for 0 resources by a friendly unit. This can't be picked up by an opponent. This upgrade can be passed to a friendly unit in the same zone for 2 resources as an action, any number of times. |

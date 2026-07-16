@@ -143,7 +143,7 @@ describe('the four real influence-trigger cards (#104/#107)', () => {
       onKill: [{ op: 'influence', n: 1 }],
     })
     expect(CARD_SET['burning-oath'].statics).toContainEqual({ s: 'aura', scope: 'attached', p: 2 })
-    expect(CARD_SET['high-justiciar']).toMatchObject({ power: 1, health: 4, onKill: [{ op: 'influence', n: 1 }] })
+    expect(CARD_SET['high-justiciar']).toMatchObject({ power: 1, health: 4, onKill: [{ op: 'influence', n: 2 }] })
     expect(CARD_SET['high-justiciar'].kw?.map(k => k.k)).toEqual(['guard'])
     expect(CARD_SET['high-justiciar'].onDefend).toBeUndefined()   // the old defend payout is gone
     expect(CARD_SET['exemplar-knight']).toMatchObject({ power: 4, health: 4, onKill: [{ op: 'influence', n: 1 }] })
@@ -174,7 +174,7 @@ describe('the four real influence-trigger cards (#104/#107)', () => {
     expect(inf(next, me) - before).toBe(1)
   })
 
-  it('High Justiciar: keeps Guard and pays 1 when it defeats a unit', () => {
+  it('High Justiciar: keeps Guard and pays 2 when it defeats a unit', () => {
     const { s, me, them } = arena()
     const just = put(s, me, 'high-justiciar', 1)              // 1/4 guard
     const victim = put(s, them, 'cinder-initiate', 1, { exhausted: true })  // 1 health — dies to power 1
@@ -183,7 +183,7 @@ describe('the four real influence-trigger cards (#104/#107)', () => {
     const next = act(s, me, { type: 'attack', attackers: [just], target: { kind: 'unit', id: victim } })
     expect(next.units[victim]).toBeUndefined()                // defeated
     expect(next.units[just]).toBeDefined()                    // 4 health outlasts the 2 counter
-    expect(inf(next, me) - before).toBe(1)
+    expect(inf(next, me) - before).toBe(2)
   })
 
   it('Burning Oath: +1 when it attaches, then +1 each time its bearer defeats a unit', () => {

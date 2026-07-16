@@ -395,38 +395,40 @@
    {
     "s": "aura",
     "scope": "attached",
-    "p": 1
+    "p": 1,
+    "h": 1,
+    "cond": {
+     "influenceAtLeast": 1
+    }
    },
    {
     "s": "aura",
     "scope": "attached",
-    "armor": 1
+    "p": 2,
+    "h": 2,
+    "cond": {
+     "influenceAtMost": 0
+    }
+   },
+   {
+    "s": "aura",
+    "scope": "attached",
+    "kw": {
+     "k": "breakthrough"
+    }
    }
   ],
-  "startOfRound": {
-   "cond": {
-    "selfLifeAtMost": 10
-   },
-   "ops": [
-    {
-     "op": "buff",
-     "t": "attached",
-     "p": 1,
-     "dur": "perm"
-    }
-   ]
-  },
   "slug": "bloodfrenzy",
   "name": "Bloodfrenzy",
   "color": "red",
   "type": "upgrade",
   "cost": 3,
-  "text": "Attached unit gets +1 Power and Armor 1. At the start of your round, if you have 10 or less life, attached unit gets +1 Power permanently.",
+  "text": "Attached unit gets +1 Power and +1 Health and Breakthrough. If you have Influence 0 or less, this unit gets +2 Power and +2 Health instead.",
   "pips": [
    "red",
    "red"
   ],
-  "designerNote": "Session 006: threshold 5 → 10 life and cost 5 → 3. At ≤5 life the game is usually already decided; half-life is where red's desperation engine should start paying.\n\n2026-07-11 (designer, issue #4): immediate +1 Power / Armor 1 on attach added; the ≤10-life\ndesperation engine unchanged. Threshold kept at \"10 or less\" (established) though the request\nsaid \"less than 10\" — flagged on the thread.",
+  "designerNote": "Session 006: threshold 5 → 10 life and cost 5 → 3. At ≤5 life the game is usually already decided; half-life is where red's desperation engine should start paying.\n\n2026-07-11 (designer, issue #4): immediate +1 Power / Armor 1 on attach added; the ≤10-life\ndesperation engine unchanged. Threshold kept at \"10 or less\" (established) though the request\nsaid \"less than 10\" — flagged on the thread.\n\n2026-07-16 (#107 balance pass, phase 2 — Griff's rework): the ≤10-life engine and the flat\nArmor are gone. Bloodfrenzy is now a comeback upgrade tied to the Influence track: +1 Power /\n+1 Health and Breakthrough while attached, growing to +2 Power / +2 Health *instead* (not on top —\n+2/+2 total, never +3/+3) whenever the controller's Influence is 0 or less. Griff (#107): the\nconditional buff re-checks LIVE as Influence swings — drop below zero and it grows, climb back and\nit shrinks. Wired as three attached auras: a mutually-exclusive stat pair (`influenceAtLeast:1`\nvs `influenceAtMost:0`) plus an unconditional Breakthrough grant. This is the balance pass's first\nconditional attached aura — the engine now honors an attached aura's `cond`, re-read live on every\neffPower/effHealth (helpers.ts `upgradeGrants`).",
   "artUrl": "/cards/bloodfrenzy.jpg"
  },
  "collateral-damage": {
@@ -1740,7 +1742,7 @@
   "onKill": [
    {
     "op": "influence",
-    "n": 1
+    "n": 2
    }
   ],
   "slug": "high-justiciar",
@@ -1750,7 +1752,7 @@
   "cost": 4,
   "power": 1,
   "health": 4,
-  "text": "Guard. When this unit defeats a unit, gain 1 Influence.",
+  "text": "Guard. When this unit defeats a unit, gain 2 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1760,7 +1762,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 51 text (deterministic pick, stated on the card).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Guard is free blocking in v3 — the Justiciar holds the line and the court pays it.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): power 3 → 2 — decision-85 walk-back, same tier. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.\n\n2026-07-16 (#104/#107 balance pass, phase 2 group A — Griff's ruling on the influence-trigger cards): the payout moves off defence and onto the kill. It keeps Guard, but the old \"gain 2 when it defends\" is replaced by \"gain 1 when it defeats a unit\" (a trade counts). Its Phase 1 body is 1/4 — the wall now pays only when it strikes something down. Griff's justification (#107, 2026-07-16): on-defend is too easy on a Guard (akin to a red card that hits Home on any attack); the card is meant to hold the line with Guard, and the +1 is a rare bonus IF it kills — so the magnitude drops to 1.",
+  "designerNote": "Decision 51 text (deterministic pick, stated on the card).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Guard is free blocking in v3 — the Justiciar holds the line and the court pays it.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): power 3 → 2 — decision-85 walk-back, same tier. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.\n\n2026-07-16 (#104/#107 balance pass, phase 2 group A — Griff's ruling on the influence-trigger cards): the payout moves off defence and onto the kill. It keeps Guard, but the old \"gain 2 when it defends\" is replaced by \"gain 2 when it defeats a unit\" (a trade counts). Its Phase 1 body is 1/4 — the wall now pays only when it strikes something down. Griff's justification (#107, 2026-07-16): on-defend is too easy on a Guard (akin to a red card that hits Home on any attack); the card is meant to hold the line with Guard, and the +2 is a rare bonus IF it kills. (The magnitude stays 2 — its long-standing value; a mid-thread \"+1\" was Griff's loose phrasing, corrected back to 2 on #107.)",
   "artUrl": "/cards/high-justiciar.jpg"
  },
  "lawbringer": {

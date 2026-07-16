@@ -84,6 +84,11 @@ function upgradeGrants(state: GameState, unit: UnitInstance): AuraGrant {
   for (const upId of unit.upgrades) {
     for (const st of defOf(state, upId).statics ?? []) {
       if (st.s === 'aura' && st.scope === 'attached') {
+        // #107 (Bloodfrenzy): a conditional attached aura re-checks LIVE against the wearer's
+        // controller — the bonus grows/shrinks as Influence swings, evaluated on every effPower/
+        // effHealth read (no snapshot state). The wearer's owner is "you", matching aurasFor's
+        // treatment of upgrade-granted auras (condHolds against the anchor/wearer owner).
+        if (!condHolds(state, unit.owner, st.cond)) continue
         acc.p += st.p ?? 0
         // #80 (Subjugate): ±1 power per pip in the CARRIER's cost — read live, so a salvaged
         // upgrade (decision 67) re-fits its new host; pips never change, so while attached
