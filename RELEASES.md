@@ -8,6 +8,17 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.3.0 — 2026-07-16
+minor — **combat teaching pass** (#100, Blaine): combat is now legible. A plain-language
+"Combat — who takes what" section in the help panel teaches the duel law (everything hits back,
+always; Armor shaves, Shield eats a whole hit, Guard blocks the door, Breakthrough spills to
+base; the base never counters). And the combat recap now **narrates each trade** — e.g.
+`Berserker (3) ↔ Radiant Citadel (5): dealt 3, took 5 — Berserker falls` — reconstructed from
+the engine's own Power + damage numbers (armor/shields stay exact), with a safe fallback to the
+raw recap. New `recap.ts` + 8 tests (vitest wired into the demo). **No engine change** — the
+combat design is unchanged; we taught it. Rode along: **4 yellow unit arts** (Light's Vanguard,
+Radiant Citadel, Archon of Order, Champion of the Faith). 279 engine + 8 demo tests green.
+
 ## v0.2.4 — 2026-07-16
 patch — **yellow upgrade art re-skin** (#5, Griff). The five yellow upgrades in the deck get
 their storybook art (Griff confirmed the matches): Iron Discipline, Oath of Order, Disciplined

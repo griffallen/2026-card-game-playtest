@@ -12,6 +12,7 @@ import { sleeveFor } from '@ui/game/sleeves.ts'
 import { DEMO_CARDS, aiControls, newLocalGame, type DemoConfig } from './local.ts'
 import { allDecks } from './custom-decks.ts'
 import { BlockModal } from './BlockModal.tsx'
+import { composeCombatRecap } from './recap.ts'
 import { setSound, sfx, soundOn } from './sound.ts'
 
 const SFX_BY_ACTION: Partial<Record<GameAction['type'], 'play' | 'hit'>> = {
@@ -128,8 +129,19 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   // deliberately excluded: movement, draws, banking, round headers (visible on board / pure noise).
   const COMBAT_RE = /damage|destroyed|blocks|attacks|volleys|sneaks|intercepts|retaliat|spill|captiv|captur|released|freed|suffers|overextend|onslaught|rage|falls|fell|influence|absorbs|heals|cleansed|gains|gets \+|power|ordered down|readies|ready for|extra action|made whole|wards/i
   const BIG_RE = /destroyed|captures|released|freed|falls/i   // #44: one of these alone still deserves the stage
-  function queueRecap(events: { msg: string }[], mustAck = false) {
+  // #100: a resolved duel gets narrated as a trade ("Berserker (3) ↔ Radiant Citadel (5): dealt 3,
+  // took 5 — Berserker falls") so the human can read who hit whom, for how much each way, and who
+  // died — in one glance. composeCombatRecap owns the reconstruction; if it can't (non-combat
+  // action, an attack that only opened a block window), we fall back to the raw event filter.
+  function queueRecap(events: { msg: string }[], prev: GameState, next: GameState, action: GameAction, mustAck = false) {
     if (speed === 'fast') return                       // watching at speed — the log suffices
+    const trade = composeCombatRecap(prev, next, action, events, m => COMBAT_RE.test(m))
+    if (trade) {                                       // a real fight always earns the stage
+      setRecap(trade.map(msg => ({ msg })))
+      setRecapShown(1)
+      setRecapAck(mustAck)
+      return
+    }
     const combat = events.filter(e => COMBAT_RE.test(e.msg))
     if (mustAck || combat.length >= 2 || combat.some(e => BIG_RE.test(e.msg))) {
       setRecap(combat.length ? combat : events)
@@ -163,7 +175,10 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       noteDeaths(state, next)                            // #74: fade any unit that just died
       setHistory(h => [...h, { seat: actor, action, rngAfter: currentRng }])
       setSelection(null)
-      if (action.type === 'block' || action.type === 'intercept') queueRecap(events, lostMine(state, next))
+      // #100: recap defensive answers, and the attacker's own duels the moment they resolve (a lone
+      // attack with no Guard settles inside this action — otherwise it opens a block window first).
+      if (action.type === 'block' || action.type === 'intercept' || (action.type === 'attack' && !next.pendingAttack))
+        queueRecap(events, state, next, action, lostMine(state, next))
       const s = SFX_BY_ACTION[action.type]
       if (s) sfx(s)
     } catch (e) {
@@ -207,7 +222,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     setState(next)
     noteDeaths(state, next)                             // #74: fade the AI's kills (and its own dead)
     setHistory(h => [...h, { seat: state.actorSeat, action, rngAfter: nextRng }])
-    queueRecap(events, lostMine(state, next))          // #42: let the human read what the AI did
+    queueRecap(events, state, next, action, lostMine(state, next))   // #42: let the human read what the AI did
     const s = SFX_BY_ACTION[action.type]
     if (s) sfx(s)
   }

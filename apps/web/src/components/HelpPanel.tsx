@@ -34,6 +34,16 @@ function V3Content() {
         <Row icon="⚔" title="Attack — the duel law">Exhaust <b>one or more ready units in a zone</b> and name one target. <b>Attack a unit alone and nobody may block</b> — except a ready <b>Guard</b>, who may step in front of the target and take the whole hit (one Guard only). <b>Attack a base</b> and the window is always open — <b>any ready unit may block</b>, however few attack; the base is everyone's to defend. <b>Attack in a gang</b> and the defense opens: the defender pairs ready units onto your attackers freely, and <b>blocking exhausts</b> (Guards block free). Pairs trade blows at once; gang damage pours in pair order. Unblocked attackers hit the declared target full-force — and the target <b>strikes back, even while exhausted</b>: its power is poured across the unblocked attackers (biggest first), felling as many as it can pay for, so a lone attacker eats it whole but a gang splits it. Certainty travels alone; numbers can be answered.</Row>
       </div>
 
+      <H>Combat — who takes what</H>
+      <div className="mt-2 flex flex-col gap-2">
+        <Row icon="⚔" title="Everything hits back, always">Attacking a unit — or blocking one — means <b>both deal their Power to each other at once</b>, and the defender counters <i>even while exhausted</i>. So the question before any swing is: <b>does my unit survive the counter?</b> Send a 3-Power unit at a 5-Power one and, unless it can soak 5, you hand your own unit away.</Row>
+        <Row icon="◈" title="Armor">Shaves its number off <b>every</b> hit the unit takes. A ◈2 unit struck for 5 feels 3.</Row>
+        <Row icon="⛨" title="Shield">Eats <b>one whole hit</b> of any size, then the token is gone. It buys a single free trade — spend it against their biggest blow.</Row>
+        <Row icon="🛡" title="Guard">The bodyguard: the <b>only</b> unit that may block a lone attacker aimed at another unit, stepping fully in front of it — and it blocks <b>without exhausting</b>. (A base is everyone's to defend, so lone base attacks stay open to all.)</Row>
+        <Row icon="💥" title="Breakthrough (red)">When the attacker <b>kills its blocker</b>, the leftover damage doesn't stop — the excess <b>spills through</b> to what it was aimed at (a unit, or the base behind a felled defender in the enemy Home). Chump blocks don't save you.</Row>
+        <Row icon="🏰" title="The base never hits back">An unblocked attack on Life is <b>just damage</b> — no counter. Only units strike back; bases don't. That's why racing life can be safer than trading units.</Row>
+      </div>
+
       <H>Reading the board</H>
       <div className="mt-2 flex flex-col gap-2">
         <Row icon="⟳" title="Exhausted">Dimmed with a ⟳ — already acted; readies at the start of its owner's next round.</Row>
