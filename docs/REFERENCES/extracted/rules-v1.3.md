@@ -1,8 +1,6 @@
-# New Game Rule Set — v1.2 (July 3, 2026)
+# New Game Rule Set — v1.3 (2026-07-16)
 
-> Extracted 2026-07-07 from `docs/REFERENCES/New Game Rules 1.2 July 3, 2026.docx` (full text, light markdown formatting only — no content changes). **This is the authoritative rules document**; "New Game Rules v1 June 2026" is superseded. If anything here looks off, check the original docx.
->
-> Combat section revised 2026-07-16 to match current play and moved up to follow Turn Structure.
+> v1.3 supersedes v1.2. Originally extracted 2026-07-07 from `docs/REFERENCES/New Game Rules 1.2 July 3, 2026.docx`; the Combat section was revised 2026-07-16 to match current play and moved up to follow Turn Structure. **This is the authoritative rules document**; earlier versions are superseded. If anything here looks off, check the original docx.
 
 ## Game Concepts
 

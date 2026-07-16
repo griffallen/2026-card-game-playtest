@@ -7,7 +7,7 @@ A two-person project to design, prototype, and balance an original card game (wo
 - **The game designer** owns the game: rules, mechanics, cards, balance, feel. Not a software engineer — and shouldn't need to become one.
 - **The builder** (Blaine) owns the software: architecture, code, deployment.
 
-The creative brief is `docs/DESIGN/01-GENESYS.md`. The authoritative rules are `docs/REFERENCES/extracted/rules-v1.2.md` — earlier rules documents are superseded.
+The creative brief is `docs/DESIGN/01-GENESYS.md`. The authoritative rules are `docs/REFERENCES/extracted/rules-v1.3.md` — earlier rules documents are superseded.
 
 ## Your role
 
@@ -48,7 +48,7 @@ touching the flow. In brief:
 
 - **Scope** (how big / who fires / version bump): `patch` = one self-contained fix →
   **agent auto-ships**; `minor` = a batch → **Blaine or Griff** fire; `major` = a **tripwire**
-  (engine primitive, `rules-v1.2.md`/`DECISIONS.md`, or changes what a card *does*) →
+  (engine primitive, `rules-v1.3.md`/`DECISIONS.md`, or changes what a card *does*) →
   **Blaine only** fires (tick verifies the actor). Classify: tripwire? → major; else one
   contained thing? → patch; else → minor.
 - **Approval / lifecycle** (independent of scope): `backlog` (noted) → *(scope tag, no
@@ -83,7 +83,7 @@ long-running discussions, and every Griff-facing word. **Opus writes all the cod
 including new engine primitives and other tripwire work.** Fable rules on *how it should
 behave*; Opus builds it (Blaine: a Fable subagent costs ~150k tokens on a card build —
 don't spend one on implementation). **Tripwires** — work that touches engine primitives,
-`DECISIONS.md`, `rules-v1.2.md`, or changes what a card *does* (not just its stats) —
+`DECISIONS.md`, `rules-v1.3.md`, or changes what a card *does* (not just its stats) —
 route the **design decision** to Fable regardless of how well-specified it looks; once
 Fable (or Griff/Blaine) has ruled, **Opus implements it**.
 **Where the build runs (Blaine — keep the router's context lean; it's re-read every tick):**

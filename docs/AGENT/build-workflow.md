@@ -22,7 +22,7 @@ Every live item wears **one scope tag + one lifecycle state**. They move indepen
 |-------|---------------|----------|
 | `patch` | one self-contained fix — a stat/number tweak, card wiring, copy fix, bugfix-with-test; no tripwire | **agent, automatically** |
 | `minor` | a batch worth shipping together (several cards/nerfs or a small feature); no tripwire | **Blaine or Griff** (`build-now`) |
-| `major` | a **tripwire** — engine primitive, `rules-v1.2.md`/`DECISIONS.md`, or changes what a card *does* | **Blaine only** (`build-now`) |
+| `major` | a **tripwire** — engine primitive, `rules-v1.3.md`/`DECISIONS.md`, or changes what a card *does* | **Blaine only** (`build-now`) |
 
 **Axis 2 — Lifecycle / approval** (where it is):
 
