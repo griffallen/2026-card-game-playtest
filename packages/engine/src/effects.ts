@@ -32,6 +32,9 @@ export interface FxCtx {
   /** #69 (createCopies): generations of effect-created units above this context. The ifOnlyCopy
    *  gate is the real fuse; this cap only stops a future mis-gated card from looping forever. */
   spawnDepth?: number
+  /** #107 (Flameblade Raider): snapshot of the dying unit's justKilled at onDeath time — the body is
+   *  already off the field, so an `ifKilled` influence op reads the trade from here, not from state. */
+  sourceKilled?: boolean
   actorSeat: Seat
 }
 
@@ -295,6 +298,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
       case 'draw': draw(state, controller, op.n); log(state, controller, `${state.sides[controller].name} draws ${op.n}`); break
       case 'influence': {
         if (!condHolds(state, controller, op.cond)) break        // #79 (Radiant Aegis): the gain is gated on the controller's state
+        if (op.ifKilled && !ctx.sourceKilled) break              // #107 (Flameblade Raider): the trade bonus — only if this unit died dealing a lethal blow
         const n = op.per ? op.n * perCount(ctx, op.per) : op.n   // PR #70/#71: scale by attacker/unit count
         if (n === 0) break                                       // per counted zero — a no-op, not a "gains 0" line
         addInfluence(state, controller, n)
@@ -501,7 +505,9 @@ export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
   const deathOps = unit.imprisoned ? undefined : defOf(state, unit.id).onDeath
   delete state.units[unit.id]
   if (deathOps?.length) {
-    runOps({ state, controller: unit.owner, sourceUnit: unit.id, actorSeat: unit.owner }, deathOps)
+    // #107: the body is already off the field, so snapshot the trade flag into the context (an
+    // onDeath `ifKilled` op can no longer read justKilled off state.units — the unit is gone).
+    runOps({ state, controller: unit.owner, sourceUnit: unit.id, actorSeat: unit.owner, sourceKilled: !!unit.justKilled }, deathOps)
   }
   // v3 Capture: the capturer leaving play frees its captives — READY (decision 73, reverses 61)
   for (const [cid, c] of Object.entries(state.captives)) {
@@ -560,6 +566,11 @@ export function fireTrigger(
   key: 'onPlay' | 'onEnterZone' | 'onAttack' | 'onAttackBase' | 'onDefend' | 'onKill',
 ) {
   if (unit.imprisoned) return
+  // #107 (Flameblade Raider): mark the killer the instant it fells a unit — before any cleanup fires
+  // onDeath — so a trade (it dies dealing the lethal blow) reads as a kill. True even when the unit
+  // itself carries no onKill op (the combat code still fires onKill for every killer). Window advance
+  // clears it, so it never leaks into a later, unrelated death.
+  if (key === 'onKill') unit.justKilled = true
   const run = (ops: Op[] | undefined, sourceUnit: string, controller: Seat) => {
     if (!ops?.length) return
     runOps({ ...ctx, controller, sourceUnit }, ops)

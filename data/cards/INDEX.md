@@ -18,7 +18,7 @@
 | [Berserker](red/berserker.md) | — | 2 | unit | 1/4 | rush, scar | canon | Rush. Scar. |
 | [Blood Rush](red/blood-rush.md) | — | 2 | action | — |  | canon | Remove all damage from a unit you control; deal that much damage to your Home. |
 | [Cataclysmic Charge](red/cataclysmic-charge.md) | — | 2 | action | — |  | canon | Target unit gets +3 Power and Breakthrough this round. |
-| [Flameblade Raider](red/flameblade-raider.md) | — | 2 | unit | 4/1 | rush, breakthrough | canon | Rush. Breakthrough. |
+| [Flameblade Raider](red/flameblade-raider.md) | — | 2 | unit | 4/1 | rush, breakthrough | canon | Rush. Breakthrough. When this unit dies, gain 1 Influence — and 1 more if it died defeating a unit (a trade counts). |
 | [Pillage](red/pillage.md) | — | 2 | action | — |  | canon | Destroy target enemy upgrade. |
 | [Warpath](red/warpath.md) | — | 2 | action | — |  | canon | Your units get +1 Power this round. |
 | [Bloodfrenzy](red/bloodfrenzy.md) | — | 3 | upgrade | — |  | canon | Attached unit gets +1 Power and Armor 1. At the start of your round, if you have 10 or less life, attached unit gets +1 Power permanently. |
@@ -28,7 +28,7 @@
 | [Volcanic Slam](red/volcanic-slam.md) | — | 3 | action | — |  | canon | Deal 3 damage to up to two units in the same zone. |
 | [Warcry Leader](red/warcry-leader.md) | — | 3 | unit | 4/3 |  | canon | Other friendly units have Rush. |
 | [Blaze Juggernaut](red/blaze-juggernaut.md) | — | 4 | unit | 5/5 | rush, breakthrough | canon | Rush. Breakthrough. |
-| [Burning Oath](red/burning-oath.md) | — | 4 | upgrade | — |  | canon | Attached unit gets +2 Power and Breakthrough. |
+| [Burning Oath](red/burning-oath.md) | — | 4 | upgrade | — |  | canon | Attached unit gets +2 Power and Breakthrough. When this attaches, gain 1 Influence. Then gain 1 Influence each time its bearer defeats a unit (a trade counts). |
 | [Execution Swing](red/execution-swing.md) | — | 4 | action | — |  | canon | Destroy target damaged unit. |
 | [Inferno Titan](red/inferno-titan.md) | — | 4 | unit | 4/6 | breakthrough, scar | canon | Breakthrough. Scar. |
 | [Rupture](red/rupture.md) | — | 4 | action | — |  | canon | Deal 4 damage to target unit or base. |
@@ -70,9 +70,9 @@
 | [Absolution](yellow/absolution.md) | — | 4 | action | — |  | canon | Remove all negative effects from target unit you control. Free all your captured units. |
 | [Devout Intervention](yellow/devout-intervention.md) | — | 4 | action | — |  | canon | Prevent all damage to your Home from the next attack this round. Also, prevent all damage to your next blocking unit this round (it still deals its damage back). |
 | [Disarming Order](yellow/disarming-order.md) | — | 4 | action | — |  | canon | Target unit can't attack this round. Draw a card. |
-| [Exemplar Knight](yellow/exemplar-knight.md) | — | 4 | unit | 4/4 |  | canon | When this attacks, it gets +2 Power this round. When it defeats a unit, gain 1 Influence. |
+| [Exemplar Knight](yellow/exemplar-knight.md) | — | 4 | unit | 4/4 |  | canon | When this unit defeats a unit, gain 1 Influence. |
 | [Fortress Keeper](yellow/fortress-keeper.md) | — | 4 | unit | 2/3 | cantAttack | canon | This can't attack. Other friendly units in this zone have Guard. |
-| [High Justiciar](yellow/high-justiciar.md) | — | 4 | unit | 1/4 | guard | canon | Guard. When this defends, gain 2 Influence. |
+| [High Justiciar](yellow/high-justiciar.md) | — | 4 | unit | 1/4 | guard | canon | Guard. When this unit defeats a unit, gain 1 Influence. |
 | [Lawbringer](yellow/lawbringer.md) | — | 4 | unit | 2/3 |  | canon | Whenever this enters a zone, exhaust target enemy unit. |
 | [Light of Authority](yellow/light-of-authority.md) | — | 4 | action | — |  | canon | Target unit gets +3 Power this round. |
 | [Resolve Banner](yellow/resolve-banner.md) | — | 4 | upgrade | — |  | canon | Attach to unit. This unit gains +1 Health and +1 Armor. Other friendly units in this zone get +1 Power. If this becomes unattached, it can be picked up for 0 resources by a friendly unit. This can't be picked up by an opponent. This upgrade can be passed to a friendly unit in the same zone for 2 resources as an action, any number of times. |

@@ -58,7 +58,7 @@ export type Op =
   | { op: 'damageFilter'; f: UnitFilter; n: number }
   | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number; per?: PerCount }  // chosen may be unitOrBase; per scales n (PR #71)
   | { op: 'draw'; n: number }
-  | { op: 'influence'; n: number; per?: PerCount; cond?: Cond }   // + toward controller; per scales n (PR #70/#71); cond gates the gain (#79 Radiant Aegis)
+  | { op: 'influence'; n: number; per?: PerCount; cond?: Cond; ifKilled?: boolean }   // + toward controller; per scales n (PR #70/#71); cond gates the gain (#79 Radiant Aegis); ifKilled (#107 Flameblade Raider): onDeath-only — the gain fires only if this unit felled a unit in the same combat it died in (a trade counts)
   | { op: 'imprison'; t: OpTarget | 'auto'; f?: UnitFilter; auto?: AutoPick }
   | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'round' | 'perm'; cond?: Cond }
   | { op: 'double'; t: OpTarget | UnitFilter; rounds?: number }  // v3 (Unchained Rage): filter-wide, multi-round
@@ -244,6 +244,10 @@ export interface UnitInstance {
   /** #88 (Devout Intervention, Ward 2): stamped on the controller's next blocker — this unit takes
    *  no damage in the coming combat resolution (it still deals its counter). One fight, then cleared. */
   blockWard?: boolean
+  /** #107 (Flameblade Raider): set true when this unit fells a unit (any onKill firing). Read by an
+   *  onDeath `ifKilled` influence op so a unit that dies dealing a lethal blow — a trade — is credited.
+   *  Cleared at every window advance, so it only ever reflects a kill in the CURRENT action. */
+  justKilled?: boolean
 }
 
 export interface UpgradeInstance {

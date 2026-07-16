@@ -150,6 +150,10 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       if (!isInt(op.n, -20, 20) || op.n === 0) err('bad influence amount')
       checkPer(op.per)
       for (const k of Object.keys(op.cond ?? {})) if (!COND_KEYS.has(k)) err(`unknown condition ${k}`)   // #79: gated influence
+      if (op.ifKilled !== undefined) {   // #107: the trade bonus reads a snapshot only the onDeath path supplies
+        if (typeof op.ifKilled !== 'boolean') err('ifKilled must be true/false')
+        else if (where !== 'onDeath') err('ifKilled only fires in onDeath (it credits a unit that dies dealing a lethal blow)')
+      }
       break
     case 'imprison':
       if (op.t === 'auto') {

@@ -133,6 +133,9 @@ function applySetupPhase(state: GameState, action: GameAction, seat: Seat) {
 
 /** After seat S completes a non-pass action, decide the next window (spec §1.5). */
 function advanceWindow(state: GameState, seat: Seat) {
+  // #107: justKilled reflects a kill in the action window that just ended (an onDeath ifKilled op
+  // has already read it during this window's cleanup). Reset it so no kill leaks into a later death.
+  for (const u of Object.values(state.units)) u.justKilled = false
   state.passStreak = 0
   if (state.pendingExtraAction === seat) {
     state.pendingExtraAction = null

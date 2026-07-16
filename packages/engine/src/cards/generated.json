@@ -310,6 +310,17 @@
   "artUrl": "/cards/cataclysmic-charge.jpg"
  },
  "flameblade-raider": {
+  "onDeath": [
+   {
+    "op": "influence",
+    "n": 1
+   },
+   {
+    "op": "influence",
+    "n": 1,
+    "ifKilled": true
+   }
+  ],
   "slug": "flameblade-raider",
   "name": "Flameblade Raider",
   "color": "red",
@@ -317,7 +328,7 @@
   "cost": 2,
   "power": 4,
   "health": 1,
-  "text": "Rush. Breakthrough.",
+  "text": "Rush. Breakthrough. When this unit dies, gain 1 Influence — and 1 more if it died defeating a unit (a trade counts).",
   "kw": [
    {
     "k": "rush"
@@ -329,6 +340,7 @@
   "pips": [
    "red"
   ],
+  "designerNote": "2026-07-16 (#107 balance pass, phase 2 group A — Griff's ruling on the influence-trigger cards): the raider became an influence martyr. It always paid nothing before; now it gives 1 on death and a second Influence when it dies dealing a lethal blow. New engine vocabulary: an onDeath influence op with `ifKilled` — a unit that dies in a trade (it fell a unit in the same combat that killed it) is credited. \"A trade counts as a kill\" is Griff's one rule for every \"kills/defeats\" card in this batch.",
   "artUrl": "/cards/flameblade-raider.jpg"
  },
  "pillage": {
@@ -577,6 +589,18 @@
   "artUrl": "/cards/blaze-juggernaut.jpg"
  },
  "burning-oath": {
+  "onPlay": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
+  "onKill": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
   "statics": [
    {
     "s": "aura",
@@ -596,12 +620,12 @@
   "color": "red",
   "type": "upgrade",
   "cost": 4,
-  "text": "Attached unit gets +2 Power and Breakthrough.",
+  "text": "Attached unit gets +2 Power and Breakthrough. When this attaches, gain 1 Influence. Then gain 1 Influence each time its bearer defeats a unit (a trade counts).",
   "pips": [
    "red",
    "red"
   ],
-  "designerNote": "Session 006 redesign: was +2 Power and Rush — the Rush half was dead text on any unit already in play (decision 41). Breakthrough keeps the oath aggressive and permanent.",
+  "designerNote": "Session 006 redesign: was +2 Power and Rush — the Rush half was dead text on any unit already in play (decision 41). Breakthrough keeps the oath aggressive and permanent.\n\n2026-07-16 (#107 balance pass, phase 2 group A — Griff's ruling on the influence-trigger cards): the oath now feeds the influence track too. An on-attach gain (the upgrade's onPlay influence fires as it lands on its carrier) plus an ongoing per-kill gain — the upgrade's onKill fires through its bearer, so every unit the equipped body defeats, trade included, pays 1. The +2 Power / Breakthrough stays.",
   "artUrl": "/cards/burning-oath.jpg"
  },
  "execution-swing": {
@@ -1661,14 +1685,6 @@
   "artUrl": "/cards/disarming-order.jpg"
  },
  "exemplar-knight": {
-  "onAttack": [
-   {
-    "op": "buff",
-    "t": "self",
-    "p": 2,
-    "dur": "round"
-   }
-  ],
   "onKill": [
    {
     "op": "influence",
@@ -1682,12 +1698,12 @@
   "cost": 4,
   "power": 4,
   "health": 4,
-  "text": "When this attacks, it gets +2 Power this round. When it defeats a unit, gain 1 Influence.",
+  "text": "When this unit defeats a unit, gain 1 Influence.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 34: influence pays on the kill, not for existing. (Session 006: fixed a copy-paste note that claimed this was an on-defend card.)",
+  "designerNote": "Decision 34: influence pays on the kill, not for existing. (Session 006: fixed a copy-paste note that claimed this was an on-defend card.)\n\n2026-07-16 (#104/#107 balance pass, phase 2 group A — Griff's ruling on the influence-trigger cards): trimmed to only the kill payout. The old on-attack \"+2 Power this round\" self-buff is gone — the card is now a clean 4/4 that gains 1 Influence for each unit it defeats (a trade counts).",
   "artUrl": "/cards/exemplar-knight.jpg"
  },
  "fortress-keeper": {
@@ -1721,10 +1737,10 @@
   "artUrl": "/cards/fortress-keeper.jpg"
  },
  "high-justiciar": {
-  "onDefend": [
+  "onKill": [
    {
     "op": "influence",
-    "n": 2
+    "n": 1
    }
   ],
   "slug": "high-justiciar",
@@ -1734,7 +1750,7 @@
   "cost": 4,
   "power": 1,
   "health": 4,
-  "text": "Guard. When this defends, gain 2 Influence.",
+  "text": "Guard. When this unit defeats a unit, gain 1 Influence.",
   "kw": [
    {
     "k": "guard"
@@ -1744,7 +1760,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 51 text (deterministic pick, stated on the card).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Guard is free blocking in v3 — the Justiciar holds the line and the court pays it.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): power 3 → 2 — decision-85 walk-back, same tier. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.",
+  "designerNote": "Decision 51 text (deterministic pick, stated on the card).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Guard is free blocking in v3 — the Justiciar holds the line and the court pays it.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): power 3 → 2 — decision-85 walk-back, same tier. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.\n\n2026-07-16 (#104/#107 balance pass, phase 2 group A — Griff's ruling on the influence-trigger cards): the payout moves off defence and onto the kill. It keeps Guard, but the old \"gain 2 when it defends\" is replaced by \"gain 1 when it defeats a unit\" (a trade counts). Its Phase 1 body is 1/4 — the wall now pays only when it strikes something down. Griff's justification (#107, 2026-07-16): on-defend is too easy on a Guard (akin to a red card that hits Home on any attack); the card is meant to hold the line with Guard, and the +1 is a rare bonus IF it kills — so the magnitude drops to 1.",
   "artUrl": "/cards/high-justiciar.jpg"
  },
  "lawbringer": {
