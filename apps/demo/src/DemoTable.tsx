@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  EngineError, POLICIES, applyAction, policyRngInit, viewFor,
+  EngineError, POLICIES, applyAction, deckSlugs, policyRngInit, viewFor,
   type GameAction, type GameState, type HandCardView, type Seat, type TargetRef, type ZoneId,
 } from '@newgame/engine'
 import { CardFrame } from '@ui/components/CardFrame.tsx'
@@ -10,6 +10,7 @@ import { InfluenceTrack } from '@ui/game/InfluenceTrack.tsx'
 import { BaseSheet, CardSheet, EventTicker, PileSheet, UnitInspector, useValueFlash } from '@ui/game/Sheets.tsx'
 import { sleeveFor } from '@ui/game/sleeves.ts'
 import { DEMO_CARDS, aiControls, newLocalGame, type DemoConfig } from './local.ts'
+import { allDecks } from './custom-decks.ts'
 import { BlockModal } from './BlockModal.tsx'
 import { setSound, sfx, soundOn } from './sound.ts'
 
@@ -317,8 +318,27 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   }
 
   async function copyChronicle() {
-    await navigator.clipboard.writeText(state.log.map(l => `[t${l.t}] ${l.msg}`).join('\n'))
-    setToast('chronicle copied — paste it anywhere')
+    const log = state.log.map(l => `[t${l.t}] ${l.msg}`).join('\n')
+    // #97 (Blaine): the chronicle carries everything AI-training needs to reproduce the game
+    // exactly — a machine-readable replay block. seed + the two deck lists (resolved, so custom
+    // decks travel too) + rules + EVERY action in order lets the analysis re-run the game and
+    // fork it at any bot decision. The decision-option telemetry (#67) already rides in the log.
+    const pool = allDecks()
+    const deckOf = (slug: string, name: string) => {
+      const d = pool.find(x => x.slug === slug)
+      return { name, slug, cards: d ? deckSlugs(d) : [] }
+    }
+    const replay = {
+      seed: config.seed,
+      rules: config.rulesVersion ?? 'v3.0',
+      mulligan: !!config.londonMulligan,
+      decks: { A: deckOf(config.deckA, config.nameA), B: deckOf(config.deckB, config.nameB) },
+      policies: { A: config.policyA, B: config.policyB },
+      actions: history.map(h => ({ s: h.seat, a: h.action })),
+    }
+    const text = `${log}\n\n---REPLAY (for AI analysis — issue #97)---\n\`\`\`json\n${JSON.stringify(replay)}\n\`\`\``
+    await navigator.clipboard.writeText(text)
+    setToast('chronicle + replay copied — paste it anywhere')
     setTimeout(() => setToast(''), 2500)
   }
 

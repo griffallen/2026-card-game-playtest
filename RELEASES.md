@@ -8,6 +8,12 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.2.2 — 2026-07-16
+patch — the **Copy Chronicle** button now carries a machine-readable replay block for AI
+training (#97, Blaine): seed + both deck lists (resolved, so custom decks travel) + rules +
+every action in order, so a pasted game can be **replayed exactly and forked at any bot
+decision**. The #67 decision-option telemetry already rode in the human log. Demo-only.
+
 ## v0.2.1 — 2026-07-15
 patch — **Copy Decklist** button in the deckbuilder (#95, Griff). Copies the current decklist
 to the clipboard as plain text (a `<name> — <n> cards` header + `Nx Card Name` lines).
