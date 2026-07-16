@@ -32,6 +32,23 @@ if transparent-background versions are ever needed for overlaying on light frame
 designer regenerates each sigil on a plain background or the agent attempts a mask (glow edges
 make automated masking imperfect).
 
+## Per-color art styles (#5, 2026-07-16)
+
+The base was one style for all (1977 Hobbit). Griff has since split it: **each color gets a
+distinct art style**, so a card's look tells you its color before you read a word of rules text.
+
+| Color | Style | Status |
+|---|---|---|
+| **Yellow** | 1977 Rankin/Bass Hobbit — whimsical storybook, warm light, fairy-tale law | **locked** (the original base; the yellow action + upgrade sheets are this) |
+| **Red** | *Star Wars: Maul* animated — dark, kinetic, high-contrast menace | stated |
+| **Blue** | Tron light-cycles/grids **fused with** architectural blueprint/schematic — white ink on blue paper, right angles and decimals, gears and iron | stated (color unbuilt) |
+| **Green** | Bob Ross — soft painterly landscapes, patient growth (calm as a threat) | proposed |
+| **Purple** | Salvador Dalí (dream-logic) with an M.C. Escher edge for the traps (impossible geometry = prediction) | proposed |
+
+**Frame:** one universal card frame for now — Griff's red-veined stone template — with the live
+info overlaid in its slots (name bar, art window, crossed-axes = Power, heart = Health, text box,
+cost circles). Per-color frames come later, after the art images are down (#5).
+
 ## Anchors received
 
 | Color | File | Notes |
