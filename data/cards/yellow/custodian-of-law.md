@@ -2,8 +2,8 @@
 name: Custodian of Law
 type: unit
 cost: 5
-power: 3
-health: 6
+power: 2
+health: 5
 keywords: guard
 influenceTrigger: onDefend
 pips: yellow, yellow

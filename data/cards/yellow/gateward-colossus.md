@@ -2,8 +2,8 @@
 name: Gateward Colossus
 type: unit
 cost: 6
-power: 3
-health: 9
+power: 2
+health: 4
 keywords: guard, armor 1, cantAttack
 pips: yellow, yellow, yellow
 status: canon

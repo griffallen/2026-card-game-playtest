@@ -3,7 +3,7 @@ name: Fortress Keeper
 type: unit
 cost: 4
 power: 2
-health: 5
+health: 3
 keywords: cantAttack
 pips: yellow, yellow
 status: canon

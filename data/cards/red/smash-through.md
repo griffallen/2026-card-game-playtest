@@ -1,7 +1,7 @@
 ---
 name: Smash Through
 type: action
-cost: 2
+cost: 0
 pips: red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

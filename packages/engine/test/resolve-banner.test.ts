@@ -73,7 +73,7 @@ describe('Resolve Banner (#86): +Health/+Armor carrier, +Power aura, free salvag
 
   it('carrier gains +1 Health and +1 Armor; OTHER friendly units in the zone get +1 Power (regression)', () => {
     let { s, me } = arena()
-    const carrier = put(s, me, 'warcry-leader', 1)   // 2/3, no armor
+    const carrier = put(s, me, 'warcry-leader', 1)   // 4/3, no armor
     const ally = put(s, me, 'vanguard-sentinel', 1)  // 1/1, shares the zone
     expect(effHealth(s, s.units[carrier])).toBe(3)
     expect(effArmor(s, s.units[carrier])).toBe(0)
@@ -83,7 +83,7 @@ describe('Resolve Banner (#86): +Health/+Armor carrier, +Power aura, free salvag
     expect(effArmor(s, s.units[carrier])).toBe(1)    // +1 Armor on the carrier
     expect(effPower(s, s.units[ally])).toBe(2)       // +1 Power aura hits the ally
     // the carrier itself does NOT receive the +Power aura (friendlyInZone excludes the anchor)
-    expect(effPower(s, s.units[carrier])).toBe(2)    // base 2, unchanged
+    expect(effPower(s, s.units[carrier])).toBe(4)    // base 4, unchanged
     // the ally gets neither +Health nor +Armor — those are attached-scope, carrier only
     expect(effHealth(s, s.units[ally])).toBe(1)
     expect(effArmor(s, s.units[ally])).toBe(0)

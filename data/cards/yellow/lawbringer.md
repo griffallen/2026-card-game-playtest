@@ -2,8 +2,8 @@
 name: Lawbringer
 type: unit
 cost: 4
-power: 4
-health: 4
+power: 2
+health: 3
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

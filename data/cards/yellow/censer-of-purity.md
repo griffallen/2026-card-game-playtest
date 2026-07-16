@@ -2,7 +2,7 @@
 name: Censer of Purity
 type: unit
 cost: 5
-power: 3
+power: 0
 health: 6
 pips: yellow, yellow
 status: canon

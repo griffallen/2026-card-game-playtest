@@ -121,7 +121,7 @@ describe('Binding Light (#87): modal exhaust — Weak / Cheap / Overwhelm', () =
   it('mode 0 (Weak) exhausts a low-power enemy and rejects a high-power one', () => {
     let { s, me, them } = arena()
     const small = put(s, them, 'cinder-initiate', 1) // 2 power
-    const big = put(s, them, 'worldrender', 1)        // 5 power
+    const big = put(s, them, 'crimson-behemoth', 1)   // 6 power (worldrender is now 4, inside Weak's ≤4 reach)
     const c1 = toHand(s, me, 'binding-light')
     s = act(s, me, { type: 'play', card: c1, mode: 0, targets: [{ kind: 'unit', id: small }] })
     expect(s.units[small].exhausted).toBe(true)
@@ -152,9 +152,9 @@ describe('Binding Light (#87): modal exhaust — Weak / Cheap / Overwhelm', () =
   })
 
   it('mode 2 (Overwhelm) is gated on 8+ influence — illegal below, legal at/above, and hits anything', () => {
-    // board holds only a big enemy that no other mode can touch (power 5, cost 8)
+    // board holds only a big enemy that no other mode can touch (power 6, cost 5)
     let { s, me, them } = arena()
-    const big = put(s, them, 'worldrender', 1)
+    const big = put(s, them, 'crimson-behemoth', 1)
     const card = toHand(s, me, 'binding-light')
 
     // below the bar: mode 2 is not offered and a direct attempt is rejected

@@ -163,7 +163,7 @@ describe('auras and upgrades', () => {
     expect(effPower(s, s.units[wall])).toBe(2)             // influence 0 → not positive → no buff
     s.influence = p2 === 0 ? 1 : -1                        // p2 to +1: the new positive threshold (#73)
     expect(effPower(s, s.units[wall])).toBe(3)
-    expect(effPower(s, s.units[hiero])).toBe(2)            // "other" excludes self (2/4 since #73)
+    expect(effPower(s, s.units[hiero])).toBe(1)            // "other" excludes self (1/6 since the #107 pass)
   })
 
   it('upgrades grant stats/keywords, pressure influence on the second, and die with Pillage', () => {
@@ -231,7 +231,7 @@ describe('tempo and timing', () => {
     s = act(s, p1, { type: 'play', card: assault })
     expect(s.units[zerk].exhausted).toBe(false)          // ready ALL friendly units
     // Final Onslaught: ready ONE chosen unit, then take an extra action
-    const vet = put(s, p1, 'doombringer', 1, { exhausted: true })
+    const vet = put(s, p1, 'blaze-juggernaut', 1, { exhausted: true })
     const onslaught = toHand(s, p1, 'final-onslaught')
     s = act(s, p2, { type: 'pass' })
     s = act(s, p1, { type: 'play', card: onslaught, targets: [{ kind: 'unit', id: vet }] })
@@ -243,7 +243,7 @@ describe('tempo and timing', () => {
   it('Devout Intervention: the Home ward fully turns aside the next attack, then is spent', () => {
     let { s, p1, p2 } = arena()
     const ward = toHand(s, p2, 'devout-intervention')
-    const sieger = put(s, p1, 'doombringer', homeZone(p2))   // 5/4, would deal 5 to the base
+    const sieger = put(s, p1, 'blaze-juggernaut', homeZone(p2))   // 5/5, would deal 5 to the base
     s = act(s, p1, { type: 'pass' })
     s = act(s, p2, { type: 'play', card: ward })
     expect(s.homeWard[p2]).toBe(true)

@@ -2,8 +2,8 @@
 name: Hierophant
 type: unit
 cost: 6
-power: 2
-health: 4
+power: 1
+health: 6
 keywords: politician
 pips: yellow, yellow
 status: canon

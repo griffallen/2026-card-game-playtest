@@ -1,8 +1,8 @@
 ---
 name: Warcry Leader
 type: unit
-cost: 2
-power: 2
+cost: 3
+power: 4
 health: 3
 pips: red, red
 status: canon

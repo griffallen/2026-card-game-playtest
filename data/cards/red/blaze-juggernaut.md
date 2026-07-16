@@ -2,8 +2,8 @@
 name: Blaze Juggernaut
 type: unit
 cost: 4
-power: 4
-health: 4
+power: 5
+health: 5
 keywords: rush, breakthrough
 pips: red, red
 status: canon

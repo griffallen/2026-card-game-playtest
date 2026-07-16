@@ -86,6 +86,35 @@
   "designerNote": "Session 006: was \"gains Rush\" permanently — dead text under decision 41 (Rush only matters the round a unit enters play, so a permanent grant on a veteran does nothing, ever). Now scoped to the round: the real play is on a unit you just dropped — its first move becomes free, so it can cross a zone and still fight.\n\n2026-07-11 (designer, PR #13 + #14): cost 1 → 0 and became modal — the second mode is the pack-fury\npump counting ALL red units in the zone, enemy red included (rage recognizes rage). First modal card\nin the game; the mode is declared when you cast.\n\n2026-07-12 (designer, issue #26 → decision 72): the round-scoped Rush grant was STILL dead on any\nunit from an earlier round (the free move only exists the round a unit entered) and useless on an\nexhausted unit (it can't move at all). Mode rebuilt in the designer's own words: an immediate\none-zone lunge, exhausted or not, exhausting nothing. New vocabulary: op `move` + zone target\n`adjacentToFirst`. A genuinely *reckless* charge — hurl a spent soldier forward.",
   "artUrl": "/cards/reckless-charge.jpg"
  },
+ "smash-through": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly",
+    "withKw": "rush"
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": "chosen0",
+    "kw": {
+     "k": "breakthrough"
+    },
+    "dur": "round"
+   }
+  ],
+  "slug": "smash-through",
+  "name": "Smash Through",
+  "color": "red",
+  "type": "action",
+  "cost": 0,
+  "text": "Target unit with Rush gains Breakthrough this round.",
+  "pips": [
+   "red"
+  ],
+  "artUrl": "/cards/smash-through.jpg"
+ },
  "cinder-initiate": {
   "slug": "cinder-initiate",
   "name": "Cinder Initiate",
@@ -326,59 +355,6 @@
   "designerNote": "Session 006: 4 mana → 2. Utility removal was priced like a threat; yellow runs seven upgrades and red needs a real answer at a price it can pay mid-assault.",
   "artUrl": "/cards/pillage.jpg"
  },
- "smash-through": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "friendly",
-    "withKw": "rush"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "grant",
-    "t": "chosen0",
-    "kw": {
-     "k": "breakthrough"
-    },
-    "dur": "round"
-   }
-  ],
-  "slug": "smash-through",
-  "name": "Smash Through",
-  "color": "red",
-  "type": "action",
-  "cost": 2,
-  "text": "Target unit with Rush gains Breakthrough this round.",
-  "pips": [
-   "red"
-  ],
-  "artUrl": "/cards/smash-through.jpg"
- },
- "warcry-leader": {
-  "statics": [
-   {
-    "s": "aura",
-    "scope": "otherFriendly",
-    "kw": {
-     "k": "rush"
-    }
-   }
-  ],
-  "slug": "warcry-leader",
-  "name": "Warcry Leader",
-  "color": "red",
-  "type": "unit",
-  "cost": 2,
-  "power": 2,
-  "health": 3,
-  "text": "Other friendly units have Rush.",
-  "pips": [
-   "red",
-   "red"
-  ],
-  "artUrl": "/cards/warcry-leader.jpg"
- },
  "warpath": {
   "onPlay": [
    {
@@ -552,14 +528,38 @@
   "designerNote": "2026-07-11 (designer, issue #4): one eruption, one zone — trades face-reach for a second body.\nFirst upTo/sameZone card. Under decision 68's curve a 3-cost dealing up to 6 across two bodies\nis the convex rate red wants.",
   "artUrl": "/cards/volcanic-slam.jpg"
  },
+ "warcry-leader": {
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "otherFriendly",
+    "kw": {
+     "k": "rush"
+    }
+   }
+  ],
+  "slug": "warcry-leader",
+  "name": "Warcry Leader",
+  "color": "red",
+  "type": "unit",
+  "cost": 3,
+  "power": 4,
+  "health": 3,
+  "text": "Other friendly units have Rush.",
+  "pips": [
+   "red",
+   "red"
+  ],
+  "artUrl": "/cards/warcry-leader.jpg"
+ },
  "blaze-juggernaut": {
   "slug": "blaze-juggernaut",
   "name": "Blaze Juggernaut",
   "color": "red",
   "type": "unit",
   "cost": 4,
-  "power": 4,
-  "health": 4,
+  "power": 5,
+  "health": 5,
   "text": "Rush. Breakthrough.",
   "kw": [
    {
@@ -604,30 +604,6 @@
   "designerNote": "Session 006 redesign: was +2 Power and Rush — the Rush half was dead text on any unit already in play (decision 41). Breakthrough keeps the oath aggressive and permanent.",
   "artUrl": "/cards/burning-oath.jpg"
  },
- "doombringer": {
-  "slug": "doombringer",
-  "name": "Doombringer",
-  "color": "red",
-  "type": "unit",
-  "cost": 4,
-  "power": 5,
-  "health": 4,
-  "text": "Rush. Breakthrough.",
-  "kw": [
-   {
-    "k": "rush"
-   },
-   {
-    "k": "breakthrough"
-   }
-  ],
-  "pips": [
-   "red",
-   "red"
-  ],
-  "designerNote": "Session 006 balance pass: 5 → 4 mana (sim-guided red curve compression; a hot statline for the cost — watch it in play).",
-  "artUrl": "/cards/doombringer.jpg"
- },
  "execution-swing": {
   "targets": [
    {
@@ -661,8 +637,8 @@
   "color": "red",
   "type": "unit",
   "cost": 4,
-  "power": 5,
-  "health": 4,
+  "power": 4,
+  "health": 6,
   "text": "Breakthrough. Scar.",
   "kw": [
    {
@@ -724,7 +700,7 @@
   "type": "unit",
   "cost": 5,
   "power": 6,
-  "health": 5,
+  "health": 6,
   "text": "When this attacks a base, it deals 2 damage to every other unit in that zone — yours included.",
   "pips": [
    "red",
@@ -767,26 +743,6 @@
   ],
   "designerNote": "Decision 43: rounds have no extra turns — \"extra turn\" became ready one of your units + an extra action. Unplayable with no friendly unit to ready, by design.",
   "artUrl": "/cards/final-onslaught.jpg"
- },
- "relentless-assault": {
-  "onPlay": [
-   {
-    "op": "ready",
-    "side": "friendly"
-   }
-  ],
-  "slug": "relentless-assault",
-  "name": "Relentless Assault",
-  "color": "red",
-  "type": "action",
-  "cost": 5,
-  "text": "Ready all your units.",
-  "pips": [
-   "red",
-   "red"
-  ],
-  "designerNote": "Session 006: retexted from \"take an extra combat phase\" (a phase that no longer exists — decision 40 dissolved the phase ladder). The effect was already ready-all; now the card says so.",
-  "artUrl": "/cards/relentless-assault.jpg"
  },
  "scorching-howl": {
   "onPlay": [
@@ -919,6 +875,26 @@
   "designerNote": "Session 006: 5 damage → 6, matching the face-capable burn grammar (damage = cost): Searing Bolt 2@2, Volcanic Slam 3@3, Rupture 4@4, Raging Inferno 6@6.",
   "artUrl": "/cards/raging-inferno.jpg"
  },
+ "relentless-assault": {
+  "onPlay": [
+   {
+    "op": "ready",
+    "side": "friendly"
+   }
+  ],
+  "slug": "relentless-assault",
+  "name": "Relentless Assault",
+  "color": "red",
+  "type": "action",
+  "cost": 6,
+  "text": "Ready all your units.",
+  "pips": [
+   "red",
+   "red"
+  ],
+  "designerNote": "Session 006: retexted from \"take an extra combat phase\" (a phase that no longer exists — decision 40 dissolved the phase ladder). The effect was already ready-all; now the card says so.",
+  "artUrl": "/cards/relentless-assault.jpg"
+ },
  "unchained-rage": {
   "onPlay": [
    {
@@ -1006,8 +982,8 @@
   "color": "red",
   "type": "unit",
   "cost": 8,
-  "power": 5,
-  "health": 10,
+  "power": 4,
+  "health": 8,
   "text": "Breakthrough. Scar.",
   "kw": [
    {
@@ -1730,7 +1706,7 @@
   "type": "unit",
   "cost": 4,
   "power": 2,
-  "health": 5,
+  "health": 3,
   "text": "This can't attack. Other friendly units in this zone have Guard.",
   "kw": [
    {
@@ -1756,8 +1732,8 @@
   "color": "yellow",
   "type": "unit",
   "cost": 4,
-  "power": 2,
-  "health": 5,
+  "power": 1,
+  "health": 4,
   "text": "Guard. When this defends, gain 2 Influence.",
   "kw": [
    {
@@ -1789,8 +1765,8 @@
   "color": "yellow",
   "type": "unit",
   "cost": 4,
-  "power": 4,
-  "health": 4,
+  "power": 2,
+  "health": 3,
   "text": "Whenever this enters a zone, exhaust target enemy unit.",
   "pips": [
    "yellow",
@@ -1878,7 +1854,7 @@
   "color": "yellow",
   "type": "unit",
   "cost": 5,
-  "power": 3,
+  "power": 0,
   "health": 6,
   "text": "At the start of your round, lose 1 Influence and heal 2 damage from your base.",
   "pips": [
@@ -1900,8 +1876,8 @@
   "color": "yellow",
   "type": "unit",
   "cost": 5,
-  "power": 3,
-  "health": 6,
+  "power": 2,
+  "health": 5,
   "text": "Guard. When this defends, gain 2 Influence.",
   "kw": [
    {
@@ -1927,8 +1903,8 @@
   "color": "yellow",
   "type": "unit",
   "cost": 5,
-  "power": 5,
-  "health": 5,
+  "power": 3,
+  "health": 3,
   "text": "When this attacks, gain 2 Influence.",
   "pips": [
    "yellow",
@@ -2074,8 +2050,8 @@
   "color": "yellow",
   "type": "unit",
   "cost": 6,
-  "power": 3,
-  "health": 9,
+  "power": 2,
+  "health": 4,
   "text": "Guard. Armor 1. Can't attack. When this defends, gain 1 Influence.",
   "kw": [
    {
@@ -2113,8 +2089,8 @@
   "color": "yellow",
   "type": "unit",
   "cost": 6,
-  "power": 2,
-  "health": 4,
+  "power": 1,
+  "health": 6,
   "text": "Politician. Other friendly units get +1 Power while your Influence is positive.",
   "kw": [
    {

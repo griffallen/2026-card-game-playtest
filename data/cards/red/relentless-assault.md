@@ -1,7 +1,7 @@
 ---
 name: Relentless Assault
 type: action
-cost: 5
+cost: 6
 pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

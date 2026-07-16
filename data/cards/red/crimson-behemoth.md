@@ -3,7 +3,7 @@ name: Crimson Behemoth
 type: unit
 cost: 5
 power: 6
-health: 5
+health: 6
 pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit

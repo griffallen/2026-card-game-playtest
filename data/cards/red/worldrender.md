@@ -2,8 +2,8 @@
 name: Worldrender
 type: unit
 cost: 8
-power: 5
-health: 10
+power: 4
+health: 8
 keywords: breakthrough, scar
 pips: red, red, red
 status: canon

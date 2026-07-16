@@ -121,8 +121,8 @@ describe('Devout Intervention (#88): a Home ward and a blocker ward, both one-sh
 
   it('Home ward: the whole next attack on your Home is turned aside, then the ward is spent', () => {
     let { s, me, them } = arena()
-    const s1 = put(s, them, 'doombringer', homeZone(me))   // 5/4 — 5 to the base
-    const s2 = put(s, them, 'doombringer', homeZone(me))
+    const s1 = put(s, them, 'blaze-juggernaut', homeZone(me))   // 5/5 — 5 to the base
+    const s2 = put(s, them, 'blaze-juggernaut', homeZone(me))
     const devout = toHand(s, me, 'devout-intervention')
     s = act(s, me, { type: 'play', card: devout })
     expect(s.homeWard[me]).toBe(true)
@@ -150,7 +150,7 @@ describe('Devout Intervention (#88): a Home ward and a blocker ward, both one-sh
   it('Home ward feint: an attack that gets fully blocked leaves the ward armed', () => {
     let { s, me, them } = arena()
     const attacker = put(s, them, 'exemplar-knight', homeZone(me)) // 4/4, no breakthrough
-    const blocker = put(s, me, 'custodian-of-law', homeZone(me))   // 3/6 — soaks it whole
+    const blocker = put(s, me, 'custodian-of-law', homeZone(me))   // 2/5 — soaks it whole
     const devout = toHand(s, me, 'devout-intervention')
     s = act(s, me, { type: 'play', card: devout })
     s = act(s, them, { type: 'attack', attackers: [attacker], target: { kind: 'base', seat: me } })
@@ -160,18 +160,18 @@ describe('Devout Intervention (#88): a Home ward and a blocker ward, both one-sh
     expect(s.homeWard[me]).toBe(true)          // …so the Home ward is untouched, still waiting
   })
 
-  it('blocker ward: the warded blocker takes 0 yet still deals its counter (control: without it, 5)', () => {
-    // control — no ward: the blocker soaks worldrender's 5
+  it('blocker ward: the warded blocker takes 0 yet still deals its counter (control: without it, 4)', () => {
+    // control — no ward: the blocker soaks worldrender's 4
     {
       let { s, me, them } = arena(30)
-      const attacker = put(s, them, 'worldrender', homeZone(me))    // 5/10
-      const blocker = put(s, me, 'custodian-of-law', homeZone(me))  // 3/6
+      const attacker = put(s, them, 'worldrender', homeZone(me))    // 4/8
+      const blocker = put(s, me, 'custodian-of-law', homeZone(me))  // 2/5
       s = act(s, me, { type: 'pass' })
       s = act(s, them, { type: 'attack', attackers: [attacker], target: { kind: 'base', seat: me } })
       s = act(s, me, { type: 'block', pairs: [{ blocker, onto: attacker }] })
-      expect(s.units[blocker].damage).toBe(5)
+      expect(s.units[blocker].damage).toBe(4)
     }
-    // warded: Devout stamps the blocker — it takes 0, but its 3 counter still lands
+    // warded: Devout stamps the blocker — it takes 0, but its 2 counter still lands
     let { s, me, them } = arena(30)
     const attacker = put(s, them, 'worldrender', homeZone(me))
     const blocker = put(s, me, 'custodian-of-law', homeZone(me))
@@ -181,7 +181,7 @@ describe('Devout Intervention (#88): a Home ward and a blocker ward, both one-sh
     s = act(s, them, { type: 'attack', attackers: [attacker], target: { kind: 'base', seat: me } })
     s = act(s, me, { type: 'block', pairs: [{ blocker, onto: attacker }] })
     expect(s.units[blocker].damage).toBe(0)      // warded — no damage
-    expect(s.units[attacker].damage).toBe(3)     // …but still strikes back (custodian power 3)
+    expect(s.units[attacker].damage).toBe(2)     // …but still strikes back (custodian power 2)
     expect(s.blockerWard[me]).toBe(false)        // ward consumed at block time
     expect(s.units[blocker].blockWard).toBeFalsy() // one-fight token cleared
     expect(s.sides[me].life).toBe(20)            // base untouched (worldrender fully blocked)

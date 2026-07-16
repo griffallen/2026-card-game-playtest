@@ -2,8 +2,8 @@
 name: High Justiciar
 type: unit
 cost: 4
-power: 2
-health: 5
+power: 1
+health: 4
 keywords: guard
 pips: yellow, yellow
 status: canon

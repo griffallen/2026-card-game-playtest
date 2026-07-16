@@ -64,14 +64,14 @@ describe('Subjugate (#80): enemy-attach upgrade, −1 Power per host pip', () =>
 
   it('attaches to an enemy unit and strips its pip count in Power (3 pips → −3, 1 pip → −1)', () => {
     let { s, me, them } = arena()
-    const wr = put(s, them, 'worldrender', 1)          // 5 power, pips [red, red, red]
+    const wr = put(s, them, 'worldrender', 1)          // 4 power, pips [red, red, red]
     const imp = put(s, them, 'cinder-initiate', 1)     // 2 power, pips [red]
-    expect(effPower(s, s.units[wr])).toBe(5)
+    expect(effPower(s, s.units[wr])).toBe(4)
     const c1 = toHand(s, me, 'subjugate')
     s = act(s, me, { type: 'play', card: c1, targets: [{ kind: 'unit', id: wr }] })
     expect(s.upgrades[c1]).toMatchObject({ attachedTo: wr, owner: me })
     expect(s.units[wr].upgrades).toContain(c1)
-    expect(effPower(s, s.units[wr])).toBe(2)           // 5 − 3 pips
+    expect(effPower(s, s.units[wr])).toBe(1)           // 4 − 3 pips
     const c2 = toHand(s, them, 'subjugate')
     s = act(s, them, { type: 'play', card: c2, targets: [{ kind: 'unit', id: put(s, me, 'spark-hound', 1) }] })
     expect(effPower(s, s.units[imp])).toBe(2)          // untouched bystander
@@ -83,7 +83,7 @@ describe('Subjugate (#80): enemy-attach upgrade, −1 Power per host pip', () =>
 
   it('Power floors at 0 when the pip count meets or exceeds the body', () => {
     let { s, me, them } = arena()
-    const colossus = put(s, them, 'gateward-colossus', 1) // 3 power, 3 yellow pips → exactly 0 (old −2 would leave 1)
+    const colossus = put(s, them, 'gateward-colossus', 1) // 2 power, 3 yellow pips → floors at 0
     const card = toHand(s, me, 'subjugate')
     s = act(s, me, { type: 'play', card, targets: [{ kind: 'unit', id: colossus }] })
     expect(effPower(s, s.units[colossus])).toBe(0)
@@ -94,11 +94,11 @@ describe('Subjugate (#80): enemy-attach upgrade, −1 Power per host pip', () =>
     const wr = put(s, them, 'worldrender', 1)
     const card = toHand(s, me, 'subjugate')
     s = act(s, me, { type: 'play', card, targets: [{ kind: 'unit', id: wr }] })
-    expect(effPower(s, s.units[wr])).toBe(2)
+    expect(effPower(s, s.units[wr])).toBe(1)
     s = act(s, them, { type: 'pass' })
     s = act(s, me, { type: 'pass' })                   // two passes end the round
     s = toLoop(s)                                      // drive the next round's start steps
-    expect(effPower(s, s.units[wr])).toBe(2)           // still shackled
+    expect(effPower(s, s.units[wr])).toBe(1)           // still shackled
     expect(s.upgrades[card].attachedTo).toBe(wr)
   })
 

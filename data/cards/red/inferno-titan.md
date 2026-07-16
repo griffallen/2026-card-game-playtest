@@ -2,8 +2,8 @@
 name: Inferno Titan
 type: unit
 cost: 4
-power: 5
-health: 4
+power: 4
+health: 6
 keywords: breakthrough, scar
 pips: red, red
 status: canon

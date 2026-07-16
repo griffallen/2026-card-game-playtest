@@ -28,7 +28,7 @@ export function buildPrebuiltDecks(set: CardSet): PrebuiltDeck[] {
     ['spark-hound', 2], ['berserker', 4], ['blood-rush', 1], ['cataclysmic-charge', 2],
     ['flameblade-raider', 1], ['warcry-leader', 1], ['bloodfrenzy', 4], ['collateral-damage', 2],
     ['fiery-impaler', 4], ['rageforged-brute', 1], ['volcanic-slam', 2], ['blaze-juggernaut', 1],
-    ['burning-oath', 1], ['doombringer', 1], ['execution-swing', 4], ['inferno-titan', 4],
+    ['burning-oath', 1], ['execution-swing', 4], ['inferno-titan', 4],
     ['rupture', 1], ['crimson-behemoth', 2], ['final-onslaught', 1], ['relentless-assault', 1],
     ['scorching-howl', 1], ['warlord-garok', 1], ['burn-the-frontline', 1], ['earthshaker', 1],
     ['raging-inferno', 1], ['unchained-rage', 1], ['apocalypse-engine', 1], ['last-stand', 1],

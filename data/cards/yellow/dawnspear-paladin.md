@@ -2,8 +2,8 @@
 name: Dawnspear Paladin
 type: unit
 cost: 5
-power: 5
-health: 5
+power: 3
+health: 3
 influenceTrigger: onAttack
 pips: yellow, yellow
 status: canon
