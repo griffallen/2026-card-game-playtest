@@ -85,7 +85,7 @@ Those three steps — declare, block, resolve — settle every fight. What follo
 
 > Example: your 2/2 Raider and 3/3 Marauder gang their 4/5 Warden. No blocks. The Warden takes 2 + 3 = 5 and dies — but damage is simultaneous, so it still retaliates: 4 Power divided, defender's choice of order. Default: 3 to the Marauder (dies), the remaining 1 to the Raider (now 2/1). You killed the Warden; it took your Marauder with it. Had the defender instead blocked the Marauder with a ready 2/3 Sentry, the Marauder and Sentry would trade with each other, and only the Raider's 2 would land on the Warden.
 
-**3. Unit vs base.** One ready unit, standing in the enemy's Home zone, attacks the base. **The base does not retaliate** — an unblocked hit is simply damage to Life. But the Home is everyone's to defend: **any** ready unit in the home zone may block a base attack, even a lone one — this is the one place the lone-duel rule below does not bind. The Guard gate still applies: if the defender has a Guard in the zone, you must attack the Guard before you may attack the base.
+**3. Unit vs base.** One ready unit, standing in the enemy's Home zone, attacks the base. **The base does not retaliate** — an unblocked hit is simply damage to Life. But the Home is everyone's to defend: **any** ready unit in the home zone may block a base attack, even a lone one — this is the one place the lone-duel rule below does not bind.
 
 > Example: your 4/3 Vanguard stands in their Home and swings at the base. Unblocked: they lose 4 Life, your Vanguard is untouched. But their ready 1/1 Squire may step in front: the Squire takes 4 and dies, deals 1 back (Vanguard now 4/2), and the base takes nothing. One small unit, four Life saved.
 
@@ -96,7 +96,7 @@ Those three steps — declare, block, resolve — settle every fight. What follo
 ### Exceptions and fine print
 
 - **Retaliation is always.** The rule under everything: when a unit attacks a unit, or a blocker blocks an attacker, both deal full Power simultaneously — exhausted or not. The only thing in the game that does not hit back is the base.
-- **The Guard gate.** If the defender has any Guard unit in the zone, attackers must target a Guard before any non-Guard unit or the base. Guard is a targeting gate, not a damage reducer.
+- **Guard is a shield, not a gate.** Guard does not force the enemy to attack it first — an attacker may swing past it at any unit or the base. What Guard does is defensive: it is the only unit that may step in front of a *lone* attacker aimed at one of your units (the lone-duel rule below), and it blocks without exhausting.
 - **The lone-duel rule.** If exactly one unit attacks a *unit*, only a **Guard** may block it — a lone duel is answered by a Guard or not at all. The single exception: a lone attacker on the *base* may be blocked by any ready home unit.
 - **Who may block.** A blocker must be the defender's own unit, ready (a unit that attacked this round is exhausted and cannot also block), not imprisoned, and standing in the combat zone. **Blocking exhausts the blocker — unless it is a Guard, which stays ready after blocking.**
 - **Everything is chosen up front.** Attackers, target, any secondary target (a splash or skewer pick), blocker pairings, and the split and order of a divided retaliation are all set before damage resolves. Once combat resolves there is no further input. This keeps combat fast and dispute-free.
@@ -104,7 +104,7 @@ Those three steps — declare, block, resolve — settle every fight. What follo
 
 ### Combat keywords
 
-- **Guard** — enemies must attack it before non-Guards or the base; the only unit that may block a lone attack on a unit; stays ready after blocking.
+- **Guard** — the only unit that may block a lone attack aimed at one of your units; blocks without exhausting, so it can guard and still act. It does not force the enemy to attack it first.
 - **Armor X** — reduces every hit this unit takes by X. A hit of 3 against Armor 2 deals 1; five separate 1-damage hits deal 0.
 - **Shield** — absorbs one whole hit of any size, then is gone.
 - **Breakthrough** (Red) — if this attacker's damage exceeds its blocker's remaining Health, the excess spills through to the opponent's Life. A normal 5-Power attacker is stopped cold by a 1-Health chump; with Breakthrough, 1 kills the chump and 4 spill through.
@@ -125,7 +125,7 @@ Those three steps — declare, block, resolve — settle every fight. What follo
 
 ## Keywords / Mechanics
 
-- **Guard** — Must be attacked before non-Guard units or the base; stays ready after blocking. See the Combat section.
+- **Guard** — may block a lone attack aimed at one of your units (the only unit that can), and blocks without exhausting. Does not force the enemy to attack it first. See the Combat section.
 - **Armor X** — Reduces every hit this unit takes by X.
 - **Shield** — Absorbs one whole hit of any size, then is gone.
 - **Rush** (Red) — Lets a unit attack the turn it is played. Being reworked toward a per-round attribute; wording not final.
