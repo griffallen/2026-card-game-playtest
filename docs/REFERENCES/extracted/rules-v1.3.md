@@ -104,11 +104,7 @@ Those three steps — declare, block, resolve — settle every fight. What follo
 
 ### Combat keywords
 
-- **Guard** — the only unit that may block a lone attack aimed at one of your units; blocks without exhausting, so it can guard and still act. It does not force the enemy to attack it first.
-- **Armor X** — reduces every hit this unit takes by X. A hit of 3 against Armor 2 deals 1; five separate 1-damage hits deal 0.
-- **Shield** — absorbs one whole hit of any size, then is gone.
-- **Breakthrough** (Red) — if this attacker's damage exceeds its blocker's remaining Health, the excess spills through to the opponent's Life. A normal 5-Power attacker is stopped cold by a 1-Health chump; with Breakthrough, 1 kills the chump and 4 spill through.
-- **Rush** (Red) — affects when a unit may attack. Its exact wording is being finalized, so it is not pinned here.
+Guard, Armor, Shielded, and Breakthrough are combat keywords. Each is defined once — with the rest of the game's shorthand — in the **Keywords / Mechanics** glossary near the end of this document.
 
 ## Card Types
 
@@ -125,39 +121,50 @@ Those three steps — declare, block, resolve — settle every fight. What follo
 
 ## Keywords / Mechanics
 
-- **Guard** — may block a lone attack aimed at one of your units (the only unit that can), and blocks without exhausting. Does not force the enemy to attack it first. See the Combat section.
-- **Armor X** — Reduces every hit this unit takes by X.
-- **Shield** — Absorbs one whole hit of any size, then is gone.
-- **Rush** (Red) — Lets a unit attack the turn it is played. Being reworked toward a per-round attribute; wording not final.
-- **Breakthrough** (Red) — When an attacker's damage exceeds its blocker's remaining Health, the excess spills through to the opponent's Life.
-- **Ranged** (Blue) — An ability, not an attack style: exhaust this unit to deal N damage to one enemy unit in any zone (a volley). The unit's regular attacks are ordinary — same zone, blockable, may hit the base.
-- **Influence Triggers** (Yellow Identity) — Common patterns:
-  - When this unit defends, gain 1 Influence
-  - Exhaust: Gain 1 Influence
-  - Conditional end-of-turn Influence gain
+The game's shorthand, gathered in one place. Each term is defined once here, in present tense; a card that prints a keyword uses exactly this meaning.
 
-### Prison (Control Mechanic)
+### Core states
 
-Prison removes enemy units from active play.
+- **Ready** — Not yet spent this round. A ready unit can attack, move, or block; a ready resource can help pay a cost. Units enter play ready, and everything readies at the start of its owner's round.
+- **Exhausted** — Spent for the round (tapped). A unit exhausts when it attacks or moves; a resource exhausts when it pays toward a cost. An exhausted unit can't attack, move, or block, and readies at the start of its owner's next round. (It still strikes back when attacked — retaliation is always; see Combat.)
+- **Attacker** — A ready unit you exhaust and declare in an attack. One or more attackers in the same zone strike together as a single action.
+- **Blocker** — A ready unit the defender pairs onto a specific attacker to stop it. Blocking exhausts the blocker unless it is a Guard. A lone attack on a unit can be blocked only by a Guard; a lone attack on a base may be blocked by any ready unit in the home zone.
 
-Imprisoned Units:
+### Combat keywords
 
-- Cannot attack, defend, or use abilities
-- Remain in play but inactive
+- **Guard** — The only unit that may block a lone attacker aimed at one of your units, and it blocks without exhausting, so it can block and still take its own turn. Guard is purely defensive: it does not force the enemy to attack it first.
+- **Armor X** — Reduces every hit this unit takes by X, each hit judged on its own. A 3-damage hit against Armor 2 deals 1; five separate 1-damage hits deal 0.
+- **Shielded** — Enters play carrying a shield token. The first hit it would take is prevented in full, then the token is spent — one free save, against a hit of any size.
+- **Breakthrough** — When this attacker kills its blocker, the leftover damage spills through to what it was attacking: a unit, or — striking from inside the enemy Home — on past a slain unit into the base. No cap, so a chump block doesn't stop it.
 
-Release Conditions:
+### Abilities & attacks
 
-- If the controlling player's Influence falls below a threshold specified by the prison effect
-- If the source of the prison effect leaves play
+- **Rush** — A static ability: this unit may move one zone each round for free, without exhausting. It does not grant an extra action and does not let the unit attack any sooner. (Being finalized in the current rework.)
+- **Ranged N** — An ability used as your action: exhaust this unit to deal N damage to one enemy unit in any zone (a volley). It is a chosen shot, so a ready Hidden unit can't be picked, and a lethal volley counts as a kill. The unit's ordinary attacks are unchanged — same zone, blockable, and able to hit the base.
+- **Sneak** — An ability used as your action: exhaust this unit to resolve its printed Sneak effect on a target in its own zone (a unit or the base). Each card spells out what its Sneak does.
+- **Infiltrate** — This unit may be played into any zone, not just your Home.
+- **Flying** — When it moves, this unit may go to any zone, not only an adjacent one.
+- **Scar** — This unit gets +1 Power for each point of damage marked on it, with no cap — the closer to death, the harder it hits.
 
-Prison Decay Rule:
+### Identities, control & protection
 
-- At the start of your turn: lose 1 Influence for each unit you have imprisoned
+- **Hidden** — While this unit is ready, enemy effects can't target it and enemy attacks can't be declared at it. It can still block. Anything that exhausts it — attacking, blocking, a Sneak — reveals it until it readies again. Effects that don't choose a target (whole-zone or "all" damage) still reach it.
+- **Untargetable** — Enemy effects can't choose this unit as a target. Unlike Hidden, it can still be attacked.
+- **Can't-attack** — This unit is never a legal attacker (some walls print it; some enemy effects impose it for a round). It can still move and block.
+- **Capture** — This unit takes an enemy unit under itself, off the board entirely. No action can free the captive; it returns — ready, to that zone — only when the capturer leaves play. Some captures also pay their holder Influence each round while the grip holds.
+- **Prison / Imprison** — Yellow's control tool. An imprisoned unit stays on the board but goes inert: it can't attack, move, block, use abilities, or strike back. Holding prisoners is a mortgage — at the start of each round the jailer loses 1 Influence per prisoner, and a prisoner is freed the moment the jailer's Influence drops below 0 or the effect that jailed it leaves play. (Distinct from Capture, which removes the unit from the board.)
+- **Politician** — At the end of each round, if this unit stands in Neutral and its owner holds more units there than the opponent, its owner gains 1 Influence — once per round, however many politicians are present.
+- **Influence-on-defend** — Not a keyword but yellow's signature triggered effect: many yellow units gain Influence when they defend (some when they block or are attacked, some once per attacker). It turns defending into progress on the Influence track; each card prints its own version.
 
-### Upgrades
+### Cross-references
 
-- Attach to units to grant bonuses or abilities
+- **Influence** — The single shared track both players fight over (starts at 0). Gaining Influence pulls the marker toward your side; reaching the win threshold in your favor takes the game even while you are behind on Life. See **Game Concepts** for the exact win values.
+- **Zones / Home / Neutral** — Units live in one of three zones: your Home, Neutral, the opponent's Home. Combat happens inside a single zone (the one exception is a Ranged volley). Full detail in **Zones**, above.
+- **Upgrades** — Attach to a unit to grant bonuses or abilities; a few clamp onto an enemy to weaken it. See **Card Types**. (The old "upgrade pressure" tax — the opponent gaining Influence for each upgrade beyond the first — is not part of the current rules.)
 
-Upgrade Pressure Rule:
+### Legacy (classic v2.3 only)
 
-- For each upgrade on a unit beyond the first: the opponent gains 1 Influence when that upgrade is played
+These print on some older cards but have no effect in the current combat model; they act only under the classic v2.3 rules.
+
+- **Reach** — Attacks a unit in an adjacent zone as an ordinary attack.
+- **Overextend N** — An optional attack-time gamble: +N Power now, N self-damage at end of round.
