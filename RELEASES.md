@@ -8,6 +8,13 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.2.4 — 2026-07-16
+patch — **yellow upgrade art re-skin** (#5, Griff). The five yellow upgrades in the deck get
+their storybook art (Griff confirmed the matches): Iron Discipline, Oath of Order, Disciplined
+Mind, Subjugate, Unshakable Wall — cropped from Griff's 5-panel sheet and wired into their art
+slots. Yellow's deck cards are now nearly dressed (6 actions + 5 upgrades); Chain of Law and
+Resolve Banner still await art. Demo-only.
+
 ## v0.2.3 — 2026-07-16
 patch — **first yellow art re-skin** (#5, Griff). The six yellow action cards get illustrated,
 storybook-illuminated art from Griff's sheet — Binding Light, Imprisonment Chamber, Prison
