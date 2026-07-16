@@ -4,7 +4,7 @@ An original card game in development. **Griff designs, Blaine builds**, and an A
 Code) turns design conversations into specs, code, and a playable prototype — the whole loop runs
 through this repo.
 
-**`v0.3.0`** · 287 tests green · [▶ play the demo](https://blainebooher.com/new-game-demo/) · [what shipped →](RELEASES.md)
+**`v0.4.0`** · 287 tests green · [▶ play the demo](https://blainebooher.com/new-game-demo/) · [what shipped →](RELEASES.md)
 
 ## 🎮 Play it right now — no install
 

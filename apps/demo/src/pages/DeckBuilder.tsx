@@ -4,7 +4,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { PREBUILT_DECKS, V3_RULES } from '@newgame/engine'
 import { CardFrame } from '@ui/components/CardFrame.tsx'
-import { CardSheet } from '@ui/game/Sheets.tsx'
+import { CardSheet, Sheet } from '@ui/game/Sheets.tsx'
 import { DEMO_CARDS } from '../local.ts'
 import { allDecks, customSlugFor, deleteCustomDeck, saveCustomDeck, type CustomDeck } from '../custom-decks.ts'
 
@@ -240,7 +240,10 @@ export function DeckBuilder() {
         {/* right: preview + the deck so far */}
         <div className="min-w-0 lg:sticky lg:top-4 lg:self-start">
           <div className="panel flex flex-col gap-3 p-4">
-            <div className="flex justify-center">
+            {/* #101: the big preview only lives in the right pane on desktop — on phones it's
+                redundant with the tap-to-preview sheet below, and stacking it here just buries
+                the deck list, so hide it under lg. */}
+            <div className="hidden justify-center lg:flex">
               {previewDef
                 ? <button onClick={() => setInspect(preview)} title="full details"><CardFrame card={previewDef} size="lg" /></button>
                 : <div className="grid h-[340px] w-[248px] place-items-center rounded-lg border border-dashed hairline text-center text-xs text-dim/60">hover a card<br />to preview it</div>}
@@ -278,6 +281,22 @@ export function DeckBuilder() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* #101: on phones, tapping a card in the pool pops its preview here as a bottom sheet, so
+          you never scroll away from your place in the list. Desktop keeps the sticky right-hand
+          pane instead — this whole overlay is lg:hidden. Tap the card for the full inspector. */}
+      <div className="lg:hidden">
+        {previewDef && (
+          <Sheet title={previewDef.name} onClose={() => setPreview(null)}>
+            <div className="flex justify-center">
+              <button onClick={() => setInspect(preview)} title="full details">
+                <CardFrame card={previewDef} size="lg" />
+              </button>
+            </div>
+            <p className="mt-2 text-center text-[11px] text-dim">tap the card for its full abilities & rulings</p>
+          </Sheet>
+        )}
       </div>
 
       {inspect && DEMO_CARDS[inspect] && <CardSheet card={DEMO_CARDS[inspect]} onClose={() => setInspect(null)} />}

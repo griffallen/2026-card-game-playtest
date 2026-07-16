@@ -8,6 +8,25 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.4.0 — 2026-07-16
+minor — **deck explorer filters + mobile workshop preview** (#101, #102, Blaine fired the
+batch). Two demo-only UX fixes shipped together:
+- **#102 (Griff): the Deck Explorer filters now mean what they look like.** The old buttons
+  were labeled by prebuilt deck (Crimson Assault / Radiant Order / Veiled Court) but styled
+  as color dots, which sent Griff hunting for yellow cards that simply aren't in a given
+  decklist. Now the prebuilt-deck picker is a **dropdown**, and **color / cost / type** are
+  true **multi-select toggle** filters — tap red + yellow, or costs 0·1·2·3, and see every
+  card matching any of them (OR within a group, AND across groups). Plain tap-toggle, no
+  Ctrl, so it works on touch; cost buttons are generated from the costs actually in the
+  catalog, not a hardcoded range.
+- **#101 (Blaine): the deck workshop previews on mobile.** On phones the panels stack and the
+  live preview sat far below the pool — every "what does this card do?" cost a scroll. Now
+  tapping a card in the pool pops its preview in a bottom sheet without losing your place in
+  the list. Desktop's two-column layout (pool left, sticky preview right) is untouched — the
+  whole mobile path is gated under `lg:`.
+Demo-only, no engine/card/rules touch. Demo build clean, 8/8 demo tests green, playability
+gate passed (121 art loaded, 0 broken, page errors none). Deployed to the live demo.
+
 ## v0.3.0 — 2026-07-16
 minor — **combat teaching pass** (#100, Blaine): combat is now legible. A plain-language
 "Combat — who takes what" section in the help panel teaches the duel law (everything hits back,
