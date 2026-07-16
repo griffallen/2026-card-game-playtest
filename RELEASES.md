@@ -8,6 +8,13 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.2.3 — 2026-07-16
+patch — **first yellow art re-skin** (#5, Griff). The six yellow action cards get illustrated,
+storybook-illuminated art from Griff's sheet — Binding Light, Imprisonment Chamber, Prison
+Warrant, Prison of Light, Disarming Order, Supreme Sentence — cropped from the 2×3 sheet and
+wired into their art slots (`apps/web/public/cards/`, shared into the demo). Matching confirmed
+by Griff. The re-skin the rest of the game will follow. Demo-only.
+
 ## v0.2.2 — 2026-07-16
 patch — the **Copy Chronicle** button now carries a machine-readable replay block for AI
 training (#97, Blaine): seed + both deck lists (resolved, so custom decks travel) + rules +
