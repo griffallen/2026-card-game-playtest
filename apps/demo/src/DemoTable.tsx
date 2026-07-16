@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   EngineError, POLICIES, applyAction, deckSlugs, policyRngInit, viewFor,
-  type GameAction, type GameState, type HandCardView, type Seat, type TargetRef, type ZoneId,
+  type GameAction, type GameState, type HandCardView, type Seat, type TargetRef, type UnitView, type ZoneId,
 } from '@newgame/engine'
 import { CardFrame } from '@ui/components/CardFrame.tsx'
 import { HelpPanel } from '@ui/components/HelpPanel.tsx'
@@ -13,6 +13,7 @@ import { DEMO_CARDS, aiControls, newLocalGame, type DemoConfig } from './local.t
 import { allDecks } from './custom-decks.ts'
 import { BlockModal } from './BlockModal.tsx'
 import { composeCombatRecap } from './recap.ts'
+import { CombatPreview, type PreviewTarget } from './CombatPreview.tsx'
 import { setSound, sfx, soundOn } from './sound.ts'
 
 const SFX_BY_ACTION: Partial<Record<GameAction['type'], 'play' | 'hit'>> = {
@@ -847,6 +848,25 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
               ? `${selection.ids.length} attackers chosen — tap another in this zone to add, or tap a red target to strike together.`
               : 'Tap a glowing target: dashed zone = move · red glow = attack. Tap another ready unit in this zone to attack together.'}
           </span>
+          {/* #108: combat is deterministic — lay out the exact unblocked math for every reachable
+              target so the player commits on shared information, never a miscalculation. */}
+          {state.rules.combatModel === 'blockerPairing' && (() => {
+            const atk = selection.ids.map(id => unitViewOf(id)).filter((u): u is UnitView => !!u)
+            if (atk.length !== selection.ids.length) return null
+            const targets: PreviewTarget[] = []
+            for (const ref of highlights) {
+              if (ref.kind === 'unit') {
+                const tv = unitViewOf(ref.id)
+                if (!tv) continue
+                const retaliates = state.rules.retaliation === 'always'
+                  || (state.rules.retaliation === 'ready' && !tv.exhausted)
+                targets.push({ ref, kind: 'unit', unit: tv, retaliates })
+              } else if (ref.kind === 'base') {
+                targets.push({ ref, kind: 'base', name: names[ref.seat], life: view.sides[ref.seat].life })
+              }
+            }
+            return <CombatPreview attackers={atk} targets={targets} />
+          })()}
           {selection.ids.length === 1 && unitViewOf(selection.ids[0])?.keywords.includes('cantAttack') && (
             <span className="w-full text-[12.5px] text-[#e5a99f]">
               ⊘ {unitName(selection.ids[0])} can't attack{(DEMO_CARDS[state.cardOf[selection.ids[0]]]?.kw ?? []).some(k => k.k === 'cantAttack')

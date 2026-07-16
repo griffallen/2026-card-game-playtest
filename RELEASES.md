@@ -8,6 +8,20 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.5.0 — 2026-07-16
+minor — **combat transparency preview** (#108, Blaine). Combat is deterministic — no dice — so
+the demo now shows the exact unblocked math the moment you pick attacker(s), before you commit.
+A compact "Combat preview — if unblocked" panel lays out, per reachable target: the Power you
+send, what lands through the target's known Armor/Shield, whether the target falls, the counter
+it strikes back with (retaliation-always), and which of your own units die to it — plus a
+Breakthrough note and an honest footer that the opponent may still block or Guard after you
+strike. New `predict.ts` mirrors the engine's `resolveBlockedAttack` unblocked path exactly
+(divided retaliation, highest-Power-first, armor/shield, per-attacker fall detection) +
+`CombatPreview.tsx`, wired into the attack-selection UI and gated to the duel-law combat model.
+The point (design philosophy §3): win on shared information, never lose to a miscalculation the
+game already knows. **No engine change** — it reads only known state. 279 engine + 18 demo tests
+green (10 new prediction tests); playability gate passed. Deployed.
+
 ## v0.4.0 — 2026-07-16
 minor — **deck explorer filters + mobile workshop preview** (#101, #102, Blaine fired the
 batch). Two demo-only UX fixes shipped together:
