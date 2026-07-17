@@ -174,9 +174,9 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
                 if (artTry < 2) setTimeout(() => setArtTry(t => t + 1), 350 * (artTry + 1))
                 else setArtBroken(true)
               }}
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
             />
-          : <ProceduralArt slug={card.slug} color={card.color} type={card.type} className="h-full w-full [&>svg]:h-full [&>svg]:w-full" />}
+          : <ProceduralArt slug={card.slug} color={card.color} type={card.type} className="absolute inset-0 h-full w-full [&>svg]:h-full [&>svg]:w-full" />}
         <span className={`absolute left-1 top-1 rounded-full px-1.5 py-0.5 text-[8.5px] font-bold uppercase tracking-wide shadow ring-1 ${meta.chip}`}>
           {meta.icon} {meta.label}
         </span>
