@@ -1,0 +1,136 @@
+Did I need this picture or is the copy chronicle button enough? I wasn't sure if the copy chronicle copied the seed.
+
+<img width="2712" height="1478" alt="Image" src="https://github.com/user-attachments/assets/201ae2b9-a91b-4423-9598-08aa82b15bfb" />
+
+[t1] Griff's Red vs The Machine — The Machine takes the initiative
+[t1] Setup: each player banks 2 starting resources, The Machine first
+[t1] The Machine banks Light's Vanguard and Prison Warrant as starting resources
+[t1]   (kept in hand: Noble Purifier · Disciplined Mind · Sunguard Defender · Radiant Aegis · Vanguard Sentinel)
+[t1] Griff's Red banks Execution Swing and Warlord Garok as starting resources
+[t1] — Round 1 · The Machine has the initiative —
+[t1]   (kept in hand: Berserker · Cinder Initiate · Flameblade Raider · Collateral Damage · Doombringer)
+[t1] The Machine deploys Sunguard Defender
+[t1] Griff's Red deploys Berserker
+[t1] Sunguard Defender advances to the Neutral zone
+[t1] Berserker advances to the Neutral zone
+[t1] The Machine claims the initiative
+[t1] Berserker attacks Sunguard Defender
+[t1] The Machine gains 1 influence (1)
+[t1] Berserker takes 1 damage from Sunguard Defender
+[t1] Sunguard Defender's shield absorbs the blow
+[t2] — Round 2 · The Machine has the initiative —
+[t2] The Machine draws 2 cards
+[t2] The Machine banks Vanguard Sentinel as a resource (3)
+[t2] Griff's Red draws 2 cards
+[t2]   (kept in hand: Noble Purifier · Disciplined Mind · Radiant Aegis · Devout Intervention · Champion of the Faith)
+[t2] Griff's Red banks Flameblade Raider as a resource (3)
+[t2]   (kept in hand: Cinder Initiate · Collateral Damage · Doombringer · Reckless Abandon · Devastating Strike)
+[t2] The Machine deploys Noble Purifier
+[t2] Griff's Red plays Collateral Damage
+[t2] Sunguard Defender takes 2 damage from Collateral Damage
+[t2] Sunguard Defender is destroyed
+[t2] Noble Purifier takes 2 damage from Collateral Damage
+[t2] Noble Purifier is destroyed
+[t2] The Machine claims the initiative
+[t2] Berserker advances to The Machine's Home
+[t3] — Round 3 · The Machine has the initiative —
+[t3] The Machine draws 2 cards
+[t3]   (passed with 1 playable card, 0 ready attackers)
+[t3] The Machine banks Disciplined Mind as a resource (4)
+[t3] Griff's Red draws 2 cards
+[t3]   (kept in hand: Radiant Aegis · Devout Intervention · Champion of the Faith · Sanctified Bastion · Noble Purifier)
+[t3] Griff's Red banks Cinder Initiate as a resource (4)
+[t3]   (kept in hand: Doombringer · Reckless Abandon · Devastating Strike · Rageforged Brute · Devastating Strike)
+[t3] The Machine deploys Sanctified Bastion
+[t3] Berserker attacks Sanctified Bastion
+[t3] Berserker takes 1 damage from Sanctified Bastion
+[t3] Sanctified Bastion takes 2 damage from Berserker
+[t3] The Machine claims the initiative
+[t3] Griff's Red deploys Doombringer
+[t3] Doombringer advances to the Neutral zone
+[t3] Doombringer advances to The Machine's Home
+[t4] — Round 4 · The Machine has the initiative —
+[t4] The Machine draws 2 cards
+[t4]   (passed with 1 playable card, 0 ready attackers)
+[t4] The Machine banks Noble Purifier as a resource (5)
+[t4] Griff's Red draws 2 cards
+[t4]   (kept in hand: Radiant Aegis · Devout Intervention · Champion of the Faith · Noble Purifier · Bulwark Protector)
+[t4] Griff's Red banks Rageforged Brute as a resource (5)
+[t4]   (kept in hand: Reckless Abandon · Devastating Strike · Devastating Strike · Fiery Impaler · Earthshaker)
+[t4] The Machine deploys Bulwark Protector
+[t4] Berserker, Doombringer attack The Machine's base
+[t4] The Machine may assign blockers
+[t4] Bulwark Protector blocks (guard — stays ready)
+[t4] The Machine gains 1 influence (2)
+[t4] Bulwark Protector takes 1 damage from Berserker
+[t4] Berserker takes 2 damage from Bulwark Protector
+[t4] The Machine takes 5 damage from Doombringer (15 life)
+[t4] Berserker is destroyed
+[t4]   (could block with: Bulwark Protector · Sanctified Bastion — sent: Bulwark Protector)
+[t4] Bulwark Protector advances to the Neutral zone
+[t4] Griff's Red deploys Fiery Impaler
+[t4] The Machine claims the initiative
+[t4] Fiery Impaler advances to the Neutral zone
+[t4] Griff's Red plays Devastating Strike
+[t4] Sanctified Bastion takes 3 damage from Devastating Strike
+[t4] Sanctified Bastion is destroyed
+[t5] — Round 5 · The Machine has the initiative —
+[t5] The Machine draws 2 cards
+[t5]   (passed with 2 playable cards, 0 ready attackers)
+[t5] The Machine banks Noble Purifier as a resource (6)
+[t5] Griff's Red draws 2 cards
+[t5]   (kept in hand: Radiant Aegis · Devout Intervention · Champion of the Faith · Champion of the Faith · Subjugate)
+[t5] Griff's Red banks Searing Bolt as a resource (6)
+[t5]   (kept in hand: Reckless Abandon · Devastating Strike · Earthshaker · Apocalypse Engine)
+[t5] Bulwark Protector advances to Griff's Red's Home
+[t5] Doombringer attacks The Machine's base
+[t5] The Machine takes 5 damage from Doombringer (10 life)
+[t5] The Machine plays Radiant Aegis
+[t5] Bulwark Protector gains shielded
+[t5] Fiery Impaler advances to The Machine's Home
+[t5] The Machine attaches Subjugate to Doombringer
+[t5] Griff's Red deploys Earthshaker
+[t5] The Machine claims the initiative
+[t5] Earthshaker advances to the Neutral zone
+[t6] — Round 6 · The Machine has the initiative —
+[t6] The Machine draws 2 cards
+[t6]   (passed with 1 playable card, 0 ready attackers)
+[t6] The Machine banks Devout Intervention as a resource (7)
+[t6] Griff's Red draws 2 cards
+[t6]   (kept in hand: Champion of the Faith · Champion of the Faith · Lawbringer · Prison of Light)
+[t6] Bulwark Protector attacks Griff's Red's base
+[t6] Griff's Red takes 2 damage from Bulwark Protector (18 life)
+[t6] Doombringer, Fiery Impaler attack The Machine's base
+[t6] The Machine takes 6 damage from Doombringer, Fiery Impaler (4 life)
+[t6] The Machine deploys Champion of the Faith
+[t6] Earthshaker advances to The Machine's Home
+[t6] Champion of the Faith attacks Earthshaker
+[t6] The Machine gains 1 influence (3)
+[t6] Champion of the Faith takes 4 damage from Earthshaker
+[t6] Earthshaker takes 7 damage from Champion of the Faith
+[t6] Earthshaker is destroyed
+[t6] Griff's Red plays Devastating Strike
+[t6] Champion of the Faith takes 3 damage from Devastating Strike
+[t6] Champion of the Faith is destroyed
+[t6] The Machine claims the initiative
+[t6] Griff's Red attaches Bloodfrenzy to Doombringer
+[t6] Griff's Red deploys Spark Hound
+[t6] Spark Hound advances to the Neutral zone
+[t6] Spark Hound advances to The Machine's Home
+[t7] — Round 7 · The Machine has the initiative —
+[t7] The Machine draws 2 cards
+[t7]   (passed with 1 playable card, 0 ready attackers)
+[t7] The Machine banks Lawbringer as a resource (8)
+[t7] Griff's Red draws 2 cards
+[t7]   (kept in hand: Champion of the Faith · Lawbringer · Prison of Light · Prison of Light)
+[t7] Bulwark Protector attacks Griff's Red's base
+[t7] Griff's Red takes 2 damage from Bulwark Protector (16 life)
+[t7] Spark Hound, Fiery Impaler, Doombringer attack The Machine's base
+[t7] Spark Hound gets +1 power this round
+[t7] The Machine takes 10 damage from Spark Hound, Fiery Impaler, Doombringer (-6 life)
+[t7] Griff's Red wins — opponent's life reached 0
+
+---REPLAY (for AI analysis — issue #97)---
+```json
+{"seed":1397808147,"rules":"v3.0","mulligan":false,"decks":{"A":{"name":"Griff's Red","slug":"custom-griff-s-red","cards":["apocalypse-engine","apocalypse-engine","berserker","berserker","berserker","berserker","blaze-juggernaut","blaze-juggernaut","bloodfrenzy","bloodfrenzy","bloodfrenzy","burn-the-frontline","cinder-initiate","cinder-initiate","cinder-initiate","collateral-damage","collateral-damage","crimson-behemoth","crimson-behemoth","crimson-behemoth","devastating-strike","devastating-strike","devastating-strike","doombringer","doombringer","earthshaker","earthshaker","execution-swing","execution-swing","execution-swing","fiery-impaler","fiery-impaler","fiery-impaler","final-onslaught","flameblade-raider","flameblade-raider","inferno-titan","inferno-titan","inferno-titan","rageforged-brute","rageforged-brute","reckless-abandon","reckless-abandon","reckless-abandon","relentless-assault","scorching-howl","searing-bolt","searing-bolt","searing-bolt","spark-hound","spark-hound","spark-hound","spark-hound","unchained-rage","volcanic-slam","volcanic-slam","warcry-leader","warlord-garok","worldrender","worldrender"]},"B":{"name":"The Machine","slug":"custom-griff-s-yellow","cards":["archon-of-order","archon-of-order","aura-of-resolve","aura-of-resolve","binding-light","binding-light","binding-light","bulwark-protector","bulwark-protector","bulwark-protector","champion-of-the-faith","champion-of-the-faith","containment-priest","containment-priest","containment-priest","devout-intervention","devout-intervention","disarming-order","disciplined-mind","disciplined-mind","disciplined-mind","exemplar-knight","exemplar-knight","hierophant","hierophant","imprisonment-chamber","lawbringer","lawbringer","light-s-vanguard","light-s-vanguard","noble-purifier","noble-purifier","noble-purifier","prison-of-light","prison-of-light","prison-warrant","prison-warrant","radiant-aegis","radiant-aegis","radiant-citadel","radiant-citadel","radiant-judgment","resolve-banner","resolve-banner","sanctified-bastion","sanctified-bastion","sentence","sentence","subjugate","subjugate","sunguard-defender","sunguard-defender","sunguard-defender","supreme-sentence","supreme-sentence","vanguard-sentinel","vanguard-sentinel","vanguard-sentinel"]}},"policies":{"A":"heuristic","B":"heuristic"},"actions":[{"s":1,"a":{"type":"setupBank","cards":["c88","c96"]}},{"s":0,"a":{"type":"setupBank","cards":["c27","c57"]}},{"s":1,"a":{"type":"play","card":"c112"}},{"s":0,"a":{"type":"play","card":"c3"}},{"s":1,"a":{"type":"move","unit":"c112","to":1}},{"s":0,"a":{"type":"move","unit":"c3","to":1}},{"s":1,"a":{"type":"claimInitiative"}},{"s":0,"a":{"type":"attack","attackers":["c3"],"target":{"kind":"unit","id":"c112"}}},{"s":0,"a":{"type":"pass"}},{"s":1,"a":{"type":"resource","card":"c116"}},{"s":0,"a":{"type":"resource","card":"c35"}},{"s":1,"a":{"type":"play","card":"c91"}},{"s":0,"a":{"type":"play","card":"c16","targets":[{"kind":"unit","id":"c112"},{"kind":"unit","id":"c91"}]}},{"s":1,"a":{"type":"claimInitiative"}},{"s":0,"a":{"type":"move","unit":"c3","to":2}},{"s":0,"a":{"type":"pass"}},{"s":1,"a":{"type":"resource","card":"c80"}},{"s":0,"a":{"type":"resource","card":"c13"}},{"s":1,"a":{"type":"play","card":"c104"}},{"s":0,"a":{"type":"attack","attackers":["c3"],"target":{"kind":"unit","id":"c104"}}},{"s":1,"a":{"type":"claimInitiative"}},{"s":0,"a":{"type":"play","card":"c24"}},{"s":0,"a":{"type":"move","unit":"c24","to":1}},{"s":0,"a":{"type":"move","unit":"c24","to":2}},{"s":0,"a":{"type":"pass"}},{"s":1,"a":{"type":"resource","card":"c92"}},{"s":0,"a":{"type":"resource","card":"c39"}},{"s":1,"a":{"type":"play","card":"c68"}},{"s":0,"a":{"type":"attack","attackers":["c3","c24"],"target":{"kind":"base","seat":1}}},{"s":1,"a":{"type":"block","pairs":[{"blocker":"c68","onto":"c3"}]}},{"s":1,"a":{"type":"move","unit":"c68","to":1}},{"s":0,"a":{"type":"play","card":"c30"}},{"s":1,"a":{"type":"claimInitiative"}},{"s":0,"a":{"type":"move","unit":"c30","to":1}},{"s":0,"a":{"type":"play","card":"c20","targets":[{"kind":"unit","id":"c104"}]}},{"s":0,"a":{"type":"pass"}},{"s":1,"a":{"type":"resource","card":"c90"}},{"s":0,"a":{"type":"resource","card":"c48"}},{"s":1,"a":{"type":"move","unit":"c68","to":0}},{"s":0,"a":{"type":"attack","attackers":["c24"],"target":{"kind":"base","seat":1}}},{"s":1,"a":{"type":"play","card":"c98","targets":[{"kind":"unit","id":"c68"}]}},{"s":0,"a":{"type":"move","unit":"c30","to":2}},{"s":1,"a":{"type":"play","card":"c109","targets":[{"kind":"unit","id":"c24"}]}},{"s":0,"a":{"type":"play","card":"c26"}},{"s":1,"a":{"type":"claimInitiative"}},{"s":0,"a":{"type":"move","unit":"c26","to":1}},{"s":0,"a":{"type":"pass"}},{"s":1,"a":{"type":"resource","card":"c76"}},{"s":0,"a":{"type":"skipResource"}},{"s":1,"a":{"type":"attack","attackers":["c68"],"target":{"kind":"base","seat":0}}},{"s":0,"a":{"type":"attack","attackers":["c24","c30"],"target":{"kind":"base","seat":1}}},{"s":1,"a":{"type":"play","card":"c71"}},{"s":0,"a":{"type":"move","unit":"c26","to":2}},{"s":1,"a":{"type":"attack","attackers":["c71"],"target":{"kind":"unit","id":"c26"}}},{"s":0,"a":{"type":"play","card":"c22","targets":[{"kind":"unit","id":"c71"}]}},{"s":1,"a":{"type":"claimInitiative"}},{"s":0,"a":{"type":"play","card":"c8","targets":[{"kind":"unit","id":"c24"}]}},{"s":0,"a":{"type":"play","card":"c52"}},{"s":0,"a":{"type":"move","unit":"c52","to":1}},{"s":0,"a":{"type":"move","unit":"c52","to":2}},{"s":0,"a":{"type":"pass"}},{"s":1,"a":{"type":"resource","card":"c86"}},{"s":0,"a":{"type":"skipResource"}},{"s":1,"a":{"type":"attack","attackers":["c68"],"target":{"kind":"base","seat":0}}},{"s":0,"a":{"type":"attack","attackers":["c52","c30","c24"],"target":{"kind":"base","seat":1}}}]}
+```

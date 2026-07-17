@@ -9,12 +9,15 @@
   "scripts": {
     "dev": "concurrently -n server,web -c blue,magenta \"npm run dev -w apps/server\" \"npm run dev -w apps/web\"",
     "build": "npm run typecheck && npm run build -w apps/web",
-    "typecheck": "npm run typecheck -w packages/engine && npm run typecheck -w apps/server && npm run typecheck -w apps/web && npm run typecheck -w apps/demo",
-    "test": "npm test -w packages/engine && npm test -w apps/server",
+    "typecheck": "npm run typecheck -w packages/engine && npm run typecheck -w packages/corpus && npm run typecheck -w apps/server && npm run typecheck -w apps/web && npm run typecheck -w apps/demo",
+    "test": "npm test -w packages/engine && npm test -w packages/corpus && npm test -w apps/server",
     "sim": "npm run sim -w packages/engine",
     "cards": "tsx scripts/cards-build.ts",
     "cards:check": "tsx scripts/cards-build.ts --check",
     "sim:matchups": "tsx scripts/sim-matchups.ts",
+    "corpus:collect": "tsx packages/corpus/src/cli.ts collect",
+    "corpus:list": "tsx packages/corpus/src/cli.ts list",
+    "corpus:purge": "tsx packages/corpus/src/cli.ts purge",
     "db:migrate": "npm run db:migrate -w apps/server",
     "db:seed": "npm run db:seed -w apps/server"
   },
