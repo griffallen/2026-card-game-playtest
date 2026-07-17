@@ -34,6 +34,18 @@ export interface DemoConfig {
   sleeves?: [Sleeve, Sleeve]
 }
 
+// #111: a saved deck can still name a card a later balance pass deleted (e.g. Doombringer).
+// The engine rightly refuses a deck with an unknown card — so drop vanished slugs here, before
+// it ever seats the game. A stale saved deck must never crash the table; it just comes up lighter.
+function liveSlugs(slugs: string[], who: string): string[] {
+  const live = slugs.filter(s => DEMO_CARDS[s])
+  if (live.length !== slugs.length) {
+    const gone = [...new Set(slugs.filter(s => !DEMO_CARDS[s]))]
+    console.warn(`${who}: dropped ${slugs.length - live.length} card(s) no longer in the set: ${gone.join(', ')}`)
+  }
+  return live
+}
+
 export function newLocalGame(cfg: DemoConfig): GameState {
   const pool = allDecks()   // prebuilts + the browser's custom decks (issue #30)
   const a = pool.find(d => d.slug === cfg.deckA) ?? DECKS[0]
@@ -46,8 +58,8 @@ export function newLocalGame(cfg: DemoConfig): GameState {
     },
     cardSet: DEMO_CARDS,
     players: [
-      { name: cfg.nameA, deck: deckSlugs(a) },
-      { name: cfg.nameB, deck: deckSlugs(b) },
+      { name: cfg.nameA, deck: liveSlugs(deckSlugs(a), cfg.nameA) },
+      { name: cfg.nameB, deck: liveSlugs(deckSlugs(b), cfg.nameB) },
     ],
   })
 }
