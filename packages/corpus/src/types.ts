@@ -71,6 +71,13 @@ export interface EntryMeta {
   rounds: number
   actionCount: number
   terminal: boolean
+  /**
+   * This log validated ONLY against the retired-card archive — it uses a card the balance pass
+   * cut, so it was played under an OLDER card set than the live one. `true` = older-meta: training
+   * must segregate/weight these, never treat them as current. `false` = validated against the live
+   * pool (current-meta). Always written. (issue #97, archive step.)
+   */
+  archived: boolean
   /** Where the log came from — an issue-comment URL, a file path, or "stdin". */
   source: string
   /** Monotonic collection index, so replays are trainable in the order they arrived. */

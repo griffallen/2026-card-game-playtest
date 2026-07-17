@@ -23,7 +23,7 @@ const entry = (id: string, over: Partial<Fingerprint> = {}, winner: 0 | 1 | null
     meta: {
       gameId: id, fingerprint: f, rules: f.rules, winner, winnerName: winner === null ? null : 'X',
       winReason: winner === null ? null : 'life', rounds: 5, actionCount: 10, terminal: winner !== null,
-      source: 'test', collectedOrder: 0,
+      archived: false, source: 'test', collectedOrder: 0,
     },
     replay: { seed: 1, rules: f.rules, mulligan: false, decks: { A: { name: 'A', slug: 'a', cards: [] }, B: { name: 'B', slug: 'b', cards: [] } }, actions: [] },
   }

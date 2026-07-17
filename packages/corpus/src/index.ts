@@ -17,3 +17,4 @@ export {
   type CorpusGroup, type Selector, type PurgeReport,
 } from './store.ts'
 export { collectFromSources, type CollectSource, type CollectOpts, type CollectReport } from './collect.ts'
+export { ARCHIVE_CARDS, ARCHIVE_SLUGS, archiveCardSet, loadArchiveCards } from './archive.ts'

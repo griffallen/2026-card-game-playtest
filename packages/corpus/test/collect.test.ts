@@ -32,10 +32,12 @@ describe('collectFromSources', () => {
     expect(e.meta.fingerprint.cards).toMatch(/^[0-9a-f]{12}$/)
     // stamped with the version it verified under — the current engine
     expect(e.meta.fingerprint.rules).toBe('v3.0')
+    // a live-pool game is current-meta, never flagged archived
+    expect(e.meta.archived).toBe(false)
   })
 
-  it('rejects an un-replayable (stale-cardset) paste instead of filing it', () => {
-    const report = collectFromSources(dir, [{ text: stalePaste(), source: 'issue-98#stale' }], { clock })
+  it('with archive disabled, an un-replayable (stale-cardset) paste bounces (pre-#97 behavior)', () => {
+    const report = collectFromSources(dir, [{ text: stalePaste(), source: 'issue-98#stale' }], { clock, archive: null })
     expect(report.collected).toHaveLength(0)
     expect(report.rejected).toHaveLength(1)
     expect(report.rejected[0].reason).toMatch(/doombringer/)

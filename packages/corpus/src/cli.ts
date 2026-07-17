@@ -48,9 +48,10 @@ function cmdCollect(argv: string[]): number {
   else sources = [{ text: readStdin(), source: 'stdin' }]
 
   const report = collectFromSources(dir, sources, { requireWinner })
+  const archived = report.collected.filter(c => c.archived).length
   console.log(`corpus: ${dir}`)
-  console.log(`collected ${report.collected.length}, skipped ${report.skipped.length} (dupes), rejected ${report.rejected.length}`)
-  for (const c of report.collected) console.log(`  + ${c.gameId}  [${c.key}]  winner=${c.winner ?? 'none'}  <- ${c.source}`)
+  console.log(`collected ${report.collected.length}${archived ? ` (${archived} archived — retired cards)` : ''}, skipped ${report.skipped.length} (dupes), rejected ${report.rejected.length}`)
+  for (const c of report.collected) console.log(`  + ${c.gameId}  [${c.key}]  winner=${c.winner ?? 'none'}${c.archived ? '  ⧗archived' : ''}  <- ${c.source}`)
   for (const s of report.skipped) console.log(`  = ${s.gameId}  (${s.reason})`)
   for (const r of report.rejected) console.log(`  x seed ${r.seed ?? '?'}  rejected: ${r.reason}  <- ${r.source}`)
   return 0
