@@ -4,12 +4,17 @@ import {
 } from '@newgame/engine'
 import type { Sleeve } from '@ui/game/sleeves.ts'
 
-/** Engine card set with art urls resolved against the deployed base path (keep each card's own extension — the veil set ships SVGs). */
+// Build-time art version (commit SHA), injected by vite.config.ts `define`. Appended to
+// every art URL so overwritten-in-place card images (#103) bust the browser/CDN cache on
+// each deploy instead of serving a stale copy.
+declare const __ART_VER__: string
+
+/** Engine card set with art urls resolved against the deployed base path (keep each card's own extension — the veil set ships SVGs), cache-busted by build version. */
 export const DEMO_CARDS: CardSet = Object.fromEntries(
-  Object.entries(CARD_SET).map(([slug, def]) => [
-    slug,
-    { ...def, artUrl: `${import.meta.env.BASE_URL}${(def.artUrl ?? `/cards/${slug}.jpg`).replace(/^\//, '')}` },
-  ]),
+  Object.entries(CARD_SET).map(([slug, def]) => {
+    const path = `${import.meta.env.BASE_URL}${(def.artUrl ?? `/cards/${slug}.jpg`).replace(/^\//, '')}`
+    return [slug, { ...def, artUrl: `${path}${path.includes('?') ? '&' : '?'}v=${__ART_VER__}` }]
+  }),
 )
 
 export const DECKS = PREBUILT_DECKS
