@@ -112,7 +112,15 @@ function resolveUnitTarget(ctx: FxCtx, t: string): UnitInstance | undefined {
   return undefined
 }
 
-export function damageUnit(state: GameState, unit: UnitInstance, n: number, source: string) {
+export function damageUnit(state: GameState, unit: UnitInstance, n: number, source: string, pierce = false) {
+  // #107 (Worldrender): a piercing hit ignores the target's Shield and Armor entirely — full damage
+  // lands, and the shield token is NOT spent (the pierce doesn't remove the enemy's keywords).
+  if (pierce) {
+    if (n <= 0) return
+    unit.damage += n
+    log(state, unit.owner, `${name(state, unit.id)} takes ${n} damage${source ? ` from ${source}` : ''} (through shield and armor)`)
+    return
+  }
   // v3 Shielded: the first damage instance is prevented entirely (one event, one token)
   if (unit.shielded && n > 0) {
     unit.shielded = false
@@ -328,6 +336,20 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         from.damage -= n
         to.damage += n
         log(state, to.owner, `${name(state, to.id)} draws ${n} damage off ${name(state, from.id)}`)
+        break
+      }
+      case 'lastStand': {
+        // #107 (Last Stand): register the round-scoped pact for the controller. The mass-ready is a
+        // separate `ready` op; here we arm the no-exhaust state + the per-action tolls (billed in
+        // moveUnit / attackDeclare) + the end-of-round self-cost (settled in endRound). Stacks per cast.
+        state.lastStands.push({
+          seat: controller,
+          moveInfluence: op.moveInfluence,
+          attackLife: op.attackLife,
+          endLife: op.endLife,
+          endInfluence: op.endInfluence,
+        })
+        log(state, controller, `${state.sides[controller].name} makes a last stand — units won't exhaust this round, but every move and attack exacts its price`)
         break
       }
       case 'draw': draw(state, controller, op.n); log(state, controller, `${state.sides[controller].name} draws ${op.n}`); break

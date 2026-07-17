@@ -1,7 +1,7 @@
 import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 
 const KEYWORDS = new Set(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
-const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage'])
+const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
 const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
@@ -39,6 +39,12 @@ export function validateCardSet(cards: CardSet): string[] {
     for (const kw of def.kw ?? []) {
       if (!KEYWORDS.has(kw.k)) err(slug, `unknown keyword ${kw.k}`)
       if (kw.n !== undefined && !isInt(kw.n, 0, 99)) err(slug, `bad keyword value ${kw.k} ${kw.n}`)
+    }
+
+    // #107 (Worldrender): combat-pierce flag — units only, boolean
+    if (def.piercesArmorShield !== undefined) {
+      if (typeof def.piercesArmorShield !== 'boolean') err(slug, 'piercesArmorShield must be true/false')
+      else if (def.type !== 'unit') err(slug, 'piercesArmorShield is only for units')
     }
 
     // #80 (Subjugate): attach side — upgrades only, friendly|enemy
@@ -102,6 +108,13 @@ function validateTargetSpec(slug: string, t: TargetSpec): string[] {
   if (t.count !== undefined && !isInt(t.count, 1, 4)) errors.push(`${slug}: bad target count`)
   if (t.maxPower !== undefined && !isInt(t.maxPower, 0, 99)) errors.push(`${slug}: bad maxPower`)
   if (t.maxCost !== undefined && !isInt(t.maxCost, 0, 30)) errors.push(`${slug}: bad maxCost`)
+  if (t.anyOf !== undefined) {   // #104 (Inquisitor): OR of caps — at least one, each in range
+    const a = t.anyOf
+    if (a.maxPower === undefined && a.maxCost === undefined && a.maxRemainingHealth === undefined) errors.push(`${slug}: anyOf needs at least one cap`)
+    if (a.maxPower !== undefined && !isInt(a.maxPower, 0, 99)) errors.push(`${slug}: bad anyOf maxPower`)
+    if (a.maxCost !== undefined && !isInt(a.maxCost, 0, 30)) errors.push(`${slug}: bad anyOf maxCost`)
+    if (a.maxRemainingHealth !== undefined && !isInt(a.maxRemainingHealth, 0, 99)) errors.push(`${slug}: bad anyOf maxRemainingHealth`)
+  }
   if (t.damagedOrMaxHealth !== undefined && !isInt(t.damagedOrMaxHealth, 0, 99)) errors.push(`${slug}: bad damagedOrMaxHealth`)
   if (t.withKw && !KEYWORDS.has(t.withKw)) errors.push(`${slug}: unknown withKw ${t.withKw}`)
   return errors
@@ -153,6 +166,11 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
     case 'capture': checkTargetRef(op.t); break
     case 'clearDamage': checkTargetRef(op.t); break
     case 'moveDamage': checkTargetRef(op.from); checkTargetRef(op.to); break   // #104 (Censer of Purity): transfer damage between two units
+    case 'lastStand':   // #107 (Last Stand): round-scoped pact — its four tolls are non-negative amounts
+      if (def.type !== 'action') err('lastStand belongs on an action')
+      for (const [k, v] of [['moveInfluence', op.moveInfluence], ['attackLife', op.attackLife], ['endLife', op.endLife], ['endInfluence', op.endInfluence]] as const)
+        if (!isInt(v, 0, 30)) err(`bad lastStand ${k}`)
+      break
 
     case 'countBuff': checkTargetRef(op.t); if (!isInt(op.p, 1, 10)) err('bad countBuff p'); break
     case 'exhaust': checkTargetRef(op.t); break

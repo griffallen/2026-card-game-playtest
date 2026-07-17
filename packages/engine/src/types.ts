@@ -87,6 +87,7 @@ export type Op =
   | { op: 'splashReap'; n: number; influence: number }            // PR #46 (Fiery Impaler): on attack, n damage to the declared splash victim; +influence if it dies
   | { op: 'createCopies'; n: number; p?: number; h?: number; kw?: KeywordSpec[]; ifOnlyCopy?: boolean }  // #69 (Radiant Citadel): summon n ready copies of the source unit's card in the controller's Home. p/h/kw shape the copies' body (omitted = the printed card). ifOnlyCopy: fires only while the controller owns exactly one copy — the recursion fuse. Created units are not deck cards; they vanish when they die.
   | { op: 'moveDamage'; from: OpTarget; to: OpTarget }  // #104 (Censer of Purity): lift the chosen amount (ctx.amount) of damage off `from` and onto `to`, capped at min(from's damage, to's remaining Health — it cannot fall below 0). A transfer of existing wounds, not a fresh hit: armor and shields never touch it. Reaching exactly 0 Health kills `to` via the normal op-tail lethality path.
+  | { op: 'lastStand'; moveInfluence: number; attackLife: number; endLife: number; endInfluence: number }  // #107 (Last Stand): register a round-scoped pact for the controller — their units don't exhaust from acting this round; each MOVE cedes `moveInfluence`, each attacking unit costs `attackLife` Life, and at end of round the controller loses `endLife` Life and `endInfluence` Influence. Everything stacks (a second cast bills independently); cleared at the round boundary.
 
 export type Static =
   /** pPerHostPip (#80, Subjugate): power scaled by the CARRIER's pip count — attached scope only,
@@ -104,6 +105,10 @@ export interface TargetSpec {
   baseSide?: 'enemy' | 'any'
   maxPower?: number
   maxCost?: number          // #87 (Binding Light): the target's printed cost must be ≤ this
+  /** #104 (Inquisitor): an OR of caps — the unit qualifies if it satisfies ANY listed cap
+   *  (effective Power ≤ maxPower, printed Cost ≤ maxCost, or remaining Health ≤ maxRemainingHealth).
+   *  ANDs with the other spec constraints (side, protections); the caps inside it are the OR. */
+  anyOf?: { maxPower?: number; maxCost?: number; maxRemainingHealth?: number }
   withKw?: KeywordName
   mustBeDamaged?: boolean
   damagedOrMaxHealth?: number  // PR #53 (Prison Warrant): legal if damaged OR effective health ≤ n
@@ -140,6 +145,11 @@ export interface CardDef {
   /** cost is printed "X": the player declares how many resources to pay at cast (issue #45) */
   xCost?: boolean
   kw?: KeywordSpec[]
+  /** #107 (Worldrender): the combat damage THIS unit deals to an enemy unit ignores that enemy's
+   *  Shield and Armor — its full Power lands, and the shield token is NOT consumed (it does not
+   *  remove the enemy's keywords; other attackers still meet the shield/armor). Read live in combat;
+   *  never changes how Shield/Armor work for any other unit. */
+  piercesArmorShield?: boolean
   /** #80 (Subjugate): which side's units this upgrade attaches to — absent = friendly, the
    *  standing law for every other upgrade. Per-card; enemy attach is never the default.
    *  #86 (Resolve Banner): `pass` = resource cost to re-attach this upgrade to another friendly
@@ -297,6 +307,11 @@ export interface GameState {
   captives: Record<string, { unit: UnitInstance; by: string; income?: number }>  // income: influence per round while held (PR #53)
   /** Unchained Rage (PR #39): while active, each of the seat's attacking units costs n influence */
   attackTaxes: { seat: Seat; n: number; rounds: number }[]
+  /** #107 (Last Stand): active pacts, one entry per cast this round. While the seat has an entry its
+   *  units don't exhaust from acting; each of that seat's MOVES cedes `moveInfluence`, each attacking
+   *  unit costs `attackLife` Life; at round end the seat loses `endLife` Life + `endInfluence`
+   *  Influence per entry. Entries stack and are cleared at the round boundary. */
+  lastStands: { seat: Seat; moveInfluence: number; attackLife: number; endLife: number; endInfluence: number }[]
   /** Final Onslaught (#107): after the granted extra action resolves, the readied unit is immolated —
    *  it ALWAYS dies (the sacrifice is the point), and Y = its remaining Health pours over every other
    *  unit in its zone, friend and foe alike. stage: fresh (created this action) → waiting → spent

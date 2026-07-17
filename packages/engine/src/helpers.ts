@@ -40,6 +40,22 @@ export function unitsOf(state: GameState, seat?: Seat): UnitInstance[] {
 export const unitsInZone = (state: GameState, zone: ZoneId, seat?: Seat) =>
   unitsOf(state, seat).filter(u => u.zone === zone)
 
+/** #107 (Last Stand): true while this seat has an active pact — its units don't exhaust from acting. */
+export const hasLastStand = (state: GameState, seat: Seat): boolean =>
+  state.lastStands.some(ls => ls.seat === seat)
+
+/** #104 (Inquisitor): does the unit satisfy ANY of the OR-caps — effective Power ≤ maxPower,
+ *  printed Cost ≤ maxCost, or remaining Health (effHealth − damage) ≤ maxRemainingHealth? */
+export function satisfiesAnyOf(
+  state: GameState, unit: UnitInstance,
+  anyOf: { maxPower?: number; maxCost?: number; maxRemainingHealth?: number },
+): boolean {
+  if (anyOf.maxPower !== undefined && effPower(state, unit) <= anyOf.maxPower) return true
+  if (anyOf.maxCost !== undefined && defOf(state, unit.id).cost <= anyOf.maxCost) return true
+  if (anyOf.maxRemainingHealth !== undefined && effHealth(state, unit) - unit.damage <= anyOf.maxRemainingHealth) return true
+  return false
+}
+
 export function condHolds(state: GameState, owner: Seat, cond: Cond | undefined): boolean {
   if (!cond) return true
   const inf = influenceFor(state, owner)

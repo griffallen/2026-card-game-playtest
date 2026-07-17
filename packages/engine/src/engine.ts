@@ -4,7 +4,7 @@ import type {
 import { EngineError, adjacent, homeZone } from './types.ts'
 import { shuffle } from './rng.ts'
 import {
-  addInfluence, condHolds, defOf, effArmor, effHealth, effPower, hasKw, idNum, isSick, kwOf, log, moveDamageCap, other, pipGateSatisfied, unitsInZone,
+  addInfluence, condHolds, defOf, effArmor, effHealth, effPower, hasKw, hasLastStand, idNum, isSick, kwOf, log, moveDamageCap, other, pipGateSatisfied, satisfiesAnyOf, unitsInZone,
 } from './helpers.ts'
 import { damageBase, damageUnit, destroyUnit, fireTrigger, runOps, stateBasedCleanup } from './effects.ts'
 import { startRound, endRound, finishBankStep } from './round.ts'
@@ -228,7 +228,7 @@ function activateAbility(state: GameState, action: Extract<GameAction, { type: '
     const amount = action.amount
     if (amount === undefined || !Number.isInteger(amount) || amount < 1 || amount > cap)
       fail('bad-amount', `${def.name}: choose an amount between 1 and ${cap}`)
-    unit.exhausted = true
+    if (!hasLastStand(state, seat)) unit.exhausted = true   // #107 (Last Stand): the pact waives the ability exhaust
     log(state, seat, `${def.name} takes up ${defOf(state, from.id).name}'s wounds`)
     runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat, amount, srcLabel: def.name }, ability.ops)
     return
@@ -244,7 +244,7 @@ function activateAbility(state: GameState, action: Extract<GameAction, { type: '
       const t = state.units[ref.id] ?? fail('bad-targets', 'no such unit')
       if (t.owner === seat) fail('bad-targets', 'volleys strike the enemy')
       if (!t.exhausted && hasKw(state, t, 'hidden')) fail('bad-targets', `${defOf(state, t.id).name} is hidden`)
-      unit.exhausted = true
+      if (!hasLastStand(state, seat)) unit.exhausted = true   // #107 (Last Stand): the pact waives the volley exhaust
       log(state, seat, `${def.name} volleys ${defOf(state, t.id).name}`)
       damageUnit(state, t, n, def.name)
       // decision 74: a kill is a kill — a lethal volley credits the archer
@@ -264,7 +264,7 @@ function activateAbility(state: GameState, action: Extract<GameAction, { type: '
     }
     if (ref.kind === 'base' && unit.zone !== homeZone(other(seat))) fail('bad-zone', "Sneak reaches the enemy base only from their home zone")
   }
-  unit.exhausted = true
+  if (!hasLastStand(state, seat)) unit.exhausted = true   // #107 (Last Stand): the pact waives the sneak exhaust
   log(state, seat, `${def.name} sneaks`)
   runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat }, sneak.ops)
 }
@@ -395,6 +395,7 @@ function validateTargets(state: GameState, seat: Seat, specs: TargetSpec[], targ
       if (spec.side === 'friendly' && u.owner !== seat) fail('bad-targets', 'must target a friendly unit')
       if (spec.maxPower !== undefined && effPower(state, u) > spec.maxPower) fail('bad-targets', `target power exceeds ${spec.maxPower}`)
       if (spec.maxCost !== undefined && defOf(state, u.id).cost > spec.maxCost) fail('bad-targets', `target cost exceeds ${spec.maxCost}`)
+      if (spec.anyOf && !satisfiesAnyOf(state, u, spec.anyOf)) fail('bad-targets', 'target meets none of the power/cost/remaining-health caps')  // #104 (Inquisitor)
       if (spec.damagedOrMaxHealth !== undefined && u.damage <= 0 && effHealth(state, u) > spec.damagedOrMaxHealth)
         fail('bad-targets', `target must be damaged or have ${spec.damagedOrMaxHealth} or less health`)
       if (spec.withKw && !hasKw(state, u, spec.withKw)) fail('bad-targets', `target must have ${spec.withKw}`)
@@ -501,10 +502,18 @@ function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat) {
   unit.zone = to
   // decision 41: Rush waives the move-exhaust the round the unit entered play — but for its FIRST
   // move only (one free reposition), not a whole-round pass. A second move exhausts it like any unit.
+  // #107 (Last Stand): while the pact holds, this seat's units never exhaust from acting.
   const rushFree = unit.enteredRound === state.round && !unit.movedThisRound && hasKw(state, unit, 'rush')
-  if (state.rules.moveExhausts && !rushFree) unit.exhausted = true
+  if (state.rules.moveExhausts && !rushFree && !hasLastStand(state, seat)) unit.exhausted = true
   unit.movedThisRound = true
   log(state, seat, `${defOf(state, unitId).name} advances to ${zoneName(state, to)}`)
+  // #107 (Last Stand): every march exacts influence — once per active pact, stacking across the round
+  for (const ls of state.lastStands) if (ls.seat === seat && ls.moveInfluence !== 0) {
+    addInfluence(state, seat, -ls.moveInfluence)
+    log(state, seat, `${state.sides[seat].name} cedes ${ls.moveInfluence} influence for the last stand's march`)
+  }
+  stateBasedCleanup(state, seat)
+  if (state.winner !== null) return
   fireTrigger({ state, enteredZone: to, actorSeat: seat }, unit, 'onEnterZone')
 }
 
@@ -610,13 +619,23 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
     log(state, seat, `${defOf(state, id).name} overextends (+${oe} power — it will suffer ${oe} at end of round)`)
   }
   for (const u of units) {
+    // #107 (Last Stand): while the pact holds, attacking exhausts nothing — the same unit can charge again
     const rushFreeAtk = state.rules.rushCoversAttack && u.enteredRound === state.round && hasKw(state, u, 'rush')
-    if (!rushFreeAtk) u.exhausted = true
+    if (!rushFreeAtk && !hasLastStand(state, seat)) u.exhausted = true
   }
   const targetName = action.target.kind === 'base'
     ? `${state.sides[action.target.seat].name}'s base`
     : defOf(state, action.target.id).name
   log(state, seat, `${ids.map(id => defOf(state, id).name).join(', ')} attack${ids.length === 1 ? 's' : ''} ${targetName}`)
+  // #107 (Last Stand): each attacking unit costs the pact-holder Life — per attacker, per active pact,
+  // stacking with every attack made this round. A lethal self-cost ends the game here.
+  for (const ls of state.lastStands) if (ls.seat === seat && ls.attackLife !== 0) {
+    const toll = ls.attackLife * units.length
+    state.sides[seat].life -= toll
+    log(state, seat, `${state.sides[seat].name} loses ${toll} life for the last stand's charge (${state.sides[seat].life} life)`)
+  }
+  stateBasedCleanup(state, seat)
+  if (state.winner !== null) return
   for (const u of units) {
     if (!state.units[u.id]) continue
     fireTrigger({ state, attackTarget: action.target, actorSeat: seat, splashChoice }, u, 'onAttack')
@@ -662,7 +681,7 @@ function applyInterceptPhase(state: GameState, action: GameAction, seat: Seat) {
   if (action.type === 'intercept') {
     const u = state.units[action.unit] ?? fail('no-unit', 'no such unit')
     if (!interceptCandidates(state, pa).some(c => c.id === u.id)) fail('bad-intercept', 'that unit cannot intercept this attack')
-    if (state.rules.interceptExhausts && !hasKw(state, u, 'guard')) u.exhausted = true
+    if (state.rules.interceptExhausts && !hasKw(state, u, 'guard') && !hasLastStand(state, seat)) u.exhausted = true  // #107 (Last Stand): the pact keeps interceptors ready
     log(state, seat, `${defOf(state, u.id).name} intercepts${hasKw(state, u, 'guard') ? ' (guard — stays ready)' : ''}`)
     resolveAttack(state, u.id)
   } else if (action.type === 'declineIntercept') {
@@ -709,7 +728,8 @@ function applyBlockPhase(state: GameState, action: GameAction, seat: Seat) {
   }
   for (const { blocker } of action.pairs) {
     const b = state.units[blocker]!
-    if (state.rules.blockingExhausts && !hasKw(state, b, 'guard')) b.exhausted = true
+    // #107 (Last Stand): the pact keeps this seat's blockers ready too
+    if (state.rules.blockingExhausts && !hasKw(state, b, 'guard') && !hasLastStand(state, seat)) b.exhausted = true
     log(state, seat, `${defOf(state, b.id).name} blocks${hasKw(state, b, 'guard') ? ' (guard — stays ready)' : ''}`)
   }
   // #88 (Devout Intervention, Ward 2): the seat's NEXT blocker is shielded for this fight — stamp
@@ -735,6 +755,8 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   state.pendingAttack = null
   state.phase = 'loop'
   const seat = pa.seat
+  // #107 (Worldrender): the combat damage THIS unit deals ignores the enemy's Shield and Armor.
+  const pierces = (u: UnitInstance) => !!defOf(state, u.id).piercesArmorShield
   const byAttacker = new Map<string, string[]>()
   for (const p of pairs) byAttacker.set(p.onto, [...(byAttacker.get(p.onto) ?? []), p.blocker])
   const attackers = pa.attackers.map(id => state.units[id]).filter(Boolean) as UnitInstance[]
@@ -765,8 +787,9 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
     return { a, blockers, aPower: effPower(state, a), counter: blockers.reduce((s, b) => s + effPower(state, b), 0), spilled: false }
   })
 
-  const unitHits: [UnitInstance, number, string][] = []
+  const unitHits: [UnitInstance, number, string, boolean][] = []   // [target, amount, source name, pierce]
   let targetSpill = 0
+  let piercedSpill = 0        // #107 (Worldrender): the slice of targetSpill from piercing breakthrough attackers
   let unblockedTotal = 0
   const unblockedNames: string[] = []
   // #25 experiment: under 'always', the declared target strikes back, exhausted or not; under
@@ -784,24 +807,30 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       continue
     }
     // pour the attacker's damage over its blockers in pair order (the defender chose the order)
+    const aPierces = pierces(p.a)
     let dmg = p.aPower
     for (const b of p.blockers) {
       if (dmg <= 0) break
-      const gross = Math.max(0, effHealth(state, b) - b.damage) + effArmor(state, b)  // what it takes to fell it through armor
+      // #107 (Worldrender): a piercing attacker fells its blocker through the blocker's armor — the
+      // pour spends no power on armor it ignores (so the excess that breaks through is measured raw).
+      const gross = Math.max(0, effHealth(state, b) - b.damage) + (aPierces ? 0 : effArmor(state, b))
       const chunk = Math.min(dmg, gross)
       // #88 (Devout Intervention, Ward 2): a warded blocker soaks the attacker's power (so nothing
       // spills past it) but takes no damage. One fight — the token clears here. Its counter is p.counter.
       const warded = !!b.blockWard
       if (warded) { b.blockWard = false; log(state, b.owner, `${defOf(state, b.id).name}'s ward turns aside the blow`) }
-      if (chunk > 0 && !warded) unitHits.push([b, chunk, defOf(state, p.a.id).name])
+      if (chunk > 0 && !warded) unitHits.push([b, chunk, defOf(state, p.a.id).name, aPierces])
       dmg -= chunk
     }
     if (dmg > 0 && hasKw(state, p.a, 'breakthrough')) {
       targetSpill += dmg; p.spilled = true   // v3: no N — all excess pushes through
+      if (aPierces) piercedSpill += dmg      // #107: this spill ignores the target's shield/armor too
     }
     // issue #58 (Griff): name the counter's source — twin "from the blockers" lines read as
-    // one combined pool hitting every attacker, when each pair resolves in isolation
-    if (p.counter > 0) unitHits.push([p.a, p.counter, p.blockers.map(b => defOf(state, b.id).name).join(' + ')])
+    // one combined pool hitting every attacker, when each pair resolves in isolation.
+    // #107: the counter pierces only if every blocker in this pairing pierces (a lone Worldrender
+    // blocker is the common case; a mixed gang counter falls back to normal mitigation — a flagged edge).
+    if (p.counter > 0) unitHits.push([p.a, p.counter, p.blockers.map(b => defOf(state, b.id).name).join(' + '), p.blockers.length > 0 && p.blockers.every(pierces)])
   }
 
   // decision 105 (#84, Griff — amends decision 84): the declared target's strike-back is DIVIDED
@@ -824,11 +853,12 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
         || effPower(state, y) - effPower(state, x)
         || idNum(x.id) - idNum(y.id))
     let pool = retaliatePower
+    const targetPierces = pierces(preTarget)   // #107 (Worldrender): its strike-back ignores armor/shield too
     for (const a of marks) {
       if (pool <= 0) break
-      const gross = Math.max(0, effHealth(state, a) - a.damage) + effArmor(state, a)  // what fells it through armor
+      const gross = Math.max(0, effHealth(state, a) - a.damage) + (targetPierces ? 0 : effArmor(state, a))  // what fells it through armor
       const chunk = Math.min(pool, gross)
-      if (chunk > 0) { unitHits.push([a, chunk, defOf(state, preTarget.id).name]); retaliationDealt.add(a.id) }
+      if (chunk > 0) { unitHits.push([a, chunk, defOf(state, preTarget.id).name, targetPierces]); retaliationDealt.add(a.id) }
       pool -= chunk
     }
   }
@@ -837,7 +867,7 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   // (the declared target's onDefend now fires up top, before power is snapshotted — #104)
 
   // apply everything at once
-  for (const [u, n, src] of unitHits) if (state.units[u.id]) damageUnit(state, u, n, src)
+  for (const [u, n, src, pierce] of unitHits) if (state.units[u.id]) damageUnit(state, u, n, src, pierce)
   // decision 74: "a kill is a kill" — deaths haven't cleaned up yet, so lethality is the test
   const felled = (id: string) => { const u = state.units[id]; return !!u && u.damage >= effHealth(state, u) }
   // decision 87: the declaration counts — an unblocked base attack fires "attacks a base"
@@ -859,10 +889,21 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       const siege = targetUnit.zone === homeZone(targetUnit.owner)
       const btPortion = targetSpill
         + plans.reduce((n, p) => n + (!p.blockers.length && hasKw(state, p.a, 'breakthrough') ? p.aPower : 0), 0)
-      const gross = targetUnit.shielded
+      // #107 (Worldrender): split the pour into a piercing slice (unblocked pierce-attackers + their
+      // breakthrough spill) and a normal slice, so the enemy's Shield/Armor blunt only the normal one.
+      const piercedToTarget = piercedSpill
+        + plans.reduce((n, p) => n + (!p.blockers.length && pierces(p.a) ? p.aPower : 0), 0)
+      const normalToTarget = toTarget - piercedToTarget
+      const fullyPierced = toTarget > 0 && normalToTarget === 0
+      // gross = health needed to fell the target (pre-hit); pierce ignores its armor, and its shield
+      // when the whole pour pierces. A mixed pour falls back to the shielded/armored gross — flagged.
+      const gross = (!fullyPierced && targetUnit.shielded)
         ? toTarget
-        : Math.max(0, effHealth(state, targetUnit) - targetUnit.damage) + effArmor(state, targetUnit)
-      damageUnit(state, targetUnit, toTarget, unblockedNames.join(', ') || 'breakthrough')
+        : Math.max(0, effHealth(state, targetUnit) - targetUnit.damage) + (fullyPierced ? 0 : effArmor(state, targetUnit))
+      const targetName = unblockedNames.join(', ') || 'breakthrough'
+      // normal slice first (a shield absorbs its first instance), then the piercing slice
+      if (normalToTarget > 0) damageUnit(state, targetUnit, normalToTarget, targetName, false)
+      if (piercedToTarget > 0 && state.units[targetUnit.id]) damageUnit(state, targetUnit, piercedToTarget, targetName, true)
       if (siege && btPortion > 0) {
         const spillToBase = Math.max(0, btPortion - Math.max(0, gross - (toTarget - btPortion)))
         if (spillToBase > 0) damageBase(state, targetUnit.owner, spillToBase, 'the breakthrough siege', true)
@@ -935,12 +976,17 @@ function resolveAttack(state: GameState, interceptorId: string | null) {
     }
   } else if (finalUnitId && state.units[finalUnitId]) {
     const defender = state.units[finalUnitId]
-    const dealt = Math.max(0, combined - effArmor(state, defender)) // armor once (armorPerAttack: 'once')
+    // #107 (Worldrender): a piercing attacker's share of the combined hit ignores the defender's armor
+    // (legacy intercept never applied Shield to the combat target, so armor is the only mitigation here).
+    const piercedCombined = alive.reduce((s2, u) => s2 + (defOf(state, u.id).piercesArmorShield ? power(u) : 0), 0)
+    const normalCombined = combined - piercedCombined
+    const dealt = Math.max(0, normalCombined - effArmor(state, defender)) + piercedCombined // armor once (armorPerAttack: 'once')
     const defPower = defender.imprisoned ? 0 : effPower(state, defender)
     const counterTarget = alive.slice().sort((a, b) => power(b) - power(a) || idNum(a.id) - idNum(b.id))[0]
     const crossZone = !!counterTarget && defender.zone !== counterTarget.zone
     const noCounter = !counterTarget || (crossZone && hasKw(state, counterTarget, 'ranged'))
-    const taken = noCounter ? 0 : Math.max(0, defPower - effArmor(state, counterTarget))
+    // #107: a Worldrender defender strikes back through the attacker's armor too
+    const taken = noCounter ? 0 : (defOf(state, defender.id).piercesArmorShield ? defPower : Math.max(0, defPower - effArmor(state, counterTarget)))
     const defRemaining = Math.max(0, effHealth(state, defender) - defender.damage)
     defender.damage += dealt
     if (taken > 0) counterTarget.damage += taken

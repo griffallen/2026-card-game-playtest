@@ -1005,17 +1005,15 @@
  "last-stand": {
   "onPlay": [
    {
-    "op": "buff",
-    "t": {
-     "side": "friendly"
-    },
-    "p": 2,
-    "dur": "round"
+    "op": "ready",
+    "side": "friendly"
    },
    {
-    "op": "damage",
-    "t": "selfBase",
-    "n": 2
+    "op": "lastStand",
+    "moveInfluence": 2,
+    "attackLife": 2,
+    "endLife": 7,
+    "endInfluence": 7
    }
   ],
   "slug": "last-stand",
@@ -1023,15 +1021,17 @@
   "color": "red",
   "type": "action",
   "cost": 7,
-  "text": "Your units gain +2 Power this round. You lose 2 life.",
+  "text": "Ready each of your units. They don't exhaust this round. For each of your units that moves, lose 2 Influence. For each of your units that attacks, lose 2 Life. At the end of the round, lose 7 Life and lose 7 Influence.",
   "pips": [
    "red",
    "red",
    "red"
   ],
+  "designerNote": "2026-07-16 (#107, Griff's locked spec — \"everything stacks, be careful as you take actions\"): full rework from the old \"+2 Power this round, lose 2 life.\" Now it readies your whole board and suspends exhaustion for the round (your units don't exhaust from moving, attacking, blocking, intercepting, or activating), turning it into a frenzy engine — but every action is taxed: each move cedes 2 Influence, each attacking unit costs 2 Life (per unit, so a three-unit charge is 6), and both stack with every action you take. At round end you pay a flat 7 Life and 7 Influence.\n\nNew engine primitives: a round-scoped per-seat pact list (`state.lastStands`, cleared at the round boundary), the `lastStand` op that arms it, per-action tolls billed in `moveUnit`/`attackDeclare`, and the end-of-round reckoning in `endRound`. Readings locked here (see the PR flags): the no-exhaust and tolls cover any unit you control this round, including ones played AFTER Last Stand; the move toll fires on the move ACTION (not effect-driven relocations); the attack toll is per attacking unit per attack; and a second cast stacks a second, independently-billed pact.",
   "artUrl": "/cards/last-stand.jpg"
  },
  "worldrender": {
+  "piercesArmorShield": true,
   "slug": "worldrender",
   "name": "Worldrender",
   "color": "red",
@@ -1039,8 +1039,11 @@
   "cost": 8,
   "power": 4,
   "health": 8,
-  "text": "Breakthrough. Scar.",
+  "text": "Rush. Breakthrough. Scar.\n\nWhile this is in combat with an enemy unit, ignore that unit's Shield and Armor — this unit's full damage lands.",
   "kw": [
+   {
+    "k": "rush"
+   },
    {
     "k": "breakthrough"
    },
@@ -1053,7 +1056,7 @@
    "red",
    "red"
   ],
-  "designerNote": "2026-07-11 (v3 churn pass 1): Overextend is cut (#9); the apex predator: 9/8, Breakthrough, Scar — a wounded god hits harder (to a survivor's limit).",
+  "designerNote": "2026-07-11 (v3 churn pass 1): Overextend is cut (#9); the apex predator: 9/8, Breakthrough, Scar — a wounded god hits harder (to a survivor's limit).\n\n2026-07-16 (#107, Griff's locked spec): 4/8 keeps Breakthrough + Scar, gains Rush and a pierce. Rush is just the keyword for now (its rework is #105) — a free first reposition the round it lands. The pierce: whenever Worldrender deals COMBAT damage to an enemy unit, that enemy's Shield and Armor are ignored and Worldrender's full Power lands. It does NOT strip those keywords (other attackers still meet the shield/armor, and the shield token is not spent) — Worldrender alone is unaffected by them. New engine flag `piercesArmorShield` on the card, read live in both combat resolvers via a pierce path on `damageUnit`; nothing changes for any other unit's shield/armor.",
   "artUrl": "/cards/worldrender.jpg"
  },
  "aura-of-resolve": {
@@ -2195,7 +2198,11 @@
    {
     "t": "unit",
     "side": "enemy",
-    "maxPower": 4
+    "anyOf": {
+     "maxPower": 4,
+     "maxCost": 4,
+     "maxRemainingHealth": 4
+    }
    }
   ],
   "onPlay": [
@@ -2211,7 +2218,7 @@
   "cost": 6,
   "power": 3,
   "health": 4,
-  "text": "When this enters play, it captures target enemy unit with 4 or less Power.",
+  "text": "When this enters play, it captures target enemy unit with 4 or less Power, Cost, or remaining Health.",
   "kw": [
    {
     "k": "capture"
@@ -2221,7 +2228,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 51 text (deterministic pick within the power cap).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The senior arrest: bigger writ, bigger body.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): power 4 → 3, health 5 → 4 — Archon paid for its writ with its body last pass; the junior writ matches. Capture cap untouched. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.",
+  "designerNote": "Decision 51 text (deterministic pick within the power cap).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. The senior arrest: bigger writ, bigger body.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): power 4 → 3, health 5 → 4 — Archon paid for its writ with its body last pass; the junior writ matches. Capture cap untouched. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.\n\n2026-07-16 (#104, Griff's locked spec): the writ widens. Capture now reaches any enemy unit with 4 or less Power, Cost, OR remaining Health — any one of the three qualifies. A big, expensive body that's been worn down to 4 remaining Health is now arrestable, as is a cheap high-power unit. Needed a new target predicate: `anyOf` on the target spec — an OR of maxPower/maxCost/maxRemainingHealth, ANDed with the enemy-side constraint. Enforced in both the legal-target enumeration and the play-time validation.",
   "artUrl": "/cards/inquisitor.jpg"
  },
  "mobilize-the-faithful": {

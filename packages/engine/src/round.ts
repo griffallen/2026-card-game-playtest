@@ -109,6 +109,20 @@ export function endRound(state: GameState, actorSeat: Seat) {
   stateBasedCleanup(state, actorSeat)
   if (state.winner !== null) return
 
+  // #107 (Last Stand): the reckoning — each active pact costs its caster Life and Influence at round end
+  for (const ls of state.lastStands) {
+    if (ls.endLife !== 0) {
+      state.sides[ls.seat].life -= ls.endLife
+      log(state, ls.seat, `${state.sides[ls.seat].name} pays the last stand's toll: ${ls.endLife} life (${state.sides[ls.seat].life} life)`)
+    }
+    if (ls.endInfluence !== 0) {
+      addInfluence(state, ls.seat, -ls.endInfluence)
+      log(state, ls.seat, `${state.sides[ls.seat].name} pays the last stand's toll: ${ls.endInfluence} influence`)
+    }
+  }
+  stateBasedCleanup(state, actorSeat)
+  if (state.winner !== null) return
+
   // decision 35: units that overextended take their self-damage now
   for (const u of unitsOf(state)) {
     if (u.overextendedBy > 0) {
@@ -147,6 +161,7 @@ export function endRound(state: GameState, actorSeat: Seat) {
   state.homeWard = [false, false]
   state.blockerWard = [false, false]
   state.deaths = [0, 0]
+  state.lastStands = []   // #107 (Last Stand): the pact is a single round — its no-exhaust and tolls end here
   for (const u of unitsOf(state)) if (u.blockWard) u.blockWard = false
 
   state.outOfRound = [false, false]

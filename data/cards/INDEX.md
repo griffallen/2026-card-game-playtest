@@ -42,8 +42,8 @@
 | [Relentless Assault](red/relentless-assault.md) | — | 6 | action | — |  | canon | Ready all your units. |
 | [Unchained Rage](red/unchained-rage.md) | — | 6 | action | — |  | canon | Double the Power of all your units for the next 2 rounds. For each unit of yours that attacks, lose 2 influence. |
 | [Apocalypse Engine](red/apocalypse-engine.md) | — | 7 | unit | 8/7 | breakthrough | canon | Breakthrough. |
-| [Last Stand](red/last-stand.md) | — | 7 | action | — |  | canon | Your units gain +2 Power this round. You lose 2 life. |
-| [Worldrender](red/worldrender.md) | — | 8 | unit | 4/8 | breakthrough, scar | canon | Breakthrough. Scar. |
+| [Last Stand](red/last-stand.md) | — | 7 | action | — |  | canon | Ready each of your units. They don't exhaust this round. For each of your units that moves, lose 2 Influence. For each of your units that attacks, lose 2 Life. At the end of the round, lose 7 Life and lose 7 Influence. |
+| [Worldrender](red/worldrender.md) | — | 8 | unit | 4/8 | rush, breakthrough, scar | canon | Rush. Breakthrough. Scar.  While this is in combat with an enemy unit, ignore that unit's Shield and Armor — this unit's full damage lands. |
 
 ## Yellow (48)
 
@@ -86,7 +86,7 @@
 | [Gateward Colossus](yellow/gateward-colossus.md) | — | 6 | unit | 2/4 | guard, armor 1, cantAttack | canon | Guard. Armor 1. Can't attack. When this defends, gain 1 Influence. |
 | [Hierophant](yellow/hierophant.md) | — | 6 | unit | 1/6 | politician | canon | Politician. Other friendly units get +1 Power while your Influence is positive. |
 | [Imprisonment Chamber](yellow/imprisonment-chamber.md) | — | 6 | action | — |  | canon | Target unit you control captures target enemy unit. |
-| [Inquisitor](yellow/inquisitor.md) | — | 6 | unit | 3/4 | capture | canon | When this enters play, it captures target enemy unit with 4 or less Power. |
+| [Inquisitor](yellow/inquisitor.md) | — | 6 | unit | 3/4 | capture | canon | When this enters play, it captures target enemy unit with 4 or less Power, Cost, or remaining Health. |
 | [Mobilize the Faithful](yellow/mobilize-the-faithful.md) | — | 6 | action | — |  | canon | Your units get +1 Power and gain Guard, permanently. |
 | [Sentence](yellow/sentence.md) | — | 6 | action | — |  | canon | Target unit you control captures target enemy unit. Draw a card. |
 | [Archon of Order](yellow/archon-of-order.md) | — | 7 | unit | 3/4 | capture | canon | When this enters play, it captures target enemy unit. |

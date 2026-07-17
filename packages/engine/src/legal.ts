@@ -1,6 +1,6 @@
 import type { GameAction, GameState, Seat, TargetRef, TargetSpec, UnitInstance, ZoneId } from './types.ts'
 import { ZONES, adjacent, homeZone } from './types.ts'
-import { condHolds, defOf, effHealth, effPower, hasKw, idNum, isSick, kwOf, moveDamageCap, other, pipGateSatisfied, unitsInZone, unitsOf } from './helpers.ts'
+import { condHolds, defOf, effHealth, effPower, hasKw, idNum, isSick, kwOf, moveDamageCap, other, pipGateSatisfied, satisfiesAnyOf, unitsInZone, unitsOf } from './helpers.ts'
 import { interceptCandidates } from './engine.ts'
 
 /**
@@ -397,6 +397,7 @@ function candidatesFor(state: GameState, seat: Seat, spec: TargetSpec): TargetRe
     if (spec.side === 'friendly' && u.owner !== seat) continue
     if (spec.maxPower !== undefined && effPower(state, u) > spec.maxPower) continue
     if (spec.maxCost !== undefined && defOf(state, u.id).cost > spec.maxCost) continue
+    if (spec.anyOf && !satisfiesAnyOf(state, u, spec.anyOf)) continue   // #104 (Inquisitor): OR of power/cost/remaining-health caps
     if (spec.damagedOrMaxHealth !== undefined && u.damage <= 0 && effHealth(state, u) > spec.damagedOrMaxHealth) continue
     if (spec.withKw && !hasKw(state, u, spec.withKw)) continue
     if (spec.mustBeDamaged && u.damage <= 0) continue
