@@ -194,7 +194,7 @@ export function Audit() {
       <H2 id="playtest">6 · How to playtest & report</H2>
       <ul className="ml-5 mt-3 list-disc">
         <LI><b>Play</b> — hotseat, vs the AI, or watch two bots (with pause/step). Right-click or long-press any card or unit to inspect it — every card redesigned this week explains itself in its Design notes.</LI>
-        <LI><b>Log everything</b> — <i>Copy chronicle</i> gives a readable play-by-play; <i>Download game file</i> captures seed + actions for a perfect replay. Send either with your notes.</LI>
+        <LI><b>Log everything</b> — <i>Copy chronicle</i> gives a readable play-by-play <i>and</i> a machine-readable replay block (seed + full game — enough to reproduce the match on its own); <i>Download game file</i> is that same replay as a downloadable JSON. Send either with your notes.</LI>
         <LI><b>Simulate</b> — rerun this page's numbers, or your own matchups, in the Simulator tab.</LI>
       </ul>
 

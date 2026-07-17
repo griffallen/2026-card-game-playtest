@@ -97,8 +97,10 @@ export function Play() {
       <h1 className="font-display text-3xl font-bold text-parchment">Play the prototype</h1>
       <p className="mt-2 text-sm text-dim">
         The complete rules engine runs in your browser — no server, everything is client-side.
-        Every game is seeded: note the seed and your game can be replayed move-for-move. Use <b>Download game file</b> /
-        <b> Copy chronicle</b> during or after a game and send the file along with your notes.
+        Every game is seeded, so it can be replayed move-for-move. <b>Copy chronicle</b> gives a readable
+        play-by-play plus a machine-readable replay block — seed + full game, enough to reproduce the match
+        on its own; <b>Download game file</b> is that same replay as a JSON file. Use either during or after a
+        game and send it along with your notes.
       </p>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-3">

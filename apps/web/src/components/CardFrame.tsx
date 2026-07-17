@@ -59,6 +59,17 @@ const frameTint: Record<string, string> = {
   neutral: 'from-[#2e2e38] to-[#1a1a20] border-[#4a4a5a]',
 }
 
+// #103 (Griff): the rules box is a *tint of the card's own colour*, semi-transparent so a
+// little art bleeds through — but readability wins (Blaine/Chronicler), so it's a LIGHT
+// faction wash at high alpha, never a dark low-alpha veil that would swallow the dark text-ink.
+// Light parchment (#efe4cd ≈ 239,228,205) nudged toward each faction hue, held at ~0.88 alpha.
+const textTint: Record<string, string> = {
+  red: 'bg-[rgba(243,213,199,0.88)]',
+  yellow: 'bg-[rgba(244,229,190,0.88)]',
+  purple: 'bg-[rgba(230,220,238,0.88)]',
+  neutral: 'bg-[rgba(233,228,216,0.9)]',
+}
+
 // type reads at a glance via one color-coded chip on the art (icon + label). Faction owns the frame.
 const typeMeta: Record<string, { icon: string; label: string; chip: string }> = {
   // #74 (Griff, locked): 🧍 unit · 🏃 action · ↑ upgrade — flat ↑ wears the chip colour, no emoji blue box.
@@ -88,9 +99,15 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
   const [artTry, setArtTry] = useState(0)
   const lp = useLongPress(onLongPress)
   const tint = frameTint[card.color] ?? frameTint.neutral
+  const boxTint = textTint[card.color] ?? textTint.neutral
   // sm widened for phones (issue #17); lg is the workshop preview (Blaine: big enough to actually read)
   const w = size === 'sm' ? 'w-[148px]' : size === 'lg' ? 'w-[248px]' : 'w-[176px]'
-  const artH = size === 'sm' ? 'h-[74px]' : size === 'lg' ? 'h-[150px]' : 'h-[96px]'
+  // #103: the card is a fixed-min-height flex column — the ART flex-grows to eat whatever a
+  // short rules box leaves free (bigger picture on terse cards), floored at ~the old art height
+  // so it never shrinks below today's baseline. Long-text outliers grow past cardMin (min-, not
+  // fixed height) rather than clip — the box has no max, so no card ever loses its rules text.
+  const cardMin = size === 'sm' ? 'min-h-[204px]' : size === 'lg' ? 'min-h-[344px]' : 'min-h-[236px]'
+  const artMin = size === 'sm' ? 'min-h-[74px]' : size === 'lg' ? 'min-h-[150px]' : 'min-h-[96px]'
   const isUnit = card.type === 'unit'
   const meta = typeMeta[card.type] ?? typeMeta.unit
   const bigStat = size === 'sm' ? 'text-[13px]' : size === 'lg' ? 'text-[16px]' : 'text-[14px]'
@@ -102,7 +119,7 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
       onClick={() => { if (lp.fired.current) { lp.fired.current = false; return } onClick?.() }}
       title={card.designerNote ? `⚑ ${card.designerNote}` : undefined}
       className={[
-        w, 'relative shrink-0 select-none rounded-lg border bg-gradient-to-b p-1.5 text-parchment shadow-md shadow-black/40',
+        w, cardMin, 'relative flex shrink-0 flex-col select-none rounded-lg border bg-gradient-to-b p-1.5 text-parchment shadow-md shadow-black/40',
         tint,
         onClick ? 'cursor-pointer transition-transform hover:-translate-y-0.5' : '',
         selected ? 'glow-selected' : '',
@@ -121,7 +138,7 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
         </span>
       )}
       {/* header: cost gem (cool = clearly the cost, distinct from the warm stats) · name · flag · count */}
-      <div className="flex items-center gap-1.5">
+      <div className="flex shrink-0 items-center gap-1.5">
         <span
           title={card.xCost ? 'Cost X — you choose at cast' : `Cost ${card.cost}`}
           className={`grid ${size === 'sm' ? 'h-[22px] w-[22px] text-[13px]' : size === 'lg' ? 'h-7 w-7 text-[16px]' : 'h-6 w-6 text-[14px]'} shrink-0 place-items-center rounded-full bg-gradient-to-b from-[#eaf0f8] to-[#a8b6c9] font-display font-bold leading-none text-[#15202f] shadow-sm ring-1 ring-black/50`}
@@ -142,13 +159,13 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
             ))}
           </span>
         )}
-        <span className={`min-w-0 flex-1 truncate font-display font-semibold ${size === 'sm' ? 'text-[12.5px]' : size === 'lg' ? 'text-[15px]' : 'text-[13px]'}`}>{card.name}</span>
+        <span title={card.name} className={`min-w-0 flex-1 line-clamp-2 font-display font-semibold leading-tight ${size === 'sm' ? 'text-[12.5px]' : size === 'lg' ? 'text-[15px]' : 'text-[13px]'}`}>{card.name}</span>
         {card.designerNote && <span className="shrink-0 text-[11px] text-goldbright" aria-label="designer flag">⚑</span>}
         {badge && <span className="shrink-0 rounded bg-black/45 px-1 text-[10px] font-bold leading-tight text-goldbright ring-1 ring-black/30">{badge}</span>}
       </div>
 
-      {/* art + single type chip */}
-      <div className={`relative mt-1.5 overflow-hidden rounded ${artH} bg-black/40 ring-1 ring-black/30`} {...(artBroken ? { 'data-art': 'fallback' } : {})}>
+      {/* art + single type chip — flex-1 so it grows into the space a short rules box frees (#103) */}
+      <div className={`relative mt-1.5 flex-1 overflow-hidden rounded ${artMin} bg-black/40 ring-1 ring-black/30`} {...(artBroken ? { 'data-art': 'fallback' } : {})}>
         {card.artUrl && !artBroken
           ? <img
               src={artTry === 0 ? card.artUrl : `${card.artUrl}${card.artUrl.includes('?') ? '&' : '?'}retry=${artTry}`}
@@ -165,14 +182,15 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
         </span>
       </div>
 
-      {/* rules text */}
-      <div className={`mt-1.5 rounded bg-[#efe4cd] px-1.5 py-1 text-ink ${size === 'sm' ? 'min-h-[48px] text-[10.5px] leading-[1.3]' : size === 'lg' ? 'min-h-[72px] text-[12px] leading-snug' : 'min-h-[56px] text-[10.5px] leading-snug'}`}>
+      {/* rules text — faction-tinted, semi-transparent, and fit-to-content: no min-height floor,
+          so a short card yields its space to the art and a long one keeps a tall box (#103) */}
+      <div className={`mt-1.5 shrink-0 rounded ${boxTint} px-1.5 py-1 text-ink ring-1 ring-black/10 ${size === 'sm' ? 'text-[10.5px] leading-[1.3]' : size === 'lg' ? 'text-[12px] leading-snug' : 'text-[10.5px] leading-snug'}`}>
         {card.text}
       </div>
 
       {/* stats: units get an amber Power (⚔) and a crimson Health (♥) — icon + colour make it unmistakable */}
       {isUnit && (
-        <div className={`mt-1.5 flex items-center justify-between font-display font-bold ${bigStat}`}>
+        <div className={`mt-1.5 flex shrink-0 items-center justify-between font-display font-bold ${bigStat}`}>
           <span title="Power" className="flex items-center gap-0.5 rounded-md bg-gradient-to-b from-[#d29a3b] to-[#8a5a15] px-1.5 py-0.5 leading-none text-[#1c1305] ring-1 ring-black/40">
             <span className="text-[0.72em] opacity-90">⚔</span>{card.power}
           </span>
