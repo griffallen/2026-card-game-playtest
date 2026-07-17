@@ -4,7 +4,7 @@ import type {
 import { EngineError, adjacent, homeZone } from './types.ts'
 import { shuffle } from './rng.ts'
 import {
-  addInfluence, condHolds, defOf, effArmor, effHealth, effPower, hasKw, idNum, isSick, kwOf, log, other, pipGateSatisfied, unitsInZone,
+  addInfluence, condHolds, defOf, effArmor, effHealth, effPower, hasKw, idNum, isSick, kwOf, log, moveDamageCap, other, pipGateSatisfied, unitsInZone,
 } from './helpers.ts'
 import { damageBase, damageUnit, destroyUnit, fireTrigger, runOps, stateBasedCleanup } from './effects.ts'
 import { startRound, endRound, finishBankStep } from './round.ts'
@@ -211,6 +211,29 @@ function activateAbility(state: GameState, action: Extract<GameAction, { type: '
   if (unit.exhausted) fail('exhausted', 'exhausted units cannot use abilities')
   if (unit.imprisoned) fail('imprisoned', 'imprisoned units cannot use abilities')
   const def = defOf(state, unit.id)
+
+  // #104 (Censer of Purity): the activated move-damage ability. Pick a friendly unit and a numeric
+  // amount (the first free-number entry outside X-cost), exhaust this unit, and draw that many points
+  // of the ally's damage onto it. The amount is capped at min(the ally's damage, this unit's remaining
+  // Health) — moving enough to reach exactly 0 is the full martyr's sacrifice and kills the Censer.
+  if (def.activated) {
+    const ability = def.activated
+    const targets = action.targets ?? []
+    validateTargets(state, seat, ability.targets ?? [], targets, `${def.name} (ability)`)  // friendly + damaged
+    const ref = targets[0]
+    if (!ref || ref.kind !== 'unit') fail('bad-targets', `${def.name} draws damage from a friendly unit`)
+    const from = state.units[ref.id] ?? fail('bad-targets', 'no such unit')
+    if (from.id === unit.id) fail('bad-targets', 'choose a friendly unit other than this one')
+    const cap = moveDamageCap(state, from, unit)
+    const amount = action.amount
+    if (amount === undefined || !Number.isInteger(amount) || amount < 1 || amount > cap)
+      fail('bad-amount', `${def.name}: choose an amount between 1 and ${cap}`)
+    unit.exhausted = true
+    log(state, seat, `${def.name} takes up ${defOf(state, from.id).name}'s wounds`)
+    runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat, amount, srcLabel: def.name }, ability.ops)
+    return
+  }
+
   const sneak = def.sneak
   if (!(def.kw ?? []).some(k => k.k === 'sneak') || !sneak) {
     // v3 Ranged (decision 80): exhaust to volley N at one enemy unit, any zone

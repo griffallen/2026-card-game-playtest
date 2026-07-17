@@ -5,12 +5,15 @@ cost: 5
 power: 0
 health: 6
 pips: yellow, yellow
+keywords: politician
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"startOfRound":{"ops":[{"op":"influence","n":-1},{"op":"heal","t":"selfBase","n":2}]}}
+effects: {"activated":{"amount":"moveDamage","targets":[{"t":"unit","side":"friendly","mustBeDamaged":true}],"ops":[{"op":"moveDamage","from":"chosen0","to":"self"}]}}
 ---
-At the start of your round, lose 1 Influence and heal 2 damage from your base.
+Politician. As an action, move any amount of damage from one friendly unit onto this unit — up to what this unit can take without its Health falling below 0. Doing so exhausts the Censer.
 
 ## Design notes
 
-Charter-legal: this is influence *spent*, not earned — trading the track for life. Session 006: text made unconditional to match the effects (the old "if you do" implied a choice that never existed).
+#104 rework (Griff): the old start-of-round "lose 1 Influence, heal 2 from your base" engine is gone — "change text" replaces it wholesale. The Censer is now a martyr: it stands in the middle as a Politician and, once per turn cycle, draws an ally's wounds onto itself.
+
+The ability is the engine's first activated ability that takes a player-chosen number: pick a friendly unit, then pick how much of its damage to move. The amount is capped at the smaller of the ally's current damage and the Censer's remaining Health — moving enough to reach exactly 0 Health is a full martyr's sacrifice and kills the Censer (permitted: the cap forbids going *below* 0, not reaching it). It is a transfer of existing wounds, so armor and shields never soften it.

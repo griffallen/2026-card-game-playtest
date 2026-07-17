@@ -265,17 +265,18 @@ describe('tempo and timing', () => {
 
 describe('start-of-round engines', () => {
   // NOTE (#107 balance pass, phase 2): Bloodfrenzy's ≤10-life start-of-round pump was reworked
-  // into an Influence-conditional attached aura — see bloodfrenzy.test.ts. This test now covers
-  // only Censer's start-step engine, which is untouched here.
-  it('Censer trades influence for healing at the controller\'s start step', () => {
+  // into an Influence-conditional attached aura — see bloodfrenzy.test.ts. And #104 stripped
+  // Censer of Purity's start-step engine entirely — "change text" replaced the old "lose 1
+  // Influence, heal 2 from your base" with an activated move-damage ability (see censer.test.ts).
+  // The only start-of-round engine still exercised below is Aura of Resolve.
+  it('Censer of Purity no longer runs a start-of-round engine (#104: "change text")', () => {
     let { s, p1, p2 } = arena()
     put(s, p2, 'censer-of-purity', homeZone(p2))
     s.sides[p2].life = 15
     s.influence = p2 === 0 ? 3 : -3
-    // reach p2's start step: censer −1 influence, heal +2 (Aura of Resolve no longer pays here — session 006)
     s = toStartStepOf(s, p2)
-    expect(influenceFor(s, p2)).toBe(2)
-    expect(s.sides[p2].life).toBe(17)
+    expect(influenceFor(s, p2)).toBe(3)   // no −1 influence bleed anymore
+    expect(s.sides[p2].life).toBe(15)     // no +2 base heal anymore
   })
 
   it('Aura of Resolve: +2 Life per friendly death, opponent -2 per enemy death (this round)', () => {

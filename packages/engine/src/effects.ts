@@ -4,7 +4,7 @@ import type {
 import { EngineError, adjacent, homeZone } from './types.ts'
 import {
   addInfluence, checkWin, condHolds, defOf, draw, effArmor, effHealth, effPower,
-  idNum, influenceFor, log, other, unitsInZone, unitsOf,
+  idNum, influenceFor, log, moveDamageCap, other, unitsInZone, unitsOf,
 } from './helpers.ts'
 
 export interface FxCtx {
@@ -25,6 +25,8 @@ export interface FxCtx {
   enteredZone?: ZoneId
   /** declared X for xCost cards (issue #45) */
   x?: number
+  /** #104 (Censer of Purity): the player-chosen amount for an activated ability (moveDamage) */
+  amount?: number
   /** attack-declared splash victims by attacker id (PR #46: splashReap) */
   splashChoice?: Record<string, string>
   /** v3 "that much" link: written by clearDamage, read by damage n:'linked' (spec §3) */
@@ -311,6 +313,21 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
             if (healed > 0) log(state, u.owner, `${name(state, u.id)} heals ${healed}`)
           }
         }
+        break
+      }
+      case 'moveDamage': {
+        // #104 (Censer of Purity): lift ctx.amount damage off `from` and onto `to`. A transfer of
+        // existing wounds — NOT a fresh hit — so it bypasses damageUnit's armor/shield mitigation and
+        // adjusts the damage markers directly. Capped so the sink never falls below 0 Health; if it
+        // reaches exactly 0 the op-tail stateBasedCleanup fells it on the normal lethality path.
+        const from = resolveUnitTarget(ctx, op.from)
+        const to = resolveUnitTarget(ctx, op.to)
+        if (!from || !to || from.id === to.id) break
+        const n = Math.min(ctx.amount ?? 0, moveDamageCap(state, from, to))
+        if (n <= 0) break
+        from.damage -= n
+        to.damage += n
+        log(state, to.owner, `${name(state, to.id)} draws ${n} damage off ${name(state, from.id)}`)
         break
       }
       case 'draw': draw(state, controller, op.n); log(state, controller, `${state.sides[controller].name} draws ${op.n}`); break

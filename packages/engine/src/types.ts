@@ -86,6 +86,7 @@ export type Op =
   | { op: 'xSurge'; t: 'chosen0' }                                // issue #45 (Reckless Abandon): lose X influence; +X power and Breakthrough this round
   | { op: 'splashReap'; n: number; influence: number }            // PR #46 (Fiery Impaler): on attack, n damage to the declared splash victim; +influence if it dies
   | { op: 'createCopies'; n: number; p?: number; h?: number; kw?: KeywordSpec[]; ifOnlyCopy?: boolean }  // #69 (Radiant Citadel): summon n ready copies of the source unit's card in the controller's Home. p/h/kw shape the copies' body (omitted = the printed card). ifOnlyCopy: fires only while the controller owns exactly one copy — the recursion fuse. Created units are not deck cards; they vanish when they die.
+  | { op: 'moveDamage'; from: OpTarget; to: OpTarget }  // #104 (Censer of Purity): lift the chosen amount (ctx.amount) of damage off `from` and onto `to`, capped at min(from's damage, to's remaining Health — it cannot fall below 0). A transfer of existing wounds, not a fresh hit: armor and shields never touch it. Reaching exactly 0 Health kills `to` via the normal op-tail lethality path.
 
 export type Static =
   /** pPerHostPip (#80, Subjugate): power scaled by the CARRIER's pip count — attached scope only,
@@ -128,6 +129,11 @@ export interface CardDef {
   pips?: Color[]
   /** v3 Sneak payload (decision 60): exhaust-activated, targets constrained to the unit's zone */
   sneak?: { targets?: TargetSpec[]; ops: Op[] }
+  /** #104 (Censer of Purity): an exhaust-activated ability driven by the `activate` action. Unlike
+   *  Sneak/Ranged it carries a player-chosen numeric AMOUNT (entered like an X cost) alongside its
+   *  target(s). `amount: 'moveDamage'` = the picker is capped by the moveDamage op's rule
+   *  (min of the source's damage and this unit's remaining Health); legal.ts enumerates 1..cap. */
+  activated?: { targets?: TargetSpec[]; amount?: 'moveDamage'; ops: Op[] }
   /** v3 modal actions (spec §3, PR #13): the player declares one mode at cast time; each mode owns its targets+ops.
    *  `cond` (#87 Binding Light) gates a mode's LEGALITY — it is only offered/playable while the condition holds. */
   modes?: { label: string; text?: string; targets?: TargetSpec[]; ops: Op[]; cond?: Cond }[]
@@ -334,7 +340,7 @@ export type GameAction =
   | { type: 'resource'; card: string }       // bank phase: resource a card
   | { type: 'skipResource' }                 // bank phase: end your start step
   | { type: 'play'; card: string; targets?: TargetRef[]; zone?: ZoneId; mode?: number; x?: number }  // zone: v3 Infiltrate; mode: v3 modal cards; x: declared X cost (issue #45)
-  | { type: 'activate'; unit: string; targets?: TargetRef[] }             // v3 Sneak (decision 60)
+  | { type: 'activate'; unit: string; targets?: TargetRef[]; amount?: number }   // v3 Sneak (decision 60) / Ranged volley (decision 80); #104 Censer: amount = damage points to move
   | { type: 'releaseCaptive'; unit: string }                              // RETIRED (decision 92): kept for replay compat; always rejected
   | { type: 'block'; pairs: { blocker: string; onto: string }[]; retaliationOrder?: string[] }  // v3 combat: defender pairs blockers (empty = let it through); pour order = pair order. #84: retaliationOrder aims the target's DIVIDED strike-back — ordered attacker ids; absent → highest-power-first
   | { type: 'attachOrphan'; upgrade: string; unit: string }               // v3 (decision 67): salvage an orphaned upgrade at full cost+pips

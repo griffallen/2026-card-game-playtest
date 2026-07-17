@@ -1,6 +1,6 @@
 import type { GameAction, GameState, Seat, TargetRef, TargetSpec, UnitInstance, ZoneId } from './types.ts'
 import { ZONES, adjacent, homeZone } from './types.ts'
-import { condHolds, defOf, effHealth, effPower, hasKw, idNum, isSick, kwOf, other, pipGateSatisfied, unitsInZone, unitsOf } from './helpers.ts'
+import { condHolds, defOf, effHealth, effPower, hasKw, idNum, isSick, kwOf, moveDamageCap, other, pipGateSatisfied, unitsInZone, unitsOf } from './helpers.ts'
 import { interceptCandidates } from './engine.ts'
 
 /**
@@ -165,6 +165,24 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
       }
     }
   }
+  // #104 (Censer of Purity): activated move-damage ability — exhaust to draw a friendly unit's wounds.
+  // One legal action per (damaged ally, amount) pair; the amount runs 1..cap where cap = min(the ally's
+  // damage, this unit's remaining Health). A full or exhausted unit, or one with no damaged ally, offers
+  // nothing. This is the engine's only free-numeric activated ability — the demo renders it as a picker.
+  for (const u of unitsOf(state, seat)) {
+    if (u.exhausted || u.imprisoned) continue
+    const def = defOf(state, u.id)
+    if (!def.activated) continue
+    if (effHealth(state, u) - u.damage <= 0) continue   // a full body can absorb nothing more
+    for (const f of unitsOf(state, seat)) {
+      if (f.id === u.id || f.damage <= 0) continue
+      const cap = moveDamageCap(state, f, u)
+      for (let amt = 1; amt <= cap; amt++) {
+        out.push({ type: 'activate', unit: u.id, targets: [{ kind: 'unit', id: f.id }], amount: amt })
+      }
+    }
+  }
+
   // v3 (decision 67): salvage orphaned upgrades in reach
   const readyRes = state.sides[seat].resources.filter(r => !r.exhausted).length
   for (const up of Object.values(state.upgrades)) {

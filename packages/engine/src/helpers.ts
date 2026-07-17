@@ -132,6 +132,13 @@ export function effHealth(state: GameState, unit: UnitInstance): number {
   return Math.max(0, base + mods + upgradeGrants(state, unit).h + aurasFor(state, unit).h)
 }
 
+/** #104 (Censer of Purity): how much damage `to` can draw off `from` — min of the source's
+ *  current damage and the sink's remaining Health (it cannot fall below 0). The Censer's moveDamage
+ *  ability, its legal-action enumeration, and its picker all read the same cap through here. */
+export function moveDamageCap(state: GameState, from: UnitInstance, to: UnitInstance): number {
+  return Math.min(from.damage, Math.max(0, effHealth(state, to) - to.damage))
+}
+
 export function effArmor(state: GameState, unit: UnitInstance): number {
   const own = printedKw(state, unit).filter(k => k.k === 'armor').reduce((s, k) => s + (k.n ?? 0), 0)
   const mods = activeMods(state, unit).reduce((s, m) => s + (m.armor ?? 0) + (m.kw?.k === 'armor' ? m.kw.n ?? 0 : 0), 0)

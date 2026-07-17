@@ -1,7 +1,7 @@
 import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 
 const KEYWORDS = new Set(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
-const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies'])
+const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
 const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
@@ -84,6 +84,14 @@ export function validateCardSet(cards: CardSet): string[] {
       for (const t of mode.targets ?? []) errors.push(...validateTargetSpec(slug, t))
       for (const k of Object.keys(mode.cond ?? {})) if (!COND_KEYS.has(k)) err(slug, `unknown condition ${k}`)
     }
+    // #104 (Censer of Purity): the activated ability channel — unit-only, with its own targets + ops
+    if (def.activated) {
+      if (def.type !== 'unit') err(slug, 'activated abilities belong to units')
+      if (def.activated.amount !== undefined && def.activated.amount !== 'moveDamage') err(slug, `bad activated amount ${def.activated.amount}`)
+      const chosen = (def.activated.targets ?? []).reduce((s, t) => s + (t.count ?? 1), 0)
+      for (const t of def.activated.targets ?? []) errors.push(...validateTargetSpec(slug, t))
+      for (const op of def.activated.ops) errors.push(...validateOp(slug, op, def, chosen, 'activated'))
+    }
   }
   return errors
 }
@@ -144,6 +152,8 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
     case 'damage': checkTargetRef(op.t); if (op.n !== 'linked' && !isInt(op.n, 0)) err('bad n'); if (op.bonusIfDamaged !== undefined && !isInt(op.bonusIfDamaged, 1, 10)) err('bad bonusIfDamaged'); checkPer(op.per); for (const k of Object.keys(op.cond ?? {})) if (!COND_KEYS.has(k)) err(`unknown condition ${k}`); break   // #107 (Warpath): gated self-life price
     case 'capture': checkTargetRef(op.t); break
     case 'clearDamage': checkTargetRef(op.t); break
+    case 'moveDamage': checkTargetRef(op.from); checkTargetRef(op.to); break   // #104 (Censer of Purity): transfer damage between two units
+
     case 'countBuff': checkTargetRef(op.t); if (!isInt(op.p, 1, 10)) err('bad countBuff p'); break
     case 'exhaust': checkTargetRef(op.t); break
     case 'damageFilter': checkTargetRef(op.f); if (!isInt(op.n, 0)) err('bad n'); break

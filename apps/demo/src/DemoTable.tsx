@@ -36,6 +36,8 @@ type Selection =
   | { kind: 'x'; card: string }               // X-cost cards: declaring X before targeting (#45)
   | { kind: 'splash'; ids: string[]; target: TargetRef; picks: { by: string; unit: string }[]; oe: string[] }  // PR #46: skewer victims declared with the attack
   | { kind: 'sneaking'; unit: string }        // v3 Sneak: choosing the ability's target
+  | { kind: 'censer'; unit: string }          // #104 (Censer of Purity): choosing the friendly unit to draw wounds from
+  | { kind: 'censer-amount'; unit: string; target: TargetRef }  // #104: choosing how much damage moves (the amount picker)
   | { kind: 'orphan'; id: string }            // v3 salvage: choosing which unit picks the orphan up
   | { kind: 'passing'; upgrade: string }      // #86 (Resolve Banner): choosing which friendly unit to pass the banner to
   | null
@@ -488,7 +490,9 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       const current = splashersOf(selection.ids)[selection.picks.length]
       return splashCandidates(selection.target, current).map(id => ({ kind: 'unit', id }) as TargetRef)
     }
-    if (selection.kind === 'sneaking') {
+    if (selection.kind === 'sneaking' || selection.kind === 'censer') {
+      // #104: the Censer's ability offers many actions per ally (one per amount) — highlight the
+      // distinct friendly-unit targets; the amount picker follows once one is chosen.
       const refs: TargetRef[] = []
       for (const a of activateActionsFor(selection.unit)) {
         const ref = (a.targets ?? [])[0]
@@ -554,6 +558,11 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     }
     if (selection.kind === 'sneaking') {
       apply({ type: 'activate', unit: selection.unit, targets: [ref] }, seat)
+      return
+    }
+    if (selection.kind === 'censer' && ref.kind === 'unit') {
+      // #104: ally chosen — now the number buttons appear (the Pay-X-cost affordance) to pick how much moves
+      setSelection({ kind: 'censer-amount', unit: selection.unit, target: ref })
       return
     }
     if (selection.kind === 'orphan' && ref.kind === 'unit') {
@@ -889,7 +898,16 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
           })()}
           {selection.ids.length === 1 && activateActionsFor(selection.ids[0]).length > 0 && (() => {
             const uid = selection.ids[0]
-            const isSneak = !!DEMO_CARDS[state.cardOf[uid]]?.sneak
+            const def = DEMO_CARDS[state.cardOf[uid]]
+            // #104 (Censer of Purity): the yellow ability button — light it where play/modal buttons live,
+            // then run the two-step flow (pick a friendly unit → pick the amount).
+            if (def?.activated) {
+              return (
+                <button className="btn btn-primary !py-1 text-xs" title="draw a friendly unit's wounds onto this one — you choose how much moves; it exhausts the Censer"
+                  onClick={() => setSelection({ kind: 'censer', unit: uid })}>☩ Draw Wounds</button>
+              )
+            }
+            const isSneak = !!def?.sneak
             const rn = unitViewOf(uid)?.keywords.find(k => k.startsWith('ranged'))?.split(' ')[1]
             return (
               <button className="btn btn-primary !py-1 text-xs" onClick={() => {
@@ -990,6 +1008,38 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
           <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
         </div>
       )}
+      {selection?.kind === 'censer' && (
+        <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
+          <span>Choose a friendly unit for <b>{unitName(selection.unit)}</b> to draw wounds from — tap a glowing ally, then pick how much of its damage moves. Using the ability exhausts the Censer.</span>
+          <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
+        </div>
+      )}
+      {selection?.kind === 'censer-amount' && (() => {
+        // #104: the amount picker — the same number buttons as paying an X cost. The offered amounts
+        // come straight from the legal actions (capped at min(ally damage, the Censer's remaining Health)).
+        const amts = [...new Set(activateActionsFor(selection.unit)
+          .filter(a => { const r = (a.targets ?? [])[0]; return !!r && sameRef(r, selection.target) })
+          .map(a => a.amount).filter((n): n is number => n !== undefined))].sort((a, b) => a - b)
+        const cv = unitViewOf(selection.unit)
+        const lethalAt = cv ? cv.health - cv.damage : 0   // moving this much takes the Censer to exactly 0
+        const max = amts.length ? amts[amts.length - 1] : 0
+        return (
+          <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            <span className="text-goldbright">How much of <b>{refName(selection.target)}</b>'s damage should <b>{unitName(selection.unit)}</b> take onto itself?</span>
+            {amts.map(n => (
+              <button key={n} className={`btn btn-primary !px-2.5 !py-1 text-xs ${n === lethalAt ? '!border-[#e2583e]' : ''}`}
+                title={n === lethalAt ? 'this takes the Censer to 0 Health — a final sacrifice' : undefined}
+                onClick={() => apply({ type: 'activate', unit: selection.unit, targets: [selection.target], amount: n }, seat)}>
+                {n}{n === lethalAt ? ' ☠' : ''}
+              </button>
+            ))}
+            <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
+            {max === lethalAt && lethalAt > 0 && (
+              <span className="w-full text-[11px] text-[#e5a99f]">☠ Moving {lethalAt} takes {unitName(selection.unit)} to 0 Health — a full martyr's sacrifice.</span>
+            )}
+          </div>
+        )
+      })()}
       {selection?.kind === 'orphan' && (
         <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
           <span>Salvage <b>{DEMO_CARDS[state.cardOf[selection.id]]?.name}</b> — tap one of your glowing units in that zone (full cost and pips, as if played).</span>
@@ -1049,7 +1099,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
         playable && `play ${playable} card${playable > 1 ? 's' : ''}`,
         attackers && `attack with ${attackers} unit${attackers > 1 ? 's' : ''}`,
         movers && `move ${movers} unit${movers > 1 ? 's' : ''}`,
-        sneaks && `use ${sneaks} Sneak abilit${sneaks > 1 ? 'ies' : 'y'}`,
+        sneaks && `use ${sneaks} unit abilit${sneaks > 1 ? 'ies' : 'y'}`,
         salvables && `salvage ${salvables} orphaned upgrade${salvables > 1 ? 's' : ''}`,
         passables && `pass ${passables} upgrade${passables > 1 ? 's' : ''}`,
         captors && `release a captive`,

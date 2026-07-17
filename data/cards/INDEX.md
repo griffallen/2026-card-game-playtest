@@ -76,7 +76,7 @@
 | [Lawbringer](yellow/lawbringer.md) | — | 4 | unit | 2/3 |  | canon | Whenever this enters a zone, exhaust target enemy unit. |
 | [Light of Authority](yellow/light-of-authority.md) | — | 4 | action | — |  | canon | Target unit gets +3 Power this round. |
 | [Resolve Banner](yellow/resolve-banner.md) | — | 4 | upgrade | — |  | canon | Attach to unit. This unit gains +1 Health and +1 Armor. Other friendly units in this zone get +1 Power. If this becomes unattached, it can be picked up for 0 resources by a friendly unit. This can't be picked up by an opponent. This upgrade can be passed to a friendly unit in the same zone for 2 resources as an action, any number of times. |
-| [Censer of Purity](yellow/censer-of-purity.md) | — | 5 | unit | 0/6 |  | canon | At the start of your round, lose 1 Influence and heal 2 damage from your base. |
+| [Censer of Purity](yellow/censer-of-purity.md) | — | 5 | unit | 0/6 | politician | canon | Politician. As an action, move any amount of damage from one friendly unit onto this unit — up to what this unit can take without its Health falling below 0. Doing so exhausts the Censer. |
 | [Custodian of Law](yellow/custodian-of-law.md) | — | 5 | unit | 2/5 | guard | canon | Guard. |
 | [Dawnspear Paladin](yellow/dawnspear-paladin.md) | — | 5 | unit | 3/3 |  | canon | When this unit is attacked, it gains +1 Power for each attacker, this round. |
 | [Radiant Judgment](yellow/radiant-judgment.md) | — | 5 | action | — |  | canon | Gain 1 Influence. Then exhaust every enemy unit whose cost is no more than your current Influence. If your Influence is below 1, gain 1 Influence for each enemy unit in your Home zone. |
