@@ -173,10 +173,13 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       break
 
     case 'countBuff': checkTargetRef(op.t); if (!isInt(op.p, 1, 10)) err('bad countBuff p'); break
-    case 'exhaust':   // #104 (Lawbringer): t:'auto' arrests one auto-picked enemy in the (entered) zone
+    case 'exhaust':   // #104 (Lawbringer): t:'auto' arrests one enemy in the (entered) zone — auto-picked, or player-chosen with auto.choose
       if (op.t === 'auto') {
         if (!op.auto) err('auto exhaust needs an auto pick')
-        else if (!['targetZone', 'enteredZone'].includes(op.auto.scope)) err(`bad auto scope ${op.auto.scope} (exhaust auto resolves a single zone)`)
+        else {
+          if (!['targetZone', 'enteredZone'].includes(op.auto.scope)) err(`bad auto scope ${op.auto.scope} (exhaust auto resolves a single zone)`)
+          if (op.auto.choose !== undefined && typeof op.auto.choose !== 'boolean') err('auto exhaust choose must be true/false')
+        }
       } else checkTargetRef(op.t)
       break
     case 'damageFilter': checkTargetRef(op.f); if (!isInt(op.n, 0)) err('bad n'); break

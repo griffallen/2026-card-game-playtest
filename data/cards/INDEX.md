@@ -73,7 +73,7 @@
 | [Exemplar Knight](yellow/exemplar-knight.md) | — | 4 | unit | 4/4 |  | canon | When this unit defeats a unit, gain 1 Influence. |
 | [Fortress Keeper](yellow/fortress-keeper.md) | — | 4 | unit | 2/3 | cantAttack | canon | This can't attack. Other friendly units in this zone have Guard. |
 | [High Justiciar](yellow/high-justiciar.md) | — | 4 | unit | 1/4 | guard | canon | Guard. When this unit defeats a unit, gain 2 Influence. |
-| [Lawbringer](yellow/lawbringer.md) | — | 4 | unit | 2/3 |  | canon | Whenever this enters a zone, exhaust an enemy unit in the same zone. |
+| [Lawbringer](yellow/lawbringer.md) | — | 4 | unit | 2/3 |  | canon | Whenever this enters a zone, exhaust an enemy unit of your choice in the same zone. |
 | [Light of Authority](yellow/light-of-authority.md) | — | 4 | action | — |  | canon | Target unit gets +3 Power this round. |
 | [Resolve Banner](yellow/resolve-banner.md) | — | 4 | upgrade | — |  | canon | Attach to unit. This unit gains +1 Health and +1 Armor. Other friendly units in this zone get +1 Power. If this becomes unattached, it can be picked up for 0 resources by a friendly unit. This can't be picked up by an opponent. This upgrade can be passed to a friendly unit in the same zone for 2 resources as an action, any number of times. |
 | [Censer of Purity](yellow/censer-of-purity.md) | — | 5 | unit | 0/6 | politician | canon | Politician. As an action, move any amount of damage from one friendly unit onto this unit — up to what this unit can take without its Health falling below 0. Doing so exhausts the Censer. |

@@ -141,64 +141,76 @@ describe('the capture era (v3 churn pass 3 — prison is gone from canon)', () =
     expect(s.units[mine].exhausted).toBe(false)
   })
 
-  // #104 (Griff): Lawbringer arrests an enemy IN THE ZONE IT ENTERS — auto-picked (strongest
-  // ready enemy there), on play AND on every subsequent march. No cross-zone reach, no chosen target.
-  describe('Lawbringer — arrest in the entered zone', () => {
-    it('on play, stands down the ready enemy sharing the zone it deploys into', () => {
+  // #104 (Griff): Lawbringer arrests an enemy IN THE ZONE IT ENTERS — but now the CONTROLLER CHOOSES
+  // which one (a decision like Capture's target), on play AND on every subsequent march. Still no
+  // cross-zone reach; still mandatory when an enemy is available (you pick WHICH, not WHETHER).
+  describe('Lawbringer — the player chooses the arrest in the entered zone', () => {
+    it('on play, stands down the CHOSEN enemy — not the strongest', () => {
       let { s, p1, p2 } = arena()
-      const victim = put(s, p1, 'berserker', homeZone(p2))   // enemy standing in p2's Home
+      const strong = put(s, p1, 'cinder-initiate', homeZone(p2))  // power 2 — the old auto-pick's target
+      const weak = put(s, p1, 'berserker', homeZone(p2))          // power 1 — the player picks THIS one
       const law = toHand(s, p2, 'lawbringer')
       s = act(s, p1, { type: 'pass' })
-      s = act(s, p2, { type: 'play', card: law })            // Lawbringer enters p2's Home
-      expect(s.units[victim].exhausted).toBe(true)
+      s = act(s, p2, { type: 'play', card: law, exhaust: weak })  // Lawbringer enters p2's Home, arrests the weaker
+      expect(s.units[weak].exhausted).toBe(true)                  // the chosen enemy is stood down
+      expect(s.units[strong].exhausted).toBe(false)              // the stronger one is left standing
     })
 
-    it('never reaches an enemy in another zone', () => {
+    it('an enemy in another zone is never a legal choice', () => {
       let { s, p1, p2 } = arena()
       const homeEnemy = put(s, p1, 'cinder-initiate', homeZone(p2))  // same zone as the entry
       const farEnemy = put(s, p1, 'berserker', 1)                    // Neutral — a different zone
       const law = toHand(s, p2, 'lawbringer')
       s = act(s, p1, { type: 'pass' })
-      s = act(s, p2, { type: 'play', card: law })            // enters p2's Home
-      expect(s.units[homeEnemy].exhausted).toBe(true)        // the room's enemy is stood down
-      expect(s.units[farEnemy].exhausted).toBe(false)        // the Neutral enemy is untouched
+      // choosing the far enemy is rejected; choosing the room's enemy is the only legal arrest
+      expect(() => act(s, p2, { type: 'play', card: law, exhaust: farEnemy })).toThrow()
+      s = act(s, p2, { type: 'play', card: law, exhaust: homeEnemy })
+      expect(s.units[homeEnemy].exhausted).toBe(true)
+      expect(s.units[farEnemy].exhausted).toBe(false)
     })
 
-    it('re-arrests on every march — a fresh enemy each new zone', () => {
+    it('on march, arrests the CHOSEN enemy in the destination zone', () => {
       let { s, p1, p2 } = arena()
       const law = put(s, p2, 'lawbringer', homeZone(p2), { enteredRound: 0 })  // already deployed, free to move
-      const neutralEnemy = put(s, p1, 'berserker', 1)                 // waiting in Neutral
-      const frontEnemy = put(s, p1, 'cinder-initiate', homeZone(p1))  // waiting on p1's doorstep
+      const strongNeutral = put(s, p1, 'cinder-initiate', 1)         // power 2, waiting in Neutral
+      const weakNeutral = put(s, p1, 'berserker', 1)                 // power 1, waiting in Neutral
+      const frontEnemy = put(s, p1, 'spark-hound', homeZone(p1))     // a different zone — never a choice here
       s = act(s, p1, { type: 'pass' })
-      s = act(s, p2, { type: 'move', unit: law, to: 1 })     // march into Neutral
-      expect(s.units[neutralEnemy].exhausted).toBe(true)
-      // next round the law readies and marches again — the discipline repeats in the new zone
-      s.units[law].exhausted = false
-      s.units[law].movedThisRound = false
-      s = act(s, p1, { type: 'pass' })
-      s = act(s, p2, { type: 'move', unit: law, to: homeZone(p1) })
-      expect(s.units[frontEnemy].exhausted).toBe(true)
+      // the far enemy in p1's Home is not a legal target for a march into Neutral
+      expect(() => act(s, p2, { type: 'move', unit: law, to: 1, exhaust: frontEnemy })).toThrow()
+      s = act(s, p2, { type: 'move', unit: law, to: 1, exhaust: weakNeutral })  // march into Neutral, arrest the chosen
+      expect(s.units[weakNeutral].exhausted).toBe(true)
+      expect(s.units[strongNeutral].exhausted).toBe(false)
+      expect(s.units[frontEnemy].exhausted).toBe(false)
     })
 
-    it('picks a READY enemy over a stronger one already exhausted', () => {
+    it('the arrest is mandatory when an enemy is available — a targetless play is rejected', () => {
       let { s, p1, p2 } = arena()
-      const strongDown = put(s, p1, 'cinder-initiate', homeZone(p2), { exhausted: true })  // 2 power, already down
-      const readyWeak = put(s, p1, 'berserker', homeZone(p2))                               // 1 power, standing
+      put(s, p1, 'berserker', homeZone(p2))                  // an eligible enemy shares the deploy zone
       const law = toHand(s, p2, 'lawbringer')
       s = act(s, p1, { type: 'pass' })
-      s = act(s, p2, { type: 'play', card: law })
-      expect(s.units[readyWeak].exhausted).toBe(true)        // the arrest lands on the one still standing
-      expect(s.units[strongDown].exhausted).toBe(true)       // (was already exhausted)
+      expect(() => act(s, p2, { type: 'play', card: law })).toThrow()  // must choose WHICH, not skip
     })
 
-    it('does nothing when only friendlies share the entered zone', () => {
+    it('does nothing when only friendlies share the entered zone — plays with no arrest', () => {
       let { s, p1, p2 } = arena()
       const friendly = put(s, p2, 'berserker', homeZone(p2))  // Lawbringer's own unit — never a target
       const law = toHand(s, p2, 'lawbringer')
       s = act(s, p1, { type: 'pass' })
-      s = act(s, p2, { type: 'play', card: law })            // enters p2's Home, no ENEMY present
+      s = act(s, p2, { type: 'play', card: law })            // no ENEMY present → a plain play, no arrest
       expect(s.units[friendly].exhausted).toBe(false)        // friendlies are never arrested
       expect(s.winner).toBeNull()                            // and nothing crashes
+    })
+
+    it('an already-exhausted enemy is not a legal arrest — a wasted arrest is no choice', () => {
+      let { s, p1, p2 } = arena()
+      const down = put(s, p1, 'cinder-initiate', homeZone(p2), { exhausted: true })  // already down
+      const law = toHand(s, p2, 'lawbringer')
+      s = act(s, p1, { type: 'pass' })
+      // the only enemy is already exhausted → no eligible target → a plain play; naming it is rejected
+      expect(() => act(s, p2, { type: 'play', card: law, exhaust: down })).toThrow()
+      s = act(s, p2, { type: 'play', card: law })
+      expect(s.units[down].exhausted).toBe(true)             // (unchanged — it was already exhausted)
     })
   })
 })

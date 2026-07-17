@@ -4,7 +4,7 @@ import type {
 import { EngineError, adjacent, homeZone } from './types.ts'
 import { shuffle } from './rng.ts'
 import {
-  addInfluence, condHolds, defOf, effArmor, effHealth, effPower, hasKw, hasLastStand, idNum, isSick, kwOf, log, moveDamageCap, other, pipGateSatisfied, satisfiesAnyOf, unitsInZone,
+  addInfluence, choosesEntryExhaust, condHolds, defOf, effArmor, effHealth, effPower, entryExhaustTargets, hasKw, hasLastStand, idNum, isSick, kwOf, log, moveDamageCap, other, pipGateSatisfied, satisfiesAnyOf, unitsInZone,
 } from './helpers.ts'
 import { damageBase, damageUnit, destroyUnit, fireTrigger, runOps, stateBasedCleanup } from './effects.ts'
 import { startRound, endRound, finishBankStep } from './round.ts'
@@ -195,7 +195,7 @@ function applyLoopPhase(state: GameState, action: GameAction, seat: Seat) {
     case 'releaseCaptive': fail('no-release', 'captives are freed only when their captor falls (decision 92)')
     case 'attachOrphan': attachOrphan(state, action, seat); break
     case 'passUpgrade': passUpgrade(state, action, seat); break
-    case 'move': moveUnit(state, action.unit, action.to, seat); break
+    case 'move': moveUnit(state, action.unit, action.to, seat, action.exhaust); break
     case 'attack': attackDeclare(state, action, seat); return // declare→intercept/resolve advances the window itself
     default: fail('bad-phase', `${(action as GameAction).type} is not a loop action`)
   }
@@ -346,6 +346,19 @@ function payCost(state: GameState, seat: Seat, cost: number) {
   for (let i = 0; i < cost; i++) ready[i].exhausted = true
 }
 
+/** #104 (Lawbringer): resolve the player's chosen entry-exhaust against the eligible enemies in the
+ *  zone just entered. Mandatory when any enemy is eligible (you pick WHICH, not WHETHER); the choice
+ *  must be absent when none is. Returns the validated id (or undefined) to thread into ctx.entryExhaust. */
+function validateEntryExhaust(chosen: string | undefined, eligible: UnitInstance[], cardName: string): string | undefined {
+  if (!eligible.length) {
+    if (chosen !== undefined) fail('bad-exhaust', `${cardName}: no enemy to arrest in that zone`)
+    return undefined
+  }
+  if (chosen === undefined) fail('bad-exhaust', `${cardName} must arrest an enemy in the zone it enters`)
+  if (!eligible.some(u => u.id === chosen)) fail('bad-exhaust', `${cardName} cannot arrest that unit`)
+  return chosen
+}
+
 function validateTargets(state: GameState, seat: Seat, specs: TargetSpec[], targets: TargetRef[], cardName: string) {
   const maxExpected = specs.reduce((s, spec) => s + (spec.count ?? 1), 0)
   const minExpected = specs.reduce((s, spec) => s + (spec.upTo ? 1 : (spec.count ?? 1)), 0)
@@ -478,8 +491,12 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     const unit = state.units[action.card]
     const onPlayOps = mode ? mode.ops : def.onPlay   // #75: a modal unit runs its DECLARED mode's ops on entry
     if (onPlayOps?.length) runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat, x: action.x, srcLabel: def.name }, onPlayOps)
+    // #104 (Lawbringer): validate the chosen entry-arrest against the enemies in the entered zone
+    let entryExhaust: string | undefined
+    if (choosesEntryExhaust(def)) entryExhaust = validateEntryExhaust(action.exhaust, entryExhaustTargets(state, seat, zone), def.name)
+    else if (action.exhaust !== undefined) fail('bad-exhaust', `${def.name} has no entry arrest to aim`)
     if (def.onEnterZone?.length && state.units[unit.id]) {
-      fireTrigger({ state, targets, enteredZone: zone, actorSeat: seat }, unit, 'onEnterZone')
+      fireTrigger({ state, targets, enteredZone: zone, actorSeat: seat, entryExhaust }, unit, 'onEnterZone')
     }
   } else {
     // action card
@@ -491,7 +508,7 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
 
 // ─── Movement ────────────────────────────────────────────────────────────────
 
-function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat) {
+function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat, exhaust?: string) {
   const unit = state.units[unitId] ?? fail('no-unit', 'no such unit')
   if (unit.owner !== seat) fail('not-yours', 'not your unit')
   if (unit.imprisoned) fail('imprisoned', 'imprisoned units cannot move')
@@ -499,6 +516,13 @@ function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat) {
   if (isSick(state, unit)) fail('sick', 'this unit just arrived this round')
   if (to === unit.zone) fail('bad-move', 'already there')
   if (!hasKw(state, unit, 'flying') && !adjacent(unit.zone, to)) fail('bad-move', 'can only move to an adjacent zone')
+  const def = defOf(state, unitId)
+  // #104 (Lawbringer): resolve the chosen entry-arrest against the destination's enemies BEFORE the
+  // march commits (a bad choice rolls the whole move back). Enemies in `to` are the same before and
+  // after the mover arrives, so validating here matches the enumeration exactly.
+  let entryExhaust: string | undefined
+  if (choosesEntryExhaust(def)) entryExhaust = validateEntryExhaust(exhaust, entryExhaustTargets(state, seat, to), def.name)
+  else if (exhaust !== undefined) fail('bad-exhaust', `${def.name} has no entry arrest to aim`)
   unit.zone = to
   // decision 41: Rush waives the move-exhaust the round the unit entered play — but for its FIRST
   // move only (one free reposition), not a whole-round pass. A second move exhausts it like any unit.
@@ -514,7 +538,7 @@ function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat) {
   }
   stateBasedCleanup(state, seat)
   if (state.winner !== null) return
-  fireTrigger({ state, enteredZone: to, actorSeat: seat }, unit, 'onEnterZone')
+  fireTrigger({ state, enteredZone: to, actorSeat: seat, entryExhaust }, unit, 'onEnterZone')
 }
 
 const zoneName = (state: GameState, z: ZoneId) =>

@@ -23,6 +23,9 @@ export interface FxCtx {
   attackerCount?: number
   /** zone just entered, for onEnterZone */
   enteredZone?: ZoneId
+  /** #104 (Lawbringer): the player-chosen enemy id for a `choose` entry-exhaust — validated and
+   *  carried by the play/move action. Undefined = no eligible enemy in the entered zone (no-op). */
+  entryExhaust?: string
   /** declared X for xCost cards (issue #45) */
   x?: number
   /** #104 (Censer of Purity): the player-chosen amount for an activated ability (moveDamage) */
@@ -255,10 +258,22 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'exhaust': {
-        // #104 (Lawbringer): t:'auto' arrests one auto-picked enemy in the source's (entered) zone
-        const targets = op.t === 'auto'
-          ? [autoPickEnemy(ctx, op.auto!)].filter(Boolean) as UnitInstance[]
-          : typeof op.t === 'string' ? [resolveUnitTarget(ctx, op.t)].filter(Boolean) as UnitInstance[] : filterUnits(ctx, op.t)
+        // #104 (Lawbringer): t:'auto' arrests one enemy in the source's (entered) zone. With
+        // auto.choose the entering player picked which (carried in ctx.entryExhaust, validated at the
+        // action boundary); without it, the deterministic strongest-ready auto-pick.
+        let targets: UnitInstance[]
+        if (op.t === 'auto') {
+          if (op.auto!.choose) {
+            const u = ctx.entryExhaust ? unitById(state, ctx.entryExhaust) : undefined
+            targets = u ? [u] : []
+          } else {
+            targets = [autoPickEnemy(ctx, op.auto!)].filter(Boolean) as UnitInstance[]
+          }
+        } else if (typeof op.t === 'string') {
+          targets = [resolveUnitTarget(ctx, op.t)].filter(Boolean) as UnitInstance[]
+        } else {
+          targets = filterUnits(ctx, op.t)
+        }
         for (const u of targets) { u.exhausted = true; log(state, u.owner, `${name(state, u.id)} is ordered down`) }
         break
       }

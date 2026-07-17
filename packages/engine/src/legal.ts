@@ -1,6 +1,6 @@
 import type { GameAction, GameState, Seat, TargetRef, TargetSpec, UnitInstance, ZoneId } from './types.ts'
 import { ZONES, adjacent, homeZone } from './types.ts'
-import { condHolds, defOf, effHealth, effPower, hasKw, idNum, isSick, kwOf, moveDamageCap, other, pipGateSatisfied, satisfiesAnyOf, unitsInZone, unitsOf } from './helpers.ts'
+import { choosesEntryExhaust, condHolds, defOf, effHealth, effPower, entryExhaustTargets, hasKw, idNum, isSick, kwOf, moveDamageCap, other, pipGateSatisfied, satisfiesAnyOf, unitsInZone, unitsOf } from './helpers.ts'
 import { interceptCandidates } from './engine.ts'
 
 /**
@@ -118,6 +118,16 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
       })
       continue
     }
+    if (def.type === 'unit' && choosesEntryExhaust(def)) {
+      // #104 (Lawbringer): the entry-arrest target is the player's choice. These units deploy to
+      // their Home (no Infiltrate), so enumerate one play per eligible enemy standing there — or a
+      // plain play (no arrest) when the Home holds none. Mandatory when one is available: the player
+      // chooses WHICH enemy, not WHETHER to arrest (mirrors the old auto-pick's always-fires).
+      const picks = entryExhaustTargets(state, seat, homeZone(seat))
+      if (picks.length) for (const p of picks) out.push({ type: 'play', card, exhaust: p.id })
+      else out.push({ type: 'play', card })
+      continue
+    }
     for (const targets of enumerateTargets(state, seat, card)) {
       out.push(targets.length ? { type: 'play', card, targets } : { type: 'play', card })
       if (infiltrates) for (const z of ZONES) {
@@ -132,7 +142,15 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     if (unit.exhausted || unit.imprisoned || isSick(state, unit)) continue
     const zones = hasKw(state, unit, 'flying') ? ZONES.filter(z => z !== unit.zone)
       : ZONES.filter(z => adjacent(z, unit.zone))
-    for (const to of zones) out.push({ type: 'move', unit: unit.id, to })
+    // #104 (Lawbringer): a unit that arrests a CHOSEN enemy on entry expands each destination into
+    // one move per eligible enemy waiting there (a plain move when none) — the same choose-which-not-
+    // whether rule as its play, now against the destination zone.
+    const chooses = choosesEntryExhaust(defOf(state, unit.id))
+    for (const to of zones) {
+      const picks = chooses ? entryExhaustTargets(state, seat, to) : []
+      if (picks.length) for (const p of picks) out.push({ type: 'move', unit: unit.id, to, exhaust: p.id })
+      else out.push({ type: 'move', unit: unit.id, to })
+    }
   }
 
   // v3 Sneak: exhaust-activated abilities (decision 60)

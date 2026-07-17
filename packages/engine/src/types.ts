@@ -41,6 +41,10 @@ export interface UnitFilter {
 export interface AutoPick {   // deterministic engine-chosen target(s): highest power, ties → lowest id
   maxPower?: number
   scope: 'targetZone' | 'otherZone' | 'eachZone' | 'enteredZone'
+  /** #104 (Lawbringer): exhaust-only — the entering player picks WHICH enemy in the zone to arrest
+   *  (carried on the play/move action, threaded through ctx.entryExhaust) instead of the deterministic
+   *  auto-pick. Mandatory when any enemy is eligible: you choose which, not whether. */
+  choose?: boolean
 }
 
 /** v3 count-scaling (PR #70/#71): multiply the op's n by a live count. 'attackers' = units
@@ -354,14 +358,14 @@ export type GameAction =
   | { type: 'setupBank'; cards: string[]; bottom?: string[] }  // bottom: london-mulligan payback (decision 58)   // setup phase: choose starting resources
   | { type: 'resource'; card: string }       // bank phase: resource a card
   | { type: 'skipResource' }                 // bank phase: end your start step
-  | { type: 'play'; card: string; targets?: TargetRef[]; zone?: ZoneId; mode?: number; x?: number }  // zone: v3 Infiltrate; mode: v3 modal cards; x: declared X cost (issue #45)
+  | { type: 'play'; card: string; targets?: TargetRef[]; zone?: ZoneId; mode?: number; x?: number; exhaust?: string }  // zone: v3 Infiltrate; mode: v3 modal cards; x: declared X cost (issue #45); exhaust (#104 Lawbringer): the enemy unit id to arrest in the zone this unit enters (its Home)
   | { type: 'activate'; unit: string; targets?: TargetRef[]; amount?: number }   // v3 Sneak (decision 60) / Ranged volley (decision 80); #104 Censer: amount = damage points to move
   | { type: 'releaseCaptive'; unit: string }                              // RETIRED (decision 92): kept for replay compat; always rejected
   | { type: 'block'; pairs: { blocker: string; onto: string }[]; retaliationOrder?: string[] }  // v3 combat: defender pairs blockers (empty = let it through); pour order = pair order. #84: retaliationOrder aims the target's DIVIDED strike-back — ordered attacker ids; absent → highest-power-first
   | { type: 'attachOrphan'; upgrade: string; unit: string }               // v3 (decision 67): salvage an orphaned upgrade at full cost+pips
   | { type: 'passUpgrade'; upgrade: string; unit: string }                // #86 (Resolve Banner): move an attached, passable upgrade to another friendly unit in its zone — an action costing attach.pass, repeatable
   | { type: 'attack'; attackers: string[]; target: TargetRef; overextend?: string[]; splash?: { by: string; unit: string }[] }  // splash: per-attacker chosen victims for splashReap triggers (PR #46, decision 24-compatible) // decision 42: 1+ attackers, one zone; overextend: subset taking the gamble
-  | { type: 'move'; unit: string; to: ZoneId }
+  | { type: 'move'; unit: string; to: ZoneId; exhaust?: string }  // exhaust (#104 Lawbringer): the enemy unit id to arrest in the destination zone on arrival
   | { type: 'claimInitiative' }              // decision 40: take the token, leave the round
   | { type: 'intercept'; unit: string }      // decision 42: redirect the attack to a ready unit
   | { type: 'declineIntercept' }             // decision 42: let the attack hit its declared target

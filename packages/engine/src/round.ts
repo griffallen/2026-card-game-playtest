@@ -1,4 +1,5 @@
-import type { GameState, Seat } from './types.ts'
+import type { GameState, Seat, ZoneId } from './types.ts'
+import { homeZone } from './types.ts'
 import { addInfluence, condHolds, defOf, draw, hasKw, log, other, unitsOf } from './helpers.ts'
 import { runOps, stateBasedCleanup } from './effects.ts'
 // (draw handles decision-33 penalties internally; endRound settles decision-35 overextension)
@@ -140,17 +141,26 @@ export function endRound(state: GameState, actorSeat: Seat) {
   state.attackTaxes = state.attackTaxes.filter(t => t.rounds > 0)
   state.preventBase = [0, 0]
 
-  // decision 88 (Politician, #29): at round end, a seat with a Politician standing in Neutral
-  // AND more units there than the opponent gains 1 influence — once, however many politicians
+  // Politician (#104 rework, Griff): at round end, per seat, count P = your politicians (inert
+  // prisoners don't lobby). Hold the majority of units in the Neutral zone → gain +1 × P; hold the
+  // majority in your ENEMY's Home → gain +2 × P. Both can apply (a seat with both majorities gains
+  // +3 × P). "Majority" = strictly MORE of your units than the opponent's in that zone — a tie is
+  // never a majority (superseding decision 88's single flat +1).
+  // ⚑ LITERAL reading (flagged for Griff to confirm): P is your TOTAL politicians wherever they
+  // stand — the two zone-majority checks are global. The alternative ("a politician must STAND in
+  // the zone it's paid for") is the forward-positioning reading; this builds the plain text.
   {
-    const inMiddle = (seat: Seat) => unitsOf(state, seat).filter(u => u.zone === 1).length
-    const [ca, cb] = [inMiddle(0), inMiddle(1)]
+    const countIn = (seat: Seat, zone: ZoneId) => unitsOf(state, seat).filter(u => u.zone === zone).length
+    const majority = (seat: Seat, zone: ZoneId) => countIn(seat, zone) > countIn(other(seat), zone)
     for (const seat of [0, 1] as const) {
-      const majority = seat === 0 ? ca > cb : cb > ca
-      if (!majority) continue
-      if (!unitsOf(state, seat).some(u => u.zone === 1 && !u.imprisoned && hasKw(state, u, 'politician'))) continue
-      addInfluence(state, seat, 1)
-      log(state, seat, `${state.sides[seat].name}'s politician sways the middle (+1 influence)`)
+      const politicians = unitsOf(state, seat).filter(u => !u.imprisoned && hasKw(state, u, 'politician')).length
+      if (politicians === 0) continue
+      let gain = 0
+      if (majority(seat, 1)) gain += politicians                          // the Neutral zone: +1 each
+      if (majority(seat, homeZone(other(seat)))) gain += 2 * politicians   // the enemy's Home: +2 each
+      if (gain === 0) continue
+      addInfluence(state, seat, gain)
+      log(state, seat, `${state.sides[seat].name}'s ${politicians} politician${politicians > 1 ? 's' : ''} press ${politicians > 1 ? 'their' : 'its'} advantage (+${gain} influence)`)
     }
   }
   stateBasedCleanup(state, actorSeat)

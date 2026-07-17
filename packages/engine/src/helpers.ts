@@ -44,6 +44,22 @@ export const unitsInZone = (state: GameState, zone: ZoneId, seat?: Seat) =>
 export const hasLastStand = (state: GameState, seat: Seat): boolean =>
   state.lastStands.some(ls => ls.seat === seat)
 
+/** #104 (Lawbringer): does this card arrest a player-CHOSEN enemy when it enters a zone? True when its
+ *  onEnterZone carries an `exhaust` op with `auto.choose` — the entering player picks which enemy. */
+export const choosesEntryExhaust = (def: CardDef): boolean =>
+  (def.onEnterZone ?? []).some(o => o.op === 'exhaust' && o.t === 'auto' && !!o.auto?.choose)
+
+/** #104 (Lawbringer): enemy units in `zone` that a chosen entry-exhaust may arrest — READY (a down
+ *  unit is a wasted arrest, matching the auto-pick), not imprisoned, and not shielded by
+ *  untargetable / ready-Hidden (a player CHOICE is targeting, so the standing protections apply).
+ *  Empty = no legal target, so the play/move happens with no arrest (a clean no-op). */
+export function entryExhaustTargets(state: GameState, controller: Seat, zone: ZoneId): UnitInstance[] {
+  return unitsInZone(state, zone, other(controller)).filter(u =>
+    !u.imprisoned && !u.exhausted
+    && !hasKw(state, u, 'untargetable')
+    && !(!u.exhausted && hasKw(state, u, 'hidden')))
+}
+
 /** #104 (Inquisitor): does the unit satisfy ANY of the OR-caps — effective Power ≤ maxPower,
  *  printed Cost ≤ maxCost, or remaining Health (effHealth − damage) ≤ maxRemainingHealth? */
 export function satisfiesAnyOf(

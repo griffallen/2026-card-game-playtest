@@ -40,6 +40,7 @@ type Selection =
   | { kind: 'censer-amount'; unit: string; target: TargetRef }  // #104: choosing how much damage moves (the amount picker)
   | { kind: 'orphan'; id: string }            // v3 salvage: choosing which unit picks the orphan up
   | { kind: 'passing'; upgrade: string }      // #86 (Resolve Banner): choosing which friendly unit to pass the banner to
+  | { kind: 'entry-exhaust'; via: { play: string } | { unit: string; to: ZoneId }; targets: string[] }  // #104 (Lawbringer): a chosen-arrest unit entered a zone — pick which enemy in it to exhaust
   | null
 
 /** Mobile browser chrome (Chrome's bottom bar, the keyboard) can overlay the layout
@@ -506,6 +507,10 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     if (selection.kind === 'passing') {
       return passActionsFor(selection.upgrade).map(a => ({ kind: 'unit', id: a.unit }) as TargetRef)
     }
+    if (selection.kind === 'entry-exhaust') {
+      // #104 (Lawbringer): the eligible enemies to arrest, sourced from the legal play/move actions
+      return selection.targets.map(id => ({ kind: 'unit', id }) as TargetRef)
+    }
     return []
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection, view, myWindow])
@@ -518,7 +523,19 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     if (!isHighlighted(ref) || !selection) return
     if (selection.kind === 'unit') {
       if (ref.kind === 'zone') {
-        apply({ type: 'move', unit: selection.ids[0], to: ref.zone }, seat) // move is single-unit only
+        const unit = selection.ids[0] // move is single-unit only
+        // #104 (Lawbringer): a march that arrests a CHOSEN enemy on arrival — the legal moves into
+        // this zone carry one `exhaust` id per eligible enemy. Prompt to pick one (like Capture),
+        // then move with that choice; a plain move when the zone holds no eligible enemy.
+        const arrests = actions
+          .filter((a): a is Extract<GameAction, { type: 'move' }> => a.type === 'move' && a.unit === unit && a.to === ref.zone)
+          .map(a => a.exhaust).filter((e): e is string => e !== undefined)
+        if (arrests.length) {
+          setSelection({ kind: 'entry-exhaust', via: { unit, to: ref.zone }, targets: arrests })
+          setArmOverextend(false)
+          return
+        }
+        apply({ type: 'move', unit, to: ref.zone }, seat)
       } else {
         const oe = armOverextend ? selection.ids.filter(id => oeOf(id) !== null) : []
         // PR #46: a skewer-carrying attacker declares its victim before the attack is submitted
@@ -570,6 +587,12 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     }
     if (selection.kind === 'passing' && ref.kind === 'unit') {
       apply({ type: 'passUpgrade', upgrade: selection.upgrade, unit: ref.id }, seat)
+    }
+    if (selection.kind === 'entry-exhaust' && ref.kind === 'unit') {
+      // #104 (Lawbringer): the chosen enemy — dispatch the deferred play/move carrying the arrest
+      const via = selection.via
+      if ('play' in via) apply({ type: 'play', card: via.play, exhaust: ref.id }, seat)
+      else apply({ type: 'move', unit: via.unit, to: via.to, exhaust: ref.id }, seat)
     }
   }
 
@@ -642,6 +665,11 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     // X-cost cards (#45): declare X first, then target
     if (def.xCost) { setSelection({ kind: 'x', card: cardId }); return }
     const mode = plays[0].mode
+    // #104 (Lawbringer): the deploy arrests a CHOSEN enemy in its Home — the legal plays carry one
+    // `exhaust` id per eligible enemy standing there. Prompt to pick one (like Capture), then play
+    // with that choice; a plain play when the Home holds no eligible enemy.
+    const arrests = plays.map(p => p.exhaust).filter((e): e is string => e !== undefined)
+    if (arrests.length) { setSelection({ kind: 'entry-exhaust', via: { play: cardId }, targets: arrests }); return }
     if ((plays[0].targets?.length ?? 0) === 0) apply({ type: 'play', card: cardId, ...(mode !== undefined ? { mode } : {}) }, seat)
     else setSelection({ kind: 'targeting', card: cardId, collected: [], mode })
   }
@@ -1052,6 +1080,18 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
           <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
         </div>
       )}
+      {selection?.kind === 'entry-exhaust' && (() => {
+        // #104 (Lawbringer): naming the arriving unit — the played card, or the marching unit
+        const arriving = 'play' in selection.via
+          ? DEMO_CARDS[state.cardOf[selection.via.play]]?.name
+          : unitName(selection.via.unit)
+        return (
+          <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
+            <span>⛓ <b>{arriving}</b> arrests an enemy as it takes the zone — tap a glowing enemy to exhaust it.</span>
+            <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
+          </div>
+        )
+      })()}
     </>
   ) : null
 
