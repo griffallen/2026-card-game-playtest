@@ -10,19 +10,19 @@ const B = ({ children }: { children: ReactNode }) => <b className="text-parchmen
 const Card = ({ children }: { children: ReactNode }) => <div className="panel mt-4 p-4">{children}</div>
 
 const KEYWORDS: [string, string][] = [
-  ['Guard', 'The bodyguard. When a single unit attacks one of yours, ONLY a Guard may step in front of the target — one Guard, taking the whole hit. (Attacks on your base are different: anyone may block those.) And it never exhausts to block, in duels or gangs, so it can do it again and still take its own turn.'],
   ['Armor N', 'Every hit this unit takes is reduced by N — and combat resolves in separate pairings, so N comes off each attacker’s blow individually. Two exceptions arrive as one combined hit, shrunk by N once: a gang of blockers striking back at their attacker, and multiple unblocked attackers landing on the same target.'],
-  ['Rush', 'The round it’s played, its first move is free — that one move doesn’t exhaust it, so it can reposition and still fight. Just the one, though: a second move the same round exhausts it like any unit. (Every unit can otherwise act the round it arrives; Rush frees that first move.)'],
-  ['Ranged N', 'An ability used as your turn: exhaust this unit to deal N damage to one enemy unit in any zone — the volley. It’s a chosen shot, so a ready Hidden unit refuses it, and a lethal volley counts as a kill. The unit’s regular attacks are ordinary in every way: same zone, blockable, bases included. Archers carry small blades and big bows.'],
   ['Breakthrough', 'When this attacker kills its blocker, all the leftover damage pushes through to whatever it was originally attacking — unit or base. And in the OPPONENT\u2019S HOME, nothing is left behind: excess past a killed unit target pours on into their base. No number, no cap: everything spills.'],
   ['Can’t attack', 'A defensive body — it can hold a zone and block, but never attacks.'],
+  ['Capture', 'On its trigger, this unit takes an enemy unit under itself — off the board entirely. Holding costs nothing, and there is no letting go: the captive returns only when the capturer leaves play, coming back to that zone ready. Capture is custody, not a wound — and killing the jailer frees the prisoner.'],
+  ['Guard', 'The bodyguard. When a single unit attacks one of yours, ONLY a Guard may step in front of the target — one Guard, taking the whole hit. (Attacks on your base are different: anyone may block those.) And it never exhausts to block, in duels or gangs, so it can do it again and still take its own turn.'],
   ['Hidden', 'While this unit is ready, enemy actions can’t target it and enemy attacks can’t be declared at it. It can still block — blocking isn’t being targeted — but anything that exhausts it (attacking, blocking, a Sneak) reveals it until it readies again. Strike, vanish, repeat. One limit: Hidden beats choices, not consequences — effects that don’t choose (“all”, whole-zone damage, automatic picks) still reach it.'],
   ['Infiltrate', 'May be played into any zone — not just your Home.'],
-  ['Sneak', 'An ability you use as your turn: exhaust the unit to resolve its printed Sneak effect on something in its own zone — a unit or the base. Each card’s text says what its Sneak does.'],
-  ['Capture', 'On its trigger, this unit takes an enemy unit under itself — off the board entirely. Holding costs nothing, and there is no letting go: the captive returns only when the capturer leaves play, coming back to that zone ready. Capture is custody, not a wound — and killing the jailer frees the prisoner.'],
-  ['Shielded', 'Arrives with a shield token. The first time it would take damage, the whole hit is prevented and the token is spent.'],
-  ['Scar', 'Gets +1 Power for each damage marked on it — no cap. A 3-Health unit with 2 damage gets +2. Every wound is fuel; the closer to death, the harder it hits.'],
   ['Politician', 'At the end of each round, if this unit stands in the Neutral zone and its owner holds more units there than the opponent, its owner gains 1 Influence — once per round, however many politicians. The middle finally has a constituency: campaign there, hold the crowd, sway the track.'],
+  ['Ranged N', 'An ability used as your turn: exhaust this unit to deal N damage to one enemy unit in any zone — the volley. It’s a chosen shot, so a ready Hidden unit refuses it, and a lethal volley counts as a kill. The unit’s regular attacks are ordinary in every way: same zone, blockable, bases included. Archers carry small blades and big bows.'],
+  ['Rush', 'A static ability: this unit’s first move each round is free — that one move doesn’t exhaust it, so it can reposition and still fight. One free move per round, and it refreshes every round the unit stays in play; a second move the same round exhausts it like any unit. It grants no extra action and never lets the unit attack any sooner.'],
+  ['Scar', 'Gets +1 Power for each damage marked on it — no cap. A 3-Health unit with 2 damage gets +2. Every wound is fuel; the closer to death, the harder it hits.'],
+  ['Shielded', 'Arrives with a shield token. The first time it would take damage, the whole hit is prevented and the token is spent.'],
+  ['Sneak', 'An ability you use as your turn: exhaust the unit to resolve its printed Sneak effect on something in its own zone — a unit or the base. Each card’s text says what its Sneak does.'],
 ]
 
 export function Rules() {
@@ -163,7 +163,7 @@ export function Rules() {
       <H2 id="move">Moving</H2>
       <P>
         Moving a unit sends it <B>one adjacent zone</B> (Home ↔ Neutral ↔ their Home) and <B>exhausts</B> it — so a unit <i>marches or
-        fights</i> in a round, not both. Exception: a unit with <B>Rush</B> gets <i>one</i> free move (no exhaust) the round it arrives — so it can reposition and still fight.
+        fights</i> in a round, not both. Exception: a unit with <B>Rush</B> gets <i>one</i> free move (no exhaust) each round — so it can reposition and still fight.
       </P>
 
       <H2 id="combat">Combat</H2>

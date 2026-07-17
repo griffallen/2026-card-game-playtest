@@ -205,7 +205,9 @@ export interface RulesConfig {
   /** decision 41: units enter ready — false by default; true restores can't-act-on-entry */
   summoningSickness: boolean
   moveExhausts: boolean
-  /** decision 41: Rush's exhaust waiver also covers the entry-round attack */
+  /** decision 41: whether Rush's exhaust waiver ALSO covers an attack (default false and unchanged by
+   *  #105 — Rush waives the free MOVE only, never lets a unit attack early). When true, only the
+   *  entry-round attack is covered; #105 did not extend this to every round. */
   rushCoversAttack: boolean
   /** decision 42: intercepting exhausts the interceptor (Guard always exempt) */
   interceptExhausts: boolean
@@ -253,7 +255,8 @@ export interface UnitInstance {
   damage: number
   exhausted: boolean
   enteredRound: number
-  /** decision 41: Rush waives the move-exhaust for the FIRST move only — reset when the unit readies */
+  /** #105 (supersedes decision 41's entry-round gate): Rush waives the move-exhaust for the FIRST move
+   *  of EACH round — this flag, reset when the unit readies at round start, is what makes it per-round */
   movedThisRound: boolean
   imprisoned: { by: Seat; source: string | null } | null
   upgrades: string[]         // upgrade instance ids

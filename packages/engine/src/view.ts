@@ -20,7 +20,7 @@ function unitView(state: GameState, id: string): UnitView {
     power: effPower(state, u), health: effHealth(state, u), damage: u.damage,
     basePower: u.created?.p ?? def.power ?? 0, baseHealth: u.created?.h ?? def.health ?? 0, armor: effArmor(state, u),  // #69: a created copy's printed line is its own body
     exhausted: u.exhausted,
-    rushFreeMove: u.enteredRound === state.round && !u.movedThisRound && hasKw(state, u, 'rush') && !u.exhausted,
+    rushFreeMove: !u.movedThisRound && hasKw(state, u, 'rush') && !u.exhausted,   // #105: free first move every round, not just entry round
     imprisoned: !!u.imprisoned,
     overextendedBy: u.overextendedBy,
     shielded: u.shielded,

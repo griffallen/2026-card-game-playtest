@@ -524,10 +524,12 @@ function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat, exha
   if (choosesEntryExhaust(def)) entryExhaust = validateEntryExhaust(exhaust, entryExhaustTargets(state, seat, to), def.name)
   else if (exhaust !== undefined) fail('bad-exhaust', `${def.name} has no entry arrest to aim`)
   unit.zone = to
-  // decision 41: Rush waives the move-exhaust the round the unit entered play — but for its FIRST
-  // move only (one free reposition), not a whole-round pass. A second move exhausts it like any unit.
+  // #105 (supersedes decision 41): Rush is a static — a unit with Rush may make its FIRST move each
+  // round for free (one reposition, no exhaust), refreshing every round while it stays in play. Gated
+  // only by "first move this round" + "has Rush" — NOT by the entry round anymore. It grants no extra
+  // action and never lets a unit attack early (rushCoversAttack stays false). A second move exhausts.
   // #107 (Last Stand): while the pact holds, this seat's units never exhaust from acting.
-  const rushFree = unit.enteredRound === state.round && !unit.movedThisRound && hasKw(state, unit, 'rush')
+  const rushFree = !unit.movedThisRound && hasKw(state, unit, 'rush')
   if (state.rules.moveExhausts && !rushFree && !hasLastStand(state, seat)) unit.exhausted = true
   unit.movedThisRound = true
   log(state, seat, `${defOf(state, unitId).name} advances to ${zoneName(state, to)}`)

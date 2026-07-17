@@ -139,7 +139,7 @@ The game's shorthand, gathered in one place. Each term is defined once here, in 
 
 ### Abilities & attacks
 
-- **Rush** — A static ability: this unit may move one zone each round for free, without exhausting. It does not grant an extra action and does not let the unit attack any sooner. (Being finalized in the current rework.)
+- **Rush** — A static ability: this unit may make its first move each round for free — moving one zone without exhausting — refreshing every round while it stays in play. It does not grant an extra action and does not let the unit attack any sooner. A second move in the same round exhausts it like any unit. (Issue #105, 2026-07-17: supersedes decision 41's entry-round-only free move.)
 - **Ranged N** — An ability used as your action: exhaust this unit to deal N damage to one enemy unit in any zone (a volley). It is a chosen shot, so a ready Hidden unit can't be picked, and a lethal volley counts as a kill. The unit's ordinary attacks are unchanged — same zone, blockable, and able to hit the base.
 - **Sneak** — An ability used as your action: exhaust this unit to resolve its printed Sneak effect on a target in its own zone (a unit or the base). Each card spells out what its Sneak does.
 - **Infiltrate** — This unit may be played into any zone, not just your Home.

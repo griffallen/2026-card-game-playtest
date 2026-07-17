@@ -4,7 +4,7 @@
 export const KEYWORD_GLOSS: Record<string, string> = {
   guard: 'The bodyguard. When ONE unit attacks alone, no ordinary unit may block — but a Guard may step in front of the target (one Guard, full redirect) — and it defends without exhausting, so it can do it again. In gang attacks it blocks freely like anyone, still for free.',
   armor: 'Every hit this unit takes is reduced by this much.',
-  rush: 'Its first move the round it arrives is free — that one move doesn\'t exhaust it, so it can reposition and still attack. One free move only; a second exhausts it.',
+  rush: 'A static ability: its first move each round is free — that one move doesn\'t exhaust it, so it can reposition and still attack. One free move per round (it refreshes every round the unit stays in play); a second the same round exhausts it. It grants no extra action and never lets the unit attack any sooner.',
   ranged: 'Ability: exhaust this unit to deal its Ranged number to one enemy unit in any zone (a chosen shot — ready Hidden units refuse it). Its regular attacks are ordinary. (Classic v2.3: attacks one zone away instead, no counter, never bases.)',
   reach: 'May attack units one zone away (bases still require standing in their Home). (Classic v2.3 only.)',
   flying: 'May move to any zone, ignoring adjacency. (Classic v2.3 only — retired in v3.)',
@@ -28,6 +28,6 @@ export function glossFor(keyword: string): string {
 
 export const STATUS_GLOSS = {
   exhausted: 'Exhausted ⟳ — already acted; readies at the start of its owner\'s next round. It can\'t block for others, but if attacked it still strikes back — full power to a lone attacker, or its power poured across a gang (biggest first).',
-  rushFreeMove: 'Rush 💨 — its one free move this round (the one it arrived): move without exhausting, and it can still attack after. The 💨 clears once it moves.',
+  rushFreeMove: 'Rush 💨 — its free move for this round: move without exhausting, and it can still attack after. Refreshes every round; the 💨 clears once it moves.',
   imprisoned: 'Imprisoned ⛓ — cannot attack, move, or defend; abilities and Guard are switched off. Costs the jailer 1 influence each round; breaks if their influence goes negative. (Classic v2.3 only.)',
 } as const

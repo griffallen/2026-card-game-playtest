@@ -30,7 +30,7 @@ function V3Content() {
         <Row icon="⬡" title="Pips and colors">Paying a cost is <b>colorblind</b> — exhaust any resources. A card's <b>pips</b> are a residency requirement instead: one red pip needs a red-providing card <i>living in your bank</i>, ready or spent. Multi-color cards provide every color they show.</Row>
         <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, attack, <b>use a Sneak ability</b>, <b>salvage an orphaned upgrade</b>, or pass. <b>Two passes in a row end the round.</b> Passing is soft: if they act after you passed, you can act again.</Row>
         <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
-        <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives one free move the round it arrives.</Row>
+        <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives one free move each round.</Row>
         <Row icon="⚔" title="Attack — the duel law">Exhaust <b>one or more ready units in a zone</b> and name one target. <b>Attack a unit alone and nobody may block</b> — except a ready <b>Guard</b>, who may step in front of the target and take the whole hit (one Guard only). <b>Attack a base</b> and the window is always open — <b>any ready unit may block</b>, however few attack; the base is everyone's to defend. <b>Attack in a gang</b> and the defense opens: the defender pairs ready units onto your attackers freely, and <b>blocking exhausts</b> (Guards block free). Pairs trade blows at once; gang damage pours in pair order. Unblocked attackers hit the declared target full-force — and the target <b>strikes back, even while exhausted</b>: its power is poured across the unblocked attackers (biggest first), felling as many as it can pay for, so a lone attacker eats it whole but a gang splits it. Certainty travels alone; numbers can be answered.</Row>
       </div>
 
@@ -47,7 +47,7 @@ function V3Content() {
       <H>Reading the board</H>
       <div className="mt-2 flex flex-col gap-2">
         <Row icon="⟳" title="Exhausted">Dimmed with a ⟳ — already acted; readies at the start of its owner's next round.</Row>
-        <Row icon="💨" title="Rush ready">Its <b>one free move</b> the round it arrived — move <i>without</i> exhausting, then it can still fight.</Row>
+        <Row icon="💨" title="Rush ready">Its <b>free move for this round</b> — move <i>without</i> exhausting, then it can still fight. It refreshes every round.</Row>
         <Row icon="⛨" title="Shielded">Carries its shield token: the <b>first</b> hit is prevented entirely, then the ⛨ disappears — what you see is what's live.</Row>
         <Row icon="⛓" title="Captives">A ⛓ on a unit means it holds an enemy unit <b>under it</b>, off the board. The grip breaks only one way: <b>when the capturer dies</b>, the captive returns to that zone, <b>ready</b>. There is no letting go — kill the jailer to free the prisoner.</Row>
         <Row icon="↑" title="Orphaned upgrades">When a unit dies, its upgrades stay <b>lying in the zone</b> as dashed ↑ tokens. Either player may tap one to <b>salvage</b> it onto their own unit there — paying its full cost and pips, as if played.</Row>
@@ -58,7 +58,7 @@ function V3Content() {
 
       <H>Keywords in one line</H>
       <p className="mt-2 text-[13px] leading-relaxed text-body/90">
-        <b>Rush</b> one free move on arrival · <b>Breakthrough</b> kills its blocker → <i>all</i> excess pushes to the original target (and in the enemy Home, past a killed unit target into the base) ·
+        <b>Rush</b> one free move each round · <b>Breakthrough</b> kills its blocker → <i>all</i> excess pushes to the original target (and in the enemy Home, past a killed unit target into the base) ·
         <b> Ranged N</b> exhaust to volley N at any enemy unit, any zone (its attacks are ordinary) · <b>Guard</b> the only block against a lone attacker on a unit (base attacks stay open to all); always blocks free ·
         <b> Hidden</b> while ready it can't be targeted or attacked; exhausting reveals it · <b>Infiltrate</b> deploys to any zone ·
         <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under until the holder dies; it returns ready ·
@@ -99,7 +99,7 @@ function V2Content() {
         <Row icon="🔄" title="Start of round">Both players, in turn, ready all their cards, <b>draw 2</b>, and may <b>bank one card</b> face-up as a resource (permanent — each pays 1 toward costs, forever). Then the action loop opens.</Row>
         <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, or attack, one action each. <b>Two passes in a row end the round.</b> Passing is soft: if they take a turn after you passed, you can act again.</Row>
         <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
-        <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives a unit one free move the round it arrives.</Row>
+        <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives a unit one free move each round.</Row>
         <Row icon="⚔" title="Attack">Pick <b>one or more ready units in the same zone</b> — they strike together as one combined hit. Then the defender chooses: <b>intercept</b> (throw a ready unit in front — free if it's a Guard) or let it through. In a multi-attack, the counter lands on the <b>highest-power attacker</b>. You can only strike the enemy <b>base</b> from inside <i>their</i> Home zone. Massing attackers is the answer to armor — armor is subtracted once from the whole hit.</Row>
         <Row icon="↑" title="Upgrade pressure">A classic-only tax: whenever a unit gains its <b>second (or later) upgrade</b>, your opponent gains 1 Influence. Greed is noticed.</Row>
       </div>
@@ -107,7 +107,7 @@ function V2Content() {
       <H>Reading the board</H>
       <div className="mt-2 flex flex-col gap-2">
         <Row icon="⟳" title="Exhausted">Dimmed with a ⟳ — already acted; readies at the start of its owner's next round.</Row>
-        <Row icon="💨" title="Rush ready">Its <b>one free move</b> the round it arrived — move <i>without</i> exhausting, then it can still fight.</Row>
+        <Row icon="💨" title="Rush ready">Its <b>free move for this round</b> — move <i>without</i> exhausting, then it can still fight. It refreshes every round.</Row>
         <Row icon="⛓" title="Imprisoned">Can't attack, move, intercept, or use abilities. Prisons cost the jailer 1 influence at the start of each round and shatter if the jailer's influence goes negative.</Row>
         <Row icon="🛡" title="Guard">Can <b>intercept an attack in its zone without exhausting</b> — step in front of a targeted ally or the base. ◈ is armor: every hit is reduced by that much.</Row>
         <Row icon="⚑" title="Flagged card">A prototype ruling was needed for this card's printed text — hover/long-press to read it.</Row>
@@ -115,7 +115,7 @@ function V2Content() {
 
       <H>Keywords in one line</H>
       <p className="mt-2 text-[13px] leading-relaxed text-body/90">
-        <b>Rush</b> one free move the round it arrives · <b>Breakthrough N</b> spills up to N excess damage onto the owner when it kills ·
+        <b>Rush</b> one free move each round · <b>Breakthrough N</b> spills up to N excess damage onto the owner when it kills ·
         <b> Overextend N</b>: an optional gamble when attacking — +N power now, N self-damage at end of round ·
         <b> Ranged</b> shoots adjacent zones, never bases · <b>Reach</b> attacks adjacent zones normally · <b>Guard</b> intercepts free.
       </p>
