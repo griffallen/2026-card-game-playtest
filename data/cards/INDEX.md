@@ -11,6 +11,7 @@
 | [Reckless Abandon](red/reckless-abandon.md) | — | 0 | action | — |  | canon | Pay any number of resources. Lose X Influence: one of your units gets +X Power and Breakthrough this round. |
 | [Reckless Charge](red/reckless-charge.md) | — | 0 | action | — |  | canon | Choose one — move one of your units one zone, even if exhausted (this doesn't exhaust it); OR target unit gets +1 Power this round for each other red unit in its zone (either side's). |
 | [Smash Through](red/smash-through.md) | — | 0 | action | — |  | canon | Target unit with Rush gains Breakthrough this round. |
+| [Warpath](red/warpath.md) | — | 0 | action | — |  | canon | X is your current Influence. Each of your units gets +Power this round equal to half of X, rounded down. If X is positive, you lose X life. If X is negative, your opponent gains 1 Influence. At 0 Influence, nothing happens. |
 | [Cinder Initiate](red/cinder-initiate.md) | — | 1 | unit | 2/1 | rush | canon | Rush. |
 | [Devastating Strike](red/devastating-strike.md) | — | 1 | action | — |  | canon | Deal 2 damage to target unit — 3 instead if it's already damaged. |
 | [Searing Bolt](red/searing-bolt.md) | — | 1 | action | — |  | canon | Deal 2 damage to any target. |
@@ -20,7 +21,6 @@
 | [Cataclysmic Charge](red/cataclysmic-charge.md) | — | 2 | action | — |  | canon | Target unit gets +3 Power and Breakthrough this round. |
 | [Flameblade Raider](red/flameblade-raider.md) | — | 2 | unit | 4/1 | rush, breakthrough | canon | Rush. Breakthrough. When this unit dies, gain 1 Influence — and 1 more if it died defeating a unit (a trade counts). |
 | [Pillage](red/pillage.md) | — | 2 | action | — |  | canon | Destroy target enemy upgrade. |
-| [Warpath](red/warpath.md) | — | 2 | action | — |  | canon | Your units get +1 Power this round. |
 | [Bloodfrenzy](red/bloodfrenzy.md) | — | 3 | upgrade | — |  | canon | Attached unit gets +1 Power and +1 Health and Breakthrough. If you have Influence 0 or less, this unit gets +2 Power and +2 Health instead. |
 | [Collateral Damage](red/collateral-damage.md) | — | 3 | action | — |  | canon | Deal 2 damage to two different target units. |
 | [Fiery Impaler](red/fiery-impaler.md) | — | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to a unit of your choice in the same zone. If that unit dies, gain +1 influence. |
@@ -77,7 +77,7 @@
 | [Light of Authority](yellow/light-of-authority.md) | — | 4 | action | — |  | canon | Target unit gets +3 Power this round. |
 | [Resolve Banner](yellow/resolve-banner.md) | — | 4 | upgrade | — |  | canon | Attach to unit. This unit gains +1 Health and +1 Armor. Other friendly units in this zone get +1 Power. If this becomes unattached, it can be picked up for 0 resources by a friendly unit. This can't be picked up by an opponent. This upgrade can be passed to a friendly unit in the same zone for 2 resources as an action, any number of times. |
 | [Censer of Purity](yellow/censer-of-purity.md) | — | 5 | unit | 0/6 |  | canon | At the start of your round, lose 1 Influence and heal 2 damage from your base. |
-| [Custodian of Law](yellow/custodian-of-law.md) | — | 5 | unit | 2/5 | guard | canon | Guard. When this defends, gain 2 Influence. |
+| [Custodian of Law](yellow/custodian-of-law.md) | — | 5 | unit | 2/5 | guard | canon | Guard. |
 | [Dawnspear Paladin](yellow/dawnspear-paladin.md) | — | 5 | unit | 3/3 |  | canon | When this unit is attacked, it gains +1 Power for each attacker, this round. |
 | [Radiant Judgment](yellow/radiant-judgment.md) | — | 5 | action | — |  | canon | Gain 1 Influence. Then exhaust every enemy unit whose cost is no more than your current Influence. If your Influence is below 1, gain 1 Influence for each enemy unit in your Home zone. |
 | [Radiant Wall](yellow/radiant-wall.md) | — | 5 | action | — |  | canon | Target unit gets Armor 3, permanently. Gain 1 Influence. |

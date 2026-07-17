@@ -52,9 +52,13 @@ export type PerCount =
   /** #85 (Aura of Resolve): the per-round death ledger — units OWNED by the controller ('friendly')
    *  or the opponent ('enemy') that have died so far this round (created copies that vanish count). */
   | { count: 'deathsThisRound'; side: 'friendly' | 'enemy' }
+  /** #107 (Warpath): the controller's LIVE |Influence| (magnitude — sign-independent, so the buff
+   *  is a positive pump whether you're ahead or behind). `half` → floor(|Influence| / 2): Warpath
+   *  pumps the board by half your Influence, rounded down. */
+  | { count: 'influence'; half?: boolean }
 
 export type Op =
-  | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number | 'linked'; bonusIfDamaged?: number; per?: PerCount }  // 'linked' = the amount from the previous linking op (v3, spec §3)  // autoSplash: strongest other enemy unit in the attack target's zone  // per (#85): scale n by a live count (e.g. enemy deaths this round)
+  | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number | 'linked'; bonusIfDamaged?: number; per?: PerCount; cond?: Cond }  // 'linked' = the amount from the previous linking op (v3, spec §3)  // autoSplash: strongest other enemy unit in the attack target's zone  // per (#85): scale n by a live count (e.g. enemy deaths this round)  // cond (#107 Warpath): the hit fires only while the controller's state holds — Warpath's self-life price is paid only while ahead on Influence
   | { op: 'damageFilter'; f: UnitFilter; n: number; creditsKills?: boolean }  // creditsKills (#107 Crimson Behemoth): the source unit's onKill fires for every unit this AoE fells — friend or foe (decision 74: lethality is the test)
   | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number; per?: PerCount }  // chosen may be unitOrBase; per scales n (PR #71)
   | { op: 'draw'; n: number }

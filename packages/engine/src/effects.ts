@@ -82,6 +82,11 @@ function perCount(ctx: FxCtx, per: PerCount | undefined): number {
   if (per.count === 'deathsThisRound') {
     return ctx.state.deaths[per.side === 'friendly' ? ctx.controller : other(ctx.controller)]
   }
+  // #107 (Warpath): the controller's live Influence magnitude; `half` floors half of it (the board pump)
+  if (per.count === 'influence') {
+    const m = Math.abs(influenceFor(ctx.state, ctx.controller))
+    return per.half ? Math.floor(m / 2) : m
+  }
   return filterUnits(ctx, per.f).length
 }
 
@@ -200,6 +205,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
     if (state.winner !== null) return
     switch (op.op) {
       case 'damage': {
+        if (!condHolds(state, controller, op.cond)) break            // #107 (Warpath): the self-life price is paid only while the controller's state holds (ahead on Influence)
         const raw = op.n === 'linked' ? (ctx.linked ?? 0) : op.n     // v3: "that much" (spec §3)
         const base = op.per ? raw * perCount(ctx, op.per) : raw       // #85: scale by a live count
         const src = ctx.srcLabel ?? ''   // #74: name the card behind effect damage so the recap can show it

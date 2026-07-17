@@ -134,11 +134,14 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       checkTargetRef(p.f)
     } else if (p.count === 'deathsThisRound') {   // #85: the per-round death ledger
       if (!['friendly', 'enemy'].includes((p as { side?: string }).side ?? '')) err("per:{count:'deathsThisRound'} needs side friendly|enemy")
+    } else if (p.count === 'influence') {   // #107 (Warpath): |controller Influence|, optionally halved
+      const h = (p as { half?: unknown }).half
+      if (h !== undefined && typeof h !== 'boolean') err("per:{count:'influence'} half must be true/false")
     } else err(`bad per count ${String(p.count)}`)
   }
 
   switch (op.op) {
-    case 'damage': checkTargetRef(op.t); if (op.n !== 'linked' && !isInt(op.n, 0)) err('bad n'); if (op.bonusIfDamaged !== undefined && !isInt(op.bonusIfDamaged, 1, 10)) err('bad bonusIfDamaged'); checkPer(op.per); break
+    case 'damage': checkTargetRef(op.t); if (op.n !== 'linked' && !isInt(op.n, 0)) err('bad n'); if (op.bonusIfDamaged !== undefined && !isInt(op.bonusIfDamaged, 1, 10)) err('bad bonusIfDamaged'); checkPer(op.per); for (const k of Object.keys(op.cond ?? {})) if (!COND_KEYS.has(k)) err(`unknown condition ${k}`); break   // #107 (Warpath): gated self-life price
     case 'capture': checkTargetRef(op.t); break
     case 'clearDamage': checkTargetRef(op.t); break
     case 'countBuff': checkTargetRef(op.t); if (!isInt(op.p, 1, 10)) err('bad countBuff p'); break

@@ -115,6 +115,51 @@
   ],
   "artUrl": "/cards/smash-through.jpg"
  },
+ "warpath": {
+  "onPlay": [
+   {
+    "op": "buff",
+    "t": {
+     "side": "friendly"
+    },
+    "p": 1,
+    "dur": "round",
+    "per": {
+     "count": "influence",
+     "half": true
+    }
+   },
+   {
+    "op": "damage",
+    "t": "selfBase",
+    "n": 1,
+    "per": {
+     "count": "influence"
+    },
+    "cond": {
+     "influenceAtLeast": 1
+    }
+   },
+   {
+    "op": "influence",
+    "n": -1,
+    "cond": {
+     "influenceAtMost": -1
+    }
+   }
+  ],
+  "slug": "warpath",
+  "name": "Warpath",
+  "color": "red",
+  "type": "action",
+  "cost": 0,
+  "text": "X is your current Influence. Each of your units gets +Power this round equal to half of X, rounded down. If X is positive, you lose X life. If X is negative, your opponent gains 1 Influence. At 0 Influence, nothing happens.",
+  "pips": [
+   "red"
+  ],
+  "designerNote": "Session 006 redesign: was \"all friendly units gain Rush\" permanently — dead text under decision 41 (see Reckless Charge). Rebuilt as the go-wide pump: 2 mana, +1 Power to the whole board for the round. Last Stand (+2 and a blood price) is its big sibling.\n\n2026-07-16 (#107 balance pass — Griff's red influence-economy rework, locked in session 013): Warpath now spends the Influence track as fuel. Cost 2 → 0. The board pump scales to HALF your Influence magnitude, rounded down (+3 to the whole board at Influence 6), and the price flips with the sign — ahead on the track you pay the FULL magnitude in life; behind, your opponent gains 1 Influence instead (no life paid). At Influence 0 it is a clean no-op. Half-Power / full-Life is Griff's own tuning: his raw #107 text was full-X Power, and he halved the bump on-thread to pull the ceiling down (+3 not +6 at Influence 6) while keeping the full-life sting so being ahead still hurts to fire. The buff reads |Influence| (a positive pump whether ahead or behind); only the sign chooses the price. Rounding is floor — half, rounded down (the engine's standard; +5 Influence → +2 to the board). New engine plumbing: a per:{count:'influence',half?} count (live |Influence|, optionally halved) and a cond on the damage op (the self-life price fires only while ahead). ⚑ ratify/veto.",
+  "artUrl": "/cards/warpath.jpg"
+ },
  "cinder-initiate": {
   "slug": "cinder-initiate",
   "name": "Cinder Initiate",
@@ -366,29 +411,6 @@
   ],
   "designerNote": "Session 006: 4 mana → 2. Utility removal was priced like a threat; yellow runs seven upgrades and red needs a real answer at a price it can pay mid-assault.",
   "artUrl": "/cards/pillage.jpg"
- },
- "warpath": {
-  "onPlay": [
-   {
-    "op": "buff",
-    "t": {
-     "side": "friendly"
-    },
-    "p": 1,
-    "dur": "round"
-   }
-  ],
-  "slug": "warpath",
-  "name": "Warpath",
-  "color": "red",
-  "type": "action",
-  "cost": 2,
-  "text": "Your units get +1 Power this round.",
-  "pips": [
-   "red"
-  ],
-  "designerNote": "Session 006 redesign: was \"all friendly units gain Rush\" permanently — dead text under decision 41 (see Reckless Charge). Rebuilt as the go-wide pump: 2 mana, +1 Power to the whole board for the round. Last Stand (+2 and a blood price) is its big sibling.",
-  "artUrl": "/cards/warpath.jpg"
  },
  "bloodfrenzy": {
   "statics": [
@@ -1890,12 +1912,6 @@
   "artUrl": "/cards/censer-of-purity.jpg"
  },
  "custodian-of-law": {
-  "onDefend": [
-   {
-    "op": "influence",
-    "n": 2
-   }
-  ],
   "slug": "custodian-of-law",
   "name": "Custodian of Law",
   "color": "yellow",
@@ -1903,7 +1919,7 @@
   "cost": 5,
   "power": 2,
   "health": 5,
-  "text": "Guard. When this defends, gain 2 Influence.",
+  "text": "Guard.",
   "kw": [
    {
     "k": "guard"
@@ -1913,7 +1929,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): power 4 → 3 — decision-85 walk-back, same tier. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.",
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): power 4 → 3 — decision-85 walk-back, same tier. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.\n\n2026-07-16 (#104 balance pass — Griff: \"keep Guard, remove other text. Power 2, Health 5\"): the on-defend +2 Influence payout is cut — the Custodian is now a plain 2/5 Guard wall, no influence engine. The stats were already 2/5 (set in the Phase 1 numbers pass), so #104's only remaining change is removing the payout: text trimmed to \"Guard.\" and the onDefend influence effect deleted. Supersedes the decision-34 defend-payout note above; part of yellow's influence-clock slowdown across the pass. ⚑ ratify/veto.",
   "artUrl": "/cards/custodian-of-law.jpg"
  },
  "dawnspear-paladin": {
