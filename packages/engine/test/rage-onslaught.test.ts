@@ -69,69 +69,69 @@ describe('attackTax (Unchained Rage, PR #39)', () => {
   })
 })
 
-describe('doom (Final Onslaught, PR #38)', () => {
-  it('kills the readied unit after a non-attack extra action, with no victims', () => {
+// #107 rework: doom no longer kills "units the attack wounded" — it immolates the readied unit
+// (Y = its remaining Health, always lethal) and pours Y over every OTHER unit in its zone, yours too.
+describe('doom (Final Onslaught, #107 rework)', () => {
+  it('after a non-attack action, the readied unit dies and blasts Y = its Health across the zone (friend + foe)', () => {
     let s = g()
-    const me = s.actorSeat
-    const vet = put(s, me, 'brute', 1, { exhausted: true })
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const home = me === 0 ? 0 : 2
+    const vet = put(s, me, 'brute', home, { exhausted: true })   // 4/3 → Y = 3
+    const ally = put(s, me, 'wall', 1)                           // neutral 0/5 → takes 3, survives (friendly fire)
+    const foe = put(s, them, 'soldier', 1)                       // neutral 2/2 → takes 3, dies
     const finale = toHand(s, me, 'finale')
     s = applyAction(s, { type: 'play', card: finale, targets: [{ kind: 'unit', id: vet }] }, me).state
     expect(s.units[vet].exhausted).toBe(false)     // readied
     expect(s.doom).toEqual({ unit: vet, seat: me, stage: 'waiting' })
     expect(s.actorSeat).toBe(me)                   // extra action window
-    s = applyAction(s, { type: 'move', unit: vet, to: 0 }, me).state
-    expect(s.units[vet]).toBeUndefined()           // the onslaught ends
+    s = applyAction(s, { type: 'move', unit: vet, to: 1 }, me).state   // carry vet into the crowd
+    expect(s.units[vet]).toBeUndefined()           // always dies
+    expect(s.units[foe]).toBeUndefined()           // ate Y = 3
+    expect(s.units[ally]).toBeDefined()
+    expect(s.units[ally].damage).toBe(3)           // own unit takes Y too
     expect(s.doom).toBeNull()
   })
 
-  it('after an unblocked attack, the doomed unit AND the unit it wounded both die', () => {
+  it('Y is the doomed unit\'s REMAINING Health, not its printed Health', () => {
     let s = g()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
-    const vet = put(s, me, 'brute', 1, { exhausted: true })      // 4 power
-    const wall = put(s, them, 'wall', 1, { exhausted: true })    // 0/5 — survives 4, then dooms
+    const home = me === 0 ? 0 : 2
+    const vet = put(s, me, 'brute', home, { exhausted: true, damage: 1 })  // 4/3 with 1 damage → Y = 2
+    const dies = put(s, them, 'soldier', 1)   // 2/2 → takes 2, dies
+    const lives = put(s, them, 'brute', 1)    // 4/3 → takes 2, survives
     const finale = toHand(s, me, 'finale')
     s = applyAction(s, { type: 'play', card: finale, targets: [{ kind: 'unit', id: vet }] }, me).state
-    s = applyAction(s, { type: 'attack', attackers: [vet], target: { kind: 'unit', id: wall } }, me).state
-    // no ready defender → resolves inside the declaration; the extra action IS the attack
-    expect(s.units[vet]).toBeUndefined()
-    expect(s.units[wall]).toBeUndefined()
-    expect(s.doom).toBeNull()
-    expect(s.doomVictims).toEqual([])
+    s = applyAction(s, { type: 'move', unit: vet, to: 1 }, me).state
+    expect(s.units[dies]).toBeUndefined()
+    expect(s.units[lives]).toBeDefined()
+    expect(s.units[lives].damage).toBe(2)     // Y = 2, not the printed 3
   })
 
-  it('through a block window: wounded blocker dies with it; an untouched bystander does not', () => {
+  it('the self-hit ALWAYS kills — armor the Y damage could not pierce does not save the doomed unit', () => {
     let s = g()
-    const me = s.actorSeat, them = (1 - me) as 0 | 1
-    const vet = put(s, me, 'brute', 1, { exhausted: true })      // 4/3
-    const wall = put(s, them, 'wall', 1)                          // 0/5 target — blocks a1 itself? no: bystander
-    const tank = put(s, them, 'mastiff', 1)                       // 4/3 GUARD blocker (decision 98), counters 4
+    const me = s.actorSeat
+    const home = me === 0 ? 0 : 2
+    const vet = put(s, me, 'plated', home, { exhausted: true })  // 2/3, Armor 2 → Y = 3, which armor would blunt to 1
     const finale = toHand(s, me, 'finale')
     s = applyAction(s, { type: 'play', card: finale, targets: [{ kind: 'unit', id: vet }] }, me).state
-    s = applyAction(s, { type: 'attack', attackers: [vet], target: { kind: 'unit', id: wall } }, me).state
-    expect(s.phase).toBe('block')
-    s = applyAction(s, { type: 'block', pairs: [{ blocker: tank, onto: vet }] }, them).state
-    // simultaneous: tank (3h) dies to the 4-power pour; vet takes 4 and dies in combat anyway.
-    // no breakthrough → nothing reached the wall → the wall is NOT a victim and lives.
-    expect(s.units[vet]).toBeUndefined()
-    expect(s.units[tank]).toBeUndefined()
-    expect(s.units[wall]).toBeDefined()
+    s = applyAction(s, { type: 'move', unit: vet, to: 1 }, me).state
+    expect(s.units[vet]).toBeUndefined()      // destroyed outright — armor never saves the doomed
     expect(s.doom).toBeNull()
   })
 
-  it('a blocker that survives the pour still dies to the doom afterward', () => {
+  it('if the readied unit dies during its own action, there is no detonation', () => {
     let s = g()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
-    const vet = put(s, me, 'soldier', 1, { exhausted: true })    // 2/2
-    const wall = put(s, them, 'wall', 1)                          // target
-    const tank = put(s, them, 'mastiff', 1)                       // 4/3 GUARD blocker: takes 2, survives, counters 4
+    const vet = put(s, me, 'soldier', 1, { exhausted: true })          // 2/2 in neutral
+    const guard = put(s, them, 'mastiff', 1)                           // 4/3 GUARD — blocks and its counter kills vet
+    const bystander = put(s, them, 'soldier', 1, { exhausted: true })  // neutral — would eat a blast if one came
     const finale = toHand(s, me, 'finale')
     s = applyAction(s, { type: 'play', card: finale, targets: [{ kind: 'unit', id: vet }] }, me).state
-    s = applyAction(s, { type: 'attack', attackers: [vet], target: { kind: 'unit', id: wall } }, me).state
-    s = applyAction(s, { type: 'block', pairs: [{ blocker: tank, onto: vet }] }, them).state
-    // vet died to the counter, but its attack wounded the tank — the doom still collects
-    expect(s.units[vet]).toBeUndefined()
-    expect(s.units[tank]).toBeUndefined()
-    expect(s.units[wall]).toBeDefined()
+    s = applyAction(s, { type: 'attack', attackers: [vet], target: { kind: 'unit', id: guard } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: guard, onto: vet }] }, them).state
+    expect(s.units[vet]).toBeUndefined()          // vet fell in combat, before the immolation step
+    expect(s.units[bystander]).toBeDefined()
+    expect(s.units[bystander].damage).toBe(0)     // nothing left to immolate → no zone blast
     expect(s.doom).toBeNull()
   })
 })

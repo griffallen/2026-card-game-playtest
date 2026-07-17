@@ -297,21 +297,23 @@ describe('start-of-round engines', () => {
   })
 })
 
-describe('base-assault splash (Crimson Behemoth, re-ruled playtest 004)', () => {
-  it('splashes 2 onto every other unit in the defended home zone, both sides', () => {
+describe('on-attack zone splash (Crimson Behemoth, #107)', () => {
+  it('splashes 2 onto every other unit in its zone, both sides, and pays 1 per collateral kill', () => {
     let { s, p1, p2 } = arena()
     const behemoth = put(s, p1, 'crimson-behemoth', homeZone(p2))
-    const friendly = put(s, p1, 'cinder-initiate', homeZone(p2))     // 1/1 — collateral
-    const defender = put(s, p2, 'hierophant', homeZone(p2))          // 2/6
-    const bystander = put(s, p2, 'bulwark-protector', 1)             // neutral — untouched now
+    const friendly = put(s, p1, 'cinder-initiate', homeZone(p2))     // 2/1 — own collateral, dies
+    const defender = put(s, p2, 'hierophant', homeZone(p2))          // 2/6 — survives the 2
+    const bystander = put(s, p2, 'bulwark-protector', 1)             // neutral — zone-scoped, untouched
+    const before = influenceFor(s, p1)
+    // the splash now fires on the attack DECLARATION (onAttack), before the intercept window
     s = act(s, p1, { type: 'attack', attackers: [behemoth], target: { kind: 'base', seat: p2 } })
-    // hierophant is a ready defender in the home zone → decline the intercept so the base takes the hit
     if (s.phase === 'intercept') s = act(s, p2, { type: 'declineIntercept' })
     expect(s.sides[p2].life).toBe(20 - 6)
     expect(s.units[defender].damage).toBe(2)
-    expect(s.units[friendly]).toBeUndefined()                        // own 1/1 died to the splash
+    expect(s.units[friendly]).toBeUndefined()                        // own 2/1 died to the splash
     expect(s.units[bystander].damage).toBe(0)
     expect(s.units[behemoth].damage).toBe(0)                         // never splashes itself
+    expect(influenceFor(s, p1) - before).toBe(1)                     // +1 for felling its own collateral (#107)
   })
 })
 

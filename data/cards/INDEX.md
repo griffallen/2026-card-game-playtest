@@ -32,8 +32,8 @@
 | [Execution Swing](red/execution-swing.md) | — | 4 | action | — |  | canon | Destroy target damaged unit. |
 | [Inferno Titan](red/inferno-titan.md) | — | 4 | unit | 4/6 | breakthrough, scar | canon | Breakthrough. Scar. |
 | [Rupture](red/rupture.md) | — | 4 | action | — |  | canon | Deal 4 damage to target unit or base. |
-| [Crimson Behemoth](red/crimson-behemoth.md) | — | 5 | unit | 6/6 |  | canon | When this attacks a base, it deals 2 damage to every other unit in that zone — yours included. |
-| [Final Onslaught](red/final-onslaught.md) | — | 5 | action | — |  | canon | Ready one of your units, then immediately take an extra action. After the action, kill this unit and any unit damaged by this unit's attack. |
+| [Crimson Behemoth](red/crimson-behemoth.md) | — | 5 | unit | 6/6 |  | canon | When this attacks, deal 2 damage to each other unit in its zone, yours included. When this kills a unit, gain 1 Influence. |
+| [Final Onslaught](red/final-onslaught.md) | — | 5 | action | — |  | canon | Ready one of your units and take an action with it. Then deal it damage equal to its remaining Health — it dies — and deal that much damage to each other unit in its zone, yours included. |
 | [Scorching Howl](red/scorching-howl.md) | — | 5 | action | — |  | canon | Deal 3 damage to all units. |
 | [Warlord Garok](red/warlord-garok.md) | — | 5 | unit | 5/5 | rush | canon | Rush. Your other units have +1 Power. |
 | [Burn the Frontline](red/burn-the-frontline.md) | — | 6 | action | — |  | canon | Choose a zone. Deal 6 damage to every unit there — yours included. |

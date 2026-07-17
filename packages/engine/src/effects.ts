@@ -271,7 +271,19 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'damageFilter': {
-        for (const u of filterUnits(ctx, op.f)) damageUnit(state, u, op.n, ctx.srcLabel ?? '')
+        // #107 (Crimson Behemoth): with creditsKills, the source's onKill fires for every unit this
+        // AoE fells — friend or foe. Batch the damage first, then credit (decision 74: a kill is a
+        // kill; lethality is the test), mirroring how combat lands all blows before crediting kills.
+        const killer = op.creditsKills && ctx.sourceUnit ? unitById(state, ctx.sourceUnit) : undefined
+        const felled: string[] = []
+        for (const u of filterUnits(ctx, op.f)) {
+          damageUnit(state, u, op.n, ctx.srcLabel ?? '')
+          if (killer && state.units[u.id] && u.damage >= effHealth(state, u)) felled.push(u.id)
+        }
+        for (const id of felled) {
+          if (state.winner !== null) break
+          if (state.units[killer!.id]) fireTrigger({ state, attackTarget: { kind: 'unit', id }, actorSeat: ctx.actorSeat }, killer!, 'onKill')
+        }
         break
       }
       case 'heal': {

@@ -709,7 +709,7 @@
   "artUrl": "/cards/rupture.jpg"
  },
  "crimson-behemoth": {
-  "onAttackBase": [
+  "onAttack": [
    {
     "op": "damageFilter",
     "f": {
@@ -717,7 +717,14 @@
      "zone": "sameAsSelf",
      "other": true
     },
-    "n": 2
+    "n": 2,
+    "creditsKills": true
+   }
+  ],
+  "onKill": [
+   {
+    "op": "influence",
+    "n": 1
    }
   ],
   "slug": "crimson-behemoth",
@@ -727,12 +734,12 @@
   "cost": 5,
   "power": 6,
   "health": 6,
-  "text": "When this attacks a base, it deals 2 damage to every other unit in that zone — yours included.",
+  "text": "When this attacks, deal 2 damage to each other unit in its zone, yours included. When this kills a unit, gain 1 Influence.",
   "pips": [
    "red",
    "red"
   ],
-  "designerNote": "Re-ruled after playtest 004: the assault splashes the defended Home zone, both sides (the original \"adjacent zones\" reading only ever hit Neutral — dead text during a siege). Session 006: 6/6 → 6/5 to sit on the statline grammar, and the text now says what actually happens.",
+  "designerNote": "#107 balance pass (2026-07-16). Two changes fold in Griff's red-influence-economy ruling. First, the splash moved off the base-only trigger onto every attack — \"attacks a zone\" now fires whenever the Behemoth declares an attack (unit or base), dealing 2 to each other unit in ITS zone (the combat zone). It stays zone-scoped: Griff's terse text dropped the \"in the zone\" qualifier, but every discussion in #107 says \"in the zone / a crowded zone,\" and the engine already spoke `zone: sameAsSelf` — board-wide was the less defensible reading. Second, it now earns 1 Influence for every unit it kills, its own collateral included (Griff #107: \"any unit that gets killed, even your own, gets the Influence\"). The splash credits kills via the new damageFilter `creditsKills` flag; ordinary combat kills credit through the standard onKill path. Health stayed 6 (set in phase 1). Prior history: re-ruled playtest 004 to splash the defended Home both sides; session 006 trimmed 6/6 → 6/5, since restored to 6/6.",
   "artUrl": "/cards/crimson-behemoth.jpg"
  },
  "final-onslaught": {
@@ -761,13 +768,13 @@
   "color": "red",
   "type": "action",
   "cost": 5,
-  "text": "Ready one of your units, then immediately take an extra action. After the action, kill this unit and any unit damaged by this unit's attack.",
+  "text": "Ready one of your units and take an action with it. Then deal it damage equal to its remaining Health — it dies — and deal that much damage to each other unit in its zone, yours included.",
   "pips": [
    "red",
    "red",
    "red"
   ],
-  "designerNote": "Decision 43: rounds have no extra turns — \"extra turn\" became ready one of your units + an extra action. Unplayable with no friendly unit to ready, by design.",
+  "designerNote": "Decision 43: rounds have no extra turns — \"extra turn\" became ready one of your units + an extra action. Unplayable with no friendly unit to ready, by design.\n\n#107 rework (2026-07-16). The doom stopped killing \"units the attack wounded\" and became a self-immolation bomb: Y = the readied unit's remaining Health, the unit always dies (Griff #107: \"it ensures it dies, thus its final onslaught\"), then Y is dealt to every other unit in its zone — friend and foe (Griff: \"damage hits all units, even your own\"). The card's effects are unchanged (ready → extraAction → doom); only the doom's execution in the engine changed. Two edges to know: (1) \"always dies\" is a guaranteed destroy, so armor/Shielded on the doomed unit never saves it (dealing Y-as-damage would let armor blunt it below lethal — the ruling says it always dies, so the engine destroys it). (2) The engine's extra action is generic — it does not force the action to be taken WITH the readied unit, and if that unit dies during its own action there is nothing left to immolate (no blast). Both flagged to Blaine at build time.",
   "artUrl": "/cards/final-onslaught.jpg"
  },
  "scorching-howl": {

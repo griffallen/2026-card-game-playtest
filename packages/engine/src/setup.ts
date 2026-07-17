@@ -96,7 +96,6 @@ export function createGame(opts: CreateGameOpts): GameState {
     captives: {},
     attackTaxes: [],
     doom: null,
-    doomVictims: [],
     upgrades: {},
     preventBase: [0, 0],
     homeWard: [false, false],

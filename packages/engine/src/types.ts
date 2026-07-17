@@ -55,7 +55,7 @@ export type PerCount =
 
 export type Op =
   | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number | 'linked'; bonusIfDamaged?: number; per?: PerCount }  // 'linked' = the amount from the previous linking op (v3, spec §3)  // autoSplash: strongest other enemy unit in the attack target's zone  // per (#85): scale n by a live count (e.g. enemy deaths this round)
-  | { op: 'damageFilter'; f: UnitFilter; n: number }
+  | { op: 'damageFilter'; f: UnitFilter; n: number; creditsKills?: boolean }  // creditsKills (#107 Crimson Behemoth): the source unit's onKill fires for every unit this AoE fells — friend or foe (decision 74: lethality is the test)
   | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number; per?: PerCount }  // chosen may be unitOrBase; per scales n (PR #71)
   | { op: 'draw'; n: number }
   | { op: 'influence'; n: number; per?: PerCount; cond?: Cond; ifKilled?: boolean }   // + toward controller; per scales n (PR #70/#71); cond gates the gain (#79 Radiant Aegis); ifKilled (#107 Flameblade Raider): onDeath-only — the gain fires only if this unit felled a unit in the same combat it died in (a trade counts)
@@ -287,11 +287,11 @@ export interface GameState {
   captives: Record<string, { unit: UnitInstance; by: string; income?: number }>  // income: influence per round while held (PR #53)
   /** Unchained Rage (PR #39): while active, each of the seat's attacking units costs n influence */
   attackTaxes: { seat: Seat; n: number; rounds: number }[]
-  /** Final Onslaught (PR #38): after the granted extra action resolves, this unit and everything
-   *  its attack damaged die. stage: fresh (created this action) → waiting → spent (execute when no attack pends) */
+  /** Final Onslaught (#107): after the granted extra action resolves, the readied unit is immolated —
+   *  it ALWAYS dies (the sacrifice is the point), and Y = its remaining Health pours over every other
+   *  unit in its zone, friend and foe alike. stage: fresh (created this action) → waiting → spent
+   *  (executes when no attack pends). */
   doom: { unit: string; seat: Seat; stage: 'fresh' | 'waiting' | 'spent' } | null
-  /** transient, per-action: units damaged by the doomed unit's attack (cleared each action) */
-  doomVictims: string[]
   mulligans: [number, number]         // per-seat mulligan count (setup phase, decision 32)
   passStreak: number
   pendingExtraAction: Seat | null     // decision 43: this seat takes another action after the current resolves
