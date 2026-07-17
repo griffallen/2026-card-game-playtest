@@ -209,6 +209,28 @@ function autoImprison(ctx: FxCtx, auto: AutoPick) {
   if (pick) imprisonUnit(ctx, pick)
 }
 
+/** #104 (Lawbringer): the deterministic enemy an auto-scoped, zone-bound op arrests — the strongest
+ *  READY (non-exhausted, non-imprisoned) enemy in the resolved zone. On an onEnterZone trigger the
+ *  scope is 'enteredZone' → the zone the source just marched into (ctx.enteredZone, which equals the
+ *  source's current zone). Undefined = no eligible enemy there (a clean no-op). Mirrors the
+ *  imprison auto path (autoImprison), but skips the already-exhausted: re-exhausting a down unit is a
+ *  wasted arrest, so the law lands on one still standing. */
+function autoPickEnemy(ctx: FxCtx, auto: AutoPick): UnitInstance | undefined {
+  const { state, controller } = ctx
+  const src = ctx.sourceUnit ? unitById(state, ctx.sourceUnit) : undefined
+  let zone: ZoneId | undefined
+  if (auto.scope === 'enteredZone') zone = ctx.enteredZone ?? src?.zone
+  else if (auto.scope === 'targetZone') {
+    const t = ctx.attackTarget
+    zone = t?.kind === 'unit' ? unitById(state, t.id)?.zone : undefined
+  }
+  if (zone === undefined) return undefined
+  const cands = unitsOf(state, other(controller)).filter(u =>
+    u.zone === zone && !u.imprisoned && !u.exhausted
+    && (auto.maxPower === undefined || effPower(state, u) <= auto.maxPower))
+  return pickStrongest(state, cands)
+}
+
 export function runOps(ctx: FxCtx, ops: Op[]) {
   const { state, controller } = ctx
   for (const op of ops) {
@@ -233,7 +255,10 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'exhaust': {
-        const targets = typeof op.t === 'string' ? [resolveUnitTarget(ctx, op.t)].filter(Boolean) as UnitInstance[] : filterUnits(ctx, op.t)
+        // #104 (Lawbringer): t:'auto' arrests one auto-picked enemy in the source's (entered) zone
+        const targets = op.t === 'auto'
+          ? [autoPickEnemy(ctx, op.auto!)].filter(Boolean) as UnitInstance[]
+          : typeof op.t === 'string' ? [resolveUnitTarget(ctx, op.t)].filter(Boolean) as UnitInstance[] : filterUnits(ctx, op.t)
         for (const u of targets) { u.exhausted = true; log(state, u.owner, `${name(state, u.id)} is ordered down`) }
         break
       }

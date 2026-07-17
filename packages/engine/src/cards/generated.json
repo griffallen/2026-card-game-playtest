@@ -1798,16 +1798,13 @@
   "artUrl": "/cards/high-justiciar.jpg"
  },
  "lawbringer": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "enemy"
-   }
-  ],
   "onEnterZone": [
    {
     "op": "exhaust",
-    "t": "chosen0"
+    "t": "auto",
+    "auto": {
+     "scope": "enteredZone"
+    }
    }
   ],
   "slug": "lawbringer",
@@ -1817,7 +1814,7 @@
   "cost": 4,
   "power": 2,
   "health": 3,
-  "text": "Whenever this enters a zone, exhaust target enemy unit.",
+  "text": "Whenever this enters a zone, exhaust an enemy unit in the same zone.",
   "pips": [
    "yellow",
    "yellow"

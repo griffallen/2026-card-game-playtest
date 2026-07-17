@@ -78,7 +78,7 @@ export type Op =
   | { op: 'clearDamage'; t: OpTarget }
   | { op: 'countBuff'; t: OpTarget; per: { color?: Color; side: 'all' | 'friendly' | 'enemy'; zone: 'ofTarget'; other?: boolean }; p: number; dur: 'round' | 'perm' }  // v3 (Reckless mode B): +p per matching unit                            // v3 (Blood Rush): remove ALL damage; the amount becomes the linked value
   | { op: 'capture'; t: OpTarget; by?: 'chosen0'; income?: number }  // v3: take the enemy unit under the source unit — or a chosen warden; income = influence per round while held (PR #53)
-  | { op: 'exhaust'; t: OpTarget | UnitFilter }                   // v3 yellow: order a unit to stand down
+  | { op: 'exhaust'; t: OpTarget | 'auto' | UnitFilter; auto?: AutoPick }  // v3 yellow: order a unit to stand down. #104 (Lawbringer): t:'auto' + auto:{scope:'enteredZone'} arrests the strongest READY enemy in the zone the source just entered — the deterministic single-target auto-pick that backs onEnterZone triggers (mirrors imprison's auto path)
   | { op: 'freeCaptives' }                                        // v3 yellow: your captured units return, READY (decision 73)
   | { op: 'move'; t: OpTarget; to: 'chosenZone' }                 // decision 72: relocate the unit — exhausted or not, exhausting nothing
   | { op: 'attackTax'; n: number; rounds: number }                // PR #39 (Unchained Rage): each of your attacking units cedes n influence

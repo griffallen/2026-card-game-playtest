@@ -141,14 +141,65 @@ describe('the capture era (v3 churn pass 3 — prison is gone from canon)', () =
     expect(s.units[mine].exhausted).toBe(false)
   })
 
-  it('Lawbringer stills a room every time it marches in', () => {
-    let { s, p1, p2 } = arena()
-    const victim = put(s, p1, 'berserker', 1)
-    const law = toHand(s, p2, 'lawbringer')
-    s = act(s, p1, { type: 'pass' })
-    s = act(s, p2, { type: 'play', card: law, targets: [{ kind: 'unit', id: victim }] })
-    // enters p2's home; targeted exhaust fires on the chosen enemy anywhere? — onEnterZone targets resolve at play
-    expect(s.units[victim].exhausted).toBe(true)
+  // #104 (Griff): Lawbringer arrests an enemy IN THE ZONE IT ENTERS — auto-picked (strongest
+  // ready enemy there), on play AND on every subsequent march. No cross-zone reach, no chosen target.
+  describe('Lawbringer — arrest in the entered zone', () => {
+    it('on play, stands down the ready enemy sharing the zone it deploys into', () => {
+      let { s, p1, p2 } = arena()
+      const victim = put(s, p1, 'berserker', homeZone(p2))   // enemy standing in p2's Home
+      const law = toHand(s, p2, 'lawbringer')
+      s = act(s, p1, { type: 'pass' })
+      s = act(s, p2, { type: 'play', card: law })            // Lawbringer enters p2's Home
+      expect(s.units[victim].exhausted).toBe(true)
+    })
+
+    it('never reaches an enemy in another zone', () => {
+      let { s, p1, p2 } = arena()
+      const homeEnemy = put(s, p1, 'cinder-initiate', homeZone(p2))  // same zone as the entry
+      const farEnemy = put(s, p1, 'berserker', 1)                    // Neutral — a different zone
+      const law = toHand(s, p2, 'lawbringer')
+      s = act(s, p1, { type: 'pass' })
+      s = act(s, p2, { type: 'play', card: law })            // enters p2's Home
+      expect(s.units[homeEnemy].exhausted).toBe(true)        // the room's enemy is stood down
+      expect(s.units[farEnemy].exhausted).toBe(false)        // the Neutral enemy is untouched
+    })
+
+    it('re-arrests on every march — a fresh enemy each new zone', () => {
+      let { s, p1, p2 } = arena()
+      const law = put(s, p2, 'lawbringer', homeZone(p2), { enteredRound: 0 })  // already deployed, free to move
+      const neutralEnemy = put(s, p1, 'berserker', 1)                 // waiting in Neutral
+      const frontEnemy = put(s, p1, 'cinder-initiate', homeZone(p1))  // waiting on p1's doorstep
+      s = act(s, p1, { type: 'pass' })
+      s = act(s, p2, { type: 'move', unit: law, to: 1 })     // march into Neutral
+      expect(s.units[neutralEnemy].exhausted).toBe(true)
+      // next round the law readies and marches again — the discipline repeats in the new zone
+      s.units[law].exhausted = false
+      s.units[law].movedThisRound = false
+      s = act(s, p1, { type: 'pass' })
+      s = act(s, p2, { type: 'move', unit: law, to: homeZone(p1) })
+      expect(s.units[frontEnemy].exhausted).toBe(true)
+    })
+
+    it('picks a READY enemy over a stronger one already exhausted', () => {
+      let { s, p1, p2 } = arena()
+      const strongDown = put(s, p1, 'cinder-initiate', homeZone(p2), { exhausted: true })  // 2 power, already down
+      const readyWeak = put(s, p1, 'berserker', homeZone(p2))                               // 1 power, standing
+      const law = toHand(s, p2, 'lawbringer')
+      s = act(s, p1, { type: 'pass' })
+      s = act(s, p2, { type: 'play', card: law })
+      expect(s.units[readyWeak].exhausted).toBe(true)        // the arrest lands on the one still standing
+      expect(s.units[strongDown].exhausted).toBe(true)       // (was already exhausted)
+    })
+
+    it('does nothing when only friendlies share the entered zone', () => {
+      let { s, p1, p2 } = arena()
+      const friendly = put(s, p2, 'berserker', homeZone(p2))  // Lawbringer's own unit — never a target
+      const law = toHand(s, p2, 'lawbringer')
+      s = act(s, p1, { type: 'pass' })
+      s = act(s, p2, { type: 'play', card: law })            // enters p2's Home, no ENEMY present
+      expect(s.units[friendly].exhausted).toBe(false)        // friendlies are never arrested
+      expect(s.winner).toBeNull()                            // and nothing crashes
+    })
   })
 })
 

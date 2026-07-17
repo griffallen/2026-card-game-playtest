@@ -7,9 +7,9 @@ health: 3
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"enemy"}],"onEnterZone":[{"op":"exhaust","t":"chosen0"}]}
+effects: {"onEnterZone":[{"op":"exhaust","t":"auto","auto":{"scope":"enteredZone"}}]}
 ---
-Whenever this enters a zone, exhaust target enemy unit.
+Whenever this enters a zone, exhaust an enemy unit in the same zone.
 
 ## Design notes
 
