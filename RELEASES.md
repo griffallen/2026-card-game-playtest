@@ -8,6 +8,29 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.6.0 — 2026-07-17
+major — **the balance pass + Rush rework, cut as one build-now batch** (#104, #107, #105;
+Blaine fired). Two card-balance passes and one keyword rework, shipped across the session and
+released together.
+- **#104 (yellow):** the Politician keyword reworked to pay marching, not sitting — at round
+  end each Politician you control pays +1 Influence on a Neutral majority and +2 on an enemy-
+  Home majority, stacking; Lawbringer's arrest became a player-choice target on play and every
+  march; plus the earlier clean yellow nerfs (griffs-yellow 81.7% → 70.7% vs red). One reading
+  stays open on the thread (Politicians count anywhere vs. must stand in the zone) — live on
+  "anywhere," a one-line flip if Griff picks the other.
+- **#107 (red):** the red balance pass — Worldrender gains Rush and pierces Shield + Armor in
+  combat; Last Stand's no-exhaust pact; the pass's card changes shipped earlier at 351 green.
+- **#105 (Rush rework):** Rush is now a **static** ability like Guard — a unit with Rush makes
+  its **first move each round** for free (one zone, no exhaust), refreshing every round it
+  stays in play, instead of only the entry round. No extra action, never covers attack
+  (`rushCoversAttack` stays false). Engine change is dropping the entry-round gate from the
+  rush-free-move check; decision 41 marked SUPERSEDED. Test-first (`rush.test.ts`, 8 tests,
+  red→green) and a full cross-surface audit (issue #25): rulebook Keywords list alphabetized
+  per Griff, gloss / help panel / unit chip / spec `rules-v1.3.md` all updated, audit clean.
+365 engine tests green, typecheck 4 workspaces clean, cards:check 120 valid, playability gate
+passed. Rush-rework commit `2c3996d`; balance-pass cards shipped earlier in the session.
+Deployed.
+
 ## v0.5.0 — 2026-07-16
 minor — **combat transparency preview** (#108, Blaine). Combat is deterministic — no dice — so
 the demo now shows the exact unblocked math the moment you pick attacker(s), before you commit.
