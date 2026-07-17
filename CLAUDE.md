@@ -69,6 +69,20 @@ touching the flow. In brief:
 
 **Start:** read the handoff prompt, then check the designer's inbox — the full sweep lives in `/watch` (`.claude/skills/watch/SKILL.md`) — for card PRs or intent issues from Griff (triage: respond on the thread, review card PRs per `data/cards/README.md`, fold accepted changes into the canon). State where the project stands and what's next, confirm with the user before doing work.
 
+**Model routing — CURRENT OVERRIDE (Blaine, 2026-07-17, "for now"):** Opus decision-quality
+has drifted (it doesn't feel like the compute it had a week ago), so **every decision moves off
+Opus onto Fable** — while the loop keeps running exactly as it does today. **Opus stays the
+per-tick runner:** the watch-tick sweep *is* checking, and Opus doing it is fine — **no session
+switch, the `settings.json` Opus pin stands.** Opus's job each tick shrinks to two things:
+**checking** (the sweep, tests / typecheck / cards:check / audits, reviewing a diff) and
+**actual code implementation**. **Everything decision-shaped goes to Fable** — routing/triage
+rulings, design calls, and all conversation (Griff-facing and otherwise) — delegated to a
+**long-running Fable** (persistent context always preferred: continue the running Fable via
+SendMessage, don't spawn fresh when one already holds the thread). The bar is lower than before:
+Opus used to code well-specified tickets and make small routing calls itself; now it routes
+*every* judgment to Fable and confines itself to sweep + verify + implement. Reversible — lift
+when Blaine says so.
+
 **Model routing (Blaine, session 010 — usage costs; session 013 — judgment quality):**
 this repo's `.claude/settings.json` pins sessions to **Opus** — the router. Opus owns the
 watch tick (`/watch`, armed with `/loop 4m /watch`), deploys, git/CI mechanics, and code

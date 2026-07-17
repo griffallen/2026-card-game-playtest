@@ -50,6 +50,15 @@ handled activity — don't re-trigger on your own edits.
 
 ## Routing
 
+> **OVERRIDE (Blaine, 2026-07-17, "for now"):** Opus keeps running the tick (the sweep IS
+> checking — fine, no session switch, the Opus pin stands) and does the code, but **every
+> decision now goes to Fable** — routing/triage rulings, design calls, and ALL conversation —
+> delegated to a **long-running Fable** (continue the running one, don't spawn fresh). So in
+> the table below, the "Router, directly" and "Router codes it" rows still run in this Opus
+> tick for the *checking + code*, but any *judgment* in them routes to Fable. See CLAUDE.md →
+> Model routing. Reversible on Blaine's word.
+
+
 | Finding | Handler |
 |---|---|
 | Nothing new | End the tick. No Fable, no summary. |
