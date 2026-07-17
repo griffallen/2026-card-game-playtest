@@ -90,6 +90,8 @@ const K2: CardSet = {
     kw: [{ k: 'sneak' }], sneak: { targets: [{ t: 'unit', side: 'enemy' }], ops: [{ op: 'damage', t: 'chosen0', n: 2 }] } },
   jailer: { slug: 'jailer', name: 'jailer', color: 'yellow', type: 'unit', cost: 4, power: 2, health: 4, text: '',
     kw: [{ k: 'capture' }], targets: [{ t: 'unit', side: 'enemy' }], onPlay: [{ op: 'capture', t: 'chosen0' }] },
+  charm: { slug: 'charm', name: 'charm', color: 'yellow', type: 'upgrade', cost: 2, text: '',
+    statics: [{ s: 'aura', scope: 'attached', armor: 1 }] },
 }
 
 function v3game2(): GameState {
@@ -181,6 +183,43 @@ describe('Capture — the captive lifecycle (decision 92: death is the only key)
     expect(s2.units[card]).toBeUndefined()
     expect(s2.captives[victim]).toBeUndefined()
     expect(s2.units[victim].exhausted).toBe(false)
+  })
+
+  // #112 (Griff): a captured unit drops its upgrades in the zone it held before capture —
+  // the gear does NOT ride into the cell. Same shed as death (single choke point, decision 67).
+  it('drops the captive\'s upgrades in its prior zone — orphaned and salvageable, not carried into the cell', () => {
+    let s = v3game2()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const victim = put(s, them, 'soldier', 1)
+    // the enemy had geared this unit — an attached upgrade riding it
+    const up = `q${m++}`
+    s.cardOf[up] = 'charm'
+    s.upgrades[up] = { id: up, slug: 'charm', owner: them, attachedTo: victim }
+    s.units[victim].upgrades.push(up)
+    const card = give(s, me, 'jailer')
+    s = applyAction(s, { type: 'play', card, targets: [{ kind: 'unit', id: victim }] }, me).state
+    expect(s.captives[victim]?.by).toBe(card)            // held...
+    expect(s.captives[victim]?.unit.upgrades).toEqual([]) // ...but stripped of its gear
+    // the upgrade orphaned in the zone the unit was in before capture — still on the field
+    expect(s.upgrades[up]).toBeDefined()                 // salvageable, not gone
+    expect(s.upgrades[up].attachedTo).toBeNull()
+    expect(s.upgrades[up].orphanedIn).toBe(1)
+  })
+
+  it('with upgradesOrphan off, the captive\'s upgrades discard instead of orphaning', () => {
+    let s = v3game2()
+    s.rules = { ...s.rules, upgradesOrphan: false }
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const victim = put(s, them, 'soldier', 1)
+    const up = `q${m++}`
+    s.cardOf[up] = 'charm'
+    s.upgrades[up] = { id: up, slug: 'charm', owner: them, attachedTo: victim }
+    s.units[victim].upgrades.push(up)
+    const card = give(s, me, 'jailer')
+    s = applyAction(s, { type: 'play', card, targets: [{ kind: 'unit', id: victim }] }, me).state
+    expect(s.captives[victim]?.unit.upgrades).toEqual([])
+    expect(s.upgrades[up]).toBeUndefined()               // gone from the field
+    expect(s.sides[them].discard).toContain(up)          // to the owner's discard
   })
 })
 

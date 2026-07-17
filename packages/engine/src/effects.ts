@@ -547,7 +547,10 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
           ? (ctx.targets?.[0]?.kind === 'unit' ? state.units[ctx.targets[0].id] : undefined)
           : ctx.sourceUnit ? state.units[ctx.sourceUnit] : undefined
         if (!srcU) break
-        // v3 Capture: out of play, under the capturer, upgrades ride along
+        // v3 Capture: out of play, under the capturer. #112 (Griff): the captive sheds its
+        // upgrades into the zone it held before capture — the gear does NOT ride into the cell.
+        // Shed BEFORE removing the unit (shedUpgrades reads t.zone while it still knows it).
+        shedUpgrades(state, t, true)
         delete state.units[t.id]
         state.captives[t.id] = { unit: t, by: srcU.id, ...(op.income ? { income: op.income } : {}) }
         log(state, ctx.controller, `${name(state, srcU.id)} captures ${name(state, t.id)}${op.income ? ` — the warrant pays ${op.income}/round while held` : ''}`)
@@ -556,6 +559,25 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
     }
     stateBasedCleanup(state, ctx.actorSeat)
   }
+}
+
+/** A unit leaves play (death — #54, or capture — #112): its upgrades drop in the zone it held.
+ *  v3 (decision 67): if `upgradesOrphan`, the gear stays on the field, salvageable; otherwise it
+ *  goes to the owner's discard. The single choke point so death and capture shed identically —
+ *  call it BEFORE removing the unit, while `unit.zone` still reads the drop zone. */
+export function shedUpgrades(state: GameState, unit: UnitInstance, taken = false) {
+  for (const upId of unit.upgrades) {
+    const up = state.upgrades[upId]
+    if (!up) continue
+    if (state.rules.upgradesOrphan) {           // v3 (decision 67): the wearer's gear stays on the field
+      up.attachedTo = null
+      up.orphanedIn = unit.zone
+      log(state, up.owner, taken                // #112: capture drops gear in the prior zone, same as a fall
+        ? `${name(state, upId)} is left behind as ${name(state, unit.id)} is taken`
+        : `${name(state, upId)} lies where ${name(state, unit.id)} fell`)
+    } else { state.sides[up.owner].discard.push(upId); delete state.upgrades[upId] }
+  }
+  unit.upgrades = []
 }
 
 export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
@@ -584,16 +606,7 @@ export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
     delete state.captives[cid]
     log(state, c.unit.owner, `${name(state, cid)} is freed as ${name(state, unit.id)} falls`)
   }
-  for (const upId of unit.upgrades) {
-    const up = state.upgrades[upId]
-    if (!up) continue
-    if (state.rules.upgradesOrphan) {           // v3 (decision 67): the fallen's gear stays on the field
-      up.attachedTo = null
-      up.orphanedIn = unit.zone
-      log(state, up.owner, `${name(state, upId)} lies where ${name(state, unit.id)} fell`)
-    } else { state.sides[up.owner].discard.push(upId); delete state.upgrades[upId] }
-  }
-  unit.upgrades = []
+  shedUpgrades(state, unit)
   delete state.units[unit.id]
   if (unit.created) {
     // #69: created copies were never deck cards — no discard pile, no deck, no trace
