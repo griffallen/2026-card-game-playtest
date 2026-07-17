@@ -716,19 +716,31 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   for (const p of pairs) byAttacker.set(p.onto, [...(byAttacker.get(p.onto) ?? []), p.blocker])
   const attackers = pa.attackers.map(id => state.units[id]).filter(Boolean) as UnitInstance[]
 
-  // snapshot the plan first — everything resolves simultaneously
-  const plans = attackers.map(a => {
-    const blockers = (byAttacker.get(a.id) ?? []).map(id => state.units[id]).filter(Boolean) as UnitInstance[]
-    return { a, blockers, aPower: effPower(state, a), counter: blockers.reduce((s, b) => s + effPower(state, b), 0), spilled: false }
-  })
-  for (const p of plans) for (const b of p.blockers) {
+  // #104 (Dawnspear Paladin): fire EVERY onDefend trigger FIRST — before any power is snapshotted —
+  // so a defensive +Power-per-attacker buff is in effect before the blocker counters and the target's
+  // retaliation are computed (the brace must hit back harder). All existing onDefend effects are
+  // influence-only, so this ordering is behaviour-preserving for them; only a stat buff cares.
+  for (const p of pairs) {
+    const b = state.units[p.blocker]
+    if (!b) continue
     // PR #70 `per:{count:'attackers'}`: a blocker faces the one attacker it's paired with — count 1.
     // Edge ⚑ (decision 86, ratify): a self-blocking declared target fires only once (as a blocker),
     // so it must count EVERY attacker facing it, not just the one it stepped in front of — the
     // faithful reading of "each unit that attacks this unit."
     const isDeclaredTarget = pa.target.kind === 'unit' && pa.target.id === b.id
-    fireTrigger({ state, attackTarget: { kind: 'unit', id: p.a.id }, actorSeat: seat, attackerCount: isDeclaredTarget ? attackers.length : 1 }, b, 'onDefend')
+    fireTrigger({ state, attackTarget: { kind: 'unit', id: p.onto }, actorSeat: seat, attackerCount: isDeclaredTarget ? attackers.length : 1 }, b, 'onDefend')
   }
+  // decision 85/86: the declared target that did NOT self-block still defends — fire once, all attackers.
+  const preDefTarget = pa.target.kind === 'unit' ? state.units[pa.target.id] : undefined
+  if (preDefTarget && !pairs.some(p => p.blocker === preDefTarget.id)) {
+    fireTrigger({ state, attackTarget: { kind: 'unit', id: attackers[0]?.id ?? '' }, actorSeat: seat, attackerCount: attackers.length }, preDefTarget, 'onDefend')
+  }
+
+  // snapshot the plan — power reads now include any onDefend buffs; everything resolves simultaneously
+  const plans = attackers.map(a => {
+    const blockers = (byAttacker.get(a.id) ?? []).map(id => state.units[id]).filter(Boolean) as UnitInstance[]
+    return { a, blockers, aPower: effPower(state, a), counter: blockers.reduce((s, b) => s + effPower(state, b), 0), spilled: false }
+  })
 
   const unitHits: [UnitInstance, number, string][] = []
   let targetSpill = 0
@@ -799,13 +811,7 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   }
 
   const targetUnit = pa.target.kind === 'unit' ? state.units[pa.target.id] : undefined
-  // decision 85: being the declared target IS defending — the trigger fires whether the attack
-  // got through or its blockers ate everything ("no matter if it's targeted or if it defends").
-  // decision 86: but only ONCE — a self-blocking target already fired as a blocker.
-  if (targetUnit && !pairs.some(p => p.blocker === targetUnit.id)) {
-    // PR #70: the declared target that didn't self-block is attacked by every declared attacker
-    fireTrigger({ state, attackTarget: { kind: 'unit', id: attackers[0]?.id ?? '' }, actorSeat: seat, attackerCount: attackers.length }, targetUnit, 'onDefend')
-  }
+  // (the declared target's onDefend now fires up top, before power is snapshotted — #104)
 
   // apply everything at once
   for (const [u, n, src] of unitHits) if (state.units[u.id]) damageUnit(state, u, n, src)

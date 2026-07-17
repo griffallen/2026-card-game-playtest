@@ -1917,10 +1917,15 @@
   "artUrl": "/cards/custodian-of-law.jpg"
  },
  "dawnspear-paladin": {
-  "onAttack": [
+  "onDefend": [
    {
-    "op": "influence",
-    "n": 2
+    "op": "buff",
+    "t": "self",
+    "p": 1,
+    "dur": "round",
+    "per": {
+     "count": "attackers"
+    }
    }
   ],
   "slug": "dawnspear-paladin",
@@ -1930,12 +1935,12 @@
   "cost": 5,
   "power": 3,
   "health": 3,
-  "text": "When this attacks, gain 2 Influence.",
+  "text": "When this unit is attacked, it gains +1 Power for each attacker, this round.",
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006: dropped the \"may\" — strictly-beneficial effects auto-apply (decision 24), so the card now says what happens.",
+  "designerNote": "Session 006: dropped the \"may\" — strictly-beneficial effects auto-apply (decision 24), so the card now says what happens.\n\n2026-07-16 (#104, Griff: \"yes to both recs, Influence drop intended\"): the Paladin trades its\ninfluence engine for a defensive brace. The old on-attack +2 Influence is gone; now, when it is\nattacked, it gains +1 Power PER attacker for the round — and, under the v3 duel law, it strikes\nback with that buffed power (ganged by three, it counters at 6, not 3). Stats stay 3/3; the buff\nresets at end of round. Needed two engine extensions: `per` on the `buff` op (the same\n`per:{count:'attackers'}` Light's Vanguard uses for influence), and firing onDefend BEFORE the\nretaliation power is read in blocker combat (it fired too late before — after the counter/retaliation\nwas already snapshotted).",
   "artUrl": "/cards/dawnspear-paladin.jpg"
  },
  "radiant-judgment": {

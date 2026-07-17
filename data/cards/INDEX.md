@@ -78,7 +78,7 @@
 | [Resolve Banner](yellow/resolve-banner.md) | — | 4 | upgrade | — |  | canon | Attach to unit. This unit gains +1 Health and +1 Armor. Other friendly units in this zone get +1 Power. If this becomes unattached, it can be picked up for 0 resources by a friendly unit. This can't be picked up by an opponent. This upgrade can be passed to a friendly unit in the same zone for 2 resources as an action, any number of times. |
 | [Censer of Purity](yellow/censer-of-purity.md) | — | 5 | unit | 0/6 |  | canon | At the start of your round, lose 1 Influence and heal 2 damage from your base. |
 | [Custodian of Law](yellow/custodian-of-law.md) | — | 5 | unit | 2/5 | guard | canon | Guard. When this defends, gain 2 Influence. |
-| [Dawnspear Paladin](yellow/dawnspear-paladin.md) | — | 5 | unit | 3/3 |  | canon | When this attacks, gain 2 Influence. |
+| [Dawnspear Paladin](yellow/dawnspear-paladin.md) | — | 5 | unit | 3/3 |  | canon | When this unit is attacked, it gains +1 Power for each attacker, this round. |
 | [Radiant Judgment](yellow/radiant-judgment.md) | — | 5 | action | — |  | canon | Gain 1 Influence. Then exhaust every enemy unit whose cost is no more than your current Influence. If your Influence is below 1, gain 1 Influence for each enemy unit in your Home zone. |
 | [Radiant Wall](yellow/radiant-wall.md) | — | 5 | action | — |  | canon | Target unit gets Armor 3, permanently. Gain 1 Influence. |
 | [Sanctify](yellow/sanctify.md) | — | 5 | action | — |  | canon | Heal 4 damage from your base. Gain 1 Influence. |

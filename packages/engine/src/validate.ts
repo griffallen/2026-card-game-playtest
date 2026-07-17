@@ -167,6 +167,7 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       for (const v of [op.p, op.h, op.armor]) if (v !== undefined && !isInt(v)) err('bad buff value')
       if (!['round', 'perm'].includes(op.dur)) err('buff needs dur round|perm')
       for (const k of Object.keys(op.cond ?? {})) if (!COND_KEYS.has(k)) err(`unknown condition ${k}`)
+      checkPer(op.per)   // #104 (Dawnspear Paladin): +stat PER attacker on defense (attackers → onDefend only)
       break
     }
     case 'double': checkTargetRef(op.t); break

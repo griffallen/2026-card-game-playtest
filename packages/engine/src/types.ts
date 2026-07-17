@@ -60,7 +60,7 @@ export type Op =
   | { op: 'draw'; n: number }
   | { op: 'influence'; n: number; per?: PerCount; cond?: Cond; ifKilled?: boolean }   // + toward controller; per scales n (PR #70/#71); cond gates the gain (#79 Radiant Aegis); ifKilled (#107 Flameblade Raider): onDeath-only — the gain fires only if this unit felled a unit in the same combat it died in (a trade counts)
   | { op: 'imprison'; t: OpTarget | 'auto'; f?: UnitFilter; auto?: AutoPick }
-  | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'round' | 'perm'; cond?: Cond }
+  | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'round' | 'perm'; cond?: Cond; per?: PerCount }  // per (#104 Dawnspear Paladin): scale the granted p/h/armor by a live count (e.g. +1 Power PER attacker, onDefend)
   | { op: 'double'; t: OpTarget | UnitFilter; rounds?: number }  // v3 (Unchained Rage): filter-wide, multi-round
   | { op: 'grant'; t: OpTarget | UnitFilter; kw: KeywordSpec; dur: 'round' | 'perm' }
   | { op: 'destroy'; t: OpTarget; mustBeDamaged?: boolean }

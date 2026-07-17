@@ -325,11 +325,19 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'buff': {
+        // #104 (Dawnspear Paladin): `per` scales the granted stats by a live count (+1 Power PER
+        // attacker on defense). No `per` → mult 1 (flat, unchanged). A per that counts 0 is a no-op,
+        // not a "+0" mod (mirrors the influence op's zero-count skip).
+        const mult = perCount(ctx, op.per)
+        if (op.per && mult === 0) break
+        const p = op.p !== undefined ? op.p * mult : undefined
+        const h = op.h !== undefined ? op.h * mult : undefined
+        const armor = op.armor !== undefined ? op.armor * mult : undefined
         const targets = typeof op.t === 'string' ? [resolveUnitTarget(ctx, op.t)].filter(Boolean) as UnitInstance[] : filterUnits(ctx, op.t)
         for (const u of targets) {
           if (!condHolds(state, controller, op.cond)) continue
-          u.mods.push({ p: op.p, h: op.h, armor: op.armor, round: op.dur === 'round' })
-          const bits = [op.p ? `${op.p > 0 ? '+' : ''}${op.p} power` : '', op.armor ? `+${op.armor} armor` : ''].filter(Boolean).join(', ')
+          u.mods.push({ p, h, armor, round: op.dur === 'round' })
+          const bits = [p ? `${p > 0 ? '+' : ''}${p} power` : '', armor ? `+${armor} armor` : ''].filter(Boolean).join(', ')
           log(state, u.owner, `${name(state, u.id)} gets ${bits}${op.dur === 'round' ? ' this round' : ''}`)
         }
         break
