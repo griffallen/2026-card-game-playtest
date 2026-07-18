@@ -9,17 +9,18 @@ import { influenceFor } from '../src/helpers.ts'
 import { T, toyDeck, put, toHand, fuel } from './util.ts'
 
 // #107 (Last Stand): "Ready each of your units. They don't exhaust this round. For each of your units
-//   that moves, lose 2 Influence. For each of your units that attacks, lose 2 Life. At the end of the
-//   round, lose 7 Life and lose 7 Influence." Everything stacks as you take actions. New primitives:
+//   that moves, lose 4 Influence. For each of your units that attacks, lose 4 Life. At the end of the
+//   round, lose 8 Life and lose 8 Influence." Everything stacks as you take actions. New primitives:
 //   a round-scoped per-seat pact list, the `lastStand` op, per-action tolls (move/attack), and the
 //   end-of-round reckoning — all cleared at the round boundary.
+//   #98 (2026-07-18, Griff): tolls 2->4, end reckoning 7->8, cost 7->8, 3->4 red pips.
 
 const TT: CardSet = {
   ...T,
   // toy Last Stand — cost 1, no pips, so tests can play it without pip plumbing (same ops as the real card)
   laststand: {
     slug: 'laststand', name: 'laststand', color: 'red', type: 'action', cost: 1, text: '',
-    onPlay: [{ op: 'ready', side: 'friendly' }, { op: 'lastStand', moveInfluence: 2, attackLife: 2, endLife: 7, endInfluence: 7 }],
+    onPlay: [{ op: 'ready', side: 'friendly' }, { op: 'lastStand', moveInfluence: 4, attackLife: 4, endLife: 8, endInfluence: 8 }],
   },
 }
 
@@ -48,7 +49,7 @@ describe('Last Stand — round-scoped no-exhaust pact with escalating tolls (#10
     expect(s.lastStands.filter(l => l.seat === me).length).toBe(1)
   })
 
-  it("a unit that attacks doesn't exhaust — it can charge again — and each attack costs 2 Life", () => {
+  it("a unit that attacks doesn't exhaust — it can charge again — and each attack costs 4 Life", () => {
     let s = v3game()
     const me = s.actorSeat, them = (1 - me) as Seat
     const atk = put(s, me, 'soldier', homeZone(them))   // 2/2, standing in the enemy Home to strike the base
@@ -58,16 +59,16 @@ describe('Last Stand — round-scoped no-exhaust pact with escalating tolls (#10
     s = backToMe(s, them)
     s = act(s, me, { type: 'attack', attackers: [atk], target: { kind: 'base', seat: them } })
     expect(s.units[atk].exhausted).toBe(false)      // stayed ready
-    expect(s.sides[me].life).toBe(life0 - 2)        // 2 Life toll for one attacking unit
+    expect(s.sides[me].life).toBe(life0 - 4)        // 4 Life toll for one attacking unit
     expect(s.sides[them].life).toBe(base0 - 2)      // the base took the 2-power hit
     s = backToMe(s, them)
     s = act(s, me, { type: 'attack', attackers: [atk], target: { kind: 'base', seat: them } })
     expect(s.units[atk].exhausted).toBe(false)      // still ready after a second charge
-    expect(s.sides[me].life).toBe(life0 - 4)        // tolls stack across actions
+    expect(s.sides[me].life).toBe(life0 - 8)        // tolls stack across actions
     expect(s.sides[them].life).toBe(base0 - 4)
   })
 
-  it('the attack toll is per attacking unit — a three-unit charge costs 6 Life', () => {
+  it('the attack toll is per attacking unit — a three-unit charge costs 12 Life', () => {
     let s = v3game()
     const me = s.actorSeat, them = (1 - me) as Seat
     const z = homeZone(them)
@@ -77,10 +78,10 @@ describe('Last Stand — round-scoped no-exhaust pact with escalating tolls (#10
     s = act(s, me, { type: 'play', card: ls })
     s = backToMe(s, them)
     s = act(s, me, { type: 'attack', attackers: [a1, a2, a3], target: { kind: 'base', seat: them } })
-    expect(s.sides[me].life).toBe(life0 - 6)   // 3 attackers × 2 Life
+    expect(s.sides[me].life).toBe(life0 - 12)   // 3 attackers × 4 Life
   })
 
-  it('each move cedes 2 Influence, and the moving unit does not exhaust', () => {
+  it('each move cedes 4 Influence, and the moving unit does not exhaust', () => {
     let s = v3game()
     const me = s.actorSeat, them = (1 - me) as Seat
     const mover = put(s, me, 'soldier', homeZone(me))
@@ -89,7 +90,7 @@ describe('Last Stand — round-scoped no-exhaust pact with escalating tolls (#10
     const inf0 = influenceFor(s, me)
     s = backToMe(s, them)
     s = act(s, me, { type: 'move', unit: mover, to: 1 })
-    expect(influenceFor(s, me)).toBe(inf0 - 2)   // the march cedes 2 Influence
+    expect(influenceFor(s, me)).toBe(inf0 - 4)   // the march cedes 4 Influence
     expect(s.units[mover].exhausted).toBe(false) // move did not exhaust it
   })
 
@@ -105,10 +106,10 @@ describe('Last Stand — round-scoped no-exhaust pact with escalating tolls (#10
     const inf0 = influenceFor(s, me)
     s = backToMe(s, them)
     s = act(s, me, { type: 'move', unit: mover, to: 1 })
-    expect(influenceFor(s, me)).toBe(inf0 - 4)   // two pacts each bill the move — 2 + 2
+    expect(influenceFor(s, me)).toBe(inf0 - 8)   // two pacts each bill the move — 4 + 4
   })
 
-  it('at the end of the round the caster loses 7 Life and 7 Influence, then the pact clears', () => {
+  it('at the end of the round the caster loses 8 Life and 8 Influence, then the pact clears', () => {
     let s = v3game()
     const me = s.actorSeat, them = (1 - me) as Seat
     const ls = toHand(s, me, 'laststand'); fuel(s, me, 3)
@@ -118,8 +119,8 @@ describe('Last Stand — round-scoped no-exhaust pact with escalating tolls (#10
     s = act(s, them, { type: 'pass' })
     s = act(s, me, { type: 'pass' })
     expect(s.round).toBe(2)
-    expect(s.sides[me].life).toBe(life0 - 7)
-    expect(influenceFor(s, me)).toBe(inf0 - 7)
+    expect(s.sides[me].life).toBe(life0 - 8)
+    expect(influenceFor(s, me)).toBe(inf0 - 8)
     expect(s.lastStands.length).toBe(0)          // the pact is a single round
   })
 
@@ -140,13 +141,14 @@ describe('Last Stand — round-scoped no-exhaust pact with escalating tolls (#10
     expect(s.units[atk].exhausted).toBe(true)     // no pact → attacking exhausts again
   })
 
-  it('real card is wired: cost 7, action, mass-ready + lastStand toll ops', () => {
+  it('real card is wired: cost 8, four red pips, action, mass-ready + lastStand toll ops', () => {
     const def = CARD_SET['last-stand']
-    expect(def.cost).toBe(7)
+    expect(def.cost).toBe(8)
+    expect(def.pips).toEqual(['red', 'red', 'red', 'red'])
     expect(def.type).toBe('action')
     expect(def.onPlay).toEqual([
       { op: 'ready', side: 'friendly' },
-      { op: 'lastStand', moveInfluence: 2, attackLife: 2, endLife: 7, endInfluence: 7 },
+      { op: 'lastStand', moveInfluence: 4, attackLife: 4, endLife: 8, endInfluence: 8 },
     ])
   })
 })

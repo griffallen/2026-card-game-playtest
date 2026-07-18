@@ -42,7 +42,7 @@
 | [Relentless Assault](red/relentless-assault.md) | — | 6 | action | — |  | canon | Ready all your units. |
 | [Unchained Rage](red/unchained-rage.md) | — | 6 | action | — |  | canon | Double the Power of all your units for the next 2 rounds. For each unit of yours that attacks, lose 2 influence. |
 | [Apocalypse Engine](red/apocalypse-engine.md) | — | 7 | unit | 8/7 | breakthrough | canon | Breakthrough. |
-| [Last Stand](red/last-stand.md) | — | 7 | action | — |  | canon | Ready each of your units. They don't exhaust this round. For each of your units that moves, lose 2 Influence. For each of your units that attacks, lose 2 Life. At the end of the round, lose 7 Life and lose 7 Influence. |
+| [Last Stand](red/last-stand.md) | — | 8 | action | — |  | canon | Ready each of your units. They don't exhaust this round. For each of your units that moves, lose 4 Influence. For each of your units that attacks, lose 4 Life. At the end of the round, lose 8 Life and lose 8 Influence. |
 | [Worldrender](red/worldrender.md) | — | 8 | unit | 4/8 | rush, breakthrough, scar | canon | Rush. Breakthrough. Scar.  While this is in combat with an enemy unit, ignore that unit's Shield and Armor — this unit's full damage lands. |
 
 ## Yellow (48)
@@ -64,20 +64,20 @@
 | [Noble Purifier](yellow/noble-purifier.md) | — | 3 | unit | 4/1 |  | canon | When this kills a unit, gain 2 Influence. |
 | [Prison Warrant](yellow/prison-warrant.md) | — | 3 | action | — |  | canon | Target unit you control captures target damaged enemy unit or unit with 2 or less Health. Gain 1 Influence at the beginning of each round where the target unit is still captured. |
 | [Radiant Aegis](yellow/radiant-aegis.md) | — | 3 | action | — |  | canon | Give a friendly unit a Shield. If your Influence is below 0, gain 2 Influence. |
-| [Sanctified Bastion](yellow/sanctified-bastion.md) | — | 3 | unit | 1/4 | cantAttack | canon | This can't attack. Other friendly units in this zone have Armor 1. |
+| [Sanctified Bastion](yellow/sanctified-bastion.md) | — | 3 | unit | 1/4 | cantAttack, politician | canon | This can't attack. Politician. Other friendly units in this zone have Armor 1. |
 | [Subjugate](yellow/subjugate.md) | — | 3 | upgrade | — |  | canon | Attach to an enemy unit. While attached, it gets −2 Power for each pip in its cost. |
 | [Unwavering Faith](yellow/unwavering-faith.md) | — | 3 | action | — |  | canon | Heal 3 damage from target unit. |
 | [Absolution](yellow/absolution.md) | — | 4 | action | — |  | canon | Remove all negative effects from target unit you control. Free all your captured units. |
 | [Devout Intervention](yellow/devout-intervention.md) | — | 4 | action | — |  | canon | Prevent all damage to your Home from the next attack this round. Also, prevent all damage to your next blocking unit this round (it still deals its damage back). |
 | [Disarming Order](yellow/disarming-order.md) | — | 4 | action | — |  | canon | Target unit can't attack this round. Draw a card. |
 | [Exemplar Knight](yellow/exemplar-knight.md) | — | 4 | unit | 4/4 |  | canon | When this unit defeats a unit, gain 1 Influence. |
-| [Fortress Keeper](yellow/fortress-keeper.md) | — | 4 | unit | 2/3 | cantAttack | canon | This can't attack. Other friendly units in this zone have Guard. |
-| [High Justiciar](yellow/high-justiciar.md) | — | 4 | unit | 1/4 | guard | canon | Guard. When this unit defeats a unit, gain 2 Influence. |
+| [Fortress Keeper](yellow/fortress-keeper.md) | — | 4 | unit | 2/3 | cantAttack, politician | canon | This can't attack. Politician. Other friendly units in this zone have Guard. |
+| [High Justiciar](yellow/high-justiciar.md) | — | 4 | unit | 1/4 | guard, politician | canon | Guard. Politician. When this unit defeats a unit, gain 2 Influence. |
 | [Lawbringer](yellow/lawbringer.md) | — | 4 | unit | 2/3 |  | canon | Whenever this enters a zone, exhaust an enemy unit of your choice in the same zone. |
 | [Light of Authority](yellow/light-of-authority.md) | — | 4 | action | — |  | canon | Target unit gets +3 Power this round. |
 | [Resolve Banner](yellow/resolve-banner.md) | — | 4 | upgrade | — |  | canon | Attach to unit. This unit gains +1 Health and +1 Armor. Other friendly units in this zone get +1 Power. If this becomes unattached, it can be picked up for 0 resources by a friendly unit. This can't be picked up by an opponent. This upgrade can be passed to a friendly unit in the same zone for 2 resources as an action, any number of times. |
 | [Censer of Purity](yellow/censer-of-purity.md) | — | 5 | unit | 0/6 | politician | canon | Politician. As an action, move any amount of damage from one friendly unit onto this unit — up to what this unit can take without its Health falling below 0. Doing so exhausts the Censer. |
-| [Custodian of Law](yellow/custodian-of-law.md) | — | 5 | unit | 2/5 | guard | canon | Guard. |
+| [Custodian of Law](yellow/custodian-of-law.md) | — | 5 | unit | 2/5 | guard, politician | canon | Guard. Politician. |
 | [Dawnspear Paladin](yellow/dawnspear-paladin.md) | — | 5 | unit | 3/3 |  | canon | When this unit is attacked, it gains +1 Power for each attacker, this round. |
 | [Radiant Judgment](yellow/radiant-judgment.md) | — | 5 | action | — |  | canon | Gain 1 Influence. Then exhaust every enemy unit whose cost is no more than your current Influence. If your Influence is below 1, gain 1 Influence for each enemy unit in your Home zone. |
 | [Radiant Wall](yellow/radiant-wall.md) | — | 5 | action | — |  | canon | Target unit gets Armor 3, permanently. Gain 1 Influence. |

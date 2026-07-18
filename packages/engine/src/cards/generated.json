@@ -1010,24 +1010,25 @@
    },
    {
     "op": "lastStand",
-    "moveInfluence": 2,
-    "attackLife": 2,
-    "endLife": 7,
-    "endInfluence": 7
+    "moveInfluence": 4,
+    "attackLife": 4,
+    "endLife": 8,
+    "endInfluence": 8
    }
   ],
   "slug": "last-stand",
   "name": "Last Stand",
   "color": "red",
   "type": "action",
-  "cost": 7,
-  "text": "Ready each of your units. They don't exhaust this round. For each of your units that moves, lose 2 Influence. For each of your units that attacks, lose 2 Life. At the end of the round, lose 7 Life and lose 7 Influence.",
+  "cost": 8,
+  "text": "Ready each of your units. They don't exhaust this round. For each of your units that moves, lose 4 Influence. For each of your units that attacks, lose 4 Life. At the end of the round, lose 8 Life and lose 8 Influence.",
   "pips": [
+   "red",
    "red",
    "red",
    "red"
   ],
-  "designerNote": "2026-07-16 (#107, Griff's locked spec — \"everything stacks, be careful as you take actions\"): full rework from the old \"+2 Power this round, lose 2 life.\" Now it readies your whole board and suspends exhaustion for the round (your units don't exhaust from moving, attacking, blocking, intercepting, or activating), turning it into a frenzy engine — but every action is taxed: each move cedes 2 Influence, each attacking unit costs 2 Life (per unit, so a three-unit charge is 6), and both stack with every action you take. At round end you pay a flat 7 Life and 7 Influence.\n\nNew engine primitives: a round-scoped per-seat pact list (`state.lastStands`, cleared at the round boundary), the `lastStand` op that arms it, per-action tolls billed in `moveUnit`/`attackDeclare`, and the end-of-round reckoning in `endRound`. Readings locked here (see the PR flags): the no-exhaust and tolls cover any unit you control this round, including ones played AFTER Last Stand; the move toll fires on the move ACTION (not effect-driven relocations); the attack toll is per attacking unit per attack; and a second cast stacks a second, independently-billed pact.",
+  "designerNote": "2026-07-16 (#107, Griff's locked spec — \"everything stacks, be careful as you take actions\"): full rework from the old \"+2 Power this round, lose 2 life.\" Now it readies your whole board and suspends exhaustion for the round (your units don't exhaust from moving, attacking, blocking, intercepting, or activating), turning it into a frenzy engine — but every action is taxed: each move cedes 2 Influence, each attacking unit costs 2 Life (per unit, so a three-unit charge is 6), and both stack with every action you take. At round end you pay a flat 7 Life and 7 Influence.\n\nNew engine primitives: a round-scoped per-seat pact list (`state.lastStands`, cleared at the round boundary), the `lastStand` op that arms it, per-action tolls billed in `moveUnit`/`attackDeclare`, and the end-of-round reckoning in `endRound`. Readings locked here (see the PR flags): the no-exhaust and tolls cover any unit you control this round, including ones played AFTER Last Stand; the move toll fires on the move ACTION (not effect-driven relocations); the attack toll is per attacking unit per attack; and a second cast stacks a second, independently-billed pact.\n\n2026-07-18 (#98, Griff): cost 7->8, 3->4 red pips, tolls 2->4 (move Influence / attack Life), end reckoning 7->8. Rationale: the 8s flavor + harder to play; punish the multi-action harder.",
   "artUrl": "/cards/last-stand.jpg"
  },
  "worldrender": {
@@ -1569,17 +1570,20 @@
   "cost": 3,
   "power": 1,
   "health": 4,
-  "text": "This can't attack. Other friendly units in this zone have Armor 1.",
+  "text": "This can't attack. Politician. Other friendly units in this zone have Armor 1.",
   "kw": [
    {
     "k": "cantAttack"
+   },
+   {
+    "k": "politician"
    }
   ],
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Session 006: the aura is now zone-local (was board-wide — a 3-mana wall quietly armoring the whole army from home). Walls protect what stands behind them.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): health 6 → 4 — the Armor-1 aura is the card; the 6-health chassis made it unremovable. At 4 it dies to Volcanic Slam + chip. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.",
+  "designerNote": "Session 006: the aura is now zone-local (was board-wide — a 3-mana wall quietly armoring the whole army from home). Walls protect what stands behind them.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): health 6 → 4 — the Armor-1 aura is the card; the 6-health chassis made it unremovable. At 4 it dies to Volcanic Slam + chip. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.\n\n2026-07-18 (#98, Griff): +Politician — more carriers so yellow can field a Neutral-zone presence (yellow-vs-red pass).",
   "artUrl": "/cards/sanctified-bastion.jpg"
  },
  "subjugate": {
@@ -1757,17 +1761,20 @@
   "cost": 4,
   "power": 2,
   "health": 3,
-  "text": "This can't attack. Other friendly units in this zone have Guard.",
+  "text": "This can't attack. Politician. Other friendly units in this zone have Guard.",
   "kw": [
    {
     "k": "cantAttack"
+   },
+   {
+    "k": "politician"
    }
   ],
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): health 7 → 5 — the Guard aura stays; at 5 one Inferno Titan swing answers it, where at 7 nothing red runs did. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.",
+  "designerNote": "2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): health 7 → 5 — the Guard aura stays; at 5 one Inferno Titan swing answers it, where at 7 nothing red runs did. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.\n\n2026-07-18 (#98, Griff): +Politician — more carriers so yellow can field a Neutral-zone presence (yellow-vs-red pass).",
   "artUrl": "/cards/fortress-keeper.jpg"
  },
  "high-justiciar": {
@@ -1784,17 +1791,20 @@
   "cost": 4,
   "power": 1,
   "health": 4,
-  "text": "Guard. When this unit defeats a unit, gain 2 Influence.",
+  "text": "Guard. Politician. When this unit defeats a unit, gain 2 Influence.",
   "kw": [
    {
     "k": "guard"
+   },
+   {
+    "k": "politician"
    }
   ],
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 51 text (deterministic pick, stated on the card).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Guard is free blocking in v3 — the Justiciar holds the line and the court pays it.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): power 3 → 2 — decision-85 walk-back, same tier. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.\n\n2026-07-16 (#104/#107 balance pass, phase 2 group A — Griff's ruling on the influence-trigger cards): the payout moves off defence and onto the kill. It keeps Guard, but the old \"gain 2 when it defends\" is replaced by \"gain 2 when it defeats a unit\" (a trade counts). Its Phase 1 body is 1/4 — the wall now pays only when it strikes something down. Griff's justification (#107, 2026-07-16): on-defend is too easy on a Guard (akin to a red card that hits Home on any attack); the card is meant to hold the line with Guard, and the +2 is a rare bonus IF it kills. (The magnitude stays 2 — its long-standing value; a mid-thread \"+1\" was Griff's loose phrasing, corrected back to 2 on #107.)",
+  "designerNote": "Decision 51 text (deterministic pick, stated on the card).\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Guard is free blocking in v3 — the Justiciar holds the line and the court pays it.\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): power 3 → 2 — decision-85 walk-back, same tier. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.\n\n2026-07-16 (#104/#107 balance pass, phase 2 group A — Griff's ruling on the influence-trigger cards): the payout moves off defence and onto the kill. It keeps Guard, but the old \"gain 2 when it defends\" is replaced by \"gain 2 when it defeats a unit\" (a trade counts). Its Phase 1 body is 1/4 — the wall now pays only when it strikes something down. Griff's justification (#107, 2026-07-16): on-defend is too easy on a Guard (akin to a red card that hits Home on any attack); the card is meant to hold the line with Guard, and the +2 is a rare bonus IF it kills. (The magnitude stays 2 — its long-standing value; a mid-thread \"+1\" was Griff's loose phrasing, corrected back to 2 on #107.)\n\n2026-07-18 (#98, Griff): +Politician — more carriers so yellow can field a Neutral-zone presence (yellow-vs-red pass).",
   "artUrl": "/cards/high-justiciar.jpg"
  },
  "lawbringer": {
@@ -1929,17 +1939,20 @@
   "cost": 5,
   "power": 2,
   "health": 5,
-  "text": "Guard.",
+  "text": "Guard. Politician.",
   "kw": [
    {
     "k": "guard"
+   },
+   {
+    "k": "politician"
    }
   ],
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): power 4 → 3 — decision-85 walk-back, same tier. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.\n\n2026-07-16 (#104 balance pass — Griff: \"keep Guard, remove other text. Power 2, Health 5\"): the on-defend +2 Influence payout is cut — the Custodian is now a plain 2/5 Guard wall, no influence engine. The stats were already 2/5 (set in the Phase 1 numbers pass), so #104's only remaining change is removing the payout: text trimmed to \"Guard.\" and the onDefend influence effect deleted. Supersedes the decision-34 defend-payout note above; part of yellow's influence-clock slowdown across the pass. ⚑ ratify/veto.",
+  "designerNote": "Decision 34: influence is earned by events, never by existing — this unit pays out when it defends (is attacked).\n\n2026-07-12 (decision 85, issues #25/#24 — designer: \"yes, push these up\"): door 2 (retaliation)\nbecame law and yellow's repair pass landed with it — guard defend-payouts up one notch (they now\ntrigger whether the guard blocks OR is attacked directly), wall power up one point (a wall's power\nis also its retaliation now). ⚑ ratify/veto per card.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): payout ladder −1 (the decision-85 raise was priced against a bot that blocked randomly; the ladder-back probe measured red 34.5→40, and under the duel law every guard is premium). ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): power 4 → 3 — decision-85 walk-back, same tier. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.\n\n2026-07-16 (#104 balance pass — Griff: \"keep Guard, remove other text. Power 2, Health 5\"): the on-defend +2 Influence payout is cut — the Custodian is now a plain 2/5 Guard wall, no influence engine. The stats were already 2/5 (set in the Phase 1 numbers pass), so #104's only remaining change is removing the payout: text trimmed to \"Guard.\" and the onDefend influence effect deleted. Supersedes the decision-34 defend-payout note above; part of yellow's influence-clock slowdown across the pass. ⚑ ratify/veto.\n\n2026-07-18 (#98, Griff): +Politician — more carriers so yellow can field a Neutral-zone presence (yellow-vs-red pass).",
   "artUrl": "/cards/custodian-of-law.jpg"
  },
  "dawnspear-paladin": {

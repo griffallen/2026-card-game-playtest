@@ -4,11 +4,11 @@ type: unit
 cost: 5
 power: 2
 health: 5
-keywords: guard
+keywords: guard, politician
 pips: yellow, yellow
 status: canon
 ---
-Guard.
+Guard. Politician.
 
 ## Design notes
 
@@ -23,3 +23,5 @@ is also its retaliation now). ⚑ ratify/veto per card.
 2026-07-15 (#91 balance pass — Griff: "do all the card cuts"): power 4 → 3 — decision-85 walk-back, same tier. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.
 
 2026-07-16 (#104 balance pass — Griff: "keep Guard, remove other text. Power 2, Health 5"): the on-defend +2 Influence payout is cut — the Custodian is now a plain 2/5 Guard wall, no influence engine. The stats were already 2/5 (set in the Phase 1 numbers pass), so #104's only remaining change is removing the payout: text trimmed to "Guard." and the onDefend influence effect deleted. Supersedes the decision-34 defend-payout note above; part of yellow's influence-clock slowdown across the pass. ⚑ ratify/veto.
+
+2026-07-18 (#98, Griff): +Politician — more carriers so yellow can field a Neutral-zone presence (yellow-vs-red pass).
