@@ -51,6 +51,18 @@ function liveSlugs(slugs: string[], who: string): string[] {
   return live
 }
 
+// The one card list a deck is actually seated with: its slugs, minus any the live set no longer
+// has (liveSlugs). Both the engine seat (newLocalGame) and the replay recorder ("Copy Chronicle")
+// MUST resolve decks through THIS, or a pasted game replays against a different deck than it was
+// played with. A saved deck can still name a card the balance pass cut (issue #111, e.g.
+// Doombringer); recording the raw, unfiltered list made the replay deck longer than the played
+// deck, which reshuffles the opening hands and — since the shuffle burns one RNG advance per card
+// — shifts the seed state that picks the first player, so every recorded action lands in the wrong
+// game and the corpus collector bounces it (issue #98). One resolver, no divergence.
+export function seatedDeckCards(deck: Parameters<typeof deckSlugs>[0], who: string): string[] {
+  return liveSlugs(deckSlugs(deck), who)
+}
+
 export function newLocalGame(cfg: DemoConfig): GameState {
   const pool = allDecks()   // prebuilts + the browser's custom decks (issue #30)
   const a = pool.find(d => d.slug === cfg.deckA) ?? DECKS[0]
@@ -63,8 +75,8 @@ export function newLocalGame(cfg: DemoConfig): GameState {
     },
     cardSet: DEMO_CARDS,
     players: [
-      { name: cfg.nameA, deck: liveSlugs(deckSlugs(a), cfg.nameA) },
-      { name: cfg.nameB, deck: liveSlugs(deckSlugs(b), cfg.nameB) },
+      { name: cfg.nameA, deck: seatedDeckCards(a, cfg.nameA) },
+      { name: cfg.nameB, deck: seatedDeckCards(b, cfg.nameB) },
     ],
   })
 }

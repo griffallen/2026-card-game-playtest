@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  EngineError, POLICIES, applyAction, deckSlugs, policyRngInit, viewFor,
+  EngineError, POLICIES, applyAction, policyRngInit, viewFor,
   type GameAction, type GameState, type HandCardView, type Seat, type TargetRef, type UnitView, type ZoneId,
 } from '@newgame/engine'
 import { CardFrame } from '@ui/components/CardFrame.tsx'
@@ -9,7 +9,7 @@ import { UnitChip } from '@ui/game/UnitChip.tsx'
 import { InfluenceTrack } from '@ui/game/InfluenceTrack.tsx'
 import { BaseSheet, CardSheet, EventTicker, PileSheet, UnitInspector, useValueFlash } from '@ui/game/Sheets.tsx'
 import { sleeveFor } from '@ui/game/sleeves.ts'
-import { DEMO_CARDS, aiControls, newLocalGame, type DemoConfig } from './local.ts'
+import { DEMO_CARDS, aiControls, newLocalGame, seatedDeckCards, type DemoConfig } from './local.ts'
 import { allDecks } from './custom-decks.ts'
 import { BlockModal } from './BlockModal.tsx'
 import { composeCombatRecap } from './recap.ts'
@@ -343,9 +343,13 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     // decks travel too) + rules + EVERY action in order lets the analysis re-run the game and
     // fork it at any bot decision. The decision-option telemetry (#67) already rides in the log.
     const pool = allDecks()
+    // Record the deck EXACTLY as createGame is seated with it — through seatedDeckCards, the same
+    // resolver newLocalGame uses. Recording raw deckSlugs (unfiltered) let a saved deck that still
+    // named a cut card (Doombringer, #111) travel two cards longer than it was played, which
+    // reshuffled the replay and flipped its first player, so the corpus bounced the game (#98).
     const deckOf = (slug: string, name: string) => {
       const d = pool.find(x => x.slug === slug)
-      return { name, slug, cards: d ? deckSlugs(d) : [] }
+      return { name, slug, cards: d ? seatedDeckCards(d, name) : [] }
     }
     const replay = {
       seed: config.seed,
