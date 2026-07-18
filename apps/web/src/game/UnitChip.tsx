@@ -20,7 +20,7 @@ const KW_GLOSS: Record<string, string> = {
   capture: 'takes an enemy unit under it until the holder leaves play',
   shielded: 'the first hit it would take is fully prevented',
   scar: '+1 power per damage marked on it — no cap',
-  politician: 'end of round: +1 influence if its side holds the Neutral-zone majority',
+  politician: 'round end: +1 Influence per politician for a Neutral majority, +2 each for an enemy-Home majority (stacks)',
   overextend: 'may gamble bonus power now for that much self-damage at end of round',
 }
 

@@ -18,7 +18,7 @@ export const KEYWORD_GLOSS: Record<string, string> = {
   capture: 'Takes an enemy unit under this one, off the board entirely. Holding costs nothing — the grip breaks only when the capturer dies, and the freed captive returns to that zone ready. Kill the jailer to free the prisoner.',
   shielded: 'Arrives with a shield token: the first time it would take damage, the whole hit is prevented and the token is spent.',
   scar: 'Gets +1 Power for each damage marked on it — no cap. Every wound is fuel; a Scar unit at 1 health hits hardest.',
-  politician: 'At the end of each round, if this unit stands in the Neutral zone and its owner has more units there than the opponent, its owner gains 1 Influence (once per round, however many politicians).',
+  politician: 'At the end of each round, count your Politicians: hold the majority in the Neutral zone and you gain +1 Influence per Politician; hold the majority in your enemy\'s Home zone and you gain +2 per Politician — the two stack (both majorities = +3 each). "Majority" means strictly more of your units than the opponent\'s in that zone; a tie is not a majority.',
 }
 
 export function glossFor(keyword: string): string {
