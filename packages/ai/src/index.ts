@@ -8,3 +8,9 @@ export {
   featurize, featurizeNamed, describeFeatures,
   FEATURE_NAMES, FEATURE_VERSION, KEYWORDS,
 } from './features.ts'
+
+// Inference + eval policy — both pure and node-free, safe to bundle into the browser bot. The
+// trainer (train.ts) and scoreboard (scoreboard.ts) are node-only CLIs and are deliberately NOT
+// re-exported here, so importing @newgame/ai in the demo never drags in `node:*` or the corpus lib.
+export { scoreState, sigmoid, type LinearModel } from './infer.ts'
+export { evalMove, evalPolicy, type EnginePolicy } from './policy.ts'

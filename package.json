@@ -18,6 +18,8 @@
     "corpus:collect": "tsx packages/corpus/src/cli.ts collect",
     "corpus:list": "tsx packages/corpus/src/cli.ts list",
     "corpus:purge": "tsx packages/corpus/src/cli.ts purge",
+    "ai:train": "tsx packages/ai/src/train.ts",
+    "ai:scoreboard": "tsx packages/ai/src/scoreboard.ts",
     "db:migrate": "npm run db:migrate -w apps/server",
     "db:seed": "npm run db:seed -w apps/server"
   },
