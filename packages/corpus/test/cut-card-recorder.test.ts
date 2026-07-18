@@ -34,10 +34,10 @@ describe('cut-card recorder artifact replays wrong (issue #98)', () => {
     expect(res.error).toMatch(/not your action window|card is not in your hand/)
   })
 
-  it('replays byte-clean once the deck is filtered as the fixed recorder now emits it', () => {
-    // seatedDeckCards (apps/demo) now drops the cut card before recording, so a fixed-recorder
-    // paste carries exactly the deck that was played. Reproduce that here and the game verifies
-    // clean against the LIVE set — no archive path, correctly NOT flagged archived.
+  it('filtered deck carries no cut card — but this pre-#118 paste no longer replays clean (combat drift)', () => {
+    // seatedDeckCards (apps/demo) now drops the cut card before recording, so a fixed-recorder paste
+    // carries exactly the deck that was played. The FILTERING is the #98 fix and is still correct:
+    // the emitted decks name zero Doombringer.
     const filtered = {
       ...block,
       decks: {
@@ -45,9 +45,20 @@ describe('cut-card recorder artifact replays wrong (issue #98)', () => {
         B: { ...block.decks.B, cards: block.decks.B.cards.filter(c => c !== 'doombringer') },
       },
     }
+    expect(filtered.decks.A.cards).not.toContain('doombringer')
+    expect(filtered.decks.B.cards).not.toContain('doombringer')
+
+    // It used to replay byte-clean against the LIVE set. It no longer does — and that's correct.
+    // This paste (seed 1844022163) was PLAYED under pre-#118 combat, where Breakthrough leaked past a
+    // shielded/warded blocker. The #118 pour fix makes that earlier fight resolve differently — unit
+    // c88 dies sooner — so the recorded action 93/108 (its attack) now lands with "no such attacker"
+    // and the replay legitimately diverges. This is engine drift, not corruption: the corpus
+    // fingerprint's engine axis (packages/engine/package.json, still 0.1.0) can't yet segregate
+    // pre/post-#118 games (the version-bump gap — Blaine's call). verifyReplay re-simulates, so a
+    // version bump wouldn't rescue THIS fixture anyway. Clean-replay stays covered by replay.test.ts.
     const res = verifyReplay(filtered, { cardSet: CARD_SET })
-    expect(res.ok).toBe(true)
-    expect(res.terminal).toBe(true)
-    expect(res.actionsApplied).toBe(res.totalActions)
+    expect(res.ok).toBe(false)
+    expect(res.errorStage).toBe('action')
+    expect(res.error).toMatch(/no such attacker/)
   })
 })

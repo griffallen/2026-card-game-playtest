@@ -158,3 +158,122 @@ describe('siege breakthrough (decision 102, issue #66)', () => {
     expect(s.sides[them].life).toBe(lifeBefore)      // Neutral: nothing reaches the base
   })
 })
+
+// #118 (Griff): Breakthrough was leaking past a SHIELDED blocker into the base. Per rules-v1.3
+// §Breakthrough — leftover spills only "when this attacker KILLS its blocker" — and §Shielded —
+// "the first hit it would take is prevented in full ... a hit of any size." A shielded blocker
+// survives, so it kills nothing and NOTHING breaks through. Fable's ruling (this describe is the
+// spec): a shielded (or warded) blocker soaks the ENTIRE remaining pour aimed through it — token
+// spends only when damage actually reaches it. Piercing attackers (#107) ignore shields, unchanged.
+describe('#118 shield/ward stops breakthrough spill', () => {
+  const enemyHomeOf = (me: 0 | 1) => (me === 0 ? 2 : 0) as 0 | 2
+
+  it('(i) lone base-siege: a shielded blocker soaks a breakthrough swing — base takes 0, blocker lives, token spent', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const home = enemyHomeOf(me)
+    const big = put(s, me, 'crusher', home)          // 3 power, breakthrough, standing in enemy Home
+    const shield = put(s, them, 'pawn', home); s.units[shield].shielded = true  // 1/1 + shield token
+    const lifeBefore = s.sides[them].life
+    s = applyAction(s, { type: 'attack', attackers: [big], target: { kind: 'base', seat: them } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: shield, onto: big }] }, them).state
+    expect(s.sides[them].life).toBe(lifeBefore)       // no kill → no spill
+    expect(s.units[shield]).toBeDefined()             // shield survives
+    expect(s.units[shield].shielded).toBe(false)      // token spent on the hit it stopped
+    expect(s.units[shield].damage).toBe(0)            // and took none
+  })
+
+  it('(ii) gang, shielded FIRST: eats the whole pour — co-blocker untouched, nothing spills', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const big = put(s, me, 'crusher', 1)             // 3 power, breakthrough
+    const mate = put(s, me, 'runner', 1)             // 1/1 unblocked rider → declared target only
+    const shield = put(s, them, 'pawn', 1); s.units[shield].shielded = true
+    const co = put(s, them, 'pawn', 1)               // second blocker in the pour
+    const victim = put(s, them, 'wall', 1)           // 0/5 declared target (no counter)
+    s = applyAction(s, { type: 'attack', attackers: [big, mate], target: { kind: 'unit', id: victim } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: shield, onto: big }, { blocker: co, onto: big }] }, them).state
+    expect(s.units[shield].shielded).toBe(false)      // shield ate the whole 3
+    expect(s.units[shield].damage).toBe(0)
+    expect(s.units[co]).toBeDefined()                 // co-blocker never got hit
+    expect(s.units[co].damage).toBe(0)
+    expect(s.units[victim].damage).toBe(1)            // only the unblocked runner's 1 — 0 breakthrough spill
+  })
+
+  it('(iii) gang, shielded SECOND: first blocker resolves, shield eats the remainder, nothing spills', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const big = put(s, me, 'crusher', 1)             // 3 power, breakthrough
+    const mate = put(s, me, 'runner', 1)             // 1/1 unblocked rider
+    const first = put(s, them, 'pawn', 1)            // 1/1, listed first: dies
+    const shield = put(s, them, 'pawn', 1); s.units[shield].shielded = true  // listed second
+    const victim = put(s, them, 'wall', 1)
+    s = applyAction(s, { type: 'attack', attackers: [big, mate], target: { kind: 'unit', id: victim } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: first, onto: big }, { blocker: shield, onto: big }] }, them).state
+    expect(s.units[first]).toBeUndefined()            // 1 damage fells the 1/1
+    expect(s.units[shield].shielded).toBe(false)      // shield absorbed the remaining 2
+    expect(s.units[shield].damage).toBe(0)
+    expect(s.units[victim].damage).toBe(1)            // only the runner — no breakthrough spill
+  })
+
+  it('(iv) pool exhausted before the shielded blocker is reached: its token is NOT spent', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const big = put(s, me, 'crusher', 1)             // 3 power
+    const mate = put(s, me, 'runner', 1)
+    const soak = put(s, them, 'brute', 1)            // 4/3 first: eats all 3, pool hits 0
+    const shield = put(s, them, 'pawn', 1); s.units[shield].shielded = true  // second: never reached
+    const victim = put(s, them, 'wall', 1)
+    s = applyAction(s, { type: 'attack', attackers: [big, mate], target: { kind: 'unit', id: victim } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: soak, onto: big }, { blocker: shield, onto: big }] }, them).state
+    expect(s.units[shield].shielded).toBe(true)       // untouched hit never came — token intact
+    expect(s.units[shield].damage).toBe(0)
+    expect(s.units[victim].damage).toBe(1)            // just the runner
+  })
+
+  it('(v) piercing attacker vs a shielded blocker is UNCHANGED: shield ignored, breakthrough still spills', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const home = enemyHomeOf(me)
+    s.cardSet.piercer = { ...s.cardSet.crusher, slug: 'piercer', name: 'piercer', piercesArmorShield: true }
+    const big = put(s, me, 'piercer', home)          // 3 power, breakthrough + pierce
+    const shield = put(s, them, 'pawn', home); s.units[shield].shielded = true
+    const lifeBefore = s.sides[them].life
+    s = applyAction(s, { type: 'attack', attackers: [big], target: { kind: 'base', seat: them } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: shield, onto: big }] }, them).state
+    expect(s.units[shield]).toBeUndefined()           // pierce fells it through the shield
+    expect(s.sides[them].life).toBe(lifeBefore - 2)   // 3 − 1 raw health spills to the base
+  })
+
+  it('(vi) ward mirrors shield — base-siege: a warded blocker soaks the swing, base takes 0', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const home = enemyHomeOf(me)
+    const big = put(s, me, 'crusher', home)
+    const ward = put(s, them, 'pawn', home); s.units[ward].blockWard = true
+    const lifeBefore = s.sides[them].life
+    s = applyAction(s, { type: 'attack', attackers: [big], target: { kind: 'base', seat: them } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: ward, onto: big }] }, them).state
+    expect(s.sides[them].life).toBe(lifeBefore)        // no spill past the ward
+    expect(s.units[ward]).toBeDefined()
+    expect(s.units[ward].damage).toBe(0)               // ward took none
+    expect(s.units[ward].blockWard).toBeFalsy()        // token cleared
+  })
+
+  it('(vi-gang) ward, first in a gang, eats the whole pour — co-blocker untouched, nothing spills', () => {
+    let s = g()
+    const me = s.actorSeat, them = (1 - me) as 0 | 1
+    const big = put(s, me, 'crusher', 1)
+    const mate = put(s, me, 'runner', 1)
+    const ward = put(s, them, 'pawn', 1); s.units[ward].blockWard = true
+    const co = put(s, them, 'pawn', 1)
+    const victim = put(s, them, 'wall', 1)
+    s = applyAction(s, { type: 'attack', attackers: [big, mate], target: { kind: 'unit', id: victim } }, me).state
+    s = applyAction(s, { type: 'block', pairs: [{ blocker: ward, onto: big }, { blocker: co, onto: big }] }, them).state
+    expect(s.units[ward].blockWard).toBeFalsy()
+    expect(s.units[ward].damage).toBe(0)
+    expect(s.units[co]).toBeDefined()
+    expect(s.units[co].damage).toBe(0)
+    expect(s.units[victim].damage).toBe(1)             // only the runner — no spill
+  })
+})

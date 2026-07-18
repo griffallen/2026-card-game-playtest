@@ -837,13 +837,19 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
     let dmg = p.aPower
     for (const b of p.blockers) {
       if (dmg <= 0) break
-      // #107 (Worldrender): a piercing attacker fells its blocker through the blocker's armor — the
-      // pour spends no power on armor it ignores (so the excess that breaks through is measured raw).
-      const gross = Math.max(0, effHealth(state, b) - b.damage) + (aPierces ? 0 : effArmor(state, b))
-      const chunk = Math.min(dmg, gross)
-      // #88 (Devout Intervention, Ward 2): a warded blocker soaks the attacker's power (so nothing
-      // spills past it) but takes no damage. One fight — the token clears here. Its counter is p.counter.
+      // #118 (Griff) + #88: a shielded or warded blocker cannot be KILLED by a non-piercing hit, so
+      // Breakthrough — which spills only past a *slain* blocker (rules-v1.3 §Breakthrough) — carries
+      // nothing past it. It soaks the ENTIRE remaining pour aimed through it (the same rule the
+      // declared target already gets below). A piercing attacker (#107 Worldrender) ignores both.
       const warded = !!b.blockWard
+      const soaksWhole = !aPierces && (b.shielded || warded)
+      // #107: a piercing attacker fells its blocker through the blocker's armor — the pour spends no
+      // power on armor it ignores (so the excess that breaks through is measured raw).
+      const gross = soaksWhole ? dmg : Math.max(0, effHealth(state, b) - b.damage) + (aPierces ? 0 : effArmor(state, b))
+      const chunk = Math.min(dmg, gross)
+      // Ward 2 (#88, Devout Intervention): the warded blocker turns the blow aside — no damage, token
+      // clears here. A shielded blocker takes the chunk normally; damageUnit spends its token and deals
+      // 0 (effects.ts). Either way the whole pour is consumed, so nothing spills past a survivor.
       if (warded) { b.blockWard = false; log(state, b.owner, `${defOf(state, b.id).name}'s ward turns aside the blow`) }
       if (chunk > 0 && !warded) unitHits.push([b, chunk, defOf(state, p.a.id).name, aPierces])
       dmg -= chunk
