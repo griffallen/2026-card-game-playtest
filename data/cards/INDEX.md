@@ -65,7 +65,7 @@
 | [Prison Warrant](yellow/prison-warrant.md) | — | 3 | action | — |  | canon | Target unit you control captures target damaged enemy unit or unit with 2 or less Health. Gain 1 Influence at the beginning of each round where the target unit is still captured. |
 | [Radiant Aegis](yellow/radiant-aegis.md) | — | 3 | action | — |  | canon | Give a friendly unit a Shield. If your Influence is below 0, gain 2 Influence. |
 | [Sanctified Bastion](yellow/sanctified-bastion.md) | — | 3 | unit | 1/4 | cantAttack | canon | This can't attack. Other friendly units in this zone have Armor 1. |
-| [Subjugate](yellow/subjugate.md) | — | 3 | upgrade | — |  | canon | Attach to an enemy unit. While attached, it gets −1 Power for each pip in its cost. |
+| [Subjugate](yellow/subjugate.md) | — | 3 | upgrade | — |  | canon | Attach to an enemy unit. While attached, it gets −2 Power for each pip in its cost. |
 | [Unwavering Faith](yellow/unwavering-faith.md) | — | 3 | action | — |  | canon | Heal 3 damage from target unit. |
 | [Absolution](yellow/absolution.md) | — | 4 | action | — |  | canon | Remove all negative effects from target unit you control. Free all your captured units. |
 | [Devout Intervention](yellow/devout-intervention.md) | — | 4 | action | — |  | canon | Prevent all damage to your Home from the next attack this round. Also, prevent all damage to your next blocking unit this round (it still deals its damage back). |

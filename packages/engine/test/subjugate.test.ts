@@ -12,8 +12,8 @@ import type { CardDef, GameState, Seat } from '../src/types.ts'
 import { put, toHand, toLoop } from './util.ts'
 
 // ── #80 Subjugate — the game's first ENEMY-ATTACHING upgrade ─────────────────
-// Type flips action → upgrade. It attaches to an enemy unit and strips −1 Power
-// per pip in the host's printed cost (Worldrender, 3 pips → −3), permanent while
+// Type flips action → upgrade. It attaches to an enemy unit and strips −2 Power
+// per pip in the host's printed cost (#117; Worldrender, 3 pips → −6, floors to 0), permanent while
 // attached. Cost 3, two yellow pips (ruling: the PR's one-pip proposal was rejected).
 // The debuff is a LIVE attached aura, not a snapshot — a salvaged Subjugate
 // (decision 67) re-fits its new host's pip count.
@@ -49,20 +49,20 @@ function arena(seed = 21) {
   return { s, me, them }
 }
 
-describe('Subjugate (#80): enemy-attach upgrade, −1 Power per host pip', () => {
-  it('compiles to the locked design: upgrade, cost 3, two yellow pips, enemy attach, live −1/pip aura', () => {
+describe('Subjugate (#80/#117): enemy-attach upgrade, −2 Power per host pip', () => {
+  it('compiles to the locked design: upgrade, cost 3, two yellow pips, enemy attach, live −2/pip aura', () => {
     const def = CARD_SET['subjugate']
     expect(def.type).toBe('upgrade')
     expect(def.cost).toBe(3)
     expect(def.pips).toEqual(['yellow', 'yellow'])
     expect(def.attach).toEqual({ side: 'enemy' })
-    expect(def.statics).toEqual([{ s: 'aura', scope: 'attached', pPerHostPip: -1 }])
+    expect(def.statics).toEqual([{ s: 'aura', scope: 'attached', pPerHostPip: -2 }])
     expect(def.targets ?? []).toEqual([])          // the attach target is implicit, like every upgrade
     expect(def.onPlay ?? []).toEqual([])           // the old −2 buff op is gone
     expect(validateCardSet(CARD_SET)).toEqual([])
   })
 
-  it('attaches to an enemy unit and strips its pip count in Power (3 pips → −3, 1 pip → −1)', () => {
+  it('attaches to an enemy unit and strips 2 Power per host pip (3 pips → −6, 1 pip → −2, both floor here)', () => {
     let { s, me, them } = arena()
     const wr = put(s, them, 'worldrender', 1)          // 4 power, pips [red, red, red]
     const imp = put(s, them, 'cinder-initiate', 1)     // 2 power, pips [red]
@@ -71,14 +71,14 @@ describe('Subjugate (#80): enemy-attach upgrade, −1 Power per host pip', () =>
     s = act(s, me, { type: 'play', card: c1, targets: [{ kind: 'unit', id: wr }] })
     expect(s.upgrades[c1]).toMatchObject({ attachedTo: wr, owner: me })
     expect(s.units[wr].upgrades).toContain(c1)
-    expect(effPower(s, s.units[wr])).toBe(1)           // 4 − 3 pips
+    expect(effPower(s, s.units[wr])).toBe(0)           // 4 − 6 (3 pips × 2), floored at 0
     const c2 = toHand(s, them, 'subjugate')
     s = act(s, them, { type: 'play', card: c2, targets: [{ kind: 'unit', id: put(s, me, 'spark-hound', 1) }] })
     expect(effPower(s, s.units[imp])).toBe(2)          // untouched bystander
     s.actorSeat = me
     const c3 = toHand(s, me, 'subjugate')
     s = act(s, me, { type: 'play', card: c3, targets: [{ kind: 'unit', id: imp }] })
-    expect(effPower(s, s.units[imp])).toBe(1)          // 2 − 1 pip
+    expect(effPower(s, s.units[imp])).toBe(0)          // 2 − 2 (1 pip × 2)
   })
 
   it('Power floors at 0 when the pip count meets or exceeds the body', () => {
@@ -94,11 +94,11 @@ describe('Subjugate (#80): enemy-attach upgrade, −1 Power per host pip', () =>
     const wr = put(s, them, 'worldrender', 1)
     const card = toHand(s, me, 'subjugate')
     s = act(s, me, { type: 'play', card, targets: [{ kind: 'unit', id: wr }] })
-    expect(effPower(s, s.units[wr])).toBe(1)
+    expect(effPower(s, s.units[wr])).toBe(0)
     s = act(s, them, { type: 'pass' })
     s = act(s, me, { type: 'pass' })                   // two passes end the round
     s = toLoop(s)                                      // drive the next round's start steps
-    expect(effPower(s, s.units[wr])).toBe(1)           // still shackled
+    expect(effPower(s, s.units[wr])).toBe(0)           // still shackled
     expect(s.upgrades[card].attachedTo).toBe(wr)
   })
 
@@ -159,7 +159,7 @@ describe('Subjugate (#80): enemy-attach upgrade, −1 Power per host pip', () =>
       .toThrow(/enemy/)
     s = act(s, me, { type: 'attachOrphan', upgrade: card, unit: imp })
     expect(s.upgrades[card].attachedTo).toBe(imp)
-    expect(effPower(s, s.units[imp])).toBe(1)          // −1: the LIVE aura re-fits the 1-pip host
+    expect(effPower(s, s.units[imp])).toBe(0)          // −2: the LIVE aura re-fits the 1-pip host
   })
 
   it('salvage enumeration offers enemy hosts (not your own) for an orphaned Subjugate', () => {
