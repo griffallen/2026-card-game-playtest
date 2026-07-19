@@ -107,18 +107,18 @@
 | [Whisper Blade](purple/whisper-blade.md) | — | 1 | unit | 2/1 |  | draft | When this defeats a unit, gain 1 Influence. |
 | [Cloak of Haze](purple/cloak-of-haze.md) | — | 2 | upgrade | — |  | draft | Attached unit has Hidden. |
 | [Crippling Dart](purple/crippling-dart.md) | — | 2 | action | — |  | draft | Deal 2 damage to target enemy unit. It gets -1 Power permanently. |
-| [Dusk Archer](purple/dusk-archer.md) | — | 2 | unit | 1/2 | ranged 2 | draft | Ranged 2. |
 | [Mist Stalker](purple/mist-stalker.md) | — | 2 | unit | 2/2 |  | draft | When this defeats a unit, gain 1 Influence. |
 | [Pacify](purple/pacify.md) | — | 2 | action | — |  | draft | Target enemy unit can't attack this round. |
 | [Shadowstep](purple/shadowstep.md) | — | 2 | action | — |  | draft | Target friendly unit gains Hidden this round. Draw a card. |
 | [Twilight Scout](purple/twilight-scout.md) | — | 2 | unit | 2/3 | infiltrate | draft | Infiltrate. (Deploy this to any zone.) |
 | [Veiled Messenger](purple/veiled-messenger.md) | — | 2 | unit | 1/3 | politician | draft | Politician. When this enters play, draw a card. |
 | [Wither](purple/wither.md) | — | 2 | upgrade | — |  | draft | Target enemy unit gets -1 Power and -1 Health permanently. The rot takes hold: at the start of each round, it withers a further -1/-1. (Power floors at 0; a unit withered to 0 Health dies.) |
+| [Dusk Archer](purple/dusk-archer.md) | — | 3 | unit | 1/1 | ranged 2 | draft | Ranged 2. |
 | [Gloom Piercer](purple/gloom-piercer.md) | — | 3 | unit | 3/2 | infiltrate | draft | Infiltrate. |
 | [Nightweaver](purple/nightweaver.md) | — | 3 | unit | 3/3 |  | draft | When this enters play, target enemy unit gets -1 Power permanently. |
 | [Obscure](purple/obscure.md) | — | 3 | action | — |  | draft | Draw 2 cards, then both you and your opponent discard a card. |
 | [Silence the Song](purple/silence-the-song.md) | — | 3 | upgrade | — |  | draft | Attach to any unit — it gets −2 Power. When it dies, draw 2 cards. |
-| [Veil Assassin](purple/veil-assassin.md) | — | 3 | unit | 4/2 |  | draft | When this defeats a unit, gain 1 Influence. |
+| [Veil Assassin](purple/veil-assassin.md) | — | 3 | unit | 3/1 | hidden, infiltrate | draft | Hidden. Infiltrate. |
 | [Assassin's Contract](purple/assassin-s-contract.md) | — | 4 | action | — |  | draft | Destroy target unit. You lose Life equal to its remaining Health, and its owner gains Influence equal to half its printed cost, rounded up. |
 | [Blackout](purple/blackout.md) | — | 4 | action | — |  | draft | Choose a zone. Enemy units there can't attack this round. |
 | [Cull the Weak](purple/cull-the-weak.md) | — | 4 | action | — |  | draft | Deal 1 damage to every enemy unit. Draw a card. |

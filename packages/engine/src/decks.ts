@@ -1,5 +1,6 @@
 import type { CardSet } from './types.ts'
 import { CARD_SET } from './cards/index.ts'
+import { DEFAULT_RULES } from './rules.ts'
 
 export interface PrebuiltDeck {
   slug: string
@@ -64,9 +65,21 @@ export function buildPrebuiltDecks(set: CardSet): PrebuiltDeck[] {
     },
   ]
 
-  // Purple's 36 uniques were designed with exactly twelve cost ≤ 2 slugs, so the doubles rule is clean.
+  // #122: reach exactly deckMinSize by doubling the cheapest bodies, NOT by a cost cutoff. The old
+  // "double every cost <= 2" made the deck size a side effect of the curve, so a designer cost edit
+  // (Dusk Archer 2 -> 3) silently pushed a card out of the doubles and dropped the deck under 48,
+  // failing the card gate. Now: double the cheapest (deckMinSize - uniqueCount) cards, ordered by
+  // cost asc, then sturdiest body (power+health desc — actions/upgrades count 0 and sort last, so a
+  // situational spell is never filler-doubled), then slug. Self-heals to 48 however Griff shifts
+  // costs, and a just-nerfed frail body is never the fill pick (the 12th double lands on the sturdiest
+  // cheap body, e.g. Nightweaver 3/3 — not the 1/1 Dusk Archer).
   if (purple.length) {
-    const purpleDoubles = new Set(purple.filter(c => c.cost <= 2).map(c => c.slug))
+    const nDoubles = Math.max(0, DEFAULT_RULES.deckMinSize - purple.length)
+    const ranked = [...purple].sort((a, b) =>
+      a.cost - b.cost
+      || ((b.power ?? 0) + (b.health ?? 0)) - ((a.power ?? 0) + (a.health ?? 0))
+      || a.slug.localeCompare(b.slug))
+    const purpleDoubles = new Set(ranked.slice(0, nDoubles).map(c => c.slug))
     decks.push({
       slug: 'veiled-court',
       name: 'Veiled Court',
