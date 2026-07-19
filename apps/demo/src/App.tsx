@@ -11,6 +11,7 @@ import { Guide } from './pages/Guide.tsx'
 import { Appendix } from './pages/Appendix.tsx'
 import { Journal } from './pages/Journal.tsx'
 import { ErrorBoundary } from './ErrorBoundary.tsx'
+import { ReloadNudge } from './ReloadNudge.tsx'
 
 /* The design/history docs live under one "Archive" sub-menu so the nav stays lean (session 010).
    The Rulebook stays top-level — it teaches the game; these document its making. */
@@ -60,6 +61,7 @@ export function App() {
   return (
     // phones: the document scrolls and the header scrolls away with it; desktop: fixed shell
     <div className="flex h-full flex-col max-lg:block max-lg:h-auto max-lg:min-h-full">
+      <ReloadNudge />
       <header className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b hairline px-4 py-2.5">
         <span className="font-display text-lg font-bold tracking-wide text-parchment">
           ⚔ New Game <span className="ml-1 align-middle text-[10px] font-normal uppercase tracking-widest text-dim">static demo — no server, everything runs in your browser</span>
