@@ -2619,7 +2619,7 @@
   "pips": [
    "purple"
   ],
-  "artUrl": "/cards/glimpse.svg"
+  "artUrl": "/cards/glimpse.jpg"
  },
  "veil-adept": {
   "slug": "veil-adept",
@@ -2782,7 +2782,7 @@
   "pips": [
    "purple"
   ],
-  "artUrl": "/cards/pacify.svg"
+  "artUrl": "/cards/pacify.jpg"
  },
  "shadowstep": {
   "targets": [
@@ -2962,7 +2962,7 @@
    "purple",
    "purple"
   ],
-  "artUrl": "/cards/obscure.svg"
+  "artUrl": "/cards/obscure.jpg"
  },
  "veil-assassin": {
   "onKill": [
@@ -3378,7 +3378,7 @@
    "purple",
    "purple"
   ],
-  "artUrl": "/cards/fog-of-knives.svg"
+  "artUrl": "/cards/fog-of-knives.jpg"
  },
  "umbral-colossus": {
   "slug": "umbral-colossus",
@@ -3452,7 +3452,7 @@
    "purple"
   ],
   "designerNote": "Session 006 proposal: The wither bomb — the whole board fades.\nFirst sims: at 6 it deleted yellow's whole plan; 7 makes it the finisher it reads as.",
-  "artUrl": "/cards/eclipse.svg"
+  "artUrl": "/cards/eclipse.jpg"
  },
  "midnight-reckoning": {
   "onPlay": [
@@ -3479,7 +3479,7 @@
    "purple",
    "purple"
   ],
-  "artUrl": "/cards/midnight-reckoning.svg"
+  "artUrl": "/cards/midnight-reckoning.jpg"
  },
  "sovereign-of-the-veil": {
   "sneak": {

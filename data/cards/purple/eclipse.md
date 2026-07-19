@@ -4,7 +4,7 @@ type: action
 cost: 7
 pips: purple, purple, purple
 status: draft
-art: /cards/eclipse.svg
+art: /cards/eclipse.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"buff","t":{"side":"enemy"},"p":-2,"dur":"perm"}]}
 ---

@@ -4,7 +4,7 @@ type: action
 cost: 6
 pips: purple, purple
 status: draft
-art: /cards/fog-of-knives.svg
+art: /cards/fog-of-knives.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"zone"}],"onPlay":[{"op":"damageFilter","f":{"side":"enemy","zone":"chosenZone"},"n":3}]}
 ---

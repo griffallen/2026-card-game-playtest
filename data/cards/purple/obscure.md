@@ -4,7 +4,7 @@ type: action
 cost: 3
 pips: purple, purple
 status: draft
-art: /cards/obscure.svg
+art: /cards/obscure.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"preventBase","n":2},{"op":"draw","n":1}]}
 ---
