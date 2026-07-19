@@ -54,6 +54,8 @@ export function validateCardSet(cards: CardSet): string[] {
       if (!['friendly', 'enemy', 'any'].includes(def.attach?.side as string)) err(slug, `bad attach side ${def.attach?.side}`)
       if (def.attach.pass !== undefined && !isInt(def.attach.pass, 0, 30)) err(slug, `bad attach pass ${def.attach.pass}`)
       if (def.attach.salvage !== undefined && def.attach.salvage !== 'freeFriendly') err(slug, `bad attach salvage ${def.attach.salvage}`)
+      // #122 (Wither): opt out of decision-67 orphaning — consumed with the host on its death
+      if (def.attach.consumedOnHostDeath !== undefined && typeof def.attach.consumedOnHostDeath !== 'boolean') err(slug, 'attach consumedOnHostDeath must be true/false')
     }
 
     const chosenSlots = (def.targets ?? []).reduce((s, t) => s + (t.count ?? 1), 0)

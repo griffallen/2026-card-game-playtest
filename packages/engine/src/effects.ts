@@ -452,7 +452,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         for (const u of targets) {
           if (!condHolds(state, controller, op.cond)) continue
           u.mods.push({ p, h, armor, round: op.dur === 'round' })
-          const bits = [p ? `${p > 0 ? '+' : ''}${p} power` : '', armor ? `+${armor} armor` : ''].filter(Boolean).join(', ')
+          const bits = [p ? `${p > 0 ? '+' : ''}${p} power` : '', h ? `${h > 0 ? '+' : ''}${h} health` : '', armor ? `+${armor} armor` : ''].filter(Boolean).join(', ')
           log(state, u.owner, `${name(state, u.id)} gets ${bits}${op.dur === 'round' ? ' this round' : ''}`)
         }
         break
@@ -647,13 +647,22 @@ export function shedUpgrades(state: GameState, unit: UnitInstance, taken = false
       const hostDeathOps = defOf(state, upId).onHostDeath
       if (hostDeathOps?.length) runOps({ state, controller: up.owner, sourceUnit: unit.id, actorSeat: up.owner }, hostDeathOps)
     }
-    if (state.rules.upgradesOrphan) {           // v3 (decision 67): the wearer's gear stays on the field
+    // #122 (Wither): a curse marked consumedOnHostDeath does NOT orphan when its HOST dies — it is
+    // discarded with the body (a rot curse shouldn't outlive its victim and jump to a fresh one).
+    // (Destroying the curse mid-life is separate — that leaves the perm −1/−1 mods already stamped
+    // on the host intact; only the future ticks stop.) Capture (`taken`) is not death, so it still
+    // follows the standard decision-67 orphan path.
+    const consumedWithHost = !taken && defOf(state, upId).attach?.consumedOnHostDeath
+    if (state.rules.upgradesOrphan && !consumedWithHost) {   // v3 (decision 67): the wearer's gear stays on the field
       up.attachedTo = null
       up.orphanedIn = unit.zone
       log(state, up.owner, taken                // #112: capture drops gear in the prior zone, same as a fall
         ? `${name(state, upId)} is left behind as ${name(state, unit.id)} is taken`
         : `${name(state, upId)} lies where ${name(state, unit.id)} fell`)
-    } else { state.sides[up.owner].discard.push(upId); delete state.upgrades[upId] }
+    } else {
+      state.sides[up.owner].discard.push(upId); delete state.upgrades[upId]
+      if (consumedWithHost) log(state, up.owner, `${name(state, upId)} rots away with ${name(state, unit.id)}`)
+    }
   }
   unit.upgrades = []
 }

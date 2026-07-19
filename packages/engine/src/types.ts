@@ -175,8 +175,11 @@ export interface CardDef {
    *  #86 (Resolve Banner): `pass` = resource cost to re-attach this upgrade to another friendly
    *  unit in the same zone as an action (absent = not passable). `salvage: 'freeFriendly'` =
    *  when orphaned it can be picked up only by a friendly unit, for 0 (an opponent cannot);
-   *  absent = the decision-67 default (either side, full cost + pips). */
-  attach?: { side: 'friendly' | 'enemy' | 'any'; pass?: number; salvage?: 'freeFriendly' }
+   *  absent = the decision-67 default (either side, full cost + pips).
+   *  #122 (Wither): `consumedOnHostDeath` = when the host DIES, this upgrade is discarded WITH it
+   *  instead of orphaning (decision 67) — a rot curse doesn't survive the thing it killed and jump
+   *  to a fresh victim. Already-applied perm mods still stand; only the gear is consumed. */
+  attach?: { side: 'friendly' | 'enemy' | 'any'; pass?: number; salvage?: 'freeFriendly'; consumedOnHostDeath?: boolean }
   targets?: TargetSpec[]     // play-time targets (upgrades: attach target is implicit and NOT listed)
   onPlay?: Op[]              // action body; unit/upgrade enter-play effects
   onEnterZone?: Op[]         // fires on play AND every zone entry (targets always auto-picked)
