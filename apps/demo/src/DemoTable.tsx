@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  EngineError, POLICIES, applyAction, policyRngInit, viewFor,
+  EngineError, POLICIES, applyAction, homeZone, policyRngInit, viewFor,
   type GameAction, type GameState, type HandCardView, type Seat, type TargetRef, type UnitView, type ZoneId,
 } from '@newgame/engine'
 import { CardFrame } from '@ui/components/CardFrame.tsx'
@@ -41,6 +41,7 @@ type Selection =
   | { kind: 'orphan'; id: string }            // v3 salvage: choosing which unit picks the orphan up
   | { kind: 'passing'; upgrade: string }      // #86 (Resolve Banner): choosing which friendly unit to pass the banner to
   | { kind: 'entry-exhaust'; via: { play: string } | { unit: string; to: ZoneId }; targets: string[] }  // #104 (Lawbringer): a chosen-arrest unit entered a zone — pick which enemy in it to exhaust
+  | { kind: 'infiltrate'; card: string; mode?: number }  // #121: an Infiltrate unit — choosing which zone to deploy into
   | null
 
 /** Mobile browser chrome (Chrome's bottom bar, the keyboard) can overlay the layout
@@ -515,6 +516,17 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       // #104 (Lawbringer): the eligible enemies to arrest, sourced from the legal play/move actions
       return selection.targets.map(id => ({ kind: 'unit', id }) as TargetRef)
     }
+    if (selection.kind === 'infiltrate') {
+      // #121 (Infiltrate): the deployable zones — the seat's Home (its play carries no `zone`) plus
+      // every `zone` variant among the legal plays. Derived, never hardcoded.
+      const refs: TargetRef[] = [{ kind: 'zone', zone: homeZone(seat) }]
+      for (const p of playActionsFor(selection.card)) {
+        if (p.zone === undefined) continue
+        const ref: TargetRef = { kind: 'zone', zone: p.zone }
+        if (!refs.some(r => sameRef(r, ref))) refs.push(ref)
+      }
+      return refs
+    }
     return []
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection, view, myWindow])
@@ -598,6 +610,11 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       if ('play' in via) apply({ type: 'play', card: via.play, exhaust: ref.id }, seat)
       else apply({ type: 'move', unit: via.unit, to: via.to, exhaust: ref.id }, seat)
     }
+    if (selection.kind === 'infiltrate' && ref.kind === 'zone') {
+      // #121 (Infiltrate): deploy the unit into the chosen zone. The engine accepts `zone: homeZone(seat)`
+      // for the Home pick too, so we always send the tapped zone.
+      apply({ type: 'play', card: selection.card, zone: ref.zone, ...(selection.mode !== undefined ? { mode: selection.mode } : {}) }, seat)
+    }
   }
 
   /** Why can't this hand card be played right now? null = it can. */
@@ -674,6 +691,10 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     // with that choice; a plain play when the Home holds no eligible enemy.
     const arrests = plays.map(p => p.exhaust).filter((e): e is string => e !== undefined)
     if (arrests.length) { setSelection({ kind: 'entry-exhaust', via: { play: cardId }, targets: arrests }); return }
+    // #121 (Infiltrate): the unit may deploy into a non-Home zone. The legal plays carry one `zone`
+    // variant per infiltratable zone (the Home play has none). Offer the zone choice; deploy on the pick.
+    const zones = [...new Set(plays.map(p => p.zone).filter((z): z is ZoneId => z !== undefined))]
+    if (zones.length) { setSelection({ kind: 'infiltrate', card: cardId, ...(mode !== undefined ? { mode } : {}) }); return }
     if ((plays[0].targets?.length ?? 0) === 0) apply({ type: 'play', card: cardId, ...(mode !== undefined ? { mode } : {}) }, seat)
     else setSelection({ kind: 'targeting', card: cardId, collected: [], mode })
   }
@@ -1096,6 +1117,12 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
           </div>
         )
       })()}
+      {selection?.kind === 'infiltrate' && (
+        <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
+          <span>✦ <b>{DEMO_CARDS[state.cardOf[selection.card]]?.name}</b> can Infiltrate — tap a glowing zone to deploy it there (your Home, or forward into contested ground).</span>
+          <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
+        </div>
+      )}
     </>
   ) : null
 
