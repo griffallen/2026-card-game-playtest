@@ -1,5 +1,5 @@
 import type {
-  CardDef, Color, Cond, GameState, KeywordName, KeywordSpec, Mod, Seat, Static, UnitInstance, ZoneId,
+  BaseCount, CardDef, Color, Cond, GameState, KeywordName, KeywordSpec, Mod, Seat, Static, UnitInstance, ZoneId,
 } from './types.ts'
 import { EngineError } from './types.ts'
 
@@ -143,8 +143,26 @@ function activeMods(state: GameState, unit: UnitInstance): Mod[] {
 export const printedKw = (state: GameState, unit: UnitInstance): KeywordSpec[] =>
   unit.created?.kw ?? defOf(state, unit.id).kw ?? []
 
+/** #122 (Umbral Colossus / The Unseen Court): a unit's base Power/Health read LIVE at query time from a
+ *  board count — REPLACING the printed stat in effPower/effHealth (a created copy's own body still wins,
+ *  and mods/auras/scar compose on top of whatever this returns). Owner-perspective and ctx-free: the
+ *  unit knows its `owner`, both discards live on `state.sides`, and `defOf` resolves a discard instance
+ *  id via cardOf. Deliberately NOT the effects.ts `perCount` (that is controller-perspective at
+ *  resolution time). Array lengths are never negative and effPower/effHealth wrap in Math.max(0,…),
+ *  so the 0 floor is free — no caching, the value tracks the board every read. */
+export function baseCount(state: GameState, unit: UnitInstance, src: BaseCount): number {
+  if (src === 'handSize') return state.sides[unit.owner].hand.length
+  // 'discardUnitsBoth': unit cards across BOTH discard piles (units die into discard; actions/upgrades
+  // are there too, so filter to type 'unit') — the Unseen Court's power grows as units fall.
+  return [...state.sides[0].discard, ...state.sides[1].discard]
+    .filter(id => defOf(state, id).type === 'unit').length
+}
+
 export function effPower(state: GameState, unit: UnitInstance): number {
-  const base = unit.created?.p ?? defOf(state, unit.id).power ?? 0
+  const def = defOf(state, unit.id)
+  // #122: precedence — created copy → count → printed → 0. Only the base term changes; everything
+  // downstream (mods, upgrades, auras, scar, the double multiply) composes on top unchanged.
+  const base = unit.created?.p ?? (def.powerFromCount != null ? baseCount(state, unit, def.powerFromCount) : def.power ?? 0)
   const mods = activeMods(state, unit)
   const add = mods.reduce((s, m) => s + (m.p ?? 0), 0)
   const up = upgradeGrants(state, unit)
@@ -157,7 +175,9 @@ export function effPower(state: GameState, unit: UnitInstance): number {
 }
 
 export function effHealth(state: GameState, unit: UnitInstance): number {
-  const base = unit.created?.h ?? defOf(state, unit.id).health ?? 0
+  const def = defOf(state, unit.id)
+  // #122: same precedence as effPower — created copy → count → printed → 0 (the base term only).
+  const base = unit.created?.h ?? (def.healthFromCount != null ? baseCount(state, unit, def.healthFromCount) : def.health ?? 0)
   const mods = activeMods(state, unit).reduce((s, m) => s + (m.h ?? 0), 0)
   // #86 (Resolve Banner): attached upgrades and auras may grant Health, read live — so detaching
   // (a pass, a destroyed carrier) recomputes lethality on the next state-based cleanup.

@@ -49,7 +49,11 @@ for (const deck of buildPrebuiltDecks(set)) {
 if (errors.length) { console.error(`✗ ${errors.length} problem(s):\n  ` + errors.join('\n  ')); process.exit(1) }
 
 const json = JSON.stringify(set, null, 1) + '\n'
-const ph = (d: CardDef) => (d.type === 'unit' ? `${d.power}/${d.health}` : '—')
+// #122: a count-based unit prints its source (hand/disc) instead of an absent number, so the P/H
+// column never reads "undefined" — the count IS the stat.
+const stat = (v: number | undefined, count: CardDef['powerFromCount']) =>
+  v ?? (count === 'handSize' ? 'hand' : count === 'discardUnitsBoth' ? 'disc' : '?')
+const ph = (d: CardDef) => (d.type === 'unit' ? `${stat(d.power, d.powerFromCount)}/${stat(d.health, d.healthFromCount)}` : '—')
 const kws = (d: CardDef) => (d.kw ?? []).map(k => (k.n !== undefined ? `${k.k} ${k.n}` : k.k)).join(', ')
 const row = (e: { def: CardDef; status: CardStatus }) =>
   `| [${e.def.name}](${e.def.color}/${e.def.slug}.md) | ${e.def.code ?? '—'} | ${e.def.cost} | ${e.def.type} | ${ph(e.def)} | ${kws(e.def)} | ${e.status} | ${e.def.text.replace(/\|/g, '\\|').replace(/\n/g, ' ')} |`

@@ -1,6 +1,6 @@
 import type { GameState, PlayerView, Seat, SideView, UnitView } from './types.ts'
 import { ZONES } from './types.ts'
-import { defOf, effArmor, effHealth, effPower, hasKw, kwOf, thresholds, unitsInZone } from './helpers.ts'
+import { baseCount, defOf, effArmor, effHealth, effPower, hasKw, kwOf, thresholds, unitsInZone } from './helpers.ts'
 import { getLegalActions } from './legal.ts'
 
 const KW_LIST = ['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'] as const
@@ -18,7 +18,11 @@ function unitView(state: GameState, id: string): UnitView {
   return {
     id, slug: u.slug, name: def.name, owner: u.owner, zone: u.zone,
     power: effPower(state, u), health: effHealth(state, u), damage: u.damage,
-    basePower: u.created?.p ?? def.power ?? 0, baseHealth: u.created?.h ?? def.health ?? 0, armor: effArmor(state, u),  // #69: a created copy's printed line is its own body
+    // #69: a created copy's printed line is its own body. #122: a count-based unit's "base" IS the live
+    // count (same precedence as effPower/effHealth), so the demo shows the true base, not a stale printed stat.
+    basePower: u.created?.p ?? (def.powerFromCount != null ? baseCount(state, u, def.powerFromCount) : def.power ?? 0),
+    baseHealth: u.created?.h ?? (def.healthFromCount != null ? baseCount(state, u, def.healthFromCount) : def.health ?? 0),
+    armor: effArmor(state, u),
     exhausted: u.exhausted,
     rushFreeMove: !u.movedThisRound && hasKw(state, u, 'rush') && !u.exhausted,   // #105: free first move every round, not just entry round
     imprisoned: !!u.imprisoned,

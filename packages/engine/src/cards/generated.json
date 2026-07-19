@@ -3173,14 +3173,15 @@
   "artUrl": "/cards/duskwing-tyrant.jpg"
  },
  "phantom-duelist": {
+  "dodgesWeakerCombatant": true,
   "slug": "phantom-duelist",
   "name": "Phantom Duelist",
   "color": "purple",
   "type": "unit",
   "cost": 4,
   "power": 4,
-  "health": 2,
-  "text": "Hidden. (While ready: can't be targeted or attacked. Acting reveals it.)",
+  "health": 1,
+  "text": "Hidden. If this unit has more power than its combatant, it takes no reciprocal damage.",
   "kw": [
    {
     "k": "hidden"
@@ -3190,7 +3191,7 @@
    "purple",
    "purple"
   ],
-  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): untargetable maps 1:1 onto Hidden — same fantasy, now with the self-revealing rhythm (decision 59).",
+  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): untargetable maps 1:1 onto Hidden — same fantasy, now with the self-revealing rhythm (decision 59).\n\n2026-07-19 (#122): sharpened into a 4/1 glass-cannon duelist. Health 2 → 1, keeps Hidden, and gains dodgesWeakerCombatant: whenever it strictly out-powers the combatant it faces (effective Power), it takes NO reciprocal combat damage — walks through weaker blockers and weaker targets' retaliation untouched, and dodges a weaker attacker's counter when it blocks. Applies both directions; ties (equal power) still take the hit. It is NOT protected as the passive sieged target: a gang that attacks it directly still fells the 1-health body. New engine flag dodgesWeakerCombatant (mirrors piercesArmorShield), guarding the three reciprocal-damage sites in the v3 blocker-pairing resolver.",
   "artUrl": "/cards/phantom-duelist.jpg"
  },
  "rain-of-quarrels": {
@@ -3413,18 +3414,15 @@
   "artUrl": "/cards/fog-of-knives.jpg"
  },
  "umbral-colossus": {
+  "powerFromCount": "handSize",
+  "healthFromCount": "handSize",
   "slug": "umbral-colossus",
   "name": "Umbral Colossus",
   "color": "purple",
   "type": "unit",
   "cost": 6,
-  "power": 6,
-  "health": 6,
-  "text": "Shielded. Infiltrate. (Enters with a shield that eats the first damage; deploy it to any zone.)",
+  "text": "Infiltrate. Power and Health each equal the number of cards in your hand.",
   "kw": [
-   {
-    "k": "shielded"
-   },
    {
     "k": "infiltrate"
    }
@@ -3433,7 +3431,7 @@
    "purple",
    "purple"
   ],
-  "designerNote": "2026-07-11 (v3 churn pass 2): the colossus keeps its ghost-fortress feel — Hidden while ready, and Shielded so even a revealed colossus shrugs the first blow. A 6-cost that does a lot (decision 68).\n\n2026-07-19 (#122, designer): dropped Hidden (\"odd that a colossus would be hidden\") and gave it Infiltrate — a fortress that can march into any zone. Stats to 6/6/6 (the mark). Shielded stays (Griff didn't touch it — the fortress half of the old identity). No new engine work: both keywords already exist.",
+  "designerNote": "2026-07-11 (v3 churn pass 2): the colossus began as a ghost-fortress — Hidden while ready, Shielded to shrug the first blow. A 6-cost that does a lot (decision 68).\n\n2026-07-19 (#122): reworked into a living fortress the size of your grip on the game. Dropped Hidden and Shielded; kept Infiltrate (march into any zone). Power AND Health now each equal the number of cards in your hand — read live, so it looms huge on a full hand and withers as you spend down; play your hand out under its wounds and it dies. New engine primitive powerFromCount/healthFromCount ('handSize'): the count REPLACES the printed base stat in effPower/effHealth, and mods/auras compose on top. The printed power/health lines are dropped — the count governs. Cast as your LAST card it enters 0/0 (the hand is emptied first) and dies on entry: intended, on-theme.",
   "artUrl": "/cards/umbral-colossus.jpg"
  },
  "veil-of-silence": {
@@ -3563,39 +3561,17 @@
   "artUrl": "/cards/sovereign-of-the-veil.jpg"
  },
  "the-unseen-court": {
-  "sneak": {
-   "ops": [
-    {
-     "op": "influence",
-     "n": 1,
-     "per": {
-      "count": "exhaustedEnemyUnits"
-     }
-    },
-    {
-     "op": "damage",
-     "t": "enemyBase",
-     "n": 1,
-     "per": {
-      "count": "allExhaustedUnits"
-     }
-    }
-   ]
-  },
+  "powerFromCount": "discardUnitsBoth",
   "slug": "the-unseen-court",
   "name": "The Unseen Court",
   "color": "purple",
   "type": "unit",
   "cost": 8,
-  "power": 0,
   "health": 8,
-  "text": "Hidden. Sneak — gain 1 Influence for each Exhausted enemy unit; your opponent loses 1 Life for every Exhausted unit in play.",
+  "text": "Hidden. Power equals the number of unit cards in all discard piles. Health 8.",
   "kw": [
    {
     "k": "hidden"
-   },
-   {
-    "k": "sneak"
    }
   ],
   "pips": [
@@ -3603,7 +3579,7 @@
    "purple",
    "purple"
   ],
-  "designerNote": "2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged\nreborn as an ability action (\"exhaust: deal N to one enemy unit in any zone\") with ordinary attacks;\npurple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: ranged → Hidden — the court is unseen, as the name always claimed; its kills still pay double.\n\n2026-07-19 (#122, Griff): reworked toward control. Body drops to 0/8 (a Hidden wall), the onKill\n\"gain 2 Influence\" is gone, and it gains a target-less Sneak: gain 1 Influence for each Exhausted\nenemy unit, and the opponent loses 1 Life for every Exhausted unit in play (both sides). Two new\nglobal PerCounts back it — exhaustedEnemyUnits and allExhaustedUnits — counted live off the whole\nboard. The court excludes itself from the Life bleed: Sneak taps it before the ops resolve, so an\nempty board is a clean no-op rather than self-inflicted damage. It now punishes a tapped-out board.",
+  "designerNote": "2026-07-12 (decision 80, issue #24 Q9): Ranged reborn as an ability; this card re-identified ranged → Hidden — the court is unseen, as the name always claimed.\n\n2026-07-19 (#122): reworked into a graveyard-scaling wall. Drops its interim Sneak entirely; now a Hidden 0/8 body whose Power equals the number of unit cards across BOTH discard piles — read live, so the court looms larger the longer the game grinds and units fall. Health stays a printed 8. New engine primitive powerFromCount ('discardUnitsBoth'): the count REPLACES the printed base Power in effPower (mods/auras compose on top). The printed power line is dropped — the count governs; the exhausted-count PerCounts from the old Sneak are retired from this card.",
   "artUrl": "/cards/the-unseen-court.jpg"
  }
 }

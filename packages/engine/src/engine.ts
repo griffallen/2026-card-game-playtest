@@ -834,6 +834,13 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   const seat = pa.seat
   // #107 (Worldrender): the combat damage THIS unit deals ignores the enemy's Shield and Armor.
   const pierces = (u: UnitInstance) => !!defOf(state, u.id).piercesArmorShield
+  // #122 (Phantom Duelist): a unit with dodgesWeakerCombatant takes NO reciprocal combat damage from a
+  // combatant it STRICTLY out-powers. Compared on effective Power — the resolver has already snapshotted
+  // power AFTER every onDefend buff (:862/:879), so buffs/auras are included and ties (equal power) still
+  // take the hit. Guards only the three RECIPROCAL sites below; the primary hit Phantom takes as a passive
+  // declared target (the toTarget pour) is deliberately NOT dodged (the 4/1 glass cannon dies to a siege).
+  const dodges = (victim: UnitInstance, opponentPower: number) =>
+    !!defOf(state, victim.id).dodgesWeakerCombatant && effPower(state, victim) > opponentPower
   const byAttacker = new Map<string, string[]>()
   for (const p of pairs) byAttacker.set(p.onto, [...(byAttacker.get(p.onto) ?? []), p.blocker])
   const attackers = pa.attackers.map(id => state.units[id]).filter(Boolean) as UnitInstance[]
@@ -893,7 +900,12 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       // nothing past it. It soaks the ENTIRE remaining pour aimed through it (the same rule the
       // declared target already gets below). A piercing attacker (#107 Worldrender) ignores both.
       const warded = !!b.blockWard
-      const soaksWhole = !aPierces && (b.shielded || warded)
+      // #122 (Phantom Duelist): a blocker that STRICTLY out-powers this attacker (combatant = p.a, power
+      // p.aPower) takes none of its pour, and — like a shielded/warded blocker — soaks the WHOLE remaining
+      // pour, so Breakthrough never spills past this survivor (it turned the weaker attacker aside untouched
+      // and still deals its counter below).
+      const dodging = dodges(b, p.aPower)
+      const soaksWhole = dodging || (!aPierces && (b.shielded || warded))
       // #107: a piercing attacker fells its blocker through the blocker's armor — the pour spends no
       // power on armor it ignores (so the excess that breaks through is measured raw).
       const gross = soaksWhole ? dmg : Math.max(0, effHealth(state, b) - b.damage) + (aPierces ? 0 : effArmor(state, b))
@@ -902,7 +914,7 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       // clears here. A shielded blocker takes the chunk normally; damageUnit spends its token and deals
       // 0 (effects.ts). Either way the whole pour is consumed, so nothing spills past a survivor.
       if (warded) { b.blockWard = false; log(state, b.owner, `${defOf(state, b.id).name}'s ward turns aside the blow`) }
-      if (chunk > 0 && !warded) unitHits.push([b, chunk, defOf(state, p.a.id).name, aPierces])
+      if (chunk > 0 && !warded && !dodging) unitHits.push([b, chunk, defOf(state, p.a.id).name, aPierces])
       dmg -= chunk
     }
     if (dmg > 0 && hasKw(state, p.a, 'breakthrough')) {
@@ -913,7 +925,9 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
     // one combined pool hitting every attacker, when each pair resolves in isolation.
     // #107: the counter pierces only if every blocker in this pairing pierces (a lone Worldrender
     // blocker is the common case; a mixed gang counter falls back to normal mitigation — a flagged edge).
-    if (p.counter > 0) unitHits.push([p.a, p.counter, p.blockers.map(b => defOf(state, b.id).name).join(' + '), p.blockers.length > 0 && p.blockers.every(pierces)])
+    // #122 (Phantom Duelist): the attacker p.a dodges this counter when it strictly out-powers the
+    // summed blocker power p.counter (the combatant it faces) — it takes none of the blockers' strike-back.
+    if (p.counter > 0 && !dodges(p.a, p.counter)) unitHits.push([p.a, p.counter, p.blockers.map(b => defOf(state, b.id).name).join(' + '), p.blockers.length > 0 && p.blockers.every(pierces)])
   }
 
   // decision 105 (#84, Griff — amends decision 84): the declared target's strike-back is DIVIDED
@@ -939,6 +953,10 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
     const targetPierces = pierces(preTarget)   // #107 (Worldrender): its strike-back ignores armor/shield too
     for (const a of marks) {
       if (pool <= 0) break
+      // #122 (Phantom Duelist): an unblocked attacker that strictly out-powers the retaliating target
+      // (combatant = preTarget, power = retaliatePower) leaves the pool entirely — no chunk, no decrement,
+      // so the whole divided strike-back flows on to the remaining attackers.
+      if (dodges(a, retaliatePower)) continue
       const gross = Math.max(0, effHealth(state, a) - a.damage) + (targetPierces ? 0 : effArmor(state, a))  // what fells it through armor
       const chunk = Math.min(pool, gross)
       if (chunk > 0) { unitHits.push([a, chunk, defOf(state, preTarget.id).name, targetPierces]); retaliationDealt.add(a.id) }
@@ -1068,7 +1086,11 @@ function resolveAttack(state: GameState, interceptorId: string | null) {
     const counterTarget = alive.slice().sort((a, b) => power(b) - power(a) || idNum(a.id) - idNum(b.id))[0]
     const crossZone = !!counterTarget && defender.zone !== counterTarget.zone
     const noCounter = !counterTarget || (crossZone && hasKw(state, counterTarget, 'ranged'))
-    // #107: a Worldrender defender strikes back through the attacker's armor too
+    // #107: a Worldrender defender strikes back through the attacker's armor too.
+    // #122 (Phantom Duelist): this legacy intercept resolver is NOT the live combat model (V3 runs
+    // blockerPairing, guarded in resolveBlockedAttack). If it is ever re-activated, the reciprocal
+    // `taken` counter below would need the same dodge guard: a counterTarget that strictly out-powers
+    // `defPower` (and carries dodgesWeakerCombatant) should take 0 here.
     const taken = noCounter ? 0 : (defOf(state, defender.id).piercesArmorShield ? defPower : Math.max(0, defPower - effArmor(state, counterTarget)))
     const defRemaining = Math.max(0, effHealth(state, defender) - defender.damage)
     defender.damage += dealt

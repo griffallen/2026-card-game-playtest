@@ -7,6 +7,7 @@ const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
 const TARGET_KINDS = new Set(['unit', 'unitOrBase', 'zone', 'upgrade'])
 const COND_KEYS = new Set(['influenceAtLeast', 'influenceAtMost', 'selfLifeAtMost'])
+const BASE_COUNTS = new Set(['handSize', 'discardUnitsBoth'])   // #122: powerFromCount/healthFromCount values
 const TRIGGER_KEYS = ['onPlay', 'onEnterZone', 'onAttack', 'onAttackBase', 'onDefend', 'onKill', 'onDeath'] as const
 
 const isInt = (v: unknown, lo = -99, hi = 99) => Number.isInteger(v) && (v as number) >= lo && (v as number) <= hi
@@ -30,10 +31,26 @@ export function validateCardSet(cards: CardSet): string[] {
     }
     if ((def.pips?.length ?? 0) > 5) err(slug, `too many pips (${def.pips!.length})`)
     if (def.type === 'unit') {
-      if (!isInt(def.power, 0, 99)) err(slug, `unit needs power 0–99 (got ${def.power})`)
-      if (!isInt(def.health, 1, 99)) err(slug, `unit needs health 1–99 (got ${def.health})`)
+      // #122 (Umbral Colossus / The Unseen Court): a unit may derive its base Power/Health from a live
+      // count (powerFromCount/healthFromCount) INSTEAD of a printed stat. A printed value, when present,
+      // is an ignored fallback and must still be in range; absent one, the matching count field is required.
+      if (def.power !== undefined) { if (!isInt(def.power, 0, 99)) err(slug, `unit needs power 0–99 (got ${def.power})`) }
+      else if (def.powerFromCount === undefined) err(slug, 'unit needs power 0–99 or a powerFromCount')
+      if (def.health !== undefined) { if (!isInt(def.health, 1, 99)) err(slug, `unit needs health 1–99 (got ${def.health})`) }
+      else if (def.healthFromCount === undefined) err(slug, 'unit needs health 1–99 or a healthFromCount')
     } else if (def.power !== undefined || def.health !== undefined) {
       err(slug, `${def.type}s cannot have power/health`)
+    }
+    // #122: dynamic base stat from a live count — units only, value in the BaseCount enum
+    for (const [field, v] of [['powerFromCount', def.powerFromCount], ['healthFromCount', def.healthFromCount]] as const) {
+      if (v === undefined) continue
+      if (def.type !== 'unit') err(slug, `${field} is only for units`)
+      else if (!BASE_COUNTS.has(v)) err(slug, `bad ${field} ${v}`)
+    }
+    // #122 (Phantom Duelist): the dodge-weaker-combatant flag — units only, boolean (mirrors piercesArmorShield)
+    if (def.dodgesWeakerCombatant !== undefined) {
+      if (typeof def.dodgesWeakerCombatant !== 'boolean') err(slug, 'dodgesWeakerCombatant must be true/false')
+      else if (def.type !== 'unit') err(slug, 'dodgesWeakerCombatant is only for units')
     }
 
     for (const kw of def.kw ?? []) {

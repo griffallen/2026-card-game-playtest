@@ -150,6 +150,12 @@ export interface TargetSpec {
 }
 
 // ─── Card definitions ────────────────────────────────────────────────────────
+/** #122 (Umbral Colossus / The Unseen Court): a unit's base Power/Health read LIVE from a board count,
+ *  REPLACING the printed stat. 'handSize' = cards in the owner's hand; 'discardUnitsBoth' = unit cards
+ *  across BOTH discard piles. See effPower/effHealth (helpers.ts) — the count is the base, mods/auras
+ *  compose on top of it exactly as they do on a printed stat. */
+export type BaseCount = 'handSize' | 'discardUnitsBoth'
+
 export interface CardDef {
   slug: string
   name: string
@@ -160,6 +166,11 @@ export interface CardDef {
   cost: number
   power?: number
   health?: number
+  /** #122: derive base Power/Health from a live count (see BaseCount) INSTEAD of a printed stat.
+   *  Units only. When set, the count REPLACES the printed value in effPower/effHealth (a created
+   *  copy's own body still wins); the printed field, if present at all, is an ignored fallback. */
+  powerFromCount?: BaseCount
+  healthFromCount?: BaseCount
   text: string
   /** v3 (decision 69): presence requirement per color — never a payment. Also defines what this card provides when banked (1 per distinct color). */
   pips?: Color[]
@@ -181,6 +192,11 @@ export interface CardDef {
    *  remove the enemy's keywords; other attackers still meet the shield/armor). Read live in combat;
    *  never changes how Shield/Armor work for any other unit. */
   piercesArmorShield?: boolean
+  /** #122 (Phantom Duelist): this unit takes NO reciprocal combat damage from any combatant it strictly
+   *  out-powers (compared on effective Power). Both directions (as attacker and as blocker) and every
+   *  pairing; the PRIMARY hit it takes as a passive declared target is NOT dodged (a glass cannon still
+   *  dies to a gang that sieges it). A per-card boolean, mirroring piercesArmorShield — not a keyword. */
+  dodgesWeakerCombatant?: boolean
   /** #80 (Subjugate): which side's units this upgrade attaches to — absent = friendly, the
    *  standing law for every other upgrade. Per-card; enemy attach is never the default.
    *  #122 (Silence the Song): `any` = either side — attach it to your OWN unit or the enemy's.

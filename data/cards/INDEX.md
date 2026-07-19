@@ -123,7 +123,7 @@
 | [Blackout](purple/blackout.md) | — | 4 | action | — |  | draft | Choose a zone. Enemy units there can't attack this round. |
 | [Cull the Weak](purple/cull-the-weak.md) | — | 4 | action | — |  | draft | Deal 1 damage to every enemy unit. Draw a card. |
 | [Duskwing Tyrant](purple/duskwing-tyrant.md) | — | 4 | unit | 3/3 | hidden, sneak | draft | Hidden. Sneak — deal 2 damage to target enemy unit in this zone. |
-| [Phantom Duelist](purple/phantom-duelist.md) | — | 4 | unit | 4/2 | hidden | draft | Hidden. (While ready: can't be targeted or attacked. Acting reveals it.) |
+| [Phantom Duelist](purple/phantom-duelist.md) | — | 4 | unit | 4/1 | hidden | draft | Hidden. If this unit has more power than its combatant, it takes no reciprocal damage. |
 | [Rain of Quarrels](purple/rain-of-quarrels.md) | — | 4 | action | — |  | draft | Choose a zone. Deal 2 damage to every enemy unit there. |
 | [Shade of the Bazaar](purple/shade-of-the-bazaar.md) | — | 4 | unit | 3/4 |  | draft | When this enters play, draw a card. |
 | [Dream Thief](purple/dream-thief.md) | — | 5 | unit | 4/4 | hidden, sneak | draft | Hidden. When this enters play, draw a card. Sneak — gain 2 Influence. |
@@ -132,9 +132,9 @@
 | [Veilmaster](purple/veilmaster.md) | — | 5 | unit | 3/5 |  | draft | Your other units have Hidden. |
 | [Duskweaver Oracle](purple/duskweaver-oracle.md) | — | 6 | unit | 4/6 |  | draft | When this enters play, draw 2 cards. |
 | [Fog of Knives](purple/fog-of-knives.md) | — | 6 | action | — |  | draft | Choose a zone. Deal 3 damage to every enemy unit there. |
-| [Umbral Colossus](purple/umbral-colossus.md) | — | 6 | unit | 6/6 | shielded, infiltrate | draft | Shielded. Infiltrate. (Enters with a shield that eats the first damage; deploy it to any zone.) |
+| [Umbral Colossus](purple/umbral-colossus.md) | — | 6 | unit | hand/hand | infiltrate | draft | Infiltrate. Power and Health each equal the number of cards in your hand. |
 | [Veil of Silence](purple/veil-of-silence.md) | — | 6 | action | — |  | draft | Enemy units can't attack this round. |
 | [Eclipse](purple/eclipse.md) | — | 7 | action | — |  | draft | Your opponent can't play cards from their hand this round. They discard 1 card at random. Draw until you have 7 cards in hand. |
 | [Midnight Reckoning](purple/midnight-reckoning.md) | — | 7 | action | — |  | draft | Deal 7 damage to every unit. Gain 1 Influence for each unit defeated this way. If you gained less than 7 Influence, your opponent loses 7 Life. |
 | [Sovereign of the Veil](purple/sovereign-of-the-veil.md) | — | 7 | unit | 5/6 | hidden, infiltrate, sneak | draft | Hidden. Infiltrate. Sneak — deal 4 damage to target enemy unit in this zone and gain 1 Influence. |
-| [The Unseen Court](purple/the-unseen-court.md) | — | 8 | unit | 0/8 | hidden, sneak | draft | Hidden. Sneak — gain 1 Influence for each Exhausted enemy unit; your opponent loses 1 Life for every Exhausted unit in play. |
+| [The Unseen Court](purple/the-unseen-court.md) | — | 8 | unit | disc/8 | hidden | draft | Hidden. Power equals the number of unit cards in all discard piles. Health 8. |
