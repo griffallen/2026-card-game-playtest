@@ -4,7 +4,7 @@ type: action
 cost: 4
 pips: purple, purple
 status: draft
-art: /cards/blackout.svg
+art: /cards/blackout.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"zone"}],"onPlay":[{"op":"grant","t":{"side":"enemy","zone":"chosenZone"},"kw":{"k":"cantAttack"},"dur":"round"}]}
 ---

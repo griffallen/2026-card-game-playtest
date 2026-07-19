@@ -7,7 +7,7 @@ health: 1
 influenceTrigger: onKill
 pips: purple
 status: draft
-art: /cards/whisper-blade.svg
+art: /cards/whisper-blade.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onKill":[{"op":"influence","n":1}]}
 ---

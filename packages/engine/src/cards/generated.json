@@ -2660,7 +2660,7 @@
    "purple"
   ],
   "designerNote": "Session 006 proposal: Purple's influence law: the track moves only on kills.",
-  "artUrl": "/cards/whisper-blade.svg"
+  "artUrl": "/cards/whisper-blade.jpg"
  },
  "cloak-of-haze": {
   "statics": [
@@ -2713,7 +2713,7 @@
   "pips": [
    "purple"
   ],
-  "artUrl": "/cards/crippling-dart.svg"
+  "artUrl": "/cards/crippling-dart.jpg"
  },
  "dusk-archer": {
   "slug": "dusk-archer",
@@ -2861,7 +2861,7 @@
    "purple"
   ],
   "designerNote": "2026-07-12 (decision 88, issue #29 — agent pick ⚑ ratify/veto): first Politician carrier.\nAt round end, a Politician standing in Neutral whose owner holds the majority there sways the\ntrack (+1 influence, once per round). The middle finally has a constituency.",
-  "artUrl": "/cards/veiled-messenger.svg"
+  "artUrl": "/cards/veiled-messenger.jpg"
  },
  "wither": {
   "targets": [
@@ -3040,7 +3040,7 @@
    "purple",
    "purple"
   ],
-  "artUrl": "/cards/blackout.svg"
+  "artUrl": "/cards/blackout.jpg"
  },
  "cull-the-weak": {
   "onPlay": [
@@ -3066,7 +3066,7 @@
    "purple",
    "purple"
   ],
-  "artUrl": "/cards/cull-the-weak.svg"
+  "artUrl": "/cards/cull-the-weak.jpg"
  },
  "duskwing-tyrant": {
   "sneak": {
@@ -3329,7 +3329,7 @@
    "purple"
   ],
   "designerNote": "Session 006 proposal: The lord of the color: the whole court starts shooting across zones.\n\n2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged\nreborn as an ability action (\"exhaust: deal N to one enemy unit in any zone\") with ordinary attacks;\npurple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: aura grants Hidden instead of Ranged — the Veilmaster veils the court. Flagged as the boldest of the set: a mass-Hidden aura is purple-defining; veto freely.",
-  "artUrl": "/cards/veilmaster.svg"
+  "artUrl": "/cards/veilmaster.jpg"
  },
  "duskweaver-oracle": {
   "onPlay": [
