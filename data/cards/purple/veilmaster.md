@@ -2,7 +2,7 @@
 name: Veilmaster
 type: unit
 cost: 5
-power: 3
+power: 1
 health: 5
 pips: purple, purple, purple
 status: draft
@@ -19,3 +19,5 @@ Session 006 proposal: The lord of the color: the whole court starts shooting acr
 2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged
 reborn as an ability action ("exhaust: deal N to one enemy unit in any zone") with ordinary attacks;
 purple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: aura grants Hidden instead of Ranged — the Veilmaster veils the court. Flagged as the boldest of the set: a mass-Hidden aura is purple-defining; veto freely.
+
+2026-07-19 (#122, Griff's rework): power 3 → 1. Everything else untouched — cost 5, health 5, the three purple pips (an allowlisted deck-definer deviation), and the board-wide Hidden aura all stand.

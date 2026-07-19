@@ -51,7 +51,7 @@ interaction taxes lighter so future multi-color decks have splash targets.
 | Duskwing Tyrant | purple | 4 | **PP** (2) | — |
 | Phantom Duelist | purple | 4 | **PP** (2) | — |
 | Rain of Quarrels | purple | 4 | **PP** (2) | — |
-| Shade of the Bazaar | purple | 4 | **PP** (2) | — |
+| Shade of the Bazaar | purple | 4 | **P** (1) | tax-EASIER deviation (#122, Griff): a 3/2 cantrip body kept splashable at one pip despite cost 4 |
 | Silence the Song | purple | 4 | **PP** (2) | — |
 | Dream Thief | purple | 5 | **PP** (2) | — |
 | Nocturne Sniper | purple | 5 | **PP** (2) | — |

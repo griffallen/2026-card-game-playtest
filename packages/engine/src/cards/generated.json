@@ -2725,9 +2725,14 @@
   "artUrl": "/cards/crippling-dart.jpg"
  },
  "mist-stalker": {
-  "onKill": [
+  "onPlay": [
    {
-    "op": "influence",
+    "op": "draw",
+    "n": 1
+   },
+   {
+    "op": "chooseFromHand",
+    "to": "deckBottom",
     "n": 1
    }
   ],
@@ -2736,12 +2741,18 @@
   "color": "purple",
   "type": "unit",
   "cost": 2,
-  "power": 2,
-  "health": 2,
-  "text": "When this defeats a unit, gain 1 Influence.",
+  "power": 1,
+  "health": 1,
+  "text": "Infiltrate. When this enters play, draw a card, then put a card from your hand on the bottom of your deck.",
+  "kw": [
+   {
+    "k": "infiltrate"
+   }
+  ],
   "pips": [
    "purple"
   ],
+  "designerNote": "2026-07-19 (#122, Griff's rework): was a 2/2 with onKill Influence. Now a 1/1 Infiltrate deploy-anywhere\nbody whose enter-play effect is the pick-from-hand foundation from a UNIT trigger: `draw 1` resolves\ninline, then `chooseFromHand to:deckBottom` enqueues one atomic pick (answered by its own resolveChoice)\nthat ranges over the WHOLE live hand. The onKill Influence dial is dropped — this is a filter, not a\nbounty-hunter. The unit's play parks in phase 'choose' after onPlay runs, exactly as an action does.",
   "artUrl": "/cards/mist-stalker.jpg"
  },
  "pacify": {
@@ -3156,12 +3167,12 @@
    ]
   },
   "slug": "duskwing-tyrant",
-  "name": "Duskwing Tyrant",
+  "name": "Duskwing Assassin",
   "color": "purple",
   "type": "unit",
   "cost": 4,
-  "power": 3,
-  "health": 3,
+  "power": 1,
+  "health": 4,
   "text": "Hidden. Sneak — deal 2 damage to target enemy unit in this zone.",
   "kw": [
    {
@@ -3175,7 +3186,7 @@
    "purple",
    "purple"
   ],
-  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): the tyrant becomes a Hidden ambusher; its Sneak is the knife-drawer's damage blade (decision 60).",
+  "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): the tyrant becomes a Hidden ambusher; its Sneak is the knife-drawer's damage blade (decision 60).\n\n2026-07-19 (#122, Griff's rework): display name retitled to **Duskwing Assassin** and re-statted 3/3 → 1/4 (a\nfrailer, stickier ambusher). The **slug stays `duskwing-tyrant`** on purpose — the art asset is keyed to the\nslug (`/cards/duskwing-tyrant.jpg`) and the prebuilt deck lists reference it, so a true file rename would\norphan the art and break the deck. Only `name:` changed; keywords, the Sneak, cost, and pips are untouched.",
   "artUrl": "/cards/duskwing-tyrant.jpg"
  },
  "phantom-duelist": {
@@ -3241,12 +3252,12 @@
   "type": "unit",
   "cost": 4,
   "power": 3,
-  "health": 4,
+  "health": 2,
   "text": "When this enters play, draw a card.",
   "pips": [
-   "purple",
    "purple"
   ],
+  "designerNote": "2026-07-19 (#122, Griff's rework): 3/4 → 3/2 and re-pipped from **PP → P** (a single purple). Cost 4, power 3,\nand the onPlay cantrip are unchanged. Griff directed this as a **tax-EASIER pip deviation**: the grammar wants\n2 pips at cost 4, but a 1-pip Shade is deliberately splashable into other decks (the same lever the doc's\nlighter-taxed cards use). Recorded in the pip-proposal deviation table (docs/DESIGN/06-PIP-PROPOSAL.md). The\npip grammar is a documented design convention, not a code check — `cards:check` does not reject the 1-pip form.",
   "artUrl": "/cards/shade-of-the-bazaar.jpg"
  },
  "dream-thief": {
@@ -3288,20 +3299,14 @@
   "artUrl": "/cards/dream-thief.jpg"
  },
  "nocturne-sniper": {
-  "onKill": [
-   {
-    "op": "influence",
-    "n": 1
-   }
-  ],
   "slug": "nocturne-sniper",
   "name": "Nocturne Sniper",
   "color": "purple",
   "type": "unit",
   "cost": 5,
-  "power": 1,
+  "power": 0,
   "health": 3,
-  "text": "Ranged 3. When this defeats a unit, gain 1 Influence.",
+  "text": "Ranged 3.",
   "kw": [
    {
     "k": "ranged",
@@ -3310,9 +3315,10 @@
   ],
   "pips": [
    "purple",
+   "purple",
    "purple"
   ],
-  "designerNote": "2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged\nreborn as an ability action (\"exhaust: deal N to one enemy unit in any zone\") with ordinary attacks;\npurple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: 4/3 → 1/3 with Ranged 3 — the named sniper keeps the bow; a lethal volley still pays its bounty (decision 74).",
+  "designerNote": "2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged\nreborn as an ability action (\"exhaust: deal N to one enemy unit in any zone\") with ordinary attacks;\npurple keeps two archers and the rest of the court re-identifies around non-attack keywords.\n\n2026-07-19 (#122, Griff's rework): 1/3 → 0/3, a pure volley platform. Its onKill Influence bounty is removed\nentirely — the card now reads only \"Ranged 3.\" (no effects field). Cost 5 unchanged; pips 2 → 3 (Griff:\n\"3 pips\") — a tax-harder deviation from the cost-5 grammar (2 pips), the designer's call to gate a 0-power\nall-range volley behind a deep purple commitment.",
   "artUrl": "/cards/nocturne-sniper.jpg"
  },
  "second-shadow": {
@@ -3360,7 +3366,7 @@
   "color": "purple",
   "type": "unit",
   "cost": 5,
-  "power": 3,
+  "power": 1,
   "health": 5,
   "text": "Your other units have Hidden.",
   "pips": [
@@ -3368,27 +3374,53 @@
    "purple",
    "purple"
   ],
-  "designerNote": "Session 006 proposal: The lord of the color: the whole court starts shooting across zones.\n\n2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged\nreborn as an ability action (\"exhaust: deal N to one enemy unit in any zone\") with ordinary attacks;\npurple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: aura grants Hidden instead of Ranged — the Veilmaster veils the court. Flagged as the boldest of the set: a mass-Hidden aura is purple-defining; veto freely.",
+  "designerNote": "Session 006 proposal: The lord of the color: the whole court starts shooting across zones.\n\n2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged\nreborn as an ability action (\"exhaust: deal N to one enemy unit in any zone\") with ordinary attacks;\npurple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: aura grants Hidden instead of Ranged — the Veilmaster veils the court. Flagged as the boldest of the set: a mass-Hidden aura is purple-defining; veto freely.\n\n2026-07-19 (#122, Griff's rework): power 3 → 1. Everything else untouched — cost 5, health 5, the three purple pips (an allowlisted deck-definer deviation), and the board-wide Hidden aura all stand.",
   "artUrl": "/cards/veilmaster.jpg"
  },
  "duskweaver-oracle": {
   "onPlay": [
    {
     "op": "draw",
-    "n": 2
+    "n": 1
+   },
+   {
+    "op": "influence",
+    "n": 1
    }
   ],
+  "sneak": {
+   "ops": [
+    {
+     "op": "draw",
+     "n": 2
+    },
+    {
+     "op": "chooseFromHand",
+     "to": "deckBottom",
+     "n": 1
+    }
+   ]
+  },
   "slug": "duskweaver-oracle",
   "name": "Duskweaver Oracle",
   "color": "purple",
   "type": "unit",
   "cost": 6,
-  "power": 4,
+  "power": 2,
   "health": 6,
-  "text": "When this enters play, draw 2 cards.",
+  "text": "Politician. When this enters play, draw a card and gain 1 Influence. Sneak - draw 2 cards, then put a card from your hand on the bottom of your deck.",
+  "kw": [
+   {
+    "k": "politician"
+   },
+   {
+    "k": "sneak"
+   }
+  ],
   "pips": [
    "purple"
   ],
+  "designerNote": "2026-07-19 (#122, Griff's rework): was a plain 4/6 \"draw 2 on enter.\" Now a 2/6 Politician whose enter-play\nbundle draws a card and sways the track (+1 Influence, both resolve inline). Its Sneak is the pick-from-hand\nfoundation firing from an ACTIVATE context: `draw 2`, then `chooseFromHand to:deckBottom` enqueues one pick\n— the Sneak taps the Oracle, parks the game in phase 'choose', and continues once the bottom card is chosen.\nThe `sneak` keyword is carried alongside `politician` because a Sneak ability is only activatable when the\nunit actually has the keyword (the engine and the legal-action enumerator both gate on it).",
   "artUrl": "/cards/duskweaver-oracle.jpg"
  },
  "fog-of-knives": {
@@ -3451,6 +3483,14 @@
      "k": "cantAttack"
     },
     "dur": "round"
+   },
+   {
+    "op": "damage",
+    "t": "enemyBase",
+    "n": 1,
+    "per": {
+     "count": "exhaustedEnemyUnits"
+    }
    }
   ],
   "slug": "veil-of-silence",
@@ -3458,11 +3498,12 @@
   "color": "purple",
   "type": "action",
   "cost": 6,
-  "text": "Enemy units can't attack this round.",
+  "text": "Enemy units can't attack this round. Your opponent takes damage equal to the number of exhausted enemy units.",
   "pips": [
    "purple",
    "purple"
   ],
+  "designerNote": "2026-07-19 (#122, Griff's rework): keeps the round-long cantAttack silence and adds a base burn that scales\nwith the enemy's spent board — `damage enemyBase n:1 per:{count:'exhaustedEnemyUnits'}`, reusing the existing\n`exhaustedEnemyUnits` PerCount (no new primitive). The grant runs first (it never changes exhaustion, so the\ncount is stable), then the burn tallies every in-play enemy unit that is currently Exhausted. An empty or all-ready\nenemy board is a clean no-op (0 damage).",
   "artUrl": "/cards/veil-of-silence.jpg"
  },
  "eclipse": {

@@ -130,7 +130,7 @@ describe('Wither (#122): enemy-attach rot curse, accumulating −1/−1 per roun
 
   it('accumulates to 0 Health → the host dies in the standard sweep, and the curse is CONSUMED with it (not orphaned)', () => {
     let { s, me, them } = arena()
-    const host = put(s, them, 'mist-stalker', 1)             // 2/2
+    const host = put(s, them, 'bulwark-protector', 1)        // 2/2 (Mist Stalker is a 1/1 since #122; any vanilla 2-Health body works here)
     const card = toHand(s, me, 'wither')
     s = act(s, me, { type: 'play', card, targets: [{ kind: 'unit', id: host }] })
     expect(effHealth(s, s.units[host])).toBe(1)              // 2 − 1, still standing

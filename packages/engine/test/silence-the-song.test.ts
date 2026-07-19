@@ -83,7 +83,7 @@ describe('Silence the Song (#122): any-side attach upgrade, flat −2 aura, host
 
   it("attaches to your OWN unit too (side 'any') and strips the same flat 2 Power", () => {
     let { s, me } = arena()
-    const mine = put(s, me, 'shade-of-the-bazaar', 1)  // 3 power, pips [purple, purple]
+    const mine = put(s, me, 'shade-of-the-bazaar', 1)  // 3 power (health 2, single purple pip since #122; put bypasses cost/pips)
     expect(effPower(s, s.units[mine])).toBe(3)
     const card = toHand(s, me, 'silence-the-song')
     s = act(s, me, { type: 'play', card, targets: [{ kind: 'unit', id: mine }] })
