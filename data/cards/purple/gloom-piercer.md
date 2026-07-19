@@ -5,7 +5,7 @@ cost: 3
 power: 3
 health: 2
 keywords: infiltrate
-pips: purple, purple
+pips: purple
 status: draft
 art: /cards/gloom-piercer.jpg
 ---

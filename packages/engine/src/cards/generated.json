@@ -2906,7 +2906,6 @@
    }
   ],
   "pips": [
-   "purple",
    "purple"
   ],
   "designerNote": "2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged\nreborn as an ability action (\"exhaust: deal N to one enemy unit in any zone\") with ordinary attacks;\npurple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: ranged → Infiltrate — it pierces zones with its feet now, not its arrows.",
@@ -2936,7 +2935,6 @@
   "health": 3,
   "text": "When this enters play, target enemy unit gets -1 Power permanently.",
   "pips": [
-   "purple",
    "purple"
   ],
   "artUrl": "/cards/nightweaver.jpg"
@@ -2980,7 +2978,6 @@
   "health": 2,
   "text": "When this defeats a unit, gain 1 Influence.",
   "pips": [
-   "purple",
    "purple"
   ],
   "artUrl": "/cards/veil-assassin.jpg"

@@ -4,7 +4,7 @@ type: unit
 cost: 3
 power: 3
 health: 3
-pips: purple, purple
+pips: purple
 status: draft
 art: /cards/nightweaver.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
