@@ -60,6 +60,13 @@ export type PerCount =
    *  is a positive pump whether you're ahead or behind). `half` → floor(|Influence| / 2): Warpath
    *  pumps the board by half your Influence, rounded down. */
   | { count: 'influence'; half?: boolean }
+  /** #122 (Assassin's Contract): the chosen0 target's REMAINING Health — effHealth − damage, floored
+   *  at 0 (a shield token doesn't change it). Read live before a same-action destroy; the caster pays
+   *  this much Life via a selfBase damage op. */
+  | { count: 'targetRemainingHealth' }
+  /** #122 (Assassin's Contract): half the chosen0 target's PRINTED cost, rounded up (ceil(cost/2)).
+   *  An X-cost target counts as cost 0 → 0. The Influence its owner is paid (via influenceOwner). */
+  | { count: 'targetCostHalf' }
 
 export type Op =
   | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number | 'linked'; bonusIfDamaged?: number; per?: PerCount; cond?: Cond }  // 'linked' = the amount from the previous linking op (v3, spec §3)  // autoSplash: strongest other enemy unit in the attack target's zone  // per (#85): scale n by a live count (e.g. enemy deaths this round)  // cond (#107 Warpath): the hit fires only while the controller's state holds — Warpath's self-life price is paid only while ahead on Influence
@@ -67,6 +74,7 @@ export type Op =
   | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number; per?: PerCount }  // chosen may be unitOrBase; per scales n (PR #71)
   | { op: 'draw'; n: number }
   | { op: 'influence'; n: number; per?: PerCount; cond?: Cond; ifKilled?: boolean }   // + toward controller; per scales n (PR #70/#71); cond gates the gain (#79 Radiant Aegis); ifKilled (#107 Flameblade Raider): onDeath-only — the gain fires only if this unit felled a unit in the same combat it died in (a trade counts)
+  | { op: 'influenceOwner'; t: 'chosen0' | 'chosen1'; n: number; per?: PerCount }   // #122 (Assassin's Contract): grant the CHOSEN target's OWNER (not the controller) influence, n scaled by `per` (targetCostHalf). Kill an enemy unit and the ENEMY's Influence rises; kill your own and you gain. Owner read live, before any same-action destroy.
   | { op: 'imprison'; t: OpTarget | 'auto'; f?: UnitFilter; auto?: AutoPick }
   | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'round' | 'perm'; cond?: Cond; per?: PerCount }  // per (#104 Dawnspear Paladin): scale the granted p/h/armor by a live count (e.g. +1 Power PER attacker, onDefend)
   | { op: 'double'; t: OpTarget | UnitFilter; rounds?: number }  // v3 (Unchained Rage): filter-wide, multi-round

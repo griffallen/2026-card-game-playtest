@@ -2983,27 +2983,41 @@
   "artUrl": "/cards/veil-assassin.jpg"
  },
  "assassin-s-contract": {
-  "statics": [
+  "targets": [
    {
-    "s": "aura",
-    "scope": "attached",
-    "p": 2
+    "t": "unit",
+    "side": "any"
    }
   ],
-  "onKill": [
+  "onPlay": [
    {
-    "op": "influence",
-    "n": 1
+    "op": "damage",
+    "t": "selfBase",
+    "n": 1,
+    "per": {
+     "count": "targetRemainingHealth"
+    }
+   },
+   {
+    "op": "influenceOwner",
+    "t": "chosen0",
+    "n": 1,
+    "per": {
+     "count": "targetCostHalf"
+    }
+   },
+   {
+    "op": "destroy",
+    "t": "chosen0"
    }
   ],
   "slug": "assassin-s-contract",
   "name": "Assassin's Contract",
   "color": "purple",
-  "type": "upgrade",
+  "type": "action",
   "cost": 4,
-  "text": "Attached unit gets +2 Power. When it defeats a unit, gain 1 Influence.",
+  "text": "Destroy target unit. You lose Life equal to its remaining Health, and its owner gains Influence equal to half its printed cost, rounded up.",
   "pips": [
-   "purple",
    "purple"
   ],
   "artUrl": "/cards/assassin-s-contract.jpg"

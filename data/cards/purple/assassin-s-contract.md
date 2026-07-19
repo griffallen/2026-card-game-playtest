@@ -1,12 +1,11 @@
 ---
 name: Assassin's Contract
-type: upgrade
+type: action
 cost: 4
-influenceTrigger: onKill
-pips: purple, purple
+pips: purple
 status: draft
 art: /cards/assassin-s-contract.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"aura","scope":"attached","p":2}],"onKill":[{"op":"influence","n":1}]}
+effects: {"targets":[{"t":"unit","side":"any"}],"onPlay":[{"op":"damage","t":"selfBase","n":1,"per":{"count":"targetRemainingHealth"}},{"op":"influenceOwner","t":"chosen0","n":1,"per":{"count":"targetCostHalf"}},{"op":"destroy","t":"chosen0"}]}
 ---
-Attached unit gets +2 Power. When it defeats a unit, gain 1 Influence.
+Destroy target unit. You lose Life equal to its remaining Health, and its owner gains Influence equal to half its printed cost, rounded up.

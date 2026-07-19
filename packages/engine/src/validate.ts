@@ -1,7 +1,7 @@
 import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 
 const KEYWORDS = new Set(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
-const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand'])
+const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'influenceOwner', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
 const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
@@ -158,6 +158,8 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
     } else if (p.count === 'influence') {   // #107 (Warpath): |controller Influence|, optionally halved
       const h = (p as { half?: unknown }).half
       if (h !== undefined && typeof h !== 'boolean') err("per:{count:'influence'} half must be true/false")
+    } else if (p.count === 'targetRemainingHealth' || p.count === 'targetCostHalf') {   // #122 (Assassin's Contract): read the chosen0 target
+      if (chosenSlots < 1) err(`per:{count:'${p.count}'} reads the chosen target but the card declares no targets`)
     } else err(`bad per count ${String(p.count)}`)
   }
 
@@ -193,6 +195,11 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
         if (typeof op.ifKilled !== 'boolean') err('ifKilled must be true/false')
         else if (where !== 'onDeath') err('ifKilled only fires in onDeath (it credits a unit that dies dealing a lethal blow)')
       }
+      break
+    case 'influenceOwner':   // #122 (Assassin's Contract): grant a chosen target's OWNER influence
+      checkTargetRef(op.t)   // must reference a chosen unit target (chosen0/chosen1)
+      if (!isInt(op.n, -20, 20) || op.n === 0) err('bad influence amount')
+      checkPer(op.per)
       break
     case 'imprison':
       if (op.t === 'auto') {

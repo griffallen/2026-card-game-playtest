@@ -92,6 +92,15 @@ function perCount(ctx: FxCtx, per: PerCount | undefined): number {
     const m = Math.abs(influenceFor(ctx.state, ctx.controller))
     return per.half ? Math.floor(m / 2) : m
   }
+  // #122 (Assassin's Contract): the chosen0 target, read live before a same-action destroy.
+  if (per.count === 'targetRemainingHealth' || per.count === 'targetCostHalf') {
+    const ref = ctx.targets?.[0]
+    const u = ref?.kind === 'unit' ? ctx.state.units[ref.id] : undefined
+    if (!u) return 0
+    if (per.count === 'targetRemainingHealth') return Math.max(0, effHealth(ctx.state, u) - u.damage)
+    const def = defOf(ctx.state, u.id)   // targetCostHalf: ceil(cost/2), X-cost → 0
+    return def.xCost ? 0 : Math.ceil(def.cost / 2)
+  }
   return filterUnits(ctx, per.f).length
 }
 
@@ -400,6 +409,17 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         if (n === 0) break                                       // per counted zero — a no-op, not a "gains 0" line
         addInfluence(state, controller, n)
         log(state, controller, `${state.sides[controller].name} ${n >= 0 ? 'gains' : 'cedes'} ${Math.abs(n)} influence (${influenceFor(state, controller)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
+        break
+      }
+      case 'influenceOwner': {
+        // #122 (Assassin's Contract): the gain goes to the CHOSEN target's OWNER, not the controller —
+        // destroy an enemy unit and the enemy's Influence rises. Owner read live, before the destroy.
+        const u = resolveUnitTarget(ctx, op.t)
+        if (!u) break
+        const n = op.per ? op.n * perCount(ctx, op.per) : op.n
+        if (n === 0) break                                       // per counted zero (e.g. an X-cost target) — a no-op
+        addInfluence(state, u.owner, n)
+        log(state, u.owner, `${state.sides[u.owner].name} ${n >= 0 ? 'gains' : 'cedes'} ${Math.abs(n)} influence (${influenceFor(state, u.owner)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
         break
       }
       case 'imprison': {

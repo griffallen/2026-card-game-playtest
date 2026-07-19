@@ -118,7 +118,7 @@
 | [Nightweaver](purple/nightweaver.md) | — | 3 | unit | 3/3 |  | draft | When this enters play, target enemy unit gets -1 Power permanently. |
 | [Obscure](purple/obscure.md) | — | 3 | action | — |  | draft | Prevent the next 2 damage to your base this round. Draw a card. |
 | [Veil Assassin](purple/veil-assassin.md) | — | 3 | unit | 4/2 |  | draft | When this defeats a unit, gain 1 Influence. |
-| [Assassin's Contract](purple/assassin-s-contract.md) | — | 4 | upgrade | — |  | draft | Attached unit gets +2 Power. When it defeats a unit, gain 1 Influence. |
+| [Assassin's Contract](purple/assassin-s-contract.md) | — | 4 | action | — |  | draft | Destroy target unit. You lose Life equal to its remaining Health, and its owner gains Influence equal to half its printed cost, rounded up. |
 | [Blackout](purple/blackout.md) | — | 4 | action | — |  | draft | Choose a zone. Enemy units there can't attack this round. |
 | [Cull the Weak](purple/cull-the-weak.md) | — | 4 | action | — |  | draft | Deal 1 damage to every enemy unit. Draw a card. |
 | [Duskwing Tyrant](purple/duskwing-tyrant.md) | — | 4 | unit | 3/3 | hidden, sneak | draft | Hidden. Sneak — deal 2 damage to target enemy unit in this zone. |
