@@ -1298,11 +1298,16 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
               const zoneGlow = isHighlighted(zoneRef)
               const label = z === 1 ? 'Neutral' : z === (seat === 0 ? 0 : 2) ? 'Your Home' : 'Their Home'
               const units = view.zones[z].units
+              // #124: on phones a crowded zone's units used to scroll off the right edge — an infiltrated
+              // unit (last to arrive, so rightmost) could sit fully off-screen, so the player never saw
+              // its chip to select it and its Sneak/ability button seemed missing. Wrap the units on
+              // mobile (block panel + flex-wrap) so every chip is reachable; desktop keeps its horizontal
+              // scroll strip untouched (lg:overflow-x-auto).
               return (
                 <div key={z} onClick={() => zoneGlow && clickTarget(zoneRef)}
-                  className={`panel relative flex min-h-[96px] items-center gap-1.5 overflow-x-auto px-2 py-1 ${zoneGlow ? 'zone-target cursor-pointer' : ''}`}>
+                  className={`panel relative flex min-h-[96px] items-center gap-1.5 lg:overflow-x-auto px-2 py-1 max-lg:block ${zoneGlow ? 'zone-target cursor-pointer' : ''}`}>
                   <span className="pointer-events-none absolute left-2 top-1 text-[9px] uppercase tracking-widest text-dim/70">{label}</span>
-                  <div className="mt-3 flex items-center gap-1.5">
+                  <div className="mt-3 flex items-center gap-1.5 max-lg:flex-wrap">
                     {units.map(u => {
                       const ref: TargetRef = { kind: 'unit', id: u.id }
                       const mine = u.owner === seat

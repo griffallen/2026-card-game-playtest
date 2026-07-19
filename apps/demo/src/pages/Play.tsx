@@ -23,8 +23,6 @@ export function Play() {
   const [deckA, setDeckA] = useState(DECKS[0].slug)
   const [deckB, setDeckB] = useState(DECKS[1].slug)
   const [seedText, setSeedText] = useState('')
-  const [london, setLondon] = useState(false)
-  const [rulesV3, setRulesV3] = useState(true)   // v3.0 default; v2.3 selectable for A/B
   const [sleeveA, setSleeveA] = useState<Sleeve>('ivory')     // #61: per-seat sleeve picks
   const [sleeveB, setSleeveB] = useState<Sleeve>('gunmetal')
   const [params, setParams] = useSearchParams()
@@ -58,8 +56,7 @@ export function Play() {
       deckA,
       deckB,
       seed,
-      londonMulligan: london,
-      rulesVersion: rulesV3 ? 'v3.0' as const : 'v2.3' as const,
+      rulesVersion: 'v3.0' as const,
       nameA: mode === 'watch' ? botName(deckA, 'heuristic') : mode === 'vs-ai' ? pool.find(d => d.slug === deckA)?.name ?? 'Player 1' : 'Player 1',
       nameB: mode === 'watch' ? botName(deckB, 'heuristic') : mode === 'vs-ai' ? 'The Machine' : 'Player 2',
       policyA: 'heuristic',
@@ -118,14 +115,6 @@ export function Play() {
         {deckPick(deckB, setDeckB, mode === 'vs-ai' ? "The AI's deck" : 'Seat 2 deck')}
         <label className="text-xs uppercase tracking-wider text-dim">Seed (optional)
           <input className="input mt-1" placeholder="random" value={seedText} onChange={e => setSeedText(e.target.value)} />
-          <label className="mt-2 flex cursor-pointer items-center gap-2 text-xs text-dim">
-            <input type="checkbox" className="h-3.5 w-3.5" checked={london} onChange={e => setLondon(e.target.checked)} />
-            London mulligans (A/B test — full redraw, then bottom one card per mulligan)
-          </label>
-          <label className="flex cursor-pointer items-center gap-2 text-sm text-body">
-            <input type="checkbox" className="h-3.5 w-3.5" checked={rulesV3} onChange={e => setRulesV3(e.target.checked)} />
-            Rules v3.0 — pips, blocker combat, the new keywords (uncheck for classic v2.3)
-          </label>
         </label>
         {sleevePick(sleeveA, setSleeveA, sleeveB, mode === 'vs-ai' ? 'Your sleeves' : 'Seat 1 sleeves')}
         {sleevePick(sleeveB, setSleeveB, sleeveA, mode === 'vs-ai' ? "The AI's sleeves" : 'Seat 2 sleeves')}
