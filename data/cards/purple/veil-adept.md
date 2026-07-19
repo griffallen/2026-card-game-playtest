@@ -7,7 +7,7 @@ health: 1
 keywords: hidden
 pips: purple
 status: draft
-art: /cards/veil-adept.svg
+art: /cards/veil-adept.jpg
 ---
 Hidden.
 

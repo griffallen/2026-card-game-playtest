@@ -8,7 +8,7 @@ keywords: hidden
 influenceTrigger: onKill
 pips: purple, purple, purple
 status: draft
-art: /cards/the-unseen-court.svg
+art: /cards/the-unseen-court.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onKill":[{"op":"influence","n":2}]}
 ---

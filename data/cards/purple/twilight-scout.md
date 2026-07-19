@@ -7,7 +7,7 @@ health: 3
 keywords: infiltrate
 pips: purple
 status: draft
-art: /cards/twilight-scout.svg
+art: /cards/twilight-scout.jpg
 ---
 Infiltrate. (Deploy this to any zone.)
 

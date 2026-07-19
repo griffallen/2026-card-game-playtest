@@ -7,7 +7,7 @@ health: 5
 keywords: hidden, shielded
 pips: purple, purple
 status: draft
-art: /cards/umbral-colossus.svg
+art: /cards/umbral-colossus.jpg
 ---
 Hidden. Shielded. (Enters with a shield that eats the first damage.)
 

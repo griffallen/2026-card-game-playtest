@@ -2639,7 +2639,7 @@
    "purple"
   ],
   "designerNote": "Session 006 proposal: The statline pays the ranged tax: shooting without taking counter-damage is worth a stat.\n\n2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged\nreborn as an ability action (\"exhaust: deal N to one enemy unit in any zone\") with ordinary attacks;\npurple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: ranged → Hidden — the adept joins the veil; purple leans on non-attack keywords.",
-  "artUrl": "/cards/veil-adept.svg"
+  "artUrl": "/cards/veil-adept.jpg"
  },
  "whisper-blade": {
   "onKill": [
@@ -2835,7 +2835,7 @@
    "purple"
   ],
   "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): flier grounds into the Infiltrate scout — purple's map presence starts anywhere.",
-  "artUrl": "/cards/twilight-scout.svg"
+  "artUrl": "/cards/twilight-scout.jpg"
  },
  "veiled-messenger": {
   "onPlay": [
@@ -2983,7 +2983,7 @@
    "purple",
    "purple"
   ],
-  "artUrl": "/cards/veil-assassin.svg"
+  "artUrl": "/cards/veil-assassin.jpg"
  },
  "assassin-s-contract": {
   "statics": [
@@ -3402,7 +3402,7 @@
    "purple"
   ],
   "designerNote": "2026-07-11 (v3 churn pass 2): the colossus keeps its ghost-fortress feel — Hidden while ready, and Shielded so even a revealed colossus shrugs the first blow. A 6-cost that does a lot (decision 68).",
-  "artUrl": "/cards/umbral-colossus.svg"
+  "artUrl": "/cards/umbral-colossus.jpg"
  },
  "veil-of-silence": {
   "onPlay": [
@@ -3526,7 +3526,7 @@
    "purple"
   ],
   "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): the finisher does a lot (decision 68): appears anywhere, untouchable while ready, and its knife both cuts and steals.",
-  "artUrl": "/cards/sovereign-of-the-veil.svg"
+  "artUrl": "/cards/sovereign-of-the-veil.jpg"
  },
  "the-unseen-court": {
   "onKill": [
@@ -3554,6 +3554,6 @@
    "purple"
   ],
   "designerNote": "2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged\nreborn as an ability action (\"exhaust: deal N to one enemy unit in any zone\") with ordinary attacks;\npurple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: ranged → Hidden — the court is unseen, as the name always claimed; its kills still pay double.",
-  "artUrl": "/cards/the-unseen-court.svg"
+  "artUrl": "/cards/the-unseen-court.jpg"
  }
 }
