@@ -132,7 +132,7 @@
 | [Veilmaster](purple/veilmaster.md) | — | 5 | unit | 3/5 |  | draft | Your other units have Hidden. |
 | [Duskweaver Oracle](purple/duskweaver-oracle.md) | — | 6 | unit | 4/6 |  | draft | When this enters play, draw 2 cards. |
 | [Fog of Knives](purple/fog-of-knives.md) | — | 6 | action | — |  | draft | Choose a zone. Deal 3 damage to every enemy unit there. |
-| [Umbral Colossus](purple/umbral-colossus.md) | — | 6 | unit | 5/5 | hidden, shielded | draft | Hidden. Shielded. (Enters with a shield that eats the first damage.) |
+| [Umbral Colossus](purple/umbral-colossus.md) | — | 6 | unit | 6/6 | shielded, infiltrate | draft | Shielded. Infiltrate. (Enters with a shield that eats the first damage; deploy it to any zone.) |
 | [Veil of Silence](purple/veil-of-silence.md) | — | 6 | action | — |  | draft | Enemy units can't attack this round. |
 | [Eclipse](purple/eclipse.md) | — | 7 | action | — |  | draft | Every enemy unit gets -2 Power permanently. |
 | [Midnight Reckoning](purple/midnight-reckoning.md) | — | 7 | action | — |  | draft | Deal 3 damage to every enemy unit. Draw a card. |
