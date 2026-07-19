@@ -3539,23 +3539,39 @@
   "artUrl": "/cards/sovereign-of-the-veil.jpg"
  },
  "the-unseen-court": {
-  "onKill": [
-   {
-    "op": "influence",
-    "n": 2
-   }
-  ],
+  "sneak": {
+   "ops": [
+    {
+     "op": "influence",
+     "n": 1,
+     "per": {
+      "count": "exhaustedEnemyUnits"
+     }
+    },
+    {
+     "op": "damage",
+     "t": "enemyBase",
+     "n": 1,
+     "per": {
+      "count": "allExhaustedUnits"
+     }
+    }
+   ]
+  },
   "slug": "the-unseen-court",
   "name": "The Unseen Court",
   "color": "purple",
   "type": "unit",
   "cost": 8,
-  "power": 6,
-  "health": 7,
-  "text": "Hidden. When this defeats a unit, gain 2 Influence.",
+  "power": 0,
+  "health": 8,
+  "text": "Hidden. Sneak — gain 1 Influence for each Exhausted enemy unit; your opponent loses 1 Life for every Exhausted unit in play.",
   "kw": [
    {
     "k": "hidden"
+   },
+   {
+    "k": "sneak"
    }
   ],
   "pips": [
@@ -3563,7 +3579,7 @@
    "purple",
    "purple"
   ],
-  "designerNote": "2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged\nreborn as an ability action (\"exhaust: deal N to one enemy unit in any zone\") with ordinary attacks;\npurple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: ranged → Hidden — the court is unseen, as the name always claimed; its kills still pay double.",
+  "designerNote": "2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged\nreborn as an ability action (\"exhaust: deal N to one enemy unit in any zone\") with ordinary attacks;\npurple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: ranged → Hidden — the court is unseen, as the name always claimed; its kills still pay double.\n\n2026-07-19 (#122, Griff): reworked toward control. Body drops to 0/8 (a Hidden wall), the onKill\n\"gain 2 Influence\" is gone, and it gains a target-less Sneak: gain 1 Influence for each Exhausted\nenemy unit, and the opponent loses 1 Life for every Exhausted unit in play (both sides). Two new\nglobal PerCounts back it — exhaustedEnemyUnits and allExhaustedUnits — counted live off the whole\nboard. The court excludes itself from the Life bleed: Sneak taps it before the ops resolve, so an\nempty board is a clean no-op rather than self-inflicted damage. It now punishes a tapped-out board.",
   "artUrl": "/cards/the-unseen-court.jpg"
  }
 }

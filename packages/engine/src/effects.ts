@@ -101,6 +101,16 @@ function perCount(ctx: FxCtx, per: PerCount | undefined): number {
     const def = defOf(ctx.state, u.id)   // targetCostHalf: ceil(cost/2), X-cost → 0
     return def.xCost ? 0 : Math.ceil(def.cost / 2)
   }
+  // #122 (The Unseen Court): GLOBAL live Exhausted-unit counts off the whole board (not ctx.targets).
+  // The Sneak's Influence sees Exhausted ENEMY units; its Life bleed sees EVERY Exhausted body on
+  // either side, EXCEPT the source court itself — the Sneak taps it before these resolve, and excluding
+  // it makes an empty board a clean no-op rather than the court bleeding the enemy off its own tap.
+  if (per.count === 'exhaustedEnemyUnits') {
+    return unitsOf(ctx.state).filter(u => u.owner !== ctx.controller && u.exhausted).length
+  }
+  if (per.count === 'allExhaustedUnits') {
+    return unitsOf(ctx.state).filter(u => u.exhausted && u.id !== ctx.sourceUnit).length
+  }
   return filterUnits(ctx, per.f).length
 }
 

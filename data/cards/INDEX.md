@@ -137,4 +137,4 @@
 | [Eclipse](purple/eclipse.md) | — | 7 | action | — |  | draft | Every enemy unit gets -2 Power permanently. |
 | [Midnight Reckoning](purple/midnight-reckoning.md) | — | 7 | action | — |  | draft | Deal 3 damage to every enemy unit. Draw a card. |
 | [Sovereign of the Veil](purple/sovereign-of-the-veil.md) | — | 7 | unit | 5/6 | hidden, infiltrate, sneak | draft | Hidden. Infiltrate. Sneak — deal 4 damage to target enemy unit in this zone and gain 1 Influence. |
-| [The Unseen Court](purple/the-unseen-court.md) | — | 8 | unit | 6/7 | hidden | draft | Hidden. When this defeats a unit, gain 2 Influence. |
+| [The Unseen Court](purple/the-unseen-court.md) | — | 8 | unit | 0/8 | hidden, sneak | draft | Hidden. Sneak — gain 1 Influence for each Exhausted enemy unit; your opponent loses 1 Life for every Exhausted unit in play. |

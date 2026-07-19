@@ -160,6 +160,8 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       if (h !== undefined && typeof h !== 'boolean') err("per:{count:'influence'} half must be true/false")
     } else if (p.count === 'targetRemainingHealth' || p.count === 'targetCostHalf') {   // #122 (Assassin's Contract): read the chosen0 target
       if (chosenSlots < 1) err(`per:{count:'${p.count}'} reads the chosen target but the card declares no targets`)
+    } else if (p.count === 'exhaustedEnemyUnits' || p.count === 'allExhaustedUnits') {
+      // #122 (The Unseen Court): global board counts — no target, side, or filter to validate
     } else err(`bad per count ${String(p.count)}`)
   }
 

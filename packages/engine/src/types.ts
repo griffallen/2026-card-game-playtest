@@ -67,6 +67,13 @@ export type PerCount =
   /** #122 (Assassin's Contract): half the chosen0 target's PRINTED cost, rounded up (ceil(cost/2)).
    *  An X-cost target counts as cost 0 → 0. The Influence its owner is paid (via influenceOwner). */
   | { count: 'targetCostHalf' }
+  /** #122 (The Unseen Court): GLOBAL live counts of Exhausted units — filtered off state.units, NOT
+   *  ctx.targets. exhaustedEnemyUnits = in-play units the controller does NOT own that are Exhausted
+   *  (the Sneak's Influence per Exhausted enemy). allExhaustedUnits = EVERY Exhausted in-play unit,
+   *  both sides, EXCEPT the source unit — the court has already tapped itself to Sneak (the exhaust
+   *  lands before the ops run), so excluding it keeps an empty board a clean no-op, not self-bleed. */
+  | { count: 'exhaustedEnemyUnits' }
+  | { count: 'allExhaustedUnits' }
 
 export type Op =
   | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number | 'linked'; bonusIfDamaged?: number; per?: PerCount; cond?: Cond }  // 'linked' = the amount from the previous linking op (v3, spec §3)  // autoSplash: strongest other enemy unit in the attack target's zone  // per (#85): scale n by a live count (e.g. enemy deaths this round)  // cond (#107 Warpath): the hit fires only while the controller's state holds — Warpath's self-life price is paid only while ahead on Influence
