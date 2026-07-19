@@ -477,6 +477,20 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         }
         break
       }
+      case 'revealHand': {
+        // #122 (Twilight Scout): a ONE-TIME hand peek. Flip NO live flag — push a FROZEN snapshot onto
+        // the append-only reveals ledger, addressed to the CASTER (seat = controller, who may look).
+        // `who` names WHOSE hand is captured: 'opponent' => other(controller)'s hand, read NOW.
+        // Store SLUGS (a copy — state.cardOf[id]), never instance ids, so the entry never re-reads the
+        // live hand: the "you see that instant" property is free. No rng, so replays stay bit-identical.
+        // The log line names the peek but NEVER the cards — the engine log is public; only the caster's
+        // filtered view (viewFor) carries the snapshot's contents.
+        const target = op.who === 'opponent' ? other(controller) : controller
+        const hand = state.sides[target].hand.map(id => state.cardOf[id])
+        state.reveals.push({ seat: controller, hand, round: state.round })
+        log(state, controller, `${ctx.srcLabel ?? 'A scout'} reveals the opponent's hand`)
+        break
+      }
       case 'chooseFromHand': {
         // #122 (pick-from-hand foundation): ENQUEUE the pick(s) — do NOT resolve inline. applyAction
         // drains the queue AFTER runOps returns (phase 'choose'), so this op MUST be terminal in its

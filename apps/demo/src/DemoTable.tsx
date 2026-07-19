@@ -92,6 +92,11 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   const [inspect, setInspect] = useState<Inspect>(null)
   const [setupPicks, setSetupPicks] = useState<string[]>([])
   const [armOverextend, setArmOverextend] = useState(false)
+  // #122 (Twilight Scout): the one-time hand peek. A new reveal entry addressed to the viewer pops a
+  // dismissible modal showing the snapshot — tracked by a high-water mark on the ledger length (mirrors
+  // prevRound/recapShown) so it fires ONCE and never re-pops on a re-render.
+  const [handPeek, setHandPeek] = useState<string[] | null>(null)
+  const revealsSeen = useRef<number | null>(null)
   // #42: combat resolves inside ONE action — replay its event lines slowly enough to read.
   // When something of YOURS leaves play, the recap holds until you acknowledge it (Griff).
   const [recap, setRecap] = useState<{ msg: string }[]>([])
@@ -286,6 +291,15 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     prevRound.current = view.round
   }, [view.round])
   useEffect(() => { if (state.winner !== null) sfx('win') }, [state.winner])
+  // #122 (Twilight Scout): when a NEW peek addressed to us lands, pop the snapshot. Baseline the
+  // high-water mark on mount (null → set, skip) so a resumed game never re-pops a historical reveal;
+  // thereafter any growth is a fresh peek — show the newest entry's hand.
+  useEffect(() => {
+    const count = view.reveals.length
+    if (revealsSeen.current === null) { revealsSeen.current = count; return }
+    if (count > revealsSeen.current) setHandPeek(view.reveals[count - 1].hand)
+    revealsSeen.current = count
+  }, [view.reveals.length])
   useEffect(() => { setConfirming(null) }, [view.actorSeat, view.round])
   useEffect(() => { setSetupPicks([]) }, [view.actorSeat, view.phase])
   useEffect(() => { setArmOverextend(false) }, [selection?.kind === 'unit' ? selection.ids.join(',') : null])
@@ -1587,6 +1601,17 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
           ).filter(Boolean)}
           sleeve={sleeveOf(inspect.seat)}
           onClose={() => setInspect(null)}
+        />
+      )}
+      {/* #122 (Twilight Scout): the one-time hand peek — a frozen snapshot of the opponent's hand the
+          instant the scout landed. Dismissible, non-blocking; reuses the pile-inspect overlay. */}
+      {handPeek && (
+        <PileSheet
+          title="Opponent's hand"
+          note="Twilight Scout's peek — a snapshot the instant it landed. Their hand may have changed since."
+          cards={handPeek.map(slug => DEMO_CARDS[slug]).filter(Boolean)}
+          sleeve={sleeveOf(foe)}
+          onClose={() => setHandPeek(null)}
         />
       )}
 

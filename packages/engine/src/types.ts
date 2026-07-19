@@ -82,6 +82,7 @@ export type Op =
   | { op: 'draw'; n?: number; upTo?: number }  // exactly one of n / upTo. n: draw that many (ignores hand size). upTo (#122 Eclipse): draw until the hand holds upTo cards, measured LIVE at resolution — never discards down; both paths eat decision 33's empty-deck penalty
   | { op: 'lockPlays'; who: 'opponent' | 'controller' }        // #122 (Eclipse): lock a seat out of playing cards from hand this round (opponent = other(controller)); the single gate is getLegalActions, board actions untouched
   | { op: 'discardRandom'; who: 'opponent' | 'controller'; n?: number }  // #122 (Eclipse): seeded RANDOM discard, resolved inline (n default 1) — pulls from state.rngState (the shuffle's PRNG) so replays stay bit-identical; an empty/short hand is a silent no-op (no decision-33 penalty)
+  | { op: 'revealHand'; who: 'opponent' | 'controller' }  // #122 (Twilight Scout): a ONE-TIME hand peek. Flips NO live flag — pushes a FROZEN snapshot (the named seat's slugs, captured now) onto the append-only state.reveals ledger, addressed to the caster. Plain data, no rng, fully replay-derived; the "one-time" falls out for free (you see that instant, not the hand as it later changes). Omniscient AI already sees every hand → a deliberate no-op headless.
   /** #122 (Glimpse / Obscure): the pick-from-hand foundation. ENQUEUES a mid-resolution card pick
    *  onto state.pendingChoices — it does NOT resolve inline. who:'controller' (default) queues n
    *  entries for the controller; who:'each' queues n for the controller THEN n for the opponent.
@@ -357,6 +358,13 @@ export interface PendingChoice {
   srcLabel: string                    // the card that opened the pick (for the log / demo prompt)
 }
 
+/** #122 (Twilight Scout): one frozen hand-peek snapshot on state.reveals (append-only). */
+export interface RevealEntry {
+  seat: Seat        // who may LOOK — the caster the snapshot is addressed to (viewFor filters on this)
+  hand: string[]    // the OTHER seat's card slugs, captured the instant the peek resolved (frozen)
+  round: number     // state.round at capture
+}
+
 export interface GameState {
   rngState: number
   rules: RulesConfig
@@ -416,6 +424,11 @@ export interface GameState {
   /** #85 (Aura of Resolve): the per-round death ledger — units that have died this round, indexed
    *  by OWNER seat (created copies that vanish are counted). Cleared at the round boundary. */
   deaths: [number, number]
+  /** #122 (Twilight Scout): the append-only hand-peek ledger. Each entry is a FROZEN snapshot the
+   *  instant a `revealHand` op resolved — NOT a live reveal flag, so it captures that moment and
+   *  never re-reads the hand as it changes. Plain data (slugs, no instance ids), no rng: fully
+   *  replay-derived. Never cleared (the peek is a historical fact); viewFor filters it to `seat`. */
+  reveals: RevealEntry[]
   winner: Seat | null
   winReason: 'life' | 'influence' | 'concede' | null
   log: LogLine[]
@@ -491,6 +504,7 @@ export interface PlayerView {
   sides: [SideView, SideView]
   zones: { units: UnitView[]; orphans: OrphanView[] }[]   // absolute order: [seat0 home, neutral, seat1 home]
   hand: HandCardView[]                 // viewer's own hand
+  reveals: RevealEntry[]               // #122 (Twilight Scout): hand-peek snapshots addressed to THIS viewer (frozen; the caster's alone)
   actions: GameAction[]                // viewer's legal actions right now
   winner: Seat | null
   winReason: string | null

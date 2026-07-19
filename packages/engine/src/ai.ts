@@ -274,6 +274,7 @@ function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'p
       case 'influence': score += op.n > 0 ? op.n * 4 : op.n * 2; break
       case 'draw': score += (op.n ?? op.upTo ?? 0) * 3; break   // #122: upTo scores by its target (existing n cards unchanged)
       case 'ready': score += 6; break
+      case 'revealHand': break   // #122 (Twilight Scout): the heuristic bot is omniscient — it already sees every hand, so a peek is worth 0 (the card scores as its vanilla body). This is exactly why the sim UNDERVALUES it: its whole point is human-only info.
       case 'damage': {
         // n:'linked' (Blood Rush) deliberately stays unranked — the cast keeps the shipped
         // bot's arithmetic (and the frozen sim baselines) bit-identical.

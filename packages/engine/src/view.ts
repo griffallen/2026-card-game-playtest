@@ -74,6 +74,9 @@ export function viewFor(state: GameState, seat: Seat | null): PlayerView {
         .map(up => ({ id: up.id, slug: up.slug, name: state.cardSet[up.slug]?.name ?? up.slug, owner: up.owner })),
     })),
     hand: seat === null ? [] : state.sides[seat].hand.map(id => ({ id, slug: state.cardOf[id] })),
+    // #122 (Twilight Scout): only the peek's addressee sees the snapshot — the opponent never learns
+    // their hand was read, and a spectator sees nothing. Frozen data, so the demo reads it as-captured.
+    reveals: seat === null ? [] : state.reveals.filter(r => r.seat === seat),
     actions: seat === null ? [] : getLegalActions(state, seat),
     winner: state.winner,
     winReason: state.winReason,

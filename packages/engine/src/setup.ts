@@ -105,6 +105,7 @@ export function createGame(opts: CreateGameOpts): GameState {
     blockerWard: [false, false],
     cardPlayLock: [false, false],
     deaths: [0, 0],
+    reveals: [],
     winner: null,
     winReason: null,
     log: [],

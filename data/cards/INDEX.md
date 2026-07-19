@@ -110,7 +110,7 @@
 | [Mist Stalker](purple/mist-stalker.md) | — | 2 | unit | 2/2 |  | draft | When this defeats a unit, gain 1 Influence. |
 | [Pacify](purple/pacify.md) | — | 2 | action | — |  | draft | Target enemy unit can't attack this round. |
 | [Shadowstep](purple/shadowstep.md) | — | 2 | action | — |  | draft | Target friendly unit gains Hidden this round. Draw a card. |
-| [Twilight Scout](purple/twilight-scout.md) | — | 2 | unit | 2/3 | infiltrate | draft | Infiltrate. (Deploy this to any zone.) |
+| [Twilight Scout](purple/twilight-scout.md) | — | 2 | unit | 1/1 | infiltrate | draft | Infiltrate. When this enters play, look at your opponent's hand. |
 | [Veiled Messenger](purple/veiled-messenger.md) | — | 2 | unit | 1/3 | politician | draft | Politician. When this enters play, draw a card. |
 | [Wither](purple/wither.md) | — | 2 | upgrade | — |  | draft | Target enemy unit gets -1 Power and -1 Health permanently. The rot takes hold: at the start of each round, it withers a further -1/-1. (Power floors at 0; a unit withered to 0 Health dies.) |
 | [Dusk Archer](purple/dusk-archer.md) | — | 3 | unit | 1/1 | ranged 2 | draft | Ranged 2. |
