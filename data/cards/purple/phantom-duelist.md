@@ -7,7 +7,7 @@ health: 2
 keywords: hidden
 pips: purple, purple
 status: draft
-art: /cards/phantom-duelist.svg
+art: /cards/phantom-duelist.jpg
 ---
 Hidden. (While ready: can't be targeted or attacked. Acting reveals it.)
 

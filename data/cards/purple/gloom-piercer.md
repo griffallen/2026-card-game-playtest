@@ -7,7 +7,7 @@ health: 2
 keywords: infiltrate
 pips: purple, purple
 status: draft
-art: /cards/gloom-piercer.svg
+art: /cards/gloom-piercer.jpg
 ---
 Infiltrate.
 
