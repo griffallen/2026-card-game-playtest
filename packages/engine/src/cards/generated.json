@@ -3459,12 +3459,17 @@
  "eclipse": {
   "onPlay": [
    {
-    "op": "buff",
-    "t": {
-     "side": "enemy"
-    },
-    "p": -2,
-    "dur": "perm"
+    "op": "lockPlays",
+    "who": "opponent"
+   },
+   {
+    "op": "discardRandom",
+    "who": "opponent",
+    "n": 1
+   },
+   {
+    "op": "draw",
+    "upTo": 7
    }
   ],
   "slug": "eclipse",
@@ -3472,13 +3477,13 @@
   "color": "purple",
   "type": "action",
   "cost": 7,
-  "text": "Every enemy unit gets -2 Power permanently.",
+  "text": "Your opponent can't play cards from their hand this round. They discard 1 card at random. Draw until you have 7 cards in hand.",
   "pips": [
    "purple",
    "purple",
    "purple"
   ],
-  "designerNote": "Session 006 proposal: The wither bomb — the whole board fades.\nFirst sims: at 6 it deleted yellow's whole plan; 7 makes it the finisher it reads as.",
+  "designerNote": "Session 006 proposal: The wither bomb — the whole board fades.\nFirst sims: at 6 it deleted yellow's whole plan; 7 makes it the finisher it reads as.\n\n2026-07-19 (#122): reworked from a permanent board-wide -2 Power wither into a three-piece\ntempo-lock finisher, cost/pips unchanged (7, purple x3). Resolves atomically on play, in text order:\n(1) lockPlays who:opponent — the opponent plays NO cards from hand for the rest of this round; the\ngate is getLegalActions, so their board still acts (attacks, moves, abilities, Sneak) — it's a\nhand-lock, not a stun. (2) discardRandom who:opponent n:1 — a SEEDED random discard (pulled from the\nsame threaded PRNG as the shuffle, not a chosen card), a silent no-op on an empty hand with no\ndecision-33 penalty. (3) draw upTo:7 — fill the caster's hand to 7, measured live (Eclipse is already\ngone), and it respects the empty-deck penalty like every other draw, so over-drawing a thin deck to\nreach 7 can hurt you. The lock lifts at the round rollover, honoring \"this round.\"",
   "artUrl": "/cards/eclipse.jpg"
  },
  "midnight-reckoning": {

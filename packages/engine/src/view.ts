@@ -55,6 +55,7 @@ export function viewFor(state: GameState, seat: Seat | null): PlayerView {
     actorSeat: state.actorSeat,
     outOfRound: state.outOfRound,
     claimedThisRound: state.claimedThisRound,
+    cardPlayLock: state.cardPlayLock,   // #122 (Eclipse): the demo shows an "Eclipsed" badge from this
     pendingAttack: state.pendingAttack
       ? { attackers: state.pendingAttack.attackers, target: state.pendingAttack.target }
       : null,

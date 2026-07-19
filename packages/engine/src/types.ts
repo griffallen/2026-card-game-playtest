@@ -79,7 +79,9 @@ export type Op =
   | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number | 'linked'; bonusIfDamaged?: number; per?: PerCount; cond?: Cond }  // 'linked' = the amount from the previous linking op (v3, spec §3)  // autoSplash: strongest other enemy unit in the attack target's zone  // per (#85): scale n by a live count (e.g. enemy deaths this round)  // cond (#107 Warpath): the hit fires only while the controller's state holds — Warpath's self-life price is paid only while ahead on Influence
   | { op: 'damageFilter'; f: UnitFilter; n: number; creditsKills?: boolean }  // creditsKills (#107 Crimson Behemoth): the source unit's onKill fires for every unit this AoE fells — friend or foe (decision 74: lethality is the test)
   | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number; per?: PerCount }  // chosen may be unitOrBase; per scales n (PR #71)
-  | { op: 'draw'; n: number }
+  | { op: 'draw'; n?: number; upTo?: number }  // exactly one of n / upTo. n: draw that many (ignores hand size). upTo (#122 Eclipse): draw until the hand holds upTo cards, measured LIVE at resolution — never discards down; both paths eat decision 33's empty-deck penalty
+  | { op: 'lockPlays'; who: 'opponent' | 'controller' }        // #122 (Eclipse): lock a seat out of playing cards from hand this round (opponent = other(controller)); the single gate is getLegalActions, board actions untouched
+  | { op: 'discardRandom'; who: 'opponent' | 'controller'; n?: number }  // #122 (Eclipse): seeded RANDOM discard, resolved inline (n default 1) — pulls from state.rngState (the shuffle's PRNG) so replays stay bit-identical; an empty/short hand is a silent no-op (no decision-33 penalty)
   /** #122 (Glimpse / Obscure): the pick-from-hand foundation. ENQUEUES a mid-resolution card pick
    *  onto state.pendingChoices — it does NOT resolve inline. who:'controller' (default) queues n
    *  entries for the controller; who:'each' queues n for the controller THEN n for the opponent.
@@ -390,6 +392,11 @@ export interface GameState {
    *  real prevention). blockerWard — this seat's next blocker is stamped `blockWard`. */
   homeWard: [boolean, boolean]
   blockerWard: [boolean, boolean]
+  /** #122 (Eclipse): per-seat, per-round card-play lock. While true the seat may play NO cards from
+   *  its hand — getLegalActions emits none, and playCard rejects defensively. Board actions (attacks,
+   *  moves, activate/Sneak, claim, pass) are untouched. Cleared at the round boundary, so the lock
+   *  lasts exactly "this Round" (same rollover as homeWard/blockerWard). */
+  cardPlayLock: [boolean, boolean]
   /** #85 (Aura of Resolve): the per-round death ledger — units that have died this round, indexed
    *  by OWNER seat (created copies that vanish are counted). Cleared at the round boundary. */
   deaths: [number, number]
@@ -461,6 +468,7 @@ export interface PlayerView {
   actorSeat: Seat
   outOfRound: [boolean, boolean]
   claimedThisRound: boolean
+  cardPlayLock: [boolean, boolean]     // #122 (Eclipse): per-seat lock — this seat plays no cards from hand this round
   pendingAttack: { attackers: string[]; target: TargetRef } | null
   influence: number                    // + toward seat 0 (client flips for display)
   thresholds: [number, number]         // win threshold per seat (statics applied)

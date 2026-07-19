@@ -272,7 +272,7 @@ function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'p
   for (const op of def.onPlay ?? []) {
     switch (op.op) {
       case 'influence': score += op.n > 0 ? op.n * 4 : op.n * 2; break
-      case 'draw': score += op.n * 3; break
+      case 'draw': score += (op.n ?? op.upTo ?? 0) * 3; break   // #122: upTo scores by its target (existing n cards unchanged)
       case 'ready': score += 6; break
       case 'damage': {
         // n:'linked' (Blood Rush) deliberately stays unranked — the cast keeps the shipped

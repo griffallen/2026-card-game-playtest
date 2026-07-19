@@ -134,7 +134,7 @@
 | [Fog of Knives](purple/fog-of-knives.md) | — | 6 | action | — |  | draft | Choose a zone. Deal 3 damage to every enemy unit there. |
 | [Umbral Colossus](purple/umbral-colossus.md) | — | 6 | unit | 6/6 | shielded, infiltrate | draft | Shielded. Infiltrate. (Enters with a shield that eats the first damage; deploy it to any zone.) |
 | [Veil of Silence](purple/veil-of-silence.md) | — | 6 | action | — |  | draft | Enemy units can't attack this round. |
-| [Eclipse](purple/eclipse.md) | — | 7 | action | — |  | draft | Every enemy unit gets -2 Power permanently. |
+| [Eclipse](purple/eclipse.md) | — | 7 | action | — |  | draft | Your opponent can't play cards from their hand this round. They discard 1 card at random. Draw until you have 7 cards in hand. |
 | [Midnight Reckoning](purple/midnight-reckoning.md) | — | 7 | action | — |  | draft | Deal 7 damage to every unit. Gain 1 Influence for each unit defeated this way. If you gained less than 7 Influence, your opponent loses 7 Life. |
 | [Sovereign of the Veil](purple/sovereign-of-the-veil.md) | — | 7 | unit | 5/6 | hidden, infiltrate, sneak | draft | Hidden. Infiltrate. Sneak — deal 4 damage to target enemy unit in this zone and gain 1 Influence. |
 | [The Unseen Court](purple/the-unseen-court.md) | — | 8 | unit | 0/8 | hidden, sneak | draft | Hidden. Sneak — gain 1 Influence for each Exhausted enemy unit; your opponent loses 1 Life for every Exhausted unit in play. |

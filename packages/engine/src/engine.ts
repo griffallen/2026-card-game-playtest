@@ -469,6 +469,9 @@ function validateTargets(state: GameState, seat: Seat, specs: TargetSpec[], targ
 }
 
 function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }>, seat: Seat) {
+  // #122 (Eclipse): the defensive gate behind getLegalActions — a malformed or replayed play can't
+  // slip past the legal filter while this seat is eclipsed (it plays no cards from hand this round).
+  if (state.cardPlayLock[seat]) fail('locked', 'this seat is eclipsed — no cards from hand this round')
   const side = state.sides[seat]
   const idx = side.hand.indexOf(action.card)
   if (idx < 0) fail('not-in-hand', 'card is not in your hand')

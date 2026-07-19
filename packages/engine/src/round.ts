@@ -170,6 +170,7 @@ export function endRound(state: GameState, actorSeat: Seat) {
   // at the boundary, after this round's deaths (incl. end-of-round overextend kills) have been tallied.
   state.homeWard = [false, false]
   state.blockerWard = [false, false]
+  state.cardPlayLock = [false, false]   // #122 (Eclipse): the play-lock is a single round — it lifts at the rollover, honoring "this Round"
   state.deaths = [0, 0]
   state.lastStands = []   // #107 (Last Stand): the pact is a single round — its no-exhaust and tolls end here
   for (const u of unitsOf(state)) if (u.blockWard) u.blockWard = false

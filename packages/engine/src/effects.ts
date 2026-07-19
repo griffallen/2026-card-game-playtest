@@ -6,6 +6,7 @@ import {
   addInfluence, checkWin, condHolds, defOf, draw, effArmor, effHealth, effPower,
   idNum, influenceFor, log, moveDamageCap, other, unitsInZone, unitsOf,
 } from './helpers.ts'
+import { rngInt } from './rng.ts'
 
 export interface FxCtx {
   state: GameState
@@ -442,7 +443,40 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         }
         break
       }
-      case 'draw': draw(state, controller, op.n); log(state, controller, `${state.sides[controller].name} draws ${op.n}`); break
+      case 'draw': {
+        // #122 (Eclipse): upTo fills the hand to a target, measured LIVE (Eclipse has already left the
+        // caster's hand, so it isn't counted) — never discards down. n behaves exactly as before. Both
+        // funnel through the one draw() helper, so the decision-33 empty-deck penalty applies uniformly.
+        const n = op.upTo !== undefined ? Math.max(0, op.upTo - state.sides[controller].hand.length) : op.n!
+        draw(state, controller, n)
+        if (n > 0) log(state, controller, `${state.sides[controller].name} draws ${n}`)
+        break
+      }
+      case 'lockPlays': {
+        // #122 (Eclipse): seal a seat out of playing cards from hand this round. The gate lives in
+        // getLegalActions (and playCard's defensive reject); board actions are untouched.
+        const s = op.who === 'opponent' ? other(controller) : controller
+        state.cardPlayLock[s] = true
+        log(state, s, `${state.sides[s].name} is eclipsed — no cards from hand this round`)
+        break
+      }
+      case 'discardRandom': {
+        // #122 (Eclipse): a SEEDED, inline discard — deliberately NOT a pending 'choose'. Pull from
+        // state.rngState, the SAME threaded PRNG the deck shuffle uses (engine.ts) and write it back,
+        // so replays stay bit-identical. min(n, hand.length) guards a short/empty hand: an empty hand
+        // is a silent no-op (a discard, not an empty draw — decision 33's penalty does NOT apply).
+        const s = op.who === 'opponent' ? other(controller) : controller
+        const hand = state.sides[s].hand
+        const count = Math.min(op.n ?? 1, hand.length)
+        for (let i = 0; i < count; i++) {
+          let idx: number
+          ;[idx, state.rngState] = rngInt(state.rngState, hand.length)
+          const [cardId] = hand.splice(idx, 1)
+          state.sides[s].discard.push(cardId)
+          log(state, s, `${state.sides[s].name} discards ${name(state, cardId)} at random`)
+        }
+        break
+      }
       case 'chooseFromHand': {
         // #122 (pick-from-hand foundation): ENQUEUE the pick(s) — do NOT resolve inline. applyAction
         // drains the queue AFTER runOps returns (phase 'choose'), so this op MUST be terminal in its

@@ -1253,7 +1253,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
             name={`${names[foe]}${aiControls(config, foe) ? ' 🤖' : ''}`} life={their.life} handCount={their.handCount}
             deckCount={their.deckCount} discardCount={their.discard.length}
             resources={their.resources.filter(r => !r.exhausted).length} resourceTotal={their.resources.length}
-            hasInitiative={view.initiative === foe} outOfRound={view.outOfRound[foe]}
+            hasInitiative={view.initiative === foe} outOfRound={view.outOfRound[foe]} eclipsed={view.cardPlayLock[foe]}
             baseGlow={isHighlighted({ kind: 'base', seat: foe })}
             onClick={() => clickTarget({ kind: 'base', seat: foe })}
             onPile={pile => setInspect({ kind: 'pile', seat: foe, pile })}
@@ -1372,7 +1372,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
             name={`${names[seat]}${aiControls(config, seat) ? ' 🤖' : ''}`} life={my.life} handCount={my.handCount}
             deckCount={my.deckCount} discardCount={my.discard.length}
             resources={my.resources.filter(r => !r.exhausted).length} resourceTotal={my.resources.length}
-            hasInitiative={view.initiative === seat} outOfRound={view.outOfRound[seat]}
+            hasInitiative={view.initiative === seat} outOfRound={view.outOfRound[seat]} eclipsed={view.cardPlayLock[seat]}
             baseGlow={isHighlighted({ kind: 'base', seat })}
             onClick={() => clickTarget({ kind: 'base', seat })}
             onPile={pile => setInspect({ kind: 'pile', seat, pile })}
@@ -1626,9 +1626,9 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   )
 }
 
-function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, resourceTotal, hasInitiative, outOfRound, baseGlow, onClick, onPile, onBase }: {
+function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, resourceTotal, hasInitiative, outOfRound, eclipsed, baseGlow, onClick, onPile, onBase }: {
   name: string; life: number; handCount: number; deckCount: number; discardCount: number
-  resources: number; resourceTotal: number; hasInitiative: boolean; outOfRound: boolean
+  resources: number; resourceTotal: number; hasInitiative: boolean; outOfRound: boolean; eclipsed: boolean
   baseGlow: boolean; onClick: () => void
   onPile: (pile: 'resources' | 'discard') => void
   onBase: () => void
@@ -1641,6 +1641,7 @@ function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, 
       <span className="min-w-0 truncate font-display font-semibold text-parchment">{name}</span>
       {hasInitiative && <span className="text-xs text-goldbright" title="holds the initiative">⚑</span>}
       {outOfRound && <span className="rounded bg-goldbright/15 px-1.5 py-0.5 text-[11.5px] uppercase tracking-wider text-goldbright/90" title="claimed the initiative — no more actions this round, but its units still block and retaliate; acts first next round">claimed — resting, still defends</span>}
+      {eclipsed && <span className="rounded bg-[#7c5cbf]/25 px-1.5 py-0.5 text-[11.5px] uppercase tracking-wider text-[#c8b6ef]" title="Eclipse: cannot play any cards from hand this round — units still attack, move, and use abilities. Lifts next round.">🌑 eclipsed — no plays from hand this round</span>}
       <button
         className={`rounded px-1 font-display text-xl font-bold hover:bg-raised ${lifeFlash || (life <= 5 ? 'text-[#e5735f]' : 'text-parchment')}`}
         title="This is the base — tap for details"

@@ -105,8 +105,9 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   if (!state.claimedThisRound) out.push({ type: 'claimInitiative' })
   const ready = state.sides[seat].resources.filter(r => !r.exhausted).length
 
-  // plays (both windows)
-  for (const card of state.sides[seat].hand) {
+  // plays (both windows). #122 (Eclipse): a locked seat plays NOTHING from hand this round — the
+  // single gate. Everything below (moves, activate/Sneak, attacks, claim, pass) stays untouched.
+  if (!state.cardPlayLock[seat]) for (const card of state.sides[seat].hand) {
     const def = defOf(state, card)
     if (!def.xCost && def.cost > ready) continue
     if (!pipGateSatisfied(state, seat, def)) continue
