@@ -9,7 +9,7 @@ pips: purple, purple
 status: draft
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"sneak":{"targets":[{"t":"unit","side":"enemy"}],"ops":[{"op":"damage","t":"chosen0","n":2}]}}
-art: /cards/duskwing-tyrant.svg
+art: /cards/duskwing-tyrant.jpg
 ---
 Hidden. Sneak — deal 2 damage to target enemy unit in this zone.
 

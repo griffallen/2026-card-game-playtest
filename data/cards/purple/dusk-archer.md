@@ -7,7 +7,7 @@ health: 2
 keywords: ranged 2
 pips: purple
 status: draft
-art: /cards/dusk-archer.svg
+art: /cards/dusk-archer.jpg
 ---
 Ranged 2.
 

@@ -2682,7 +2682,7 @@
    "purple"
   ],
   "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): the cloak now grants the veil itself — any unit can learn to disappear.",
-  "artUrl": "/cards/cloak-of-haze.svg"
+  "artUrl": "/cards/cloak-of-haze.jpg"
  },
  "crippling-dart": {
   "targets": [
@@ -2734,7 +2734,7 @@
    "purple"
   ],
   "designerNote": "2026-07-12 (decision 80, issue #24 Q9 — designer's charter, agent redesign ⚑ ratify/veto): Ranged\nreborn as an ability action (\"exhaust: deal N to one enemy unit in any zone\") with ordinary attacks;\npurple keeps two archers and the rest of the court re-identifies around non-attack keywords. THIS card: 2/2 → 1/2 with Ranged 2 — the cheap archer archetype, teeth moved into the volley.",
-  "artUrl": "/cards/dusk-archer.svg"
+  "artUrl": "/cards/dusk-archer.jpg"
  },
  "mist-stalker": {
   "onKill": [
@@ -3009,7 +3009,7 @@
    "purple",
    "purple"
   ],
-  "artUrl": "/cards/assassin-s-contract.svg"
+  "artUrl": "/cards/assassin-s-contract.jpg"
  },
  "blackout": {
   "targets": [
@@ -3105,7 +3105,7 @@
    "purple"
   ],
   "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): the tyrant becomes a Hidden ambusher; its Sneak is the knife-drawer's damage blade (decision 60).",
-  "artUrl": "/cards/duskwing-tyrant.svg"
+  "artUrl": "/cards/duskwing-tyrant.jpg"
  },
  "phantom-duelist": {
   "slug": "phantom-duelist",
@@ -3245,7 +3245,7 @@
    "purple"
   ],
   "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): purple's influence is REACTIVE (decision 63/#10 thread): the thief steals standing, not ground — Sneak gains 2 Influence. Draw stays.\n\n2026-07-11 (#23 consistency sweep): printed text was stale v2.3 (\"Flying\", a retired keyword) while frontmatter/effects were already v3 (hidden, sneak). Rewritten to match the effects, following the \"Hidden. … Sneak — …\" convention of its siblings. Flagged in the open-questions ledger for Griff's blessing on the wording.",
-  "artUrl": "/cards/dream-thief.svg"
+  "artUrl": "/cards/dream-thief.jpg"
  },
  "nocturne-sniper": {
   "onKill": [
@@ -3350,7 +3350,7 @@
    "purple",
    "purple"
   ],
-  "artUrl": "/cards/duskweaver-oracle.svg"
+  "artUrl": "/cards/duskweaver-oracle.jpg"
  },
  "fog-of-knives": {
   "targets": [

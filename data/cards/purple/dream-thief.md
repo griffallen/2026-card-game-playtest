@@ -7,7 +7,7 @@ health: 4
 keywords: hidden, sneak
 pips: purple, purple
 status: draft
-art: /cards/dream-thief.svg
+art: /cards/dream-thief.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"draw","n":1}],"sneak":{"ops":[{"op":"influence","n":2}]}}
 ---
