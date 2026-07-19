@@ -1,7 +1,7 @@
 import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 
 const KEYWORDS = new Set(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
-const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'chooseFromHand', 'influence', 'influenceOwner', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand'])
+const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'chooseFromHand', 'influence', 'influenceOwner', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand', 'reckoning'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
 const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
@@ -181,6 +181,12 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       if (def.type !== 'action') err('lastStand belongs on an action')
       for (const [k, v] of [['moveInfluence', op.moveInfluence], ['attackLife', op.attackLife], ['endLife', op.endLife], ['endInfluence', op.endInfluence]] as const)
         if (!isInt(v, 0, 30)) err(`bad lastStand ${k}`)
+      break
+    case 'reckoning':   // #122 (Midnight Reckoning): the self-contained AoE finisher — n damage plus three non-negative int knobs, all in sane ranges
+      if (!isInt(op.n, 0, 30)) err('bad reckoning n')
+      if (!isInt(op.influencePerKill, 0, 20)) err('bad reckoning influencePerKill')
+      if (!isInt(op.killThreshold, 0, 30)) err('bad reckoning killThreshold')
+      if (!isInt(op.shortfallLife, 0, 30)) err('bad reckoning shortfallLife')
       break
 
     case 'countBuff': checkTargetRef(op.t); if (!isInt(op.p, 1, 10)) err('bad countBuff p'); break

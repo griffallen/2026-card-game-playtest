@@ -411,6 +411,37 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         log(state, controller, `${state.sides[controller].name} makes a last stand — units won't exhaust this round, but every move and attack exacts its price`)
         break
       }
+      case 'reckoning': {
+        // #122 (Midnight Reckoning): a self-contained AoE finisher — all of it resolves inline
+        // (Griff: "everything resolves inside the card's effects"). Damage EVERY unit — both sides,
+        // the caster's own included (Griff: "all units," literal) — by n, then pay the controller
+        // influencePerKill per unit the sweep fells (decision 74: a kill is a kill; lethality is the
+        // test, friend AND foe). filterUnits with side:'all'/zone:'all' reads no source unit — good,
+        // because an ACTION has no body (ctx.sourceUnit is undefined), which is also why this can't
+        // reuse damageFilter's creditsKills/onKill (those fire on a UNIT's def). The felled-detection
+        // mirrors damageFilter exactly (batch the damage, then `state.units[u.id] && damage >= effHealth`).
+        let felled = 0
+        for (const u of filterUnits(ctx, { side: 'all', zone: 'all' })) {
+          damageUnit(state, u, op.n, ctx.srcLabel ?? '')
+          if (state.units[u.id] && u.damage >= effHealth(state, u)) felled++
+        }
+        if (felled > 0) {
+          addInfluence(state, controller, felled * op.influencePerKill)
+          log(state, controller, `the reckoning claims ${felled} ${felled === 1 ? 'soul' : 'souls'} — ${state.sides[controller].name} gains ${felled * op.influencePerKill} influence (${influenceFor(state, controller)})`)
+        }
+        // "gained less than killThreshold Influence" == "fewer than killThreshold units fell" (each
+        // kill = +1). shortfallLife burns the opponent's FACE through the standard damageBase — the
+        // same spell-to-face path a `damage enemyBase` burn uses: it respects preventBase and does NOT
+        // pierce (the ruled default). (homeWard is attack-only — fromAttack — so a spell burn never
+        // touches it, exactly like every other burn.) The op-tail stateBasedCleanup fells the dead.
+        if (felled < op.killThreshold) {
+          log(state, other(controller), `the reckoning is unsated (${felled} of ${op.killThreshold}) — ${state.sides[other(controller)].name} answers with ${op.shortfallLife} life`)
+          damageBase(state, other(controller), op.shortfallLife, ctx.srcLabel ?? '')
+        } else {
+          log(state, controller, `the reckoning is sated — the field is bare enough`)
+        }
+        break
+      }
       case 'draw': draw(state, controller, op.n); log(state, controller, `${state.sides[controller].name} draws ${op.n}`); break
       case 'chooseFromHand': {
         // #122 (pick-from-hand foundation): ENQUEUE the pick(s) — do NOT resolve inline. applyAction
