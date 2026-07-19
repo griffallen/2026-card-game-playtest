@@ -2815,7 +2815,7 @@
    "purple"
   ],
   "designerNote": "2026-07-11 (v3 churn pass 2, charter #10: reactive control): the escape trick: a round of the veil (ready = safe) plus a card. Purple pays for knowledge either way.",
-  "artUrl": "/cards/shadowstep.svg"
+  "artUrl": "/cards/shadowstep.jpg"
  },
  "twilight-scout": {
   "slug": "twilight-scout",
@@ -2889,7 +2889,7 @@
    "purple"
   ],
   "designerNote": "Session 006 proposal: The signature removal: purple weakens instead of burning (red) or walling (yellow). Power floors at 0.\nFirst sims: 1 mana was a permanent answer to any attacker — 2 respects red.",
-  "artUrl": "/cards/wither.svg"
+  "artUrl": "/cards/wither.jpg"
  },
  "gloom-piercer": {
   "slug": "gloom-piercer",
@@ -3155,7 +3155,7 @@
    "purple"
   ],
   "designerNote": "Session 006 proposal: Purple sweeps are precise — enemies only. Red pays for its bigger zone nuke in friendly fire.",
-  "artUrl": "/cards/rain-of-quarrels.svg"
+  "artUrl": "/cards/rain-of-quarrels.jpg"
  },
  "shade-of-the-bazaar": {
   "onPlay": [
@@ -3207,7 +3207,7 @@
    "purple",
    "purple"
   ],
-  "artUrl": "/cards/silence-the-song.svg"
+  "artUrl": "/cards/silence-the-song.jpg"
  },
  "dream-thief": {
   "onPlay": [
@@ -3303,7 +3303,7 @@
    "purple",
    "purple"
   ],
-  "artUrl": "/cards/second-shadow.svg"
+  "artUrl": "/cards/second-shadow.jpg"
  },
  "veilmaster": {
   "statics": [
@@ -3427,7 +3427,7 @@
    "purple",
    "purple"
   ],
-  "artUrl": "/cards/veil-of-silence.svg"
+  "artUrl": "/cards/veil-of-silence.jpg"
  },
  "eclipse": {
   "onPlay": [

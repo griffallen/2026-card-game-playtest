@@ -4,7 +4,7 @@ type: action
 cost: 2
 pips: purple, purple
 status: draft
-art: /cards/wither.svg
+art: /cards/wither.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"buff","t":"chosen0","p":-2,"dur":"perm"}]}
 ---
