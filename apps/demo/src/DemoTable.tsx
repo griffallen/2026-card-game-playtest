@@ -120,6 +120,11 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   const myWindow = state.winner === null && !aiWindow && view.actorSeat === seat
   const isIntercept = view.phase === 'intercept'
   const isBlock = view.phase === 'block'
+  // #122 (pick-from-hand): phase 'choose' — the front queued pick tells us whose hand and where the
+  // card goes. Read straight off state (plain parked data, like pendingAttack); the view carries the
+  // 'choose' phase + the resolveChoice legal actions, so the hand is already the chooser's.
+  const isChoose = view.phase === 'choose'
+  const chooseEntry = isChoose ? state.pendingChoices[0] : undefined
   const [blockPairs, setBlockPairs] = useState<{ blocker: string; onto: string }[]>([])
   const chromeLift = useChromeSafeLift()
 
@@ -260,13 +265,13 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   useEffect(() => { setSkipToMyWindow(false) }, [view.round]) // re-arm each round
   useEffect(() => {
     if (config.mode === 'hotseat') return
-    if (!myWindow || isIntercept || isBlock || view.outOfRound[seat]) return
+    if (!myWindow || isIntercept || isBlock || isChoose || view.outOfRound[seat]) return
     if (onlyPass && skipToMyWindow) {
       const t = setTimeout(() => apply({ type: 'pass' }, seat), 450)
       return () => clearTimeout(t)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, onlyPass, skipToMyWindow, isIntercept, isBlock, config.mode])
+  }, [state, onlyPass, skipToMyWindow, isIntercept, isBlock, isChoose, config.mode])
 
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight }, [view.log])
   // #27: make round transitions impossible to miss — banner + chime (skipped on mount)
@@ -644,6 +649,10 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   function clickHandCard(card: HandCardView) {
     if (!myWindow) { setInspect(null); setSelection(null); return }
     setConfirming(null)
+    // #122 (pick-from-hand): in the choose phase every hand card is a legal pick — a tap resolves it
+    // (discard, or bury on the deck bottom, per the pending entry). The engine flips the window to the
+    // next entry's seat, or back to the loop when the queue drains.
+    if (isChoose) { apply({ type: 'resolveChoice', card: card.id }, seat); return }
     if (view.phase === 'setup') {
       const owed = state.rules.mulliganStyle === 'london' ? state.mulligans[seat] * state.rules.mulliganPenalty : 0
       if (owed > 0 && setupPicks.length === setupN && !setupPicks.includes(card.id)) {
@@ -866,6 +875,20 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
         <span className="text-[12.5px] text-dim">Tap a glowing unit to intercept{interceptorIds.length ? '' : ' — nothing eligible'}.</span>
         <button className="btn !py-0.5 text-xs" onClick={() => apply({ type: 'declineIntercept' }, seat)}>Let it through</button>
+      </div>
+    </div>
+  ) : isChoose && myWindow && chooseEntry ? (
+    // #122 (pick-from-hand): a played card is asking you to shed one from hand. Word it by where the
+    // card goes; the whole hand is eligible, so tapping any card resolves this pick.
+    <div className="rounded-md border border-[#6b3f9e] bg-[#6b3f9e]/10 p-2 text-xs">
+      <p className="text-goldbright">
+        ✦ <b>{chooseEntry.srcLabel || 'An effect'}</b> — pick a card in your hand to{' '}
+        <b>{chooseEntry.to === 'discard' ? 'discard' : 'put on the bottom of your deck'}</b>.
+      </p>
+      <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+        <span className="text-[12.5px] text-dim">
+          Tap a card below.{state.pendingChoices.length > 1 ? ` ${state.pendingChoices.length} picks left.` : ''}
+        </span>
       </div>
     </div>
   ) : (selection || lethalPlay) && myWindow ? (
@@ -1132,6 +1155,8 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       ? `${names[view.actorSeat]} (AI) is thinking…`
       : isIntercept
         ? 'Under attack — intercept, or let it land.'
+        : isChoose
+        ? (chooseEntry?.to === 'deckBottom' ? 'Choose a card to put on the bottom of your deck.' : 'Choose a card to discard.')
         : view.phase === 'setup'
           ? `Opening hand — pick ${setupN} cards to bank as your starting resources (${setupPicks.length}/${setupN}).`
           : view.phase === 'bank'
@@ -1156,6 +1181,10 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       hints.push(`Banking tucks a card away forever and pays +1 toward costs every round — you'd have ${ready + 1} each round after this. Bank early and often — but once your bank covers your biggest costs, every further bank is a card you'll miss in the late game.`)
     } else if (isIntercept) {
       hints.push('An attack is incoming. Intercepting redirects the whole blow onto one of your ready units (Guards stay ready; others exhaust). Let it through to take it on the declared target instead.')
+    } else if (isChoose) {
+      hints.push(chooseEntry?.to === 'deckBottom'
+        ? 'A card you played is filtering your hand — tap one to tuck it under your deck (you may draw it again later). The whole hand is fair game.'
+        : 'A card you played makes you discard — tap one to send it to your discard pile. The whole hand is fair game.')
     } else if (onlyPass) {
       hints.push('No legal plays left: resources spent and every unit has acted. Pass to hand the turn over — two passes in a row end the round.')
     } else {
@@ -1383,11 +1412,13 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
               const canAct = playActionsFor(h.id).length > 0 || !!resourceActionFor(h.id)
               return (
                 <CardFrame key={h.id} card={def} size="sm" sleeve={sleeveOf(seat)}
-                  selected={view.phase === 'setup' ? setupPicks.includes(h.id) : (selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id))}
+                  selected={view.phase === 'setup' ? setupPicks.includes(h.id) : (isChoose && myWindow) || selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id)}
                   stamp={(view.phase === 'setup' && setupPicks.includes(h.id))
                     || (view.phase === 'bank' && selection?.kind === 'hand' && selection.id === h.id) ? 'Resource' : undefined}
-                  badge={view.phase === 'setup' && setupBottoms.includes(h.id) ? '⤓ bottom' : undefined}
-                  dimmed={view.phase !== 'setup' && myWindow && !canAct}
+                  badge={isChoose && myWindow
+                    ? (chooseEntry?.to === 'deckBottom' ? '⤓ bury' : '✕ discard')
+                    : view.phase === 'setup' && setupBottoms.includes(h.id) ? '⤓ bottom' : undefined}
+                  dimmed={!isChoose && view.phase !== 'setup' && myWindow && !canAct}
                   onLongPress={() => setInspect({ kind: 'card', slug: h.slug })}
                   onClick={() => clickHandCard(h)} />
               )

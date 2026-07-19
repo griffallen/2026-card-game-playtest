@@ -80,6 +80,15 @@ export type Op =
   | { op: 'damageFilter'; f: UnitFilter; n: number; creditsKills?: boolean }  // creditsKills (#107 Crimson Behemoth): the source unit's onKill fires for every unit this AoE fells — friend or foe (decision 74: lethality is the test)
   | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number; per?: PerCount }  // chosen may be unitOrBase; per scales n (PR #71)
   | { op: 'draw'; n: number }
+  /** #122 (Glimpse / Obscure): the pick-from-hand foundation. ENQUEUES a mid-resolution card pick
+   *  onto state.pendingChoices — it does NOT resolve inline. who:'controller' (default) queues n
+   *  entries for the controller; who:'each' queues n for the controller THEN n for the opponent.
+   *  to:'discard' → the chosen card goes to discard; 'deckBottom' → deck.unshift (bottom). n=1 default.
+   *  HARD INVARIANT: a choose op is TERMINAL within its op-list — the queue drains AFTER runOps
+   *  returns, so no later op in the same effect may read which card was chosen. "Pick a card, then
+   *  do X to it" is a real continuation (out of scope). One entry = one atomic pick; a "discard 1,
+   *  bottom 1" is two separate ops (two entries). */
+  | { op: 'chooseFromHand'; who?: 'controller' | 'each'; to: 'discard' | 'deckBottom'; n?: number }
   | { op: 'influence'; n: number; per?: PerCount; cond?: Cond; ifKilled?: boolean }   // + toward controller; per scales n (PR #70/#71); cond gates the gain (#79 Radiant Aegis); ifKilled (#107 Flameblade Raider): onDeath-only — the gain fires only if this unit felled a unit in the same combat it died in (a trade counts)
   | { op: 'influenceOwner'; t: 'chosen0' | 'chosen1'; n: number; per?: PerCount }   // #122 (Assassin's Contract): grant the CHOSEN target's OWNER (not the controller) influence, n scaled by `per` (targetCostHalf). Kill an enemy unit and the ENEMY's Influence rises; kill your own and you gain. Owner read live, before any same-action destroy.
   | { op: 'imprison'; t: OpTarget | 'auto'; f?: UnitFilter; auto?: AutoPick }
@@ -319,6 +328,16 @@ export interface SideState {
 
 export interface LogLine { t: number; seat: Seat | null; msg: string }
 
+/** #122 (pick-from-hand foundation): one queued single-card pick — the FOURTH mid-resolution pause
+ *  (after bank/startStep, intercept/pendingAttack, block/pendingAttack). ONE entry per card; count is
+ *  expressed by enqueueing N entries, never a count field, so each answer (a resolveChoice naming a
+ *  card id) stays atomic and a replay is just a sequence of those ids — no continuation blob. */
+export interface PendingChoice {
+  seat: Seat                          // whose hand this pick comes from (the chooser)
+  to: 'discard' | 'deckBottom'        // where the chosen card goes
+  srcLabel: string                    // the card that opened the pick (for the log / demo prompt)
+}
+
 export interface GameState {
   rngState: number
   rules: RulesConfig
@@ -326,7 +345,7 @@ export interface GameState {
   cardOf: Record<string, string>      // instance id → slug
   round: number                       // global, increments once per full round
   initiative: Seat                    // holder acts first each round; carries over unless claimed
-  phase: 'setup' | 'bank' | 'loop' | 'intercept' | 'block'
+  phase: 'setup' | 'bank' | 'loop' | 'intercept' | 'block' | 'choose'
   actorSeat: Seat                     // whose action window it is
   startStep: Seat | null              // phase 'bank': whose start step is paused at its bank choice
   bankedThisStep: number              // resources banked in the current start step
@@ -353,6 +372,13 @@ export interface GameState {
   pendingAttack: {                    // phase 'intercept': the declared attack awaiting the defender
     seat: Seat; attackers: string[]; target: TargetRef; overextend: string[]
   } | null
+  /** #122 (pick-from-hand): phase 'choose' drains this FIFO queue, one resolveChoice per entry.
+   *  [] when idle. Mirrors the combat pause — parked plain data, answered identically by the AI
+   *  policy and the demo UI, so replays stay deterministic (the #97/#98 corpus guarantee). */
+  pendingChoices: PendingChoice[]
+  /** #122: the seat whose action opened the current choose queue — actorSeat is restored to it and
+   *  the normal advanceWindow runs once the last pick resolves (the play "completes" only then). */
+  chooseOpener: Seat | null
   influence: number                   // + toward seat 0
   sides: [SideState, SideState]
   units: Record<string, UnitInstance>
@@ -395,6 +421,7 @@ export type GameAction =
   | { type: 'claimInitiative' }              // decision 40: take the token, leave the round
   | { type: 'intercept'; unit: string }      // decision 42: redirect the attack to a ready unit
   | { type: 'declineIntercept' }             // decision 42: let the attack hit its declared target
+  | { type: 'resolveChoice'; card: string }  // #122 (pick-from-hand): phase 'choose' — name the chosen hand-card id
   | { type: 'pass' }
   | { type: 'concede' }
 
@@ -428,7 +455,7 @@ export interface SideView {
 export interface PlayerView {
   viewerSeat: Seat | null
   round: number
-  phase: 'setup' | 'bank' | 'loop' | 'intercept' | 'block'
+  phase: 'setup' | 'bank' | 'loop' | 'intercept' | 'block' | 'choose'
   initiative: Seat
   actorSeat: Seat
   outOfRound: [boolean, boolean]

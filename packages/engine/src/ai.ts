@@ -442,6 +442,14 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
       case 'claimInitiative': score = legal.some(x => x.type === 'attack' || x.type === 'play') ? 2 : 8; break
       case 'intercept':
       case 'declineIntercept': score = interceptScore(state, action); break
+      case 'resolveChoice':
+        // #122 (pick-from-hand): shed the priciest card first — highest printed cost wins (an X-cost
+        // card counts as 0, kept). The chosen card is in state.actorSeat's hand (the seat now choosing,
+        // caster or Obscure's opponent), so def.cost picks correctly for whichever seat. The seeded
+        // jitter below breaks ties deterministically; the second prompt naturally takes the next-priciest.
+        // Deliberately crude — enough to run games and feed the #97/#98 corpus.
+        score = defOf(state, action.card).cost
+        break
       case 'block': score = blockScore(state, seat, action); break
       case 'activate': score = activateScore(state, seat, action); break
       case 'attachOrphan': score = 10; break

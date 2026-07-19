@@ -1,7 +1,7 @@
 import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 
 const KEYWORDS = new Set(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
-const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'influence', 'influenceOwner', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand'])
+const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'chooseFromHand', 'influence', 'influenceOwner', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
 const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
@@ -196,6 +196,11 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
     case 'damageFilter': checkTargetRef(op.f); if (!isInt(op.n, 0)) err('bad n'); break
     case 'heal': if (op.t !== 'selfBase') checkTargetRef(op.t); if (!isInt(op.n, 0)) err('bad n'); checkPer(op.per); break
     case 'draw': if (!isInt(op.n, 1, 10)) err('bad draw count'); break
+    case 'chooseFromHand':   // #122 (pick-from-hand): who/to in their enums, n a small positive int
+      if (op.who !== undefined && !['controller', 'each'].includes(op.who)) err(`bad chooseFromHand who ${op.who}`)
+      if (!['discard', 'deckBottom'].includes(op.to)) err(`bad chooseFromHand to ${op.to}`)
+      if (op.n !== undefined && !isInt(op.n, 1, 10)) err('bad chooseFromHand n')
+      break
     case 'influence':
       if (!isInt(op.n, -20, 20) || op.n === 0) err('bad influence amount')
       checkPer(op.per)

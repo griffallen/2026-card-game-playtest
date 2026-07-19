@@ -412,6 +412,26 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'draw': draw(state, controller, op.n); log(state, controller, `${state.sides[controller].name} draws ${op.n}`); break
+      case 'chooseFromHand': {
+        // #122 (pick-from-hand foundation): ENQUEUE the pick(s) — do NOT resolve inline. applyAction
+        // drains the queue AFTER runOps returns (phase 'choose'), so this op MUST be terminal in its
+        // op-list; no later op may depend on which card is chosen (a real continuation is out of scope).
+        // who:'controller' (default) queues for the controller; 'each' queues the controller THEN the
+        // opponent. Eligibility is checked at enqueue time: we never queue more entries for a seat than
+        // it has cards (already-queued entries counted), so every entry is drainable — an empty hand is
+        // a silent no-op (a discard, not an empty draw: decision 33's life/influence penalty does NOT
+        // apply). Nothing touches a hand between enqueue and drain, so this count cannot drift.
+        const n = op.n ?? 1
+        const seats: Seat[] = op.who === 'each' ? [controller, other(controller)] : [controller]
+        for (const s of seats) {
+          const alreadyQueued = state.pendingChoices.filter(c => c.seat === s).length
+          const avail = state.sides[s].hand.length - alreadyQueued
+          const k = Math.min(n, Math.max(0, avail))
+          for (let i = 0; i < k; i++) state.pendingChoices.push({ seat: s, to: op.to, srcLabel: ctx.srcLabel ?? '' })
+          if (k === 0) log(state, s, `${state.sides[s].name} has nothing to ${op.to === 'discard' ? 'discard' : 'put on the bottom of their deck'}`)
+        }
+        break
+      }
       case 'influence': {
         if (!condHolds(state, controller, op.cond)) break        // #79 (Radiant Aegis): the gain is gated on the controller's state
         if (op.ifKilled && !ctx.sourceKilled) break              // #107 (Flameblade Raider): the trade bonus — only if this unit died dealing a lethal blow

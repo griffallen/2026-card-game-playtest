@@ -90,6 +90,8 @@ export function createGame(opts: CreateGameOpts): GameState {
     passStreak: 0,
     pendingExtraAction: null,
     pendingAttack: null,
+    pendingChoices: [],
+    chooseOpener: null,
     influence: 0,
     sides,
     units: {},

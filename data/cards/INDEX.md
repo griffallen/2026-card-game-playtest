@@ -102,7 +102,7 @@
 
 | Card | Code | Cost | Type | P/H | Keywords | Status | Text |
 |---|---|---|---|---|---|---|---|
-| [Glimpse](purple/glimpse.md) | — | 1 | action | — |  | draft | Draw a card. |
+| [Glimpse](purple/glimpse.md) | — | 1 | action | — |  | draft | Draw 3 cards, then discard 1 card from your hand and put 1 card from your hand on the bottom of your deck. |
 | [Veil Adept](purple/veil-adept.md) | — | 1 | unit | 1/1 | hidden | draft | Hidden. |
 | [Whisper Blade](purple/whisper-blade.md) | — | 1 | unit | 2/1 |  | draft | When this defeats a unit, gain 1 Influence. |
 | [Cloak of Haze](purple/cloak-of-haze.md) | — | 2 | upgrade | — |  | draft | Attached unit has Hidden. |
@@ -116,7 +116,7 @@
 | [Wither](purple/wither.md) | — | 2 | upgrade | — |  | draft | Target enemy unit gets -1 Power and -1 Health permanently. The rot takes hold: at the start of each round, it withers a further -1/-1. (Power floors at 0; a unit withered to 0 Health dies.) |
 | [Gloom Piercer](purple/gloom-piercer.md) | — | 3 | unit | 3/2 | infiltrate | draft | Infiltrate. |
 | [Nightweaver](purple/nightweaver.md) | — | 3 | unit | 3/3 |  | draft | When this enters play, target enemy unit gets -1 Power permanently. |
-| [Obscure](purple/obscure.md) | — | 3 | action | — |  | draft | Prevent the next 2 damage to your base this round. Draw a card. |
+| [Obscure](purple/obscure.md) | — | 3 | action | — |  | draft | Draw 2 cards, then both you and your opponent discard a card. |
 | [Silence the Song](purple/silence-the-song.md) | — | 3 | upgrade | — |  | draft | Attach to any unit — it gets −2 Power. When it dies, draw 2 cards. |
 | [Veil Assassin](purple/veil-assassin.md) | — | 3 | unit | 4/2 |  | draft | When this defeats a unit, gain 1 Influence. |
 | [Assassin's Contract](purple/assassin-s-contract.md) | — | 4 | action | — |  | draft | Destroy target unit. You lose Life equal to its remaining Health, and its owner gains Influence equal to half its printed cost, rounded up. |

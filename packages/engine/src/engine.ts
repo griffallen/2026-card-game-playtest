@@ -39,6 +39,8 @@ export function applyAction(prev: GameState, action: GameAction, actorSeat: Seat
     applyInterceptPhase(state, action, actorSeat)
   } else if (state.phase === 'block') {
     applyBlockPhase(state, action, actorSeat)
+  } else if (state.phase === 'choose') {
+    applyChoosePhase(state, action, actorSeat)
   } else {
     applyLoopPhase(state, action, actorSeat)
   }
@@ -199,7 +201,48 @@ function applyLoopPhase(state: GameState, action: GameAction, seat: Seat) {
     case 'attack': attackDeclare(state, action, seat); return // declare→intercept/resolve advances the window itself
     default: fail('bad-phase', `${(action as GameAction).type} is not a loop action`)
   }
+  // #122 (pick-from-hand): a play whose onPlay enqueued card picks parks HERE — mirror the combat
+  // pause (declareAttack → intercept/block). Open the choose phase on the first entry's seat and
+  // return WITHOUT advancing the window; the play "completes" (advanceWindow) only when the last
+  // pick resolves. chooseOpener remembers who to hand the window back to.
+  if (state.pendingChoices.length) {
+    state.phase = 'choose'
+    state.chooseOpener = seat
+    state.actorSeat = state.pendingChoices[0].seat
+    return
+  }
   advanceWindow(state, seat)
+}
+
+/** #122 (pick-from-hand): the chooser answers one queued pick — discard it, or bury it on the deck
+ *  bottom (the exact deck.unshift setupBank uses; index 0 is the bottom). Eligibility is re-derived
+ *  from the LIVE hand every step, so a card just discarded is automatically ineligible to bottom and
+ *  no cross-pick validation is needed. Drains FIFO: still-queued → hand the window to the next
+ *  entry's seat and stay in 'choose'; drained → restore the loop and advanceWindow for the opener. */
+function applyChoosePhase(state: GameState, action: GameAction, seat: Seat) {
+  if (action.type !== 'resolveChoice') fail('bad-phase', 'choose a card from your hand')
+  const entry = state.pendingChoices[0] ?? fail('bad-phase', 'no pending choice')
+  if (seat !== entry.seat) fail('not-your-window', 'not your choice to make')
+  const side = state.sides[seat]
+  const idx = side.hand.indexOf(action.card)
+  if (idx < 0) fail('not-in-hand', 'card is not in your hand')
+  side.hand.splice(idx, 1)
+  if (entry.to === 'deckBottom') {
+    side.deck.unshift(action.card) // draws pop from the end — index 0 is the bottom (matches setupBank)
+    log(state, seat, `${side.name} puts ${defOf(state, action.card).name} on the bottom of their deck`)
+  } else {
+    side.discard.push(action.card)
+    log(state, seat, `${side.name} discards ${defOf(state, action.card).name}`)
+  }
+  state.pendingChoices.shift()
+  if (state.pendingChoices.length) {
+    state.actorSeat = state.pendingChoices[0].seat // next pick — flips to the opponent for Obscure
+    return
+  }
+  state.phase = 'loop'
+  const opener = state.chooseOpener ?? seat
+  state.chooseOpener = null
+  advanceWindow(state, opener)
 }
 
 // ─── v3 keyword actions ──────────────────────────────────────────────────────

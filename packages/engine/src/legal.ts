@@ -57,6 +57,16 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     return out
   }
 
+  if (state.phase === 'choose') {
+    // #122 (pick-from-hand): one resolveChoice per card in the LIVE hand of the front entry's seat.
+    // The queue only ever holds entries for seats that had a card at enqueue time, so this is never
+    // empty for the actor — the sim can always answer (no 'stuck'); exactly 1 card → a forced pick.
+    const entry = state.pendingChoices[0]
+    if (!entry || seat !== entry.seat) return []
+    for (const card of state.sides[seat].hand) out.push({ type: 'resolveChoice', card })
+    return out
+  }
+
   if (state.phase === 'block') {
     const pa = state.pendingAttack
     if (!pa || seat !== other(pa.seat)) return []

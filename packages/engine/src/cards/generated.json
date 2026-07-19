@@ -2607,7 +2607,15 @@
   "onPlay": [
    {
     "op": "draw",
-    "n": 1
+    "n": 3
+   },
+   {
+    "op": "chooseFromHand",
+    "to": "discard"
+   },
+   {
+    "op": "chooseFromHand",
+    "to": "deckBottom"
    }
   ],
   "slug": "glimpse",
@@ -2615,10 +2623,11 @@
   "color": "purple",
   "type": "action",
   "cost": 1,
-  "text": "Draw a card.",
+  "text": "Draw 3 cards, then discard 1 card from your hand and put 1 card from your hand on the bottom of your deck.",
   "pips": [
    "purple"
   ],
+  "designerNote": "2026-07-19 (#122, Griff's rework): was a plain \"Draw a card.\" Now a draw-3 filter — dig three deep, keep one to hand, throw one away, tuck one to the bottom to see again later. Costs/pips unchanged (1 / purple); Griff changed only the text. Rides the new pick-from-hand foundation: draw resolves inline, then each `chooseFromHand` enqueues one atomic pick answered by its own `resolveChoice`. Eligibility is the LIVE hand at each step, so both picks range over the WHOLE hand (the 3 just drawn plus everything already held), and the card discarded first is automatically off the table for the bottom pick. Caster always holds ≥3 after drawing, so both picks exist — no edge.",
   "artUrl": "/cards/glimpse.jpg"
  },
  "veil-adept": {
@@ -2951,12 +2960,13 @@
  "obscure": {
   "onPlay": [
    {
-    "op": "preventBase",
+    "op": "draw",
     "n": 2
    },
    {
-    "op": "draw",
-    "n": 1
+    "op": "chooseFromHand",
+    "who": "each",
+    "to": "discard"
    }
   ],
   "slug": "obscure",
@@ -2964,11 +2974,12 @@
   "color": "purple",
   "type": "action",
   "cost": 3,
-  "text": "Prevent the next 2 damage to your base this round. Draw a card.",
+  "text": "Draw 2 cards, then both you and your opponent discard a card.",
   "pips": [
    "purple",
    "purple"
   ],
+  "designerNote": "2026-07-19 (#122, Griff's rework): the old `preventBase 2` + `draw 1` is fully replaced by `draw 2` + a symmetric discard on the new pick-from-hand foundation. Costs/pips unchanged (3 / purple purple); Griff changed only the text. `chooseFromHand who:'each'` enqueues one pick for the caster THEN one for the opponent — the caster resolves their own discard first, then actorSeat flips to the opponent for theirs (real pending-choice entries, answered by the opponent's policy in sims and by the human in the hotseat demo, exactly as combat flips to the defender). An empty opposing hand is a silent no-op (a discard, not an empty draw — decision 33's life/influence penalty does NOT apply): no entry is enqueued for a seat with no cards.",
   "artUrl": "/cards/obscure.jpg"
  },
  "silence-the-song": {
