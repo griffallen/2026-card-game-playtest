@@ -1,6 +1,5 @@
 import type { CardSet } from './types.ts'
 import { CARD_SET } from './cards/index.ts'
-import { DEFAULT_RULES } from './rules.ts'
 
 export interface PrebuiltDeck {
   slug: string
@@ -15,9 +14,7 @@ export interface PrebuiltDeck {
  * ledger edit on deck legality against the freshly compiled set (a designer cost edit can silently
  * move a card in or out of a doubles rule; the PR gate must catch that, not a later test run).
  */
-export function buildPrebuiltDecks(set: CardSet): PrebuiltDeck[] {
-  const purple = Object.values(set).filter(c => c.color === 'purple')
-
+export function buildPrebuiltDecks(_set: CardSet): PrebuiltDeck[] {
   // Crimson Assault — Griff's own hand-curated red (issue #50), promoted to the canonical demo
   // deck (issue #94, 2026-07-15: "move the current Crimson Assault / Radiant Order names to
   // [Griff's] decks and delete the original[s]"). The stock auto-derived lists — every card in
@@ -47,6 +44,22 @@ export function buildPrebuiltDecks(set: CardSet): PrebuiltDeck[] {
     ['imprisonment-chamber', 2], ['prison-of-light', 2], ['supreme-sentence', 1],
     ['iron-discipline', 2], ['oath-of-order', 2], ['disciplined-mind', 2], ['unshakable-wall', 2],
   ]
+  // Veiled Court — Griff's own hand-curated purple (#122, 2026-07-19: "make this the default veiled
+  // court"), promoted to canonical alongside Crimson Assault / Radiant Order. The old auto-derived list
+  // (all purple uniques, cheapest doubled to 48) is retired — the sims now grade Griff's real 58-card
+  // deck, not a proxy. NOTE: "Duskwing Assassin" keeps the slug `duskwing-tyrant` — the #122 display
+  // rename left the file/art keyed to the original slug.
+  const VEILED_COURT: [string, number][] = [
+    ['glimpse', 2], ['veil-adept', 1], ['whisper-blade', 1], ['crippling-dart', 2],
+    ['mist-stalker', 1], ['pacify', 1], ['twilight-scout', 1], ['veiled-messenger', 2],
+    ['wither', 2], ['dusk-archer', 2], ['gloom-piercer', 2], ['nightweaver', 1],
+    ['obscure', 2], ['silence-the-song', 2], ['veil-assassin', 2], ['assassin-s-contract', 3],
+    ['cull-the-weak', 1], ['duskwing-tyrant', 2], ['phantom-duelist', 3], ['rain-of-quarrels', 1],
+    ['shade-of-the-bazaar', 1], ['dream-thief', 3], ['nocturne-sniper', 2], ['second-shadow', 2],
+    ['veilmaster', 2], ['duskweaver-oracle', 2], ['fog-of-knives', 2], ['umbral-colossus', 2],
+    ['veil-of-silence', 2], ['eclipse', 1], ['midnight-reckoning', 1], ['sovereign-of-the-veil', 2],
+    ['the-unseen-court', 2],
+  ]
 
   const decks: PrebuiltDeck[] = [
     {
@@ -63,31 +76,14 @@ export function buildPrebuiltDecks(set: CardSet): PrebuiltDeck[] {
       description: "Wall up, capture the threats, and let Influence carry you — the designer's own yellow: guard wall, prison-and-capture lock, an inevitable clock.",
       cards: RADIANT_ORDER.map(([slug, count]) => ({ slug, count })),
     },
-  ]
-
-  // #122: reach exactly deckMinSize by doubling the cheapest bodies, NOT by a cost cutoff. The old
-  // "double every cost <= 2" made the deck size a side effect of the curve, so a designer cost edit
-  // (Dusk Archer 2 -> 3) silently pushed a card out of the doubles and dropped the deck under 48,
-  // failing the card gate. Now: double the cheapest (deckMinSize - uniqueCount) cards, ordered by
-  // cost asc, then sturdiest body (power+health desc — actions/upgrades count 0 and sort last, so a
-  // situational spell is never filler-doubled), then slug. Self-heals to 48 however Griff shifts
-  // costs, and a just-nerfed frail body is never the fill pick (the 12th double lands on the sturdiest
-  // cheap body, e.g. Nightweaver 3/3 — not the 1/1 Dusk Archer).
-  if (purple.length) {
-    const nDoubles = Math.max(0, DEFAULT_RULES.deckMinSize - purple.length)
-    const ranked = [...purple].sort((a, b) =>
-      a.cost - b.cost
-      || ((b.power ?? 0) + (b.health ?? 0)) - ((a.power ?? 0) + (a.health ?? 0))
-      || a.slug.localeCompare(b.slug))
-    const purpleDoubles = new Set(ranked.slice(0, nDoubles).map(c => c.slug))
-    decks.push({
+    {
       slug: 'veiled-court',
       name: 'Veiled Court',
       color: 'purple',
-      description: 'Strike from where you cannot be answered. Ranged assassins, withering curses, and a court that profits from every named kill.',
-      cards: purple.map(c => ({ slug: c.slug, count: purpleDoubles.has(c.slug) ? 2 : 1 })),
-    })
-  }
+      description: "Strike from where you cannot be answered — the designer's own purple: ranged assassins, withering curses, hand-shaping tricks, and monsters fed by your hand and the graveyard.",
+      cards: VEILED_COURT.map(([slug, count]) => ({ slug, count })),
+    },
+  ]
   return decks
 }
 
