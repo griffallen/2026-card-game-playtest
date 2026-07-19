@@ -117,6 +117,7 @@
 | [Gloom Piercer](purple/gloom-piercer.md) | — | 3 | unit | 3/2 | infiltrate | draft | Infiltrate. |
 | [Nightweaver](purple/nightweaver.md) | — | 3 | unit | 3/3 |  | draft | When this enters play, target enemy unit gets -1 Power permanently. |
 | [Obscure](purple/obscure.md) | — | 3 | action | — |  | draft | Prevent the next 2 damage to your base this round. Draw a card. |
+| [Silence the Song](purple/silence-the-song.md) | — | 3 | upgrade | — |  | draft | Attach to any unit — it gets −2 Power. When it dies, draw 2 cards. |
 | [Veil Assassin](purple/veil-assassin.md) | — | 3 | unit | 4/2 |  | draft | When this defeats a unit, gain 1 Influence. |
 | [Assassin's Contract](purple/assassin-s-contract.md) | — | 4 | action | — |  | draft | Destroy target unit. You lose Life equal to its remaining Health, and its owner gains Influence equal to half its printed cost, rounded up. |
 | [Blackout](purple/blackout.md) | — | 4 | action | — |  | draft | Choose a zone. Enemy units there can't attack this round. |
@@ -125,7 +126,6 @@
 | [Phantom Duelist](purple/phantom-duelist.md) | — | 4 | unit | 4/2 | hidden | draft | Hidden. (While ready: can't be targeted or attacked. Acting reveals it.) |
 | [Rain of Quarrels](purple/rain-of-quarrels.md) | — | 4 | action | — |  | draft | Choose a zone. Deal 2 damage to every enemy unit there. |
 | [Shade of the Bazaar](purple/shade-of-the-bazaar.md) | — | 4 | unit | 3/4 |  | draft | When this enters play, draw a card. |
-| [Silence the Song](purple/silence-the-song.md) | — | 4 | action | — |  | draft | Target enemy unit gets -2 Power permanently. Draw a card. |
 | [Dream Thief](purple/dream-thief.md) | — | 5 | unit | 4/4 | hidden, sneak | draft | Hidden. When this enters play, draw a card. Sneak — gain 2 Influence. |
 | [Nocturne Sniper](purple/nocturne-sniper.md) | — | 5 | unit | 1/3 | ranged 3 | draft | Ranged 3. When this defeats a unit, gain 1 Influence. |
 | [Second Shadow](purple/second-shadow.md) | — | 5 | action | — |  | draft | Ready one of your units. Draw a card. |

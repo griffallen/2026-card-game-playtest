@@ -639,6 +639,14 @@ export function shedUpgrades(state: GameState, unit: UnitInstance, taken = false
   for (const upId of unit.upgrades) {
     const up = state.upgrades[upId]
     if (!up) continue
+    // #122 (Silence the Song): the host's DEATH — not a capture (`taken`) — fires the upgrade's
+    // on-host-death trigger. The ops run for the UPGRADE's owner (the caster who played it), NOT the
+    // host's owner: brand your own unit or the enemy's, and when it falls YOU draw. Fired before the
+    // gear orphans; the host is already off the field, so a bare `draw` reads the caster cleanly.
+    if (!taken) {
+      const hostDeathOps = defOf(state, upId).onHostDeath
+      if (hostDeathOps?.length) runOps({ state, controller: up.owner, sourceUnit: unit.id, actorSeat: up.owner }, hostDeathOps)
+    }
     if (state.rules.upgradesOrphan) {           // v3 (decision 67): the wearer's gear stays on the field
       up.attachedTo = null
       up.orphanedIn = unit.zone

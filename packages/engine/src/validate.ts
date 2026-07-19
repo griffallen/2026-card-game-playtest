@@ -47,11 +47,11 @@ export function validateCardSet(cards: CardSet): string[] {
       else if (def.type !== 'unit') err(slug, 'piercesArmorShield is only for units')
     }
 
-    // #80 (Subjugate): attach side — upgrades only, friendly|enemy
+    // #80 (Subjugate): attach side — upgrades only, friendly|enemy|any (#122, Silence the Song)
     // #86 (Resolve Banner): optional pass cost + friendly-only salvage rule
     if (def.attach !== undefined) {
       if (def.type !== 'upgrade') err(slug, 'attach is only for upgrades')
-      if (!['friendly', 'enemy'].includes(def.attach?.side as string)) err(slug, `bad attach side ${def.attach?.side}`)
+      if (!['friendly', 'enemy', 'any'].includes(def.attach?.side as string)) err(slug, `bad attach side ${def.attach?.side}`)
       if (def.attach.pass !== undefined && !isInt(def.attach.pass, 0, 30)) err(slug, `bad attach pass ${def.attach.pass}`)
       if (def.attach.salvage !== undefined && def.attach.salvage !== 'freeFriendly') err(slug, `bad attach salvage ${def.attach.salvage}`)
     }
@@ -64,6 +64,11 @@ export function validateCardSet(cards: CardSet): string[] {
       if (!ops) continue
       if (def.type === 'action' && key !== 'onPlay') err(slug, `actions cannot have ${key}`)
       for (const op of ops) errors.push(...validateOp(slug, op, def, chosenSlots, key))
+    }
+    // #122 (Silence the Song): the host-death trigger — upgrade-only, no chosen targets
+    if (def.onHostDeath) {
+      if (def.type !== 'upgrade') err(slug, 'onHostDeath belongs to upgrades (it fires when the carried unit dies)')
+      for (const op of def.onHostDeath) errors.push(...validateOp(slug, op, def, 0, 'onHostDeath'))
     }
     if (def.startOfRound) {
       if (def.type === 'action') err(slug, 'actions cannot have startOfRound')

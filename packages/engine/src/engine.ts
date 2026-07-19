@@ -280,13 +280,17 @@ function attachOrphan(state: GameState, action: Extract<GameAction, { type: 'att
     // #86 (Resolve Banner): only a unit friendly to the banner's OWNER may recover it, for 0 —
     // an opponent cannot pick it up at all (overrides decision 67's either-side salvage).
     if (seat !== up.owner || unit.owner !== seat) fail('not-yours', `${def.name} can only be recovered by its owner`)
-  } else if ((def.attach?.side ?? 'friendly') === 'friendly') {
-    if (unit.owner !== seat) fail('not-yours', 'attach to your own unit')
   } else {
-    // #80: an enemy-attach upgrade salvages the way it plays — onto a unit hostile to the salvager
-    if (unit.owner === seat) fail('bad-targets', `${def.name} attaches to an enemy unit`)
-    if (hasKw(state, unit, 'untargetable')) fail('bad-targets', `${defOf(state, unit.id).name} cannot be targeted`)
-    if (!unit.exhausted && hasKw(state, unit, 'hidden')) fail('bad-targets', `${defOf(state, unit.id).name} is hidden`)
+    // #80/#122: an enemy- or any-attach upgrade salvages the way it plays. friendly → your own;
+    // enemy → a unit hostile to the salvager; any → either, protections applying to the enemy's.
+    const side = def.attach?.side ?? 'friendly'
+    const hostile = unit.owner !== seat
+    if (side === 'friendly' && hostile) fail('not-yours', 'attach to your own unit')
+    if (side === 'enemy' && !hostile) fail('bad-targets', `${def.name} attaches to an enemy unit`)
+    if (hostile && side !== 'friendly') {
+      if (hasKw(state, unit, 'untargetable')) fail('bad-targets', `${defOf(state, unit.id).name} cannot be targeted`)
+      if (!unit.exhausted && hasKw(state, unit, 'hidden')) fail('bad-targets', `${defOf(state, unit.id).name} is hidden`)
+    }
   }
   if (unit.zone !== up.orphanedIn) fail('bad-zone', 'salvage happens where it fell')
   // #86: a free-friendly recovery is exactly that — 0 resources, no pip gate. Everything else pays.
@@ -432,15 +436,16 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
 
   if (def.type === 'upgrade') {
     // implicit attach target first, then any card-specific targets
-    const attachSide = def.attach?.side ?? 'friendly'   // #80: enemy attach is per-card, never the default
+    const attachSide = def.attach?.side ?? 'friendly'   // #80: enemy attach is per-card; #122: 'any' = either side
     const attachRef = targets[0]
     if (!attachRef || attachRef.kind !== 'unit') fail('bad-targets', `upgrades attach to a ${attachSide} unit`)
     const carrier = state.units[attachRef.id] ?? fail('bad-targets', 'no such unit')
-    if (attachSide === 'friendly') {
-      if (carrier.owner !== seat) fail('bad-targets', 'upgrades attach to a friendly unit')
-    } else {
-      if (carrier.owner === seat) fail('bad-targets', `${def.name} attaches to an enemy unit`)
-      // a hostile attach IS enemy targeting — the standing protections apply
+    const hostile = carrier.owner !== seat
+    if (attachSide === 'friendly' && hostile) fail('bad-targets', 'upgrades attach to a friendly unit')
+    if (attachSide === 'enemy' && !hostile) fail('bad-targets', `${def.name} attaches to an enemy unit`)
+    // a hostile attach (enemy-only, or 'any' onto the opponent's unit) IS enemy targeting — the
+    // standing protections apply; branding your OWN unit never trips them.
+    if (hostile && attachSide !== 'friendly') {
       if (hasKw(state, carrier, 'untargetable')) fail('bad-targets', `${defOf(state, carrier.id).name} cannot be targeted`)
       if (!carrier.exhausted && hasKw(state, carrier, 'hidden')) fail('bad-targets', `${defOf(state, carrier.id).name} is hidden`)
     }

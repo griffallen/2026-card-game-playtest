@@ -171,11 +171,12 @@ export interface CardDef {
   piercesArmorShield?: boolean
   /** #80 (Subjugate): which side's units this upgrade attaches to — absent = friendly, the
    *  standing law for every other upgrade. Per-card; enemy attach is never the default.
+   *  #122 (Silence the Song): `any` = either side — attach it to your OWN unit or the enemy's.
    *  #86 (Resolve Banner): `pass` = resource cost to re-attach this upgrade to another friendly
    *  unit in the same zone as an action (absent = not passable). `salvage: 'freeFriendly'` =
    *  when orphaned it can be picked up only by a friendly unit, for 0 (an opponent cannot);
    *  absent = the decision-67 default (either side, full cost + pips). */
-  attach?: { side: 'friendly' | 'enemy'; pass?: number; salvage?: 'freeFriendly' }
+  attach?: { side: 'friendly' | 'enemy' | 'any'; pass?: number; salvage?: 'freeFriendly' }
   targets?: TargetSpec[]     // play-time targets (upgrades: attach target is implicit and NOT listed)
   onPlay?: Op[]              // action body; unit/upgrade enter-play effects
   onEnterZone?: Op[]         // fires on play AND every zone entry (targets always auto-picked)
@@ -184,6 +185,10 @@ export interface CardDef {
   onDefend?: Op[]
   onKill?: Op[]
   onDeath?: Op[]             // PR #54: fires as the unit dies (controller = owner)
+  /** #122 (Silence the Song): fires when the HOST unit this upgrade is attached to DIES — the ops
+   *  run for the UPGRADE's owner (the caster who played it), NOT the host's owner. Upgrade-only, no
+   *  chosen targets (there is no action payload at a host's death). */
+  onHostDeath?: Op[]
   startOfRound?: { cond?: Cond; ops: Op[] }
   endOfRound?: { cond?: Cond; ops: Op[] }
   statics?: Static[]

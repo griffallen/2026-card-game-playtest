@@ -213,11 +213,15 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
       continue
     }
     if (def.cost > readyRes || !pipGateSatisfied(state, seat, def)) continue
-    // #80: an enemy-attach upgrade salvages onto units hostile to the salvager (mirrors attachOrphan)
-    const pool = (def.attach?.side ?? 'friendly') === 'friendly'
+    // #80/#122: salvage the way it plays — friendly onto your own, enemy onto hostile carriers
+    // (protected excepted), any onto either (protections applying only to the enemy's).
+    const salvageSide = def.attach?.side ?? 'friendly'
+    const hostileOk = (u: UnitInstance) => !hasKw(state, u, 'untargetable') && !(!u.exhausted && hasKw(state, u, 'hidden'))
+    const pool = salvageSide === 'friendly'
       ? unitsInZone(state, up.orphanedIn, seat)
-      : unitsInZone(state, up.orphanedIn, other(seat)).filter(u =>
-          !hasKw(state, u, 'untargetable') && !(!u.exhausted && hasKw(state, u, 'hidden')))
+      : salvageSide === 'enemy'
+        ? unitsInZone(state, up.orphanedIn, other(seat)).filter(hostileOk)
+        : unitsInZone(state, up.orphanedIn).filter(u => u.owner === seat || hostileOk(u))   // #122: side 'any'
     for (const u of pool) {
       out.push({ type: 'attachOrphan', upgrade: up.id, unit: u.id })
     }
@@ -363,12 +367,16 @@ function enumerateTargets(state: GameState, seat: Seat, card: string): TargetRef
   const slotChoices: TargetRef[][][] = []
 
   if (def.type === 'upgrade') {
-    // #80: enemy-attach upgrades enumerate hostile carriers, minus the protected
-    // (untargetable; ready Hidden, decision 59) — mirrors playCard's gate exactly
-    const carriers = (def.attach?.side ?? 'friendly') === 'friendly'
+    // #80/#122: enumerate legal carriers. friendly → your own units; enemy → hostile carriers
+    // minus the protected (untargetable; ready Hidden, decision 59); any → both, protections
+    // applying only to the enemy's. Mirrors playCard's gate exactly.
+    const side = def.attach?.side ?? 'friendly'
+    const hostileOk = (u: UnitInstance) => !hasKw(state, u, 'untargetable') && !(!u.exhausted && hasKw(state, u, 'hidden'))
+    const carriers = side === 'friendly'
       ? unitsOf(state, seat)
-      : unitsOf(state, other(seat)).filter(u =>
-          !hasKw(state, u, 'untargetable') && !(!u.exhausted && hasKw(state, u, 'hidden')))
+      : side === 'enemy'
+        ? unitsOf(state, other(seat)).filter(hostileOk)
+        : unitsOf(state).filter(u => u.owner === seat || hostileOk(u))   // #122: side 'any'
     if (!carriers.length) return []
     slotChoices.push(carriers.map(u => [{ kind: 'unit', id: u.id } as TargetRef]))
   }
