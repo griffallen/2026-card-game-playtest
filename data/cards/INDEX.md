@@ -23,7 +23,7 @@
 | [Pillage](red/pillage.md) | — | 2 | action | — |  | canon | Destroy target enemy upgrade. |
 | [Bloodfrenzy](red/bloodfrenzy.md) | — | 3 | upgrade | — |  | canon | Attached unit gets +1 Power and +1 Health and Breakthrough. If you have Influence 0 or less, this unit gets +2 Power and +2 Health instead. |
 | [Collateral Damage](red/collateral-damage.md) | — | 3 | action | — |  | canon | Deal 2 damage to two different target units. |
-| [Fiery Impaler](red/fiery-impaler.md) | — | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to a unit of your choice in the same zone. If that unit dies, gain +1 influence. |
+| [Fiery Impaler](red/fiery-impaler.md) | — | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to another unit of your choice in the same zone. If that unit dies, gain +1 influence. |
 | [Rageforged Brute](red/rageforged-brute.md) | — | 3 | unit | 4/4 | breakthrough | canon | Breakthrough. |
 | [Volcanic Slam](red/volcanic-slam.md) | — | 3 | action | — |  | canon | Deal 3 damage to up to two units in the same zone. |
 | [Warcry Leader](red/warcry-leader.md) | — | 3 | unit | 4/3 |  | canon | Other friendly units have Rush. |

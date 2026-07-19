@@ -9,7 +9,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onAttack":[{"op":"splashReap","n":1,"influence":1}]}
 ---
-When this attacks a unit, it also deals 1 damage to a unit of your choice in the same zone. If that unit dies, gain +1 influence.
+When this attacks a unit, it also deals 1 damage to another unit of your choice in the same zone. If that unit dies, gain +1 influence.
 
 ## Design notes
 
@@ -22,3 +22,11 @@ the skewer reaps 1 influence. New vocabulary: op `splashReap`, attack-action `sp
 ⚑ Agent rulings within the door: the skewer can't hit the attack's own target (the text says
 "ALSO deals"); ready enemy Hidden units refuse the choice (decision 76); no candidates → the
 trigger fizzles and the attack proceeds.
+
+2026-07-19 (issue #120, designer — text sharpen, patch): "a unit of your choice" → "another unit
+of your choice". Griff (the card's own designer) read it as "the target takes 1 first" and filed a
+bug; the engine was faithful to decision 93 all along (a reproduced log showed the skewer hit a
+SECOND unit before combat, the target took only its normal blow). No behavior change — the engine
+already excludes the target; "another" just makes the different-unit rule explicit on the card face.
+Griff picked this branch over a demo-UX louder-pick or moving the 1 onto the target (the latter
+would have walked back decision 93 — a major, not taken).
