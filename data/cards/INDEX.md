@@ -32,7 +32,7 @@
 | [Execution Swing](red/execution-swing.md) | — | 4 | action | — |  | canon | Destroy target damaged unit. |
 | [Inferno Titan](red/inferno-titan.md) | — | 4 | unit | 4/6 | breakthrough, scar | canon | Breakthrough. Scar. |
 | [Rupture](red/rupture.md) | — | 4 | action | — |  | canon | Deal 4 damage to target unit or base. |
-| [Crimson Behemoth](red/crimson-behemoth.md) | — | 5 | unit | 6/6 |  | canon | When this attacks, deal 2 damage to each other unit in its zone, yours included. When this kills a unit, gain 1 Influence. |
+| [Crimson Behemoth](red/crimson-behemoth.md) | — | 5 | unit | 6/6 |  | canon | When this attacks, deal 2 damage to each other unit in its zone, yours included. When this defeats a unit, gain 1 Influence. |
 | [Final Onslaught](red/final-onslaught.md) | — | 5 | action | — |  | canon | Ready one of your units and take an action with it. Then deal it damage equal to its remaining Health — it dies — and deal that much damage to each other unit in its zone, yours included. |
 | [Scorching Howl](red/scorching-howl.md) | — | 5 | action | — |  | canon | Deal 3 damage to all units. |
 | [Warlord Garok](red/warlord-garok.md) | — | 5 | unit | 5/5 | rush | canon | Rush. Your other units have +1 Power. |
@@ -61,7 +61,7 @@
 | [Bulwark Protector](yellow/bulwark-protector.md) | — | 3 | unit | 2/2 | guard, armor 1 | canon | Guard. Armor 1. When this unit defends, gain 1 Influence. |
 | [Chain of Law](yellow/chain-of-law.md) | — | 3 | upgrade | — |  | canon | Attached unit has Guard and Armor 1. |
 | [Justicar Enforcer](yellow/justicar-enforcer.md) | — | 3 | unit | 2/4 | guard | canon | Guard. When this defends, gain 2 Influence. |
-| [Noble Purifier](yellow/noble-purifier.md) | — | 3 | unit | 4/1 |  | canon | When this kills a unit, gain 2 Influence. |
+| [Noble Purifier](yellow/noble-purifier.md) | — | 3 | unit | 4/1 |  | canon | When this defeats a unit, gain 2 Influence. |
 | [Prison Warrant](yellow/prison-warrant.md) | — | 3 | action | — |  | canon | Target unit you control captures target damaged enemy unit or unit with 2 or less Health. Gain 1 Influence at the beginning of each round where the target unit is still captured. |
 | [Radiant Aegis](yellow/radiant-aegis.md) | — | 3 | action | — |  | canon | Give a friendly unit a Shield. If your Influence is below 0, gain 2 Influence. |
 | [Sanctified Bastion](yellow/sanctified-bastion.md) | — | 3 | unit | 1/4 | cantAttack, politician | canon | This can't attack. Politician. Other friendly units in this zone have Armor 1. |

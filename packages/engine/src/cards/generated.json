@@ -756,7 +756,7 @@
   "cost": 5,
   "power": 6,
   "health": 6,
-  "text": "When this attacks, deal 2 damage to each other unit in its zone, yours included. When this kills a unit, gain 1 Influence.",
+  "text": "When this attacks, deal 2 damage to each other unit in its zone, yours included. When this defeats a unit, gain 1 Influence.",
   "pips": [
    "red",
    "red"
@@ -1478,7 +1478,7 @@
   "cost": 3,
   "power": 4,
   "health": 1,
-  "text": "When this kills a unit, gain 2 Influence.",
+  "text": "When this defeats a unit, gain 2 Influence.",
   "pips": [
    "yellow",
    "yellow"
@@ -3074,7 +3074,6 @@
   "cost": 4,
   "text": "Deal 1 damage to every enemy unit. Draw a card.",
   "pips": [
-   "purple",
    "purple"
   ],
   "artUrl": "/cards/cull-the-weak.jpg"
@@ -3162,7 +3161,6 @@
   "cost": 4,
   "text": "Choose a zone. Deal 2 damage to every enemy unit there.",
   "pips": [
-   "purple",
    "purple"
   ],
   "designerNote": "Session 006 proposal: Purple sweeps are precise — enemies only. Red pays for its bigger zone nuke in friendly fire.",

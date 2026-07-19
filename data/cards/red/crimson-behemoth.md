@@ -9,7 +9,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onAttack":[{"op":"damageFilter","f":{"side":"all","zone":"sameAsSelf","other":true},"n":2,"creditsKills":true}],"onKill":[{"op":"influence","n":1}]}
 ---
-When this attacks, deal 2 damage to each other unit in its zone, yours included. When this kills a unit, gain 1 Influence.
+When this attacks, deal 2 damage to each other unit in its zone, yours included. When this defeats a unit, gain 1 Influence.
 
 ## Design notes
 

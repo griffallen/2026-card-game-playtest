@@ -2,7 +2,7 @@
 name: Rain of Quarrels
 type: action
 cost: 4
-pips: purple, purple
+pips: purple
 status: draft
 art: /cards/rain-of-quarrels.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
