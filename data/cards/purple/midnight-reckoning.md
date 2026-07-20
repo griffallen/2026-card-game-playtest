@@ -3,7 +3,7 @@ name: Midnight Reckoning
 type: action
 cost: 7
 pips: purple, purple, purple
-status: draft
+status: canon
 art: /cards/midnight-reckoning.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"reckoning","n":7,"influencePerKill":1,"killThreshold":7,"shortfallLife":7}]}

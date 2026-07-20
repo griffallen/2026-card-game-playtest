@@ -6,7 +6,7 @@ power: 1
 health: 1
 keywords: ranged 2
 pips: purple, purple
-status: draft
+status: canon
 art: /cards/dusk-archer.jpg
 ---
 Ranged 2.

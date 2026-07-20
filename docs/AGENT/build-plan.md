@@ -1,6 +1,6 @@
 # Playbook: Build Plan
 
-Slice the specs into ordered, vertical increments in `docs/DESIGN/03-BUILD-PLAN.md`. Each slice is a working end-to-end increment — schema + logic + routes + views + tests — that leaves the project demonstrably better and unblocks the slices after it.
+Slice the work into ordered, vertical increments on the issue tracker. Each slice is a working end-to-end increment — schema + logic + routes + views + tests — that leaves the project demonstrably better and unblocks the slices after it.
 
 ## For each slice, record
 

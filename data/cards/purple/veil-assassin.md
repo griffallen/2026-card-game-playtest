@@ -6,7 +6,7 @@ power: 3
 health: 1
 keywords: hidden, infiltrate
 pips: purple, purple
-status: draft
+status: canon
 art: /cards/veil-assassin.jpg
 ---
 Hidden. Infiltrate.

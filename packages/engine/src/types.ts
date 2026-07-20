@@ -13,7 +13,7 @@ export const adjacent = (a: ZoneId, b: ZoneId) => Math.abs(a - b) === 1
 export type KeywordName =
   | 'guard' | 'armor' | 'rush' | 'ranged' | 'reach' | 'flying'
   | 'breakthrough' | 'overextend' | 'cantAttack' | 'untargetable'
-  // v3 suite (game-rules-v3-draft §2, decisions 59-61, 70)
+  // v3 keyword suite (docs/rules.md §Keywords; decisions 59-61, 70)
   | 'scar' | 'shielded' | 'hidden' | 'infiltrate' | 'capture' | 'sneak'
   // decision 88 (#29): standing in Neutral with the majority sways the influence track
   | 'politician'

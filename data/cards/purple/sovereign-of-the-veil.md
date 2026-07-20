@@ -6,7 +6,7 @@ power: 5
 health: 6
 keywords: hidden, infiltrate, sneak
 pips: purple, purple, purple
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"sneak":{"targets":[{"t":"unit","side":"enemy"}],"ops":[{"op":"damage","t":"chosen0","n":4},{"op":"influence","n":1}]}}
 art: /cards/sovereign-of-the-veil.jpg

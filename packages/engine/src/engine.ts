@@ -896,7 +896,7 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
     for (const b of p.blockers) {
       if (dmg <= 0) break
       // #118 (Griff) + #88: a shielded or warded blocker cannot be KILLED by a non-piercing hit, so
-      // Breakthrough — which spills only past a *slain* blocker (rules-v1.3 §Breakthrough) — carries
+      // Breakthrough — which spills only past a *slain* blocker (docs/rules.md §Breakthrough) — carries
       // nothing past it. It soaks the ENTIRE remaining pour aimed through it (the same rule the
       // declared target already gets below). A piercing attacker (#107 Worldrender) ignores both.
       const warded = !!b.blockWard

@@ -6,7 +6,7 @@ power: 1
 health: 1
 keywords: hidden
 pips: purple
-status: draft
+status: canon
 art: /cards/veil-adept.jpg
 ---
 Hidden.

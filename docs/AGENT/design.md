@@ -18,8 +18,8 @@ If this is the project's first session:
 
 - `docs/DESIGN/01-GENESYS.md` — the brief
 - `docs/rules.md` — the rules, always current (generated; edit `apps/demo/src/pages/Rules.tsx`)
-- `docs/REFERENCES/extracted/red-deck.md`, `yellow-deck.md` — example card sheets (LLM-generated explorations; each ends with extraction notes flagging rules mismatches)
-- `docs/REFERENCES/extracted/spreadsheet-june-2026.md` — narrative goals, seven-color identities, keyword tables, newer deck sketches
+- `data/cards/` — the card ledger: one markdown file per card, the source of truth for every card.
+- `docs/DESIGN/07-COLOR-IDENTITIES.md` — the colour charter every card is designed against.
 
 ## Method
 

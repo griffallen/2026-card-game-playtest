@@ -8,7 +8,7 @@ import { effPower } from '../src/helpers.ts'
 import { damageUnit, destroyUnit } from '../src/effects.ts'
 import { T, toyDeck, put } from './util.ts'
 
-// Slice V3-3a — the v3 keyword suite, part 1 (spec game-rules-v3-draft §2):
+// Slice V3-3a — the v3 keyword suite, part 1 (docs/rules.md §Keywords):
 // Scar (uncapped, decision 94) · Shielded · Hidden (decision 59 + Q7)
 const K: CardSet = {
   ...T,

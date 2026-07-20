@@ -6,7 +6,7 @@ power: 1
 health: 1
 keywords: infiltrate
 pips: purple
-status: draft
+status: canon
 art: /cards/twilight-scout.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"revealHand","who":"opponent"}]}

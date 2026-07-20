@@ -6,7 +6,7 @@ power: 4
 health: 1
 keywords: hidden
 pips: purple, purple
-status: draft
+status: canon
 art: /cards/phantom-duelist.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"dodgesWeakerCombatant":true}

@@ -1,7 +1,7 @@
 # Yellow Deck Charter — canon-v1.0
 
 *One of the card pool's two parents: every yellow card must obey this charter **and** the base
-rules (`docs/SPECS/game-rules.md`). A card that breaks a law here is a review-blocker.*
+rules (`docs/rules.md`). A card that breaks a law here is a review-blocker.*
 
 ## Identity
 

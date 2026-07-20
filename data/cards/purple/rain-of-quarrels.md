@@ -3,7 +3,7 @@ name: Rain of Quarrels
 type: action
 cost: 4
 pips: purple
-status: draft
+status: canon
 art: /cards/rain-of-quarrels.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"zone"}],"onPlay":[{"op":"damageFilter","f":{"side":"enemy","zone":"chosenZone"},"n":2}]}

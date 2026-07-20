@@ -6,7 +6,7 @@ power: 1
 health: 4
 keywords: hidden, sneak
 pips: purple, purple
-status: draft
+status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"sneak":{"targets":[{"t":"unit","side":"enemy"}],"ops":[{"op":"damage","t":"chosen0","n":2}]}}
 art: /cards/duskwing-tyrant.jpg

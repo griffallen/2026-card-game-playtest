@@ -5,7 +5,7 @@ import { applyAction } from '../src/engine.ts'
 import { V3_RULES } from '../src/rules.ts'
 import { T, toyDeck, put } from './util.ts'
 
-// Slice V3-4 — blocker-pairing combat (spec game-rules-v3-draft §1.3, decisions from #9 Q4-Q6 + 62).
+// Slice V3-4 — blocker-pairing combat (docs/rules.md §Combat, decisions from #9 Q4-Q6 + 62).
 function g(): GameState {
   let s = createGame({
     seed: 21,
@@ -159,7 +159,7 @@ describe('siege breakthrough (decision 102, issue #66)', () => {
   })
 })
 
-// #118 (Griff): Breakthrough was leaking past a SHIELDED blocker into the base. Per rules-v1.3
+// #118 (Griff): Breakthrough was leaking past a SHIELDED blocker into the base. Per docs/rules.md
 // §Breakthrough — leftover spills only "when this attacker KILLS its blocker" — and §Shielded —
 // "the first hit it would take is prevented in full ... a hit of any size." A shielded blocker
 // survives, so it kills nothing and NOTHING breaks through. Fable's ruling (this describe is the

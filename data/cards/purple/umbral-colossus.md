@@ -4,7 +4,7 @@ type: unit
 cost: 6
 keywords: infiltrate
 pips: purple, purple
-status: draft
+status: canon
 art: /cards/umbral-colossus.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"powerFromCount":"handSize","healthFromCount":"handSize"}

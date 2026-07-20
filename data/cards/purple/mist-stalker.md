@@ -6,7 +6,7 @@ power: 1
 health: 1
 keywords: infiltrate
 pips: purple
-status: draft
+status: canon
 art: /cards/mist-stalker.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"draw","n":1},{"op":"chooseFromHand","to":"deckBottom","n":1}]}

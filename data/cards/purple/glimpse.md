@@ -3,7 +3,7 @@ name: Glimpse
 type: action
 cost: 1
 pips: purple
-status: draft
+status: canon
 art: /cards/glimpse.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"draw","n":3},{"op":"chooseFromHand","to":"discard"},{"op":"chooseFromHand","to":"deckBottom"}]}

@@ -1,6 +1,6 @@
 import type { RulesConfig } from './types.ts'
 
-/** Defaults per docs/SPECS/game-rules.md §2 — every value admin-tunable per rules version. */
+/** Legacy v2.3 preset, kept for A/B replay. Current rules: docs/rules.md (generated). */
 export const DEFAULT_RULES: RulesConfig = {
   startingLife: 20,
   influenceWinThreshold: 20,
@@ -36,7 +36,7 @@ export const DEFAULT_RULES: RulesConfig = {
   retaliation: 'blockers',  // v2.3 law; 'always' is the v3 DEFAULT since decision 84 (targets strike back even exhausted)
 }
 
-/** The v3.0 preset (game-rules-v3-draft): flips the structural switches, inherits the rest. */
+/** The v3 preset — what the demo runs, and what docs/rules.md documents. */
 export const V3_RULES: RulesConfig = {
   ...DEFAULT_RULES,
   combatModel: 'blockerPairing',

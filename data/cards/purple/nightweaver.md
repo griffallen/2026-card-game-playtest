@@ -5,7 +5,7 @@ cost: 3
 power: 3
 health: 3
 pips: purple
-status: draft
+status: canon
 art: /cards/nightweaver.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"buff","t":"chosen0","p":-1,"dur":"perm"}]}
