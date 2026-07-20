@@ -63,13 +63,22 @@ The labels are the board, on **two orthogonal axes: scope ≠ approval**. Releas
 `RELEASES.md`. **Full spec + rationale: `docs/AGENT/build-workflow.md`** — read it before
 touching the flow. In brief:
 
-- **Scope** (how big / who fires / version bump): `patch` = one self-contained fix →
-  **agent auto-ships**; `minor` = a batch → **Blaine or Griff** fire; `major` = a **tripwire**
-  (engine primitive, `packages/engine/src/rules.ts`, `apps/demo/src/pages/Rules.tsx`,
-  `DECISIONS.md`, or changes what a card *does*) → **Blaine only** fires (tick verifies the
-  actor). Classify: tripwire? → major; else one contained thing? → patch; else → minor.
-  *(The tripwire names the rules **sources**, not generated `docs/rules.md` — editing a
-  generated file changes nothing and must never buy a `major`.)*
+- **Scope = blast radius** (Blaine, 2026-07-19): *how much does the game a player experiences
+  change?* Not which files were touched. `docs` = **nothing changes**, the words catch up to
+  what the engine already does → **agent commits, no release, no deploy**; `patch` = one
+  self-contained fix → **agent auto-ships**; `minor` = a batch → **Blaine or Griff** fire;
+  `major` = **the game does something different** — a new/changed/removed mechanic, a new
+  engine primitive, a rules change → **Blaine only** fires (tick verifies the actor).
+- **Card work is never `major`.** Stats, costs, pips, statuses, new cards, balance — the
+  designer's lane, never blocked on Blaine. Re-tuning invalidates old sims; that's fine and
+  expected. The line is whether **the engine must learn something new**, and the build says so:
+  `npm run cards:check` errors `unknown op` for any effect the engine lacks. Compiles → card
+  work. Fails → engine change → `major`.
+- **The `docs` lane guard:** no file under `packages/engine/` or `data/cards/` changed, and
+  `test` + `cards:check` + `rules:doc:check` green. **Except rulebook prose** — wording in
+  `apps/demo/src/pages/Rules.tsx` is a truth claim to a player and nothing machine-checks it
+  (this is how #106's "Guard gate" ghost — a rule the engine never had — reached the book), so
+  that gets a human read.
 - **Approval / lifecycle** (independent of scope): `backlog` (noted) → *(scope tag, no
   `queued`)* = **scoped but unapproved** → `queued` = **approved + ready** → `building` →
   `shipped` + close. A `major` can be fully scoped and never approved (never gets `queued`).
@@ -116,10 +125,13 @@ long-running discussions, and every Griff-facing word. **Opus writes all the cod
 including new engine primitives and other tripwire work.** Fable rules on *how it should
 behave*; Opus builds it (Blaine: a Fable subagent costs ~150k tokens on a card build —
 don't spend one on implementation). **Tripwires** — work that touches engine primitives,
-`DECISIONS.md`, the rules sources (`packages/engine/src/rules.ts`,
-`apps/demo/src/pages/Rules.tsx`), or changes what a card *does* (not just its stats) —
-route the **design decision** to Fable regardless of how well-specified it looks; once
-Fable (or Griff/Blaine) has ruled, **Opus implements it**.
+`DECISIONS.md`, or a rules change (`packages/engine/src/rules.ts`, rulebook prose in
+`apps/demo/src/pages/Rules.tsx`) — route the **design decision** to Fable regardless of how
+well-specified it looks; once Fable (or Griff/Blaine) has ruled, **Opus implements it**.
+**Card work is not a tripwire**: stats, costs, statuses, balance, and new cards built from
+mechanics the engine already has are Griff's lane — build them, don't route them. A card
+needing an effect the engine lacks fails `cards:check` with `unknown op`; *that* is the
+tripwire, because it's a new primitive.
 **Where the build runs (Blaine — keep the router's context lean; it's re-read every tick):**
 Opus does the implementation, but *where* matters. Three modes:
 • **Inline** — router edits directly. Default for a *contained* change (a card wiring, a
