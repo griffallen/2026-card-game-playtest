@@ -1,7 +1,9 @@
 import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 
-const KEYWORDS = new Set(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
-const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'chooseFromHand', 'influence', 'influenceOwner', 'imprison', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand', 'reckoning', 'lockPlays', 'discardRandom', 'revealHand'])
+// The vocabulary a card may use = the vocabulary docs/rules.md teaches. Cut keywords are absent
+// on purpose (reach #8; flying/untargetable superseded by hidden; overextend by scar 70->94).
+const KEYWORDS = new Set(['guard', 'armor', 'rush', 'ranged', 'breakthrough', 'cantAttack', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
+const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'chooseFromHand', 'influence', 'influenceOwner', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand', 'reckoning', 'lockPlays', 'discardRandom', 'revealHand'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
 const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])

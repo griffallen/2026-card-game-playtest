@@ -92,7 +92,7 @@ export function finishBankStep(state: GameState) {
   }
 }
 
-/** End of round: end-of-round triggers → overextend bills → round-mods expire, then next round (spec §1.4). */
+/** End of round: end-of-round triggers → round-mods expire, then next round (spec §1.4). */
 export function endRound(state: GameState, actorSeat: Seat) {
   // spec §1.4: end-of-round triggers fire FIRST (initiative holder's units first, entry/id order)
   for (const seat of [state.initiative, other(state.initiative)] as const) {
@@ -124,14 +124,6 @@ export function endRound(state: GameState, actorSeat: Seat) {
   stateBasedCleanup(state, actorSeat)
   if (state.winner !== null) return
 
-  // decision 35: units that overextended take their self-damage now
-  for (const u of unitsOf(state)) {
-    if (u.overextendedBy > 0) {
-      u.damage += u.overextendedBy // self-inflicted strain ignores armor
-      log(state, u.owner, `${defOf(state, u.id).name} suffers ${u.overextendedBy} from overextending`)
-      u.overextendedBy = 0
-    }
-  }
   for (const u of unitsOf(state)) {
     u.mods = u.mods.filter(m => !m.round)
     for (const m of u.mods) if (m.rounds !== undefined) m.rounds--   // v3 multi-round mods tick at round end

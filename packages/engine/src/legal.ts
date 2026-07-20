@@ -151,8 +151,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   // moves — both players act in their own windows now (decision 40; no active-player gate)
   for (const unit of unitsOf(state, seat)) {
     if (unit.exhausted || unit.imprisoned || isSick(state, unit)) continue
-    const zones = hasKw(state, unit, 'flying') ? ZONES.filter(z => z !== unit.zone)
-      : ZONES.filter(z => adjacent(z, unit.zone))
+    const zones = ZONES.filter(z => adjacent(z, unit.zone))
     // #104 (Lawbringer): a unit that arrests a CHOSEN enemy on entry expands each destination into
     // one move per eligible enemy waiting there (a plain move when none) — the same choose-which-not-
     // whether rule as its play, now against the destination zone.
@@ -227,7 +226,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     // #80/#122: salvage the way it plays — friendly onto your own, enemy onto hostile carriers
     // (protected excepted), any onto either (protections applying only to the enemy's).
     const salvageSide = def.attach?.side ?? 'friendly'
-    const hostileOk = (u: UnitInstance) => !hasKw(state, u, 'untargetable') && !(!u.exhausted && hasKw(state, u, 'hidden'))
+    const hostileOk = (u: UnitInstance) => !(!u.exhausted && hasKw(state, u, 'hidden'))
     const pool = salvageSide === 'friendly'
       ? unitsInZone(state, up.orphanedIn, seat)
       : salvageSide === 'enemy'
@@ -275,16 +274,10 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     for (const u of group) for (const t of attackTargets(state, u)) targetsHere.set(JSON.stringify(t), t)
     for (const t of targetsHere.values()) {
       const able = group.filter(u => attackTargets(state, u).some(x => JSON.stringify(x) === JSON.stringify(t)))
-      for (const u of able) {
-        out.push(...withSplash({ type: 'attack', attackers: [u.id], target: t }))
-        if (state.rules.combatModel !== 'blockerPairing' && typeof kwOf(state, u, 'overextend') === 'number')
-          out.push(...withSplash({ type: 'attack', attackers: [u.id], target: t, overextend: [u.id] }))
-      }
+      for (const u of able) out.push(...withSplash({ type: 'attack', attackers: [u.id], target: t }))
       if (able.length > 1) {
         const ids = able.map(u => u.id)
         out.push(...withSplash({ type: 'attack', attackers: ids, target: t }))
-        const oe = state.rules.combatModel === 'blockerPairing' ? [] : able.filter(u => typeof kwOf(state, u, 'overextend') === 'number').map(u => u.id)
-        if (oe.length) out.push(...withSplash({ type: 'attack', attackers: ids, target: t, overextend: oe }))
       }
     }
   }
@@ -298,11 +291,10 @@ function attackTargets(state: GameState, attacker: UnitInstance): TargetRef[] {
   // The sniper-shot semantics (cross-zone reach, base ban) survive only in classic v2.3.
   const legacy = state.rules.combatModel === 'intercept'
   const ranged = legacy && hasKw(state, attacker, 'ranged')
-  const reach = legacy && hasKw(state, attacker, 'reach')
   const out: TargetRef[] = []
 
   const zonesInReach: ZoneId[] = [attacker.zone]
-  if (ranged || reach) for (const z of ZONES) if (adjacent(z, attacker.zone)) zonesInReach.push(z)
+  if (ranged) for (const z of ZONES) if (adjacent(z, attacker.zone)) zonesInReach.push(z)
 
   for (const zone of zonesInReach) {
     for (const d of unitsInZone(state, zone, enemy)) {
@@ -379,10 +371,10 @@ function enumerateTargets(state: GameState, seat: Seat, card: string): TargetRef
 
   if (def.type === 'upgrade') {
     // #80/#122: enumerate legal carriers. friendly → your own units; enemy → hostile carriers
-    // minus the protected (untargetable; ready Hidden, decision 59); any → both, protections
+    // minus the protected (ready Hidden, decision 59); any → both, protections
     // applying only to the enemy's. Mirrors playCard's gate exactly.
     const side = def.attach?.side ?? 'friendly'
-    const hostileOk = (u: UnitInstance) => !hasKw(state, u, 'untargetable') && !(!u.exhausted && hasKw(state, u, 'hidden'))
+    const hostileOk = (u: UnitInstance) => !(!u.exhausted && hasKw(state, u, 'hidden'))
     const carriers = side === 'friendly'
       ? unitsOf(state, seat)
       : side === 'enemy'
@@ -438,7 +430,6 @@ function candidatesFor(state: GameState, seat: Seat, spec: TargetSpec): TargetRe
     if (spec.damagedOrMaxHealth !== undefined && u.damage <= 0 && effHealth(state, u) > spec.damagedOrMaxHealth) continue
     if (spec.withKw && !hasKw(state, u, spec.withKw)) continue
     if (spec.mustBeDamaged && u.damage <= 0) continue
-    if (u.owner !== seat && hasKw(state, u, 'untargetable')) continue
     if (u.owner !== seat && !u.exhausted && hasKw(state, u, 'hidden')) continue   // v3 (decision 59)
     out.push({ kind: 'unit', id: u.id })
   }

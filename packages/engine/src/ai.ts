@@ -41,32 +41,19 @@ function attackScore(state: GameState, action: GameAction & { type: 'attack' }):
   const units = action.attackers.map(id => state.units[id]).filter(Boolean) as UnitInstance[]
   if (!units.length) return 0
   const n = units.length
-  const oeIds = action.overextend ?? []
-  const pw = (u: UnitInstance) => {
-    let p = effPower(state, u)
-    const oe = kwOf(state, u, 'overextend')
-    if (oeIds.includes(u.id) && typeof oe === 'number') p += oe
-    return p
-  }
+  const pw = (u: UnitInstance) => effPower(state, u)
   const combined = units.reduce((sum, u) => sum + pw(u), 0)
-  const oeTotal = oeIds.reduce((sum, id) => {
-    const v = kwOf(state, state.units[id], 'overextend')
-    return sum + (typeof v === 'number' ? v : 0)
-  }, 0)
   const groupKill = 2 * (n - 1)   // focus-fire that converts a kill is good
   const groupMiss = -3 * (n - 1)  // over-committing into a wall is bad
 
   if (action.target.kind === 'base') {
     // designer doctrine (#25): "always favor damage to a base, then unit removal"
-    let s = 120 + combined * 5 + groupKill
-    if (oeTotal) s -= oeTotal
-    return s
+    return 120 + combined * 5 + groupKill
   }
   if (action.target.kind !== 'unit') return 0
   const defender = state.units[action.target.id]
   if (!defender) return 0
   const dealt = Math.max(0, combined - effArmor(state, defender))
-  const dealtPlain = Math.max(0, combined - oeTotal - effArmor(state, defender))
   const defRemaining = effHealth(state, defender) - defender.damage
   const kills = dealt >= defRemaining
   const defValueV3 = defOf(state, defender.id).cost + effPower(state, defender)
@@ -92,20 +79,15 @@ function attackScore(state: GameState, action: GameAction & { type: 'attack' }):
   // counter lands on the highest-power attacker (ties → lowest id) — mirror the engine
   const counterTarget = units.slice().sort((x, y) => pw(y) - pw(x) || idNum(x.id) - idNum(y.id))[0]
   const ctRemaining = effHealth(state, counterTarget) - counterTarget.damage
-  const ctOE = oeIds.includes(counterTarget.id) && typeof kwOf(state, counterTarget, 'overextend') === 'number'
-    ? kwOf(state, counterTarget, 'overextend') as number : 0
   const counter = defender.imprisoned ? 0 : Math.max(0, effPower(state, defender) - effArmor(state, counterTarget))
-  const dies = counter >= ctRemaining || (ctOE > 0 && counter + ctOE >= ctRemaining)
+  const dies = counter >= ctRemaining
   const defValue = defOf(state, defender.id).cost + effPower(state, defender)
   const atkValue = defOf(state, counterTarget.id).cost + effPower(state, counterTarget)
 
-  // only gamble when the Overextend bonus is what converts the kill
-  if (oeTotal > 0 && dealtPlain >= defRemaining) return 2
-
   const freed = jailerBonus(state, units[0].owner, defender)
-  if (kills && !dies) return 70 + defValue * 3 + freed - oeTotal + groupKill
+  if (kills && !dies) return 70 + defValue * 3 + freed + groupKill
   if (kills && dies) return 40 + (defValue - atkValue) * 3 + freed + groupKill
-  if (dealt > 0 && !dies) return (oeTotal > 0 ? 3 : 15 + dealt) + groupMiss
+  if (dealt > 0 && !dies) return 15 + dealt + groupMiss
   return (dealt > 0 ? 4 : 0) + groupMiss
 }
 
@@ -117,11 +99,7 @@ function interceptScore(state: GameState, action: GameAction & { type: 'intercep
   if (!pa || !interceptor) return 0
   const combined = pa.attackers.reduce((sum, id) => {
     const u = state.units[id]
-    if (!u) return sum
-    let p = effPower(state, u)
-    const oe = kwOf(state, u, 'overextend')
-    if (pa.overextend.includes(id) && typeof oe === 'number') p += oe
-    return sum + p
+    return u ? sum + effPower(state, u) : sum
   }, 0)
   const guard = hasKw(state, interceptor, 'guard')
   const intoInterceptor = Math.max(0, combined - effArmor(state, interceptor))
@@ -462,7 +440,7 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
     score += jitter // deterministic tiebreak + loop-breaker
     if (score > bestScore) { bestScore = score; best = action }
   }
-  // safety: influence check — never play a big-overextend action if it would lose the game outright
+  // safety: influence check — never play a big influence-ceding card if it would lose the game outright
   if (best.type === 'play') {
     const def = defOf(state, best.card)
     const cede = (def.onPlay ?? []).reduce((n, op) => (op.op === 'influence' && op.n < 0 ? n + op.n : n), 0)

@@ -72,7 +72,7 @@ describe('playing cards', () => {
 })
 
 describe('movement', () => {
-  it('moves one adjacent zone and exhausts; non-adjacent throws; flying is free', () => {
+  it('moves one adjacent zone and exhausts; non-adjacent throws (adjacency binds everyone)', () => {
     let s = toLoop(game())
     const p1 = s.actorSeat
     const grunt = put(s, p1, 'soldier', homeZone(p1), { enteredRound: 0 })
@@ -83,10 +83,9 @@ describe('movement', () => {
     expect(s.units[grunt].zone).toBe(1)
     expect(s.units[grunt].exhausted).toBe(true)
     s = act(s, (1 - p1) as Seat, { type: 'pass' })
-    s = act(s, p1, { type: 'move', unit: bird, to: far })  // flying skips adjacency
-    expect(s.units[bird].zone).toBe(far)
+    // flying is retired: no unit skips adjacency any more
+    expect(() => act(s, p1, { type: 'move', unit: bird, to: far })).toThrow(/adjacent/i)
     // exhausted grunt cannot move again
-    s = act(s, (1 - p1) as Seat, { type: 'pass' })
     expect(() => act(s, p1, { type: 'move', unit: grunt, to: 0 })).toThrow(/exhaust/i)
   })
 
