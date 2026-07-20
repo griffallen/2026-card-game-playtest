@@ -39,7 +39,6 @@ export function GameTable() {
   const [showHelp, setShowHelp] = useState(false)
   const [inspect, setInspect] = useState<Inspect>(null)
   const [setupPicks, setSetupPicks] = useState<string[]>([])
-  const [armOverextend, setArmOverextend] = useState(false)
   const logRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -52,7 +51,6 @@ export function GameTable() {
   }, [view?.log])
   useEffect(() => { setSelection(null) }, [view?.actorSeat, view?.round, view?.phase])
   useEffect(() => { setSetupPicks([]) }, [view?.actorSeat, view?.phase])
-  useEffect(() => { setArmOverextend(false) }, [selection?.kind === 'units' ? selection.ids.join(',') : null])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setSelection(null); setConfirming(null); setInspect(null) } }
     window.addEventListener('keydown', onKey)
@@ -71,10 +69,6 @@ export function GameTable() {
     (a): a is Extract<GameAction, { type: 'play' }> => a.type === 'play' && a.card === cardId,
   )
   const resourceActionFor = (cardId: string) => actions.find(a => a.type === 'resource' && a.card === cardId)
-  /** Of the given attackers, which carry Overextend (so the arm-OE toggle applies to them). */
-  const overextendersIn = (ids: string[]) =>
-    ids.filter(id => view?.zones.flatMap(z => z.units).find(u => u.id === id)?.keywords.some(k => k.startsWith('overextend')))
-
   /** Highlighted refs for the current selection state. */
   const highlights: TargetRef[] = useMemo(() => {
     if (!view || !myWindow || !selection) return []
@@ -135,10 +129,8 @@ export function GameTable() {
       if (ref.kind === 'zone') {
         sendAction({ type: 'move', unit: selection.ids[0], to: ref.zone })
       } else {
-        const overextend = armOverextend ? overextendersIn(selection.ids) : []
-        sendAction({ type: 'attack', attackers: selection.ids, target: ref, ...(overextend.length ? { overextend } : {}) })
+        sendAction({ type: 'attack', attackers: selection.ids, target: ref })
       }
-      setArmOverextend(false)
       setSelection(null)
       return
     }
@@ -422,19 +414,6 @@ export function GameTable() {
                 <button className="btn btn-primary !py-1 self-start text-xs" onClick={() => sendAction({ type: 'declineIntercept' })}>Let it through →</button>
               </div>
             )}
-            {selection?.kind === 'units' && myWindow && (() => {
-              const oeUnits = selection.ids
-                .map(id => view.zones.flatMap(z => z.units).find(x => x.id === id))
-                .filter((u): u is NonNullable<typeof u> => !!u && u.keywords.some(k => k.startsWith('overextend')))
-              if (!oeUnits.length) return null
-              const total = oeUnits.reduce((n, u) => n + Number((u.keywords.find(k => k.startsWith('overextend')) ?? '').split(' ')[1] ?? 0), 0)
-              return (
-                <label className={`mt-2 flex cursor-pointer items-center gap-1.5 rounded border px-2 py-1 text-xs ${armOverextend ? 'border-[#e2583e] text-[#ff9a5e]' : 'hairline text-dim'}`}>
-                  <input type="checkbox" className="h-3.5 w-3.5 accent-[#e2583e]" checked={armOverextend} onChange={e => setArmOverextend(e.target.checked)} />
-                  Overextend{oeUnits.length > 1 ? ` ${oeUnits.length} units` : ''}: +{total} power now, {total} self-damage at end of round
-                </label>
-              )
-            })()}
             {selection?.kind === 'hand' && myWindow && (
               <div className="mt-2 flex flex-wrap gap-1.5 border-t hairline pt-2">
                 {view.phase === 'loop' && playActionsFor(selection.id).length > 0 && (

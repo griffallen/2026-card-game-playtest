@@ -35,7 +35,7 @@ type Selection =
   | { kind: 'targeting'; card: string; collected: TargetRef[]; mode?: number; x?: number }
   | { kind: 'mode'; card: string }            // v3 modal cards: choosing which mode to play (#26)
   | { kind: 'x'; card: string }               // X-cost cards: declaring X before targeting (#45)
-  | { kind: 'splash'; ids: string[]; target: TargetRef; picks: { by: string; unit: string }[]; oe: string[] }  // PR #46: skewer victims declared with the attack
+  | { kind: 'splash'; ids: string[]; target: TargetRef; picks: { by: string; unit: string }[] }  // PR #46: skewer victims declared with the attack
   | { kind: 'sneaking'; unit: string }        // v3 Sneak: choosing the ability's target
   | { kind: 'censer'; unit: string }          // #104 (Censer of Purity): choosing the friendly unit to draw wounds from
   | { kind: 'censer-amount'; unit: string; target: TargetRef }  // #104: choosing how much damage moves (the amount picker)
@@ -95,7 +95,6 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   // phones keep long-press-to-inspect (#124), so nothing lands under the player's thumb.
   const preview = useCardPreview()
   const [setupPicks, setSetupPicks] = useState<string[]>([])
-  const [armOverextend, setArmOverextend] = useState(false)
   // #122 (Twilight Scout): the one-time hand peek. A new reveal entry addressed to the viewer pops a
   // dismissible modal showing the snapshot — tracked by a high-water mark on the ledger length (mirrors
   // prevRound/recapShown) so it fires ONCE and never re-pops on a re-render.
@@ -306,8 +305,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   }, [view.reveals.length])
   useEffect(() => { setConfirming(null) }, [view.actorSeat, view.round])
   useEffect(() => { setSetupPicks([]) }, [view.actorSeat, view.phase])
-  useEffect(() => { setArmOverextend(false) }, [selection?.kind === 'unit' ? selection.ids.join(',') : null])
-  useEffect(() => { if (isIntercept) { setSelection(null); setArmOverextend(false) } }, [isIntercept]) // intercept has its own UI — drop any attack-group selection
+  useEffect(() => { if (isIntercept) setSelection(null) }, [isIntercept]) // intercept has its own UI — drop any attack-group selection
   useEffect(() => { if (isBlock) setSelection(null); else setBlockPairs([]) }, [isBlock])
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -423,10 +421,6 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     return null
   }
   const unitName = (id: string) => unitViewOf(id)?.name ?? DEMO_CARDS[state.cardOf[id]]?.name ?? 'a unit'
-  const oeOf = (id: string) => {
-    const kw = unitViewOf(id)?.keywords.find(k => k.startsWith('overextend'))
-    return kw ? Number(kw.split(' ')[1] ?? 0) : null
-  }
   // issue #61: per-seat sleeve picks from setup; defaults keep ivory-mine/gunmetal-theirs
   const sleeveOf = (owner: Seat) => config.sleeves?.[owner] ?? sleeveFor(owner === seat)
   const refName = (ref: TargetRef): string =>
@@ -571,29 +565,24 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
           .map(a => a.exhaust).filter((e): e is string => e !== undefined)
         if (arrests.length) {
           setSelection({ kind: 'entry-exhaust', via: { unit, to: ref.zone }, targets: arrests })
-          setArmOverextend(false)
           return
         }
         apply({ type: 'move', unit, to: ref.zone }, seat)
       } else {
-        const oe = armOverextend ? selection.ids.filter(id => oeOf(id) !== null) : []
         // PR #46: a skewer-carrying attacker declares its victim before the attack is submitted
         if (ref.kind === 'unit' && splashersOf(selection.ids).some(sid => splashCandidates(ref, sid).length)) {
-          setSelection({ kind: 'splash', ids: selection.ids, target: ref, picks: [], oe })
-          setArmOverextend(false)
+          setSelection({ kind: 'splash', ids: selection.ids, target: ref, picks: [] })
           return
         }
-        apply({ type: 'attack', attackers: selection.ids, target: ref, ...(oe.length ? { overextend: oe } : {}) }, seat)
+        apply({ type: 'attack', attackers: selection.ids, target: ref }, seat)
       }
-      setArmOverextend(false)
       return
     }
     if (selection.kind === 'splash' && ref.kind === 'unit') {
       const splashers = splashersOf(selection.ids)
       const picks = [...selection.picks, { by: splashers[selection.picks.length], unit: ref.id }]
       if (picks.length >= splashers.length) {
-        apply({ type: 'attack', attackers: selection.ids, target: selection.target, splash: picks,
-          ...(selection.oe.length ? { overextend: selection.oe } : {}) }, seat)
+        apply({ type: 'attack', attackers: selection.ids, target: selection.target, splash: picks }, seat)
       } else setSelection({ ...selection, picks })
       return
     }
@@ -977,19 +966,6 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
                 : ' this round — an enemy effect disarmed it'}. It can still move and block.
             </span>
           )}
-          {(() => {
-            const oeUnits = selection.ids.filter(id => oeOf(id) !== null)
-            if (!oeUnits.length) return null
-            const label = oeUnits.length === 1 && selection.ids.length === 1
-              ? `Overextend: +${oeOf(oeUnits[0])} power now, ${oeOf(oeUnits[0])} self-damage at end of round`
-              : `Overextend ${oeUnits.length} of them: +power now, self-damage at end of round`
-            return (
-              <label className={`flex cursor-pointer items-center gap-1.5 rounded border px-2 py-1 text-xs ${armOverextend ? 'border-[#e2583e] text-[#ff9a5e]' : 'hairline text-dim'}`}>
-                <input type="checkbox" className="h-3.5 w-3.5 accent-[#e2583e]" checked={armOverextend} onChange={e => setArmOverextend(e.target.checked)} />
-                {label}
-              </label>
-            )
-          })()}
           {selection.ids.length === 1 && activateActionsFor(selection.ids[0]).length > 0 && (() => {
             const uid = selection.ids[0]
             const def = DEMO_CARDS[state.cardOf[uid]]
