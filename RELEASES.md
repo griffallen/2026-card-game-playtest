@@ -8,6 +8,43 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.7.0 — 2026-07-20
+major — **the canon reset, Griff's UI batch, and the cut keywords** (#126, #130, #131; #114,
+#119, #109, #92, #5, #122; Blaine fired).
+
+- **The rules have one home** (#126). Four documents each claimed authority and had drifted:
+  `rules-v1.3.md` taught a turn structure the engine never had, Prison as a live keyword after it
+  was cut, and a `-15` influence threshold left from a half-finished edit. `docs/rules.md` is now
+  generated from the demo's rulebook page (`npm run rules:doc`, gated by `rules:doc:check`), with
+  an engine-parameter table read straight from `V3_RULES`. 19 stale docs deleted, all three deck
+  charters rewritten against the cards that shipped, purple flipped to `canon`.
+- **Scope means blast radius** (#92, #109). `major` had quietly come to mean "which files did you
+  touch" — which over-priced doc upkeep (so `DECISIONS.md` stalled at 106) and *blocked Griff from
+  making cards*. Card work is never `major`; the line is whether the engine must learn something
+  new, and `cards:check` answers it. New `docs` lane for zero-impact work.
+- **The sim measured the wrong game for nine days** (#98, decision 107). The balance harness passed
+  no rules and silently ran legacy v2.3 combat. Found in four places including the demo's own
+  Simulate tab. `simulateGame`'s `rules` is now required. Yellow-vs-purple read 65/35 under
+  intercept and 43/57 under real v3 — every pre-2026-07-20 figure is void.
+- **Versions are one number** (#119). `RULES_VERSION` = the engine package version = **3.2.0**,
+  pinned by a test. The corpus fingerprints by it and it had never moved off 0.1.0 while combat
+  changed twice, so every recorded game shared a fingerprint.
+- **The lobby seeded v2.3** — `apps/server` would have dealt pre-v3 rules to whoever opened it
+  first. Now seeds v3.0, keeps v2.3 demoted for replay.
+- **#114 (Griff, waiting since 7/16):** keyword symbols on every surface from ONE gloss source (the
+  text had existed in three places), sleeves 6 → 13, cards readable inside the block window (a
+  z-index stacking bug, not a missing feature), and hover-to-preview on the table, mouse-gated so
+  touch never raises a card under the thumb.
+- **Cut keywords deleted from the engine** (#131): `reach`, `flying`, `overextend`, `untargetable`
+  were still declared, validated AND implemented — `flying` still let a unit move to any zone. A
+  card authored with `keywords: flying` would have shipped and contradicted the rulebook. The
+  `overextend` wire field is kept, always rejected, so archived corpus replays still parse. Prison
+  is blocked at the validator but not yet removed. `FEATURE_VERSION` 1 → 2.
+
+581 tests green (engine 467, demo 32, ai 35, corpus 37, server 10), typecheck clean across six
+workspaces, cards:check 120 valid, rules:doc:check current. Playability gate passed — 120 art
+loaded, 0 broken, no page errors. Deployed.
+
 ## v0.6.0 — 2026-07-17
 major — **the balance pass + Rush rework, cut as one build-now batch** (#104, #107, #105;
 Blaine fired). Two card-balance passes and one keyword rework, shipped across the session and
