@@ -16,7 +16,10 @@ export interface CardFile { def: CardDef; status: CardStatus }
 
 const FIELD_KEYS = ['name', 'code', 'type', 'cost', 'power', 'health', 'keywords', 'pips', 'influenceTrigger', 'status', 'art', 'effects'] as const
 type FieldKey = (typeof FIELD_KEYS)[number]
-const KW_NAMES = new Set<string>(['guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend', 'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
+// Must stay in step with KeywordName and validate.ts's KEYWORDS — the cut keywords (reach,
+// flying, overextend, untargetable) are absent so the PARSER rejects them outright, rather
+// than accepting the word and leaving the validator to catch it a step later.
+const KW_NAMES = new Set<string>(['guard', 'armor', 'rush', 'ranged', 'breakthrough', 'cantAttack', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
 const INFLUENCE_TRIGGERS = ['onPlay', 'onDefend', 'onKill', 'onAttack', 'onDeath'] as const
 type InfluenceTrigger = (typeof INFLUENCE_TRIGGERS)[number]
 

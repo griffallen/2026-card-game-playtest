@@ -8,7 +8,7 @@ const u = (slug: string, cost: number, power: number, health: number, extra: Par
 export const TOY: CardSet = {
   rusher: u('rusher', 3, 3, 2, { kw: [{ k: 'rush' }] }),        // the "two 3/2 rush units" case
   bruiser: u('bruiser', 4, 5, 4, { kw: [{ k: 'breakthrough', n: 1 }] }),
-  flyer: u('flyer', 2, 2, 1, { kw: [{ k: 'flying' }] }),
+  flyer: u('flyer', 2, 2, 1, { kw: [{ k: 'ranged', n: 1 }] }),   // was 'flying' — cut keyword; any kw serves the fixture
   wall: u('wall', 1, 0, 4, { kw: [{ k: 'guard' }] }),
   grunt: u('grunt', 2, 2, 2),
 }

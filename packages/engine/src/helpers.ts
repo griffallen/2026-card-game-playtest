@@ -51,12 +51,11 @@ export const choosesEntryExhaust = (def: CardDef): boolean =>
 
 /** #104 (Lawbringer): enemy units in `zone` that a chosen entry-exhaust may arrest — READY (a down
  *  unit is a wasted arrest, matching the auto-pick), not imprisoned, and not shielded by
- *  untargetable / ready-Hidden (a player CHOICE is targeting, so the standing protections apply).
+ *  ready-Hidden (a player CHOICE is targeting, so the standing protections apply).
  *  Empty = no legal target, so the play/move happens with no arrest (a clean no-op). */
 export function entryExhaustTargets(state: GameState, controller: Seat, zone: ZoneId): UnitInstance[] {
   return unitsInZone(state, zone, other(controller)).filter(u =>
     !u.imprisoned && !u.exhausted
-    && !hasKw(state, u, 'untargetable')
     && !(!u.exhausted && hasKw(state, u, 'hidden')))
 }
 

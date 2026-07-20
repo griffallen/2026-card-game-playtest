@@ -8,7 +8,7 @@ type: unit
 cost: 1
 power: 1
 health: 1
-keywords: rush, overextend 1
+keywords: rush, armor 1
 status: draft
 ---
 Rush. Overextend 1.
@@ -26,7 +26,7 @@ describe('parseCardFile', () => {
     expect(card!.def).toEqual({
       slug: 'cinder-initiate', name: 'Cinder Initiate', color: 'red', type: 'unit',
       cost: 1, power: 1, health: 1, text: 'Rush. Overextend 1.',
-      kw: [{ k: 'rush' }, { k: 'overextend', n: 1 }],
+      kw: [{ k: 'rush' }, { k: 'armor', n: 1 }],
       designerNote: 'A gamble, not a given.',
       artUrl: '/cards/cinder-initiate.jpg',
     })

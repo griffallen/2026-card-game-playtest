@@ -100,7 +100,7 @@ describe('the base', () => {
   })
 })
 
-describe('breakthrough and overextend', () => {
+describe('breakthrough', () => {
   it('breakthrough N carries excess damage to the controller, capped at N', () => {
     let { s, p1, p2 } = arena()
     const atk = put(s, p1, 'crusher', 1)    // 3/3 breakthrough 2
@@ -115,29 +115,9 @@ describe('breakthrough and overextend', () => {
     expect(s.sides[p2].life).toBe(16)
   })
 
-  it('overextend is an opt-in gamble: without it, no bonus (decision 35)', () => {
-    let { s, p1, p2 } = arena()
-    const gambler = put(s, p1, 'loner', 1)  // 2/2, overextend 3
-    const big = put(s, p2, 'brute', 1)      // 4/3
-    s = act(s, p1, { type: 'attack', attackers: [gambler], target: { kind: 'unit', id: big } })
-    expect(s.units[big]).toBeDefined()
-    expect(s.units[big].damage).toBe(2)
-  })
-
-  it('overextend converts a kill now and bills self-damage at end of round', () => {
-    let { s, p1, p2 } = arena()
-    const safeGambler = put(s, p1, 'loner', 2)                 // 2/2, overextend 3
-    const chump = put(s, p2, 'brute', 2, { imprisonedBy: p1 }) // imprisoned: deals no counter-damage
-    s = act(s, p1, { type: 'attack', attackers: [safeGambler], target: { kind: 'unit', id: chump }, overextend: [safeGambler] })
-    expect(s.units[chump]).toBeUndefined()                     // 2+3 = 5 ≥ 3 health — the gamble converted the kill
-    expect(s.units[safeGambler].overextendedBy).toBe(3)
-    // end the round (two consecutive passes) → 3 self-damage kills the 2/2
-    s = act(s, p2, { type: 'pass' })
-    s = act(s, p1, { type: 'pass' })
-    expect(s.units[safeGambler]).toBeUndefined()
-  })
-
-  it('units without the Overextend keyword cannot take the gamble', () => {
+  // overextend is retired (70→94, superseded by Scar): the action field survives for replay
+  // compatibility, but no attack may ever declare it — in ANY combat model.
+  it('an overextend declaration is always rejected', () => {
     let { s, p1, p2 } = arena()
     const plain = put(s, p1, 'soldier', 1)
     const foe = put(s, p2, 'pawn', 1)

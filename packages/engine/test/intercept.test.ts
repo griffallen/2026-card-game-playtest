@@ -93,17 +93,6 @@ describe('multi-unit attack + intercept (decision 42)', () => {
     expect(s.sides[b].life).toBe(before - 2)
   })
 
-  it('per-unit overextend adds power now and bills at end of round', () => {
-    let s = toLoop(game())
-    const a = s.actorSeat, b = (1 - a) as Seat
-    const loner = put(s, a, 'loner', 1, { enteredRound: 0 })                       // 2/2, overextend 3
-    const pawn = put(s, a, 'pawn', 1, { enteredRound: 0 })                         // 1 power
-    const brute = put(s, b, 'brute', 1, { enteredRound: 0, imprisonedBy: a })      // imprisoned: deals no counter
-    s = applyAction(s, { type: 'attack', attackers: [loner, pawn], target: { kind: 'unit', id: brute }, overextend: [loner] }, a).state
-    expect(s.units[brute]).toBeUndefined()          // (2+3)+1 = 6 ≥ 3 health — the gamble converted the kill
-    expect(s.units[loner].overextendedBy).toBe(3)   // survived (no counter) — the end-of-round bill stands
-  })
-
   it('attackers must share a zone; ranged-only groups may shoot an adjacent zone', () => {
     let s = toLoop(game())
     const a = s.actorSeat, b = (1 - a) as Seat

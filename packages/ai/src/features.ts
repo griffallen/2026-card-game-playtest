@@ -17,7 +17,10 @@ import { effHealth, effPower, hasKw, influenceFor } from '@newgame/engine'
 
 /** Bump when the vector LAYOUT (order or length) changes. A stored model is only valid for
  *  the FEATURE_VERSION it was trained against. */
-export const FEATURE_VERSION = 1
+// v2 (2026-07-20): reach, flying, overextend and untargetable were cut from the engine, so the
+// vector loses four always-zero slots. Nothing to invalidate — no model artifact is versioned
+// (data/models/ is gitignored as regenerable) and no corpus store exists yet.
+export const FEATURE_VERSION = 2
 
 const other = (s: Seat): Seat => (1 - s) as Seat
 
@@ -26,8 +29,8 @@ const other = (s: Seat): Seat => (1 - s) as Seat
 // engine enum and this module stops typechecking until the keyword is listed here — a
 // deliberate, reviewed vector-length change rather than a silent gap.
 export const KEYWORDS = [
-  'guard', 'armor', 'rush', 'ranged', 'reach', 'flying', 'breakthrough', 'overextend',
-  'cantAttack', 'untargetable', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture',
+  'guard', 'armor', 'rush', 'ranged', 'breakthrough',
+  'cantAttack', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture',
   'sneak', 'politician',
 ] as const satisfies readonly KeywordName[]
 // Exhaustiveness guard: KeywordName must be assignable to the union of KEYWORDS members.

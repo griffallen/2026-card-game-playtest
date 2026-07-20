@@ -331,7 +331,6 @@ function attachOrphan(state: GameState, action: Extract<GameAction, { type: 'att
     if (side === 'friendly' && hostile) fail('not-yours', 'attach to your own unit')
     if (side === 'enemy' && !hostile) fail('bad-targets', `${def.name} attaches to an enemy unit`)
     if (hostile && side !== 'friendly') {
-      if (hasKw(state, unit, 'untargetable')) fail('bad-targets', `${defOf(state, unit.id).name} cannot be targeted`)
       if (!unit.exhausted && hasKw(state, unit, 'hidden')) fail('bad-targets', `${defOf(state, unit.id).name} is hidden`)
     }
   }
@@ -460,8 +459,6 @@ function validateTargets(state: GameState, seat: Seat, specs: TargetSpec[], targ
         fail('bad-targets', `target must be damaged or have ${spec.damagedOrMaxHealth} or less health`)
       if (spec.withKw && !hasKw(state, u, spec.withKw)) fail('bad-targets', `target must have ${spec.withKw}`)
       if (spec.mustBeDamaged && u.damage <= 0) fail('bad-targets', 'target must be damaged')
-      // Chain of Law: enemy units with `untargetable` can't be chosen by enemy card effects
-      if (u.owner !== seat && hasKw(state, u, 'untargetable')) fail('bad-targets', `${defOf(state, u.id).name} cannot be targeted`)
       // v3 Hidden (decision 59): while READY it can't be targeted by enemy actions
       if (u.owner !== seat && !u.exhausted && hasKw(state, u, 'hidden')) fail('bad-targets', `${defOf(state, u.id).name} is hidden`)
     }
@@ -492,7 +489,6 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     // a hostile attach (enemy-only, or 'any' onto the opponent's unit) IS enemy targeting — the
     // standing protections apply; branding your OWN unit never trips them.
     if (hostile && attachSide !== 'friendly') {
-      if (hasKw(state, carrier, 'untargetable')) fail('bad-targets', `${defOf(state, carrier.id).name} cannot be targeted`)
       if (!carrier.exhausted && hasKw(state, carrier, 'hidden')) fail('bad-targets', `${defOf(state, carrier.id).name} is hidden`)
     }
     validateTargets(state, seat, def.targets ?? [], targets.slice(1), def.name)
@@ -566,7 +562,7 @@ function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat, exha
   if (unit.exhausted) fail('exhausted', 'exhausted units cannot move')
   if (isSick(state, unit)) fail('sick', 'this unit just arrived this round')
   if (to === unit.zone) fail('bad-move', 'already there')
-  if (!hasKw(state, unit, 'flying') && !adjacent(unit.zone, to)) fail('bad-move', 'can only move to an adjacent zone')
+  if (!adjacent(unit.zone, to)) fail('bad-move', 'can only move to an adjacent zone')
   const def = defOf(state, unitId)
   // #104 (Lawbringer): resolve the chosen entry-arrest against the destination's enemies BEFORE the
   // march commits (a bad choice rolls the whole move back). Enemies in `to` are the same before and
@@ -628,18 +624,15 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
   const zone = units[0].zone
   if (units.some(u => u.zone !== zone)) fail('bad-attack', 'attackers must share a zone')
 
-  const oeIds = action.overextend ?? []
-  if (oeIds.length && state.rules.combatModel !== 'intercept')
-    fail('cant-overextend', 'overextend retired with the intercept window — blocker combat has no gamble')
-  for (const id of oeIds) {
-    if (!ids.includes(id)) fail('bad-attack', 'overextend lists a non-attacker')
-    if (typeof kwOf(state, state.units[id], 'overextend') !== 'number') fail('cant-overextend', `${defOf(state, id).name} has no Overextend value`)
-  }
+  // Overextend is retired (decisions 70→94, superseded by Scar). The action field survives only so
+  // archived replays still parse; a declaration is now always refused, in every combat model.
+  if ((action.overextend ?? []).length)
+    fail('cant-overextend', 'overextend is retired — no attack may declare it')
 
   // decision 80: the sniper-shot attack semantics survive only in classic v2.3 — v3 Ranged
-  // attacks are ordinary (the reach moved into the volley ability)
+  // attacks are ordinary (the volley moved into an ability)
   const legacyRanged = state.rules.combatModel === 'intercept'
-  const allRangedOrReach = legacyRanged && units.every(u => hasKw(state, u, 'ranged') || hasKw(state, u, 'reach'))
+  const allRanged = legacyRanged && units.every(u => hasKw(state, u, 'ranged'))
   if (action.target.kind === 'base') {
     if (action.target.seat === seat) fail('bad-target', 'cannot attack your own base')
     if (legacyRanged && units.some(u => hasKw(state, u, 'ranged'))) fail('bad-target', 'ranged units cannot target bases')
@@ -650,8 +643,8 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
     // v3 Hidden (decision 59): a READY hidden unit can't be declared as the attack target
     if (!defender.exhausted && hasKw(state, defender, 'hidden')) fail('bad-target', `${defOf(state, defender.id).name} is hidden`)
     const sameZone = defender.zone === zone
-    if (!sameZone && !(allRangedOrReach && adjacent(defender.zone, zone)))
-      fail('bad-zone', allRangedOrReach ? 'target is out of range' : 'combat happens within one zone')
+    if (!sameZone && !(allRanged && adjacent(defender.zone, zone)))
+      fail('bad-zone', allRanged ? 'target is out of range' : 'combat happens within one zone')
   } else fail('bad-target', 'attack a unit or a base')
 
   // PR #46 (splashReap, decision 93): attackers with a chosen-splash trigger declare their
@@ -689,12 +682,7 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
     log(state, seat, `the rage collects: ${state.sides[seat].name} cedes ${tax.n * units.length} influence for ${units.length} attacker${units.length > 1 ? 's' : ''}`)
   }
 
-  // commit: overextend bonuses, exhaust, declaration triggers
-  for (const id of oeIds) {
-    const oe = kwOf(state, state.units[id], 'overextend') as number
-    state.units[id].overextendedBy += oe
-    log(state, seat, `${defOf(state, id).name} overextends (+${oe} power — it will suffer ${oe} at end of round)`)
-  }
+  // commit: exhaust, declaration triggers
   for (const u of units) {
     // #107 (Last Stand): while the pact holds, attacking exhausts nothing — the same unit can charge again
     const rushFreeAtk = state.rules.rushCoversAttack && u.enteredRound === state.round && hasKw(state, u, 'rush')
@@ -718,7 +706,8 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
     fireTrigger({ state, attackTarget: action.target, actorSeat: seat, splashChoice }, u, 'onAttack')
   }
 
-  state.pendingAttack = { seat, attackers: ids.filter(id => state.units[id]), target: action.target, overextend: oeIds }
+  // `overextend` is retained on the shape for replay compatibility only — always empty (see above).
+  state.pendingAttack = { seat, attackers: ids.filter(id => state.units[id]), target: action.target, overextend: [] }
   if (state.rules.combatModel === 'blockerPairing') {
     // combat resolves in the attackers' shared zone (the target unit is validated same-zone; a base
     // is struck only from its home). Read `zone`, not the target — an onAttack effect (Crimson
@@ -1051,14 +1040,7 @@ function resolveAttack(state: GameState, interceptorId: string | null) {
   const attackers = pa.attackers.map(id => state.units[id]).filter(Boolean) as UnitInstance[]
   const finalRef: TargetRef = interceptorId ? { kind: 'unit', id: interceptorId } : pa.target
 
-  const power = (u: UnitInstance) => {
-    let p = effPower(state, u)
-    if (pa.overextend.includes(u.id)) {
-      const oe = kwOf(state, u, 'overextend')
-      if (typeof oe === 'number') p += oe
-    }
-    return p
-  }
+  const power = (u: UnitInstance) => effPower(state, u)
 
   const finalUnitId = finalRef.kind === 'unit' ? finalRef.id : null
   // onDefend fires for whoever ends up the final target (the interceptor, or the declared unit)

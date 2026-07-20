@@ -17,8 +17,10 @@ export const T: CardSet = {
   runner: u('runner', 1, 1, 1, { kw: [{ k: 'rush' }] }),
   archer: u('archer', 2, 2, 2, { kw: [{ k: 'ranged' }] }),
   crusher: u('crusher', 4, 3, 3, { kw: [{ k: 'breakthrough', n: 2 }] }),
-  loner: u('loner', 2, 2, 2, { kw: [{ k: 'overextend', n: 3 }] }),
-  hawk: u('hawk', 3, 2, 2, { kw: [{ k: 'flying' }] }),
+  // loner/hawk carried the retired overextend/flying keywords; kept as plain bodies so the toy
+  // deck's composition (and every seeded shuffle pinned to it) is unchanged
+  loner: u('loner', 2, 2, 2),
+  hawk: u('hawk', 3, 2, 2),
   warden: u('warden', 2, 1, 3, { endOfRound: { ops: [{ op: 'influence', n: 1 }] } }),
   bolt: { slug: 'bolt', name: 'bolt', color: 'red', type: 'action', cost: 1, text: '',
     targets: [{ t: 'unitOrBase', side: 'any', baseSide: 'any' }],

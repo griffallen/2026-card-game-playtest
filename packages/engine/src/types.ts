@@ -10,9 +10,11 @@ export const homeZone = (seat: Seat): ZoneId => (seat === 0 ? 0 : 2)
 export const adjacent = (a: ZoneId, b: ZoneId) => Math.abs(a - b) === 1
 
 // ─── Keywords ────────────────────────────────────────────────────────────────
+// Reach (#8), Flying and Untargetable (superseded by Hidden, v3) and Overextend (superseded by
+// Scar, decisions 70->94) were CUT. They are gone from this union so a card cannot carry one.
 export type KeywordName =
-  | 'guard' | 'armor' | 'rush' | 'ranged' | 'reach' | 'flying'
-  | 'breakthrough' | 'overextend' | 'cantAttack' | 'untargetable'
+  | 'guard' | 'armor' | 'rush' | 'ranged'
+  | 'breakthrough' | 'cantAttack'
   // v3 keyword suite (docs/rules.md §Keywords; decisions 59-61, 70)
   | 'scar' | 'shielded' | 'hidden' | 'infiltrate' | 'capture' | 'sneak'
   // decision 88 (#29): standing in Neutral with the majority sways the influence track
@@ -313,7 +315,8 @@ export interface UnitInstance {
   imprisoned: { by: Seat; source: string | null } | null
   upgrades: string[]         // upgrade instance ids
   mods: Mod[]
-  /** decision 35: damage owed at end of round from overextending this round */
+  /** RETIRED (decisions 70→94, superseded by Scar): always 0. Kept on the shape for replay
+   *  compatibility only — the archived #97/#98 game logs carry it. Nothing writes it any more. */
   overextendedBy: number
   /** v3 Shielded: entered with a shield token; first damage instance is prevented and this flips */
   shielded: boolean
@@ -397,6 +400,7 @@ export interface GameState {
   passStreak: number
   pendingExtraAction: Seat | null     // decision 43: this seat takes another action after the current resolves
   pendingAttack: {                    // phase 'intercept': the declared attack awaiting the defender
+    // overextend: RETIRED — always []; retained for replay compatibility (see GameAction 'attack')
     seat: Seat; attackers: string[]; target: TargetRef; overextend: string[]
   } | null
   /** #122 (pick-from-hand): phase 'choose' drains this FIFO queue, one resolveChoice per entry.
@@ -453,7 +457,7 @@ export type GameAction =
   | { type: 'block'; pairs: { blocker: string; onto: string }[]; retaliationOrder?: string[] }  // v3 combat: defender pairs blockers (empty = let it through); pour order = pair order. #84: retaliationOrder aims the target's DIVIDED strike-back — ordered attacker ids; absent → highest-power-first
   | { type: 'attachOrphan'; upgrade: string; unit: string }               // v3 (decision 67): salvage an orphaned upgrade at full cost+pips
   | { type: 'passUpgrade'; upgrade: string; unit: string }                // #86 (Resolve Banner): move an attached, passable upgrade to another friendly unit in its zone — an action costing attach.pass, repeatable
-  | { type: 'attack'; attackers: string[]; target: TargetRef; overextend?: string[]; splash?: { by: string; unit: string }[] }  // splash: per-attacker chosen victims for splashReap triggers (PR #46, decision 24-compatible) // decision 42: 1+ attackers, one zone; overextend: subset taking the gamble
+  | { type: 'attack'; attackers: string[]; target: TargetRef; overextend?: string[]; splash?: { by: string; unit: string }[] }  // splash: per-attacker chosen victims for splashReap triggers (PR #46, decision 24-compatible) // decision 42: 1+ attackers, one zone. overextend: RETIRED (70→94, superseded by Scar) — the field is kept so archived #97/#98 replays still parse, but any non-empty declaration is now always rejected
   | { type: 'move'; unit: string; to: ZoneId; exhaust?: string }  // exhaust (#104 Lawbringer): the enemy unit id to arrest in the destination zone on arrival
   | { type: 'claimInitiative' }              // decision 40: take the token, leave the round
   | { type: 'intercept'; unit: string }      // decision 42: redirect the attack to a ready unit

@@ -27,11 +27,11 @@ describe('featurize — board aggregates from stats, not identities', () => {
   it('counts effective keywords across a mixed board', () => {
     const s = blankGame()
     place(s, 0, 'bruiser')  // 5/4 breakthrough
-    place(s, 0, 'flyer')    // 2/1 flying
+    place(s, 0, 'flyer')    // 2/1 ranged 1 (was flying — cut keyword)
     place(s, 0, 'wall')     // 0/4 guard
     expect(val(s, 0, 'me_unit_count')).toBe(3)
     expect(val(s, 0, 'me_kw_breakthrough')).toBe(1)
-    expect(val(s, 0, 'me_kw_flying')).toBe(1)
+    expect(val(s, 0, 'me_kw_ranged')).toBe(1)
     expect(val(s, 0, 'me_kw_guard')).toBe(1)
     expect(val(s, 0, 'me_kw_rush')).toBe(0)
     expect(val(s, 0, 'me_total_power')).toBe(7)       // 5 + 2 + 0
