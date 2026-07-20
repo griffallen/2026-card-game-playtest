@@ -7,7 +7,24 @@ A two-person project to design, prototype, and balance an original card game (wo
 - **The game designer** owns the game: rules, mechanics, cards, balance, feel. Not a software engineer — and shouldn't need to become one.
 - **The builder** (Blaine) owns the software: architecture, code, deployment.
 
-The creative brief is `docs/DESIGN/01-GENESYS.md`. The authoritative rules are `docs/REFERENCES/extracted/rules-v1.3.md` — earlier rules documents are superseded.
+The creative brief is `docs/DESIGN/01-GENESYS.md`.
+
+**The rules are `docs/rules.md`** — one document, always current, no version chain to reason
+about. It is **generated** (`npm run rules:doc`) from the rulebook players read on the demo,
+`apps/demo/src/pages/Rules.tsx`, with the engine's tunable values appended straight from
+`packages/engine/src/rules.ts`. So:
+
+- **To read the rules:** `docs/rules.md`. Nothing else is canon; every other rules document in
+  the repo is history (see `docs/archive/`).
+- **To change the rules:** edit `apps/demo/src/pages/Rules.tsx` (prose) or
+  `packages/engine/src/rules.ts` (numbers), then `npm run rules:doc`. Never hand-edit
+  `docs/rules.md` — it is overwritten, and `npm run rules:doc:check` fails the build if it
+  has drifted.
+
+Truth has two homes and one shape (issue #119): the **engine + `data/cards`** decide what the
+game *does* — executable, can't drift from itself — and **`docs/DESIGN/DECISIONS.md`** records
+*why*. Every other rules surface is derived from those and is checked against them, never
+maintained as a rival authority.
 
 ## Your role
 
@@ -48,9 +65,11 @@ touching the flow. In brief:
 
 - **Scope** (how big / who fires / version bump): `patch` = one self-contained fix →
   **agent auto-ships**; `minor` = a batch → **Blaine or Griff** fire; `major` = a **tripwire**
-  (engine primitive, `rules-v1.3.md`/`DECISIONS.md`, or changes what a card *does*) →
-  **Blaine only** fires (tick verifies the actor). Classify: tripwire? → major; else one
-  contained thing? → patch; else → minor.
+  (engine primitive, `packages/engine/src/rules.ts`, `apps/demo/src/pages/Rules.tsx`,
+  `DECISIONS.md`, or changes what a card *does*) → **Blaine only** fires (tick verifies the
+  actor). Classify: tripwire? → major; else one contained thing? → patch; else → minor.
+  *(The tripwire names the rules **sources**, not generated `docs/rules.md` — editing a
+  generated file changes nothing and must never buy a `major`.)*
 - **Approval / lifecycle** (independent of scope): `backlog` (noted) → *(scope tag, no
   `queued`)* = **scoped but unapproved** → `queued` = **approved + ready** → `building` →
   `shipped` + close. A `major` can be fully scoped and never approved (never gets `queued`).
@@ -97,7 +116,8 @@ long-running discussions, and every Griff-facing word. **Opus writes all the cod
 including new engine primitives and other tripwire work.** Fable rules on *how it should
 behave*; Opus builds it (Blaine: a Fable subagent costs ~150k tokens on a card build —
 don't spend one on implementation). **Tripwires** — work that touches engine primitives,
-`DECISIONS.md`, `rules-v1.3.md`, or changes what a card *does* (not just its stats) —
+`DECISIONS.md`, the rules sources (`packages/engine/src/rules.ts`,
+`apps/demo/src/pages/Rules.tsx`), or changes what a card *does* (not just its stats) —
 route the **design decision** to Fable regardless of how well-specified it looks; once
 Fable (or Griff/Blaine) has ruled, **Opus implements it**.
 **Where the build runs (Blaine — keep the router's context lean; it's re-read every tick):**
