@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { RULES_VERSION } from '@newgame/engine'
 
 const H2 = ({ id, children }: { id: string; children: ReactNode }) => (
   <h2 id={id} className="mt-10 scroll-mt-4 border-b hairline pb-2 font-display text-2xl font-bold text-parchment">{children}</h2>
@@ -28,7 +29,7 @@ const KEYWORDS: [string, string][] = [
 export function Rules() {
   return (
     <div className="mx-auto max-w-3xl px-6 pb-24 pt-10 text-[15px]">
-      <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · Rulebook · v3.0 · 2026-07-11</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-dim">New Game · Rulebook · v{RULES_VERSION}</p>
       <h1 className="mt-2 font-display text-4xl font-bold text-parchment">How to Play</h1>
       <P>
         Everything you need to sit down and play, the game as it stands today. Want to try it while you read? The{' '}

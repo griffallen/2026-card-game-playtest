@@ -1,5 +1,15 @@
 import type { RulesConfig } from './types.ts'
 
+/**
+ * The rules version — and the engine's package version; a test pins them equal.
+ *
+ * MINOR bumps whenever combat behaviour changes (issue #119, ratified by Blaine 2026-07-20), so
+ * the AI corpus can bucket games by the rules they were played under. 3.0.0 shipped 2026-07-11;
+ * 3.1.0 = decision 105 (a gang's retaliation is divided, not dealt in full); 3.2.0 = issue #118
+ * (Shield/Ward stops Breakthrough spill).
+ */
+export const RULES_VERSION = '3.2.0'
+
 /** Legacy v2.3 preset, kept for A/B replay. Current rules: docs/rules.md (generated). */
 export const DEFAULT_RULES: RulesConfig = {
   startingLife: 20,

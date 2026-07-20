@@ -17,7 +17,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Rules } from '../apps/demo/src/pages/Rules.tsx'
-import { DEFAULT_RULES, V3_RULES } from '../packages/engine/src/rules.ts'
+import { DEFAULT_RULES, RULES_VERSION, V3_RULES } from '../packages/engine/src/rules.ts'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const OUT = resolve(ROOT, 'docs/rules.md')
@@ -189,7 +189,7 @@ function build(): string {
     '     Source: apps/demo/src/pages/Rules.tsx (the rulebook players read on the demo).',
     '     Regenerate: npm run rules:doc -->',
     '',
-    body,
+    body.replace(/^# (.*)$/m, `# $1\n\n*Rules version **${RULES_VERSION}** — the same number as the engine package, bumped on every combat-behaviour change (issue #119).*`),
     '',
     paramsTable(),
     '',

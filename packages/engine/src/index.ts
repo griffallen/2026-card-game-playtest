@@ -1,6 +1,6 @@
 // Public engine surface — the locked interface consumed by server, web, and simulations.
 export * from './types.ts'
-export { DEFAULT_RULES, V3_RULES, normalizeRules } from './rules.ts'
+export { DEFAULT_RULES, V3_RULES, RULES_VERSION, normalizeRules } from './rules.ts'
 export { createGame, validateDeck } from './setup.ts'
 export type { CreateGameOpts } from './setup.ts'
 export { applyAction } from './engine.ts'
