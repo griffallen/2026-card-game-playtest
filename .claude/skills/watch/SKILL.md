@@ -69,6 +69,10 @@ handled activity — don't re-trigger on your own edits.
 
 ## Routing
 
+**Always post when you're able to.** A Griff-facing reply, once drafted and verified, gets
+posted — never held for a human's OK. `major` gates the *build*, never the reply (Blaine,
+2026-07-20). (A fuller "default to acting" consolidation is deferred; for now, this is the rule.)
+
 > **OVERRIDE (Blaine, 2026-07-17, "for now"):** Opus keeps running the tick (the sweep IS
 > checking — fine, no session switch, the Opus pin stands) and does the code, but **every
 > decision now goes to Fable** — routing/triage rulings, design calls, and ALL conversation —
