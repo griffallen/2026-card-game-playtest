@@ -60,7 +60,8 @@ function UnitRow({ atkLabel, p }: { atkLabel: string; p: CombatPrediction }) {
           </>}
       {p.hasBreakthrough && (
         <div className="text-[11px] text-dim/80">
-          ↳ Breakthrough: damage past {p.targetName} spills to {p.siege ? 'the base behind it' : 'the base (if blocked)'}
+          ↳ Breakthrough: if {p.targetName} falls, the leftover splashes on — the defender picks where it lands
+          {p.siege ? ' (a unit here, or the base behind it)' : ' (another unit here, if any)'}, chaining on each defeat
         </div>
       )}
     </div>

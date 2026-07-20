@@ -376,7 +376,7 @@ export interface GameState {
   cardOf: Record<string, string>      // instance id → slug
   round: number                       // global, increments once per full round
   initiative: Seat                    // holder acts first each round; carries over unless claimed
-  phase: 'setup' | 'bank' | 'loop' | 'intercept' | 'block' | 'choose'
+  phase: 'setup' | 'bank' | 'loop' | 'intercept' | 'block' | 'choose' | 'splash'
   actorSeat: Seat                     // whose action window it is
   startStep: Seat | null              // phase 'bank': whose start step is paused at its bank choice
   bankedThisStep: number              // resources banked in the current start step
@@ -411,6 +411,16 @@ export interface GameState {
   /** #122: the seat whose action opened the current choose queue — actorSeat is restored to it and
    *  the normal advanceWindow runs once the last pick resolves (the play "completes" only then). */
   chooseOpener: Seat | null
+  /** #128 (Breakthrough splash + chain, amends decision 102): phase 'splash' — after a Breakthrough
+   *  attacker fells its declared target, the leftover chains, and the DEFENDER (other(seat)) picks
+   *  each redirect target one link at a time. Parked plain data, the fifth mid-resolution pause
+   *  (after bank/startStep, intercept, block, choose). `leftover` = the breakthrough damage still to
+   *  place; `pierced` (#107) = the whole spill ignores Shield/Armor; `contributors` = the attacker
+   *  ids whose breakthrough fed the pool (they credit onKill on each chained defeat — decision 74).
+   *  null when idle. Cleared within the same action that combat resolves — never survives a round. */
+  pendingSplash: {
+    seat: Seat; zone: ZoneId; leftover: number; pierced: boolean; contributors: string[]
+  } | null
   influence: number                   // + toward seat 0
   sides: [SideState, SideState]
   units: Record<string, UnitInstance>
@@ -464,6 +474,7 @@ export type GameAction =
   | { type: 'intercept'; unit: string }      // decision 42: redirect the attack to a ready unit
   | { type: 'declineIntercept' }             // decision 42: let the attack hit its declared target
   | { type: 'resolveChoice'; card: string }  // #122 (pick-from-hand): phase 'choose' — name the chosen hand-card id
+  | { type: 'splash'; target: TargetRef }    // #128 (Breakthrough chain): phase 'splash' — the defender names where the leftover lands (own unit in the zone, or their base in their Home)
   | { type: 'pass' }
   | { type: 'concede' }
 
@@ -497,13 +508,20 @@ export interface SideView {
 export interface PlayerView {
   viewerSeat: Seat | null
   round: number
-  phase: 'setup' | 'bank' | 'loop' | 'intercept' | 'block' | 'choose'
+  phase: 'setup' | 'bank' | 'loop' | 'intercept' | 'block' | 'choose' | 'splash'
   initiative: Seat
   actorSeat: Seat
   outOfRound: [boolean, boolean]
   claimedThisRound: boolean
   cardPlayLock: [boolean, boolean]     // #122 (Eclipse): per-seat lock — this seat plays no cards from hand this round
   pendingAttack: { attackers: string[]; target: TargetRef } | null
+  /** #128 (Breakthrough chain): phase 'splash' — the leftover the defender must place, and the legal
+   *  places it may land (this viewer's own in-zone units + their base if the siege is in their Home).
+   *  The demo prompts the defender from this; null when no chain is pending. */
+  pendingSplash: {
+    leftover: number
+    targets: ({ kind: 'unit'; id: string } | { kind: 'base'; seat: Seat })[]
+  } | null
   influence: number                    // + toward seat 0 (client flips for display)
   thresholds: [number, number]         // win threshold per seat (statics applied)
   sides: [SideView, SideView]

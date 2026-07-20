@@ -6,9 +6,10 @@ import type { RulesConfig } from './types.ts'
  * MINOR bumps whenever combat behaviour changes (issue #119, ratified by Blaine 2026-07-20), so
  * the AI corpus can bucket games by the rules they were played under. 3.0.0 shipped 2026-07-11;
  * 3.1.0 = decision 105 (a gang's retaliation is divided, not dealt in full); 3.2.0 = issue #118
- * (Shield/Ward stops Breakthrough spill).
+ * (Shield/Ward stops Breakthrough spill); 3.3.0 = issue #128 (Breakthrough splash + chain — the
+ * leftover redirects to a defender-chosen legal target, chaining on defeats; amends decision 102).
  */
-export const RULES_VERSION = '3.2.0'
+export const RULES_VERSION = '3.3.0'
 
 /** Legacy v2.3 preset, kept for A/B replay. Current rules: docs/rules.md (generated). */
 export const DEFAULT_RULES: RulesConfig = {

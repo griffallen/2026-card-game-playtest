@@ -39,6 +39,8 @@ export function applyAction(prev: GameState, action: GameAction, actorSeat: Seat
     applyInterceptPhase(state, action, actorSeat)
   } else if (state.phase === 'block') {
     applyBlockPhase(state, action, actorSeat)
+  } else if (state.phase === 'splash') {
+    applySplashPhase(state, action, actorSeat)
   } else if (state.phase === 'choose') {
     applyChoosePhase(state, action, actorSeat)
   } else {
@@ -53,7 +55,10 @@ export function applyAction(prev: GameState, action: GameAction, actorSeat: Seat
   if (state.doom && state.winner === null) {
     if (state.doom.stage === 'fresh') state.doom.stage = 'waiting'
     else if (state.doom.stage === 'waiting' && actorSeat === state.doom.seat) state.doom.stage = 'spent'
-    if (state.doom.stage === 'spent' && !state.pendingAttack) {
+    // #128: a doomed strike may open a Breakthrough chain (phase 'splash'); hold the immolation until
+    // that fully settles, else it would blast the pending splash targets mid-chain (and could strand
+    // the sim with no legal splash to answer). pendingSplash === null iff no chain is open.
+    if (state.doom.stage === 'spent' && !state.pendingAttack && !state.pendingSplash) {
       const doomed = state.units[state.doom.unit]
       if (doomed) {
         const y = Math.max(0, effHealth(state, doomed) - doomed.damage)   // its remaining Health
@@ -963,15 +968,21 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
     }
   }
   const toTarget = unblockedTotal + targetSpill
+  // #128 (Breakthrough splash + chain, amends decision 102): the breakthrough leftover that breaks
+  // PAST a defeated declared target no longer auto-pours into the base. It's handed to a chain the
+  // DEFENDER steers (beginSplashChain, below). These carry it out of the resolve.
+  let spillOut = 0
+  let chainPierced = false
+  let chainZone: ZoneId = 1
+  let contributors: string[] = []
   if (toTarget > 0) {
     if (pa.target.kind === 'base') {
       damageBase(state, pa.target.seat, toTarget, unblockedNames.join(', ') || 'breakthrough', true)
     } else if (targetUnit && state.units[targetUnit.id]) {
-      // decision 102 (issue #66, designer): a Breakthrough attacker besieging the enemy Home
-      // leaves no damage behind — excess past the declared target pours into the base.
-      // Non-breakthrough damage is absorbed by the target first (it has nowhere else to go);
-      // a shield eats the whole combined hit, so a shielded target spills nothing.
-      const siege = targetUnit.zone === homeZone(targetUnit.owner)
+      chainZone = targetUnit.zone            // capture before the target may be destroyed by cleanup
+      // Non-breakthrough damage is absorbed by the target first (it has nowhere else to go — decision
+      // 102 reading a, maximizing what breaks through); a shield eats the whole combined hit, so a
+      // shielded target spills nothing (decision 108).
       const btPortion = targetSpill
         + plans.reduce((n, p) => n + (!p.blockers.length && hasKw(state, p.a, 'breakthrough') ? p.aPower : 0), 0)
       // #107 (Worldrender): split the pour into a piercing slice (unblocked pierce-attackers + their
@@ -989,16 +1000,24 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
       // normal slice first (a shield absorbs its first instance), then the piercing slice
       if (normalToTarget > 0) damageUnit(state, targetUnit, normalToTarget, targetName, false)
       if (piercedToTarget > 0 && state.units[targetUnit.id]) damageUnit(state, targetUnit, piercedToTarget, targetName, true)
-      if (siege && btPortion > 0) {
-        const spillToBase = Math.max(0, btPortion - Math.max(0, gross - (toTarget - btPortion)))
-        if (spillToBase > 0) damageBase(state, targetUnit.owner, spillToBase, 'the breakthrough siege', true)
-      }
+      // the breakthrough that breaks clean past the felled target — the amount decision 102 used to
+      // pour straight into the base, now the head of the defender-steered chain. (Same formula; the
+      // plain slice is absorbed first, so this is 0 unless the target dies.)
+      spillOut = Math.max(0, btPortion - Math.max(0, gross - (toTarget - btPortion)))
+      // pierce carries down the chain the way it carries into the target (#107): true only when the
+      // whole pour pierced — a mixed pour falls back to normal mitigation on the chain too (flagged).
+      chainPierced = fullyPierced
       if (felled(targetUnit.id)) {
         // credit only attackers whose damage actually reached the target — idle blocked
         // attackers stop collecting on their allies' kills (decision 74)
         for (const p of plans) if ((!p.blockers.length || p.spilled) && state.units[p.a.id]) {
           fireTrigger({ state, attackTarget: pa.target, actorSeat: seat }, p.a, 'onKill')
         }
+        // the breakthrough attackers whose spill feeds the chain — they credit onKill on each chained
+        // defeat too (decision 74; ⚑ #128 reading, mirroring the declared-target credit above)
+        contributors = plans
+          .filter(p => (p.spilled || (!p.blockers.length && hasKw(state, p.a, 'breakthrough'))) && state.units[p.a.id])
+          .map(p => p.a.id)
       }
     }
   }
@@ -1023,7 +1042,91 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   }
   stateBasedCleanup(state, seat)
   if (state.winner !== null) return
+  // #128: if a Breakthrough attacker's leftover broke past the felled target, open the chain — the
+  // defender steers where it lands. beginSplashChain either pauses (phase 'splash') or, if there's
+  // no legal place for it, lets it dissipate and advances the window itself.
+  beginSplashChain(state, seat, chainZone, spillOut, chainPierced, contributors)
+}
+
+/** #128 (Breakthrough splash + chain): the leftover past a felled target redirects to a legal target
+ *  the DEFENDER picks — a defender unit in `zone`, or their base if the siege stands in their Home.
+ *  Pauses in phase 'splash' when there IS somewhere for it to go; otherwise the leftover dissipates
+ *  and the window advances. Legal targets ignore exhaustion — the blow lands on any of the defender's
+ *  bodies (unlike blockers, which must be ready). */
+function beginSplashChain(state: GameState, seat: Seat, zone: ZoneId, leftover: number, pierced: boolean, contributors: string[]) {
+  const defender = other(seat)
+  const units = unitsInZone(state, zone, defender)
+  const baseLegal = zone === homeZone(defender)
+  if (leftover > 0 && (units.length || baseLegal)) {
+    state.pendingSplash = { seat, zone, leftover, pierced, contributors }
+    state.phase = 'splash'
+    state.actorSeat = defender
+    log(state, defender, `${leftover} breakthrough damage breaks through — ${state.sides[defender].name} chooses where it lands`)
+    return
+  }
+  if (leftover > 0) log(state, seat, `${leftover} breakthrough damage dissipates — nothing left to strike`)
+  state.pendingSplash = null
+  state.phase = 'loop'
   advanceWindow(state, seat)
+}
+
+/** #128: the defender answers one link of the chain — pour the leftover onto a legal target. A unit
+ *  absorbs like a blocker (remaining Health + Armor); Shield/Ward turn the whole blow aside and END
+ *  the chain (decision 108); a piercing spill (#107) ignores both and carries on. If the link is
+ *  felled with damage to spare AND another legal target remains, the chain re-opens for the next pick;
+ *  the base (in the defender's Home) is terminal. */
+function applySplashPhase(state: GameState, action: GameAction, seat: Seat) {
+  const ps = state.pendingSplash ?? fail('bad-phase', 'no breakthrough to place')
+  const defender = other(ps.seat)
+  if (seat !== defender) fail('not-your-window', 'not your splash window')
+  if (action.type !== 'splash') fail('bad-phase', 'choose where the breakthrough lands')
+  const ref = action.target
+  const baseLegal = ps.zone === homeZone(defender)
+  let unit: UnitInstance | undefined
+  if (ref.kind === 'base') {
+    if (!baseLegal || ref.seat !== defender) fail('bad-splash', 'the base is not a legal splash target here')
+  } else if (ref.kind === 'unit') {
+    unit = state.units[ref.id]
+    if (!unit || unit.owner !== defender || unit.zone !== ps.zone) fail('bad-splash', 'not a legal splash target')
+  } else fail('bad-splash', 'the breakthrough lands on a unit or the base')
+
+  state.pendingSplash = null
+  state.phase = 'loop'
+
+  if (!unit) {                                   // poured into the base — the chain ends there
+    damageBase(state, defender, ps.leftover, 'the breakthrough siege', true)
+    stateBasedCleanup(state, ps.seat)
+    if (state.winner !== null) return
+    advanceWindow(state, ps.seat)
+    return
+  }
+
+  const pierced = ps.pierced
+  const warded = !!unit.blockWard
+  const shielded = unit.shielded && !pierced
+  if (shielded || warded) {                      // Shield/Ward soak it whole — the chain ends (decision 108)
+    if (warded) { unit.blockWard = false; log(state, unit.owner, `${defOf(state, unit.id).name}'s ward turns the breakthrough aside`) }
+    else damageUnit(state, unit, ps.leftover, 'the breakthrough', false)   // spends the shield token, deals 0
+    stateBasedCleanup(state, ps.seat)
+    if (state.winner !== null) return
+    advanceWindow(state, ps.seat)
+    return
+  }
+
+  // a normal (or piercing) link: it absorbs up to what fells it, the remainder chains on
+  const gross = Math.max(0, effHealth(state, unit) - unit.damage) + (pierced ? 0 : effArmor(state, unit))
+  const chunk = Math.min(ps.leftover, gross)
+  damageUnit(state, unit, ps.leftover, 'the breakthrough', pierced)
+  const felled = unit.damage >= effHealth(state, unit)   // pre-cleanup lethality (decision 74)
+  if (felled) for (const cid of ps.contributors) {
+    if (state.units[cid]) fireTrigger({ state, attackTarget: ref, actorSeat: ps.seat }, state.units[cid], 'onKill')
+  }
+  stateBasedCleanup(state, ps.seat)
+  if (state.winner !== null) return
+  const remainder = ps.leftover - chunk
+  // only a DEFEAT with damage to spare re-opens the chain; a survivor soaks the rest (spec §1)
+  if (felled && remainder > 0) beginSplashChain(state, ps.seat, ps.zone, remainder, pierced, ps.contributors)
+  else advanceWindow(state, ps.seat)
 }
 
 /** Resolve the pending attack against the final target: combined power, armor once, one counter, breakthrough (spec §1.7). */

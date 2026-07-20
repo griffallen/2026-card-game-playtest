@@ -15,7 +15,7 @@ const Card = ({ children }: { children: ReactNode }) => <div className="panel mt
 // one gloss source (#114) — a player who sees 🏹 on a card can find 🏹 here and learn what it means.
 const KEYWORDS: [string, string, string][] = [
   ['armor', 'Armor N', 'Every hit this unit takes is reduced by N — and combat resolves in separate pairings, so N comes off each attacker’s blow individually. Two exceptions arrive as one combined hit, shrunk by N once: a gang of blockers striking back at their attacker, and multiple unblocked attackers landing on the same target.'],
-  ['breakthrough', 'Breakthrough', 'When this attacker kills its blocker, all the leftover damage pushes through to whatever it was originally attacking — unit or base. And in the OPPONENT\u2019S HOME, nothing is left behind: excess past a killed unit target pours on into their base. No number, no cap: everything spills.'],
+  ['breakthrough', 'Breakthrough', 'When this attacker DEFEATS what it strikes, the leftover damage splashes onward — and the DEFENDER chooses where it lands: another of their units in that zone, or their base when the fight is in their own Home. Defeat that one too and the rest chains to their next pick, link after link, until a unit survives and soaks it or nothing is left to hit. Plain (non-Breakthrough) damage never chains. A Shield or Ward turns the whole blow aside and ends the chain. No number, no cap: everything spills.'],
   ['cantAttack', 'Can’t attack', 'A defensive body — it can hold a zone and block, but never attacks.'],
   ['capture', 'Capture', 'On its trigger, this unit takes an enemy unit under itself — off the board entirely. Holding costs nothing, and there is no letting go: the captive returns only when the capturer leaves play, coming back to that zone ready. Capture is custody, not a wound — and killing the jailer frees the prisoner.'],
   ['guard', 'Guard', 'The bodyguard. When a single unit attacks one of yours, ONLY a Guard may step in front of the target — one Guard, taking the whole hit. (Attacks on your base are different: anyone may block those.) And it never exhausts to block, in duels or gangs, so it can do it again and still take its own turn.'],
@@ -176,10 +176,14 @@ export function Rules() {
         <LI><B>Resolve — every pairing at once.</B> Each attacker deals its Power to its blocker, and a gang of blockers deals its <B>combined</B> Power back to their attacker. In a gang block the attacker’s damage <B>pours in pair order</B> — fill the first blocker, spill into the second — so the defender controls the split. Armor shrinks each hit it faces. Attackers <B>nobody blocked</B> (including every lone attacker no Guard answered) deal their full Power to the declared target — <B>and the target strikes back, exhausted or not</B>. Its Power is a single pool <B>poured across the unblocked attackers</B> — biggest threat first, or in the defender’s chosen order — felling as many as it can pay for before it runs dry. A <B>lone attacker takes the whole blow; a gang splits it</B> (a 5-Power wall ganged by three 2/2s fells two and wounds the third, not all three). No unit strikes without an answer. (A base never strikes back.) A <B>kill credits whoever's damage landed it</B> — blockers included; a walled-off attacker earns nothing from its allies' kills.</LI>
       </ul>
       <P>
-        If an attacker with <B>Breakthrough</B> kills its blocker, the leftover damage pushes through to the original
-        target — and <B>in the opponent’s Home, through the target too</B>: excess past a killed unit target pours
-        into their base (blockers → target → Home; a shield still eats the whole hit). Damage <B>stays</B> on units between rounds; a unit is destroyed when its damage reaches its Health and
-        goes to the discard — leaving any upgrades it wore <B>orphaned</B> in the zone, salvageable by either side.
+        <B>Breakthrough</B> won’t let damage stop at a corpse. When such an attacker <B>defeats</B> what it strikes,
+        the leftover <B>splashes onward</B> — and the <B>defender chooses where it lands</B>: another of their units in
+        that zone, or (when the fight stands in their own <B>Home</B>) their <B>base</B>. Defeat that link too and the
+        rest <B>chains</B> to the defender’s next pick, on and on, until a unit <B>survives and soaks it</B> or nothing
+        is left to strike. Only Breakthrough chains — plain damage stops at the declared target. A <B>Shield</B> or
+        <B>Ward</B> turns the whole blow aside and <B>ends the chain</B>. Damage <B>stays</B> on units between rounds; a
+        unit is destroyed when its damage reaches its Health and goes to the discard — leaving any upgrades it wore
+        <B>orphaned</B> in the zone, salvageable by either side.
       </P>
 
       <H2 id="influence">Influence</H2>

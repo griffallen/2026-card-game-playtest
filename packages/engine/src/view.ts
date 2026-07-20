@@ -1,6 +1,6 @@
 import type { GameState, PlayerView, Seat, SideView, UnitView } from './types.ts'
-import { ZONES } from './types.ts'
-import { baseCount, defOf, effArmor, effHealth, effPower, hasKw, kwOf, thresholds, unitsInZone } from './helpers.ts'
+import { ZONES, homeZone } from './types.ts'
+import { baseCount, defOf, effArmor, effHealth, effPower, hasKw, kwOf, other, thresholds, unitsInZone } from './helpers.ts'
 import { getLegalActions } from './legal.ts'
 
 const KW_LIST = ['guard', 'armor', 'rush', 'ranged', 'breakthrough', 'cantAttack', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'] as const
@@ -61,6 +61,16 @@ export function viewFor(state: GameState, seat: Seat | null): PlayerView {
     cardPlayLock: state.cardPlayLock,   // #122 (Eclipse): the demo shows an "Eclipsed" badge from this
     pendingAttack: state.pendingAttack
       ? { attackers: state.pendingAttack.attackers, target: state.pendingAttack.target }
+      : null,
+    // #128 (Breakthrough chain): only the defender (the seat now steering the chain) sees the prompt
+    pendingSplash: state.pendingSplash && seat !== null && seat === other(state.pendingSplash.seat)
+      ? {
+          leftover: state.pendingSplash.leftover,
+          targets: [
+            ...unitsInZone(state, state.pendingSplash.zone, seat).map(u => ({ kind: 'unit', id: u.id }) as const),
+            ...(state.pendingSplash.zone === homeZone(seat) ? [{ kind: 'base', seat } as const] : []),
+          ],
+        }
       : null,
     influence: state.influence,
     thresholds: thresholds(state),

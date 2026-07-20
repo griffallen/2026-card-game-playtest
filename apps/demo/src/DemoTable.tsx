@@ -133,6 +133,9 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   // 'choose' phase + the resolveChoice legal actions, so the hand is already the chooser's.
   const isChoose = view.phase === 'choose'
   const chooseEntry = isChoose ? state.pendingChoices[0] : undefined
+  // #128 (Breakthrough chain): phase 'splash' — the defender places the leftover on one of their own
+  // bodies (or their base in their Home). view.pendingSplash carries the amount + the legal targets.
+  const isSplash = view.phase === 'splash'
   const [blockPairs, setBlockPairs] = useState<{ blocker: string; onto: string }[]>([])
   const chromeLift = useChromeSafeLift()
 
@@ -195,7 +198,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       setSelection(null)
       // #100: recap defensive answers, and the attacker's own duels the moment they resolve (a lone
       // attack with no Guard settles inside this action — otherwise it opens a block window first).
-      if (action.type === 'block' || action.type === 'intercept' || (action.type === 'attack' && !next.pendingAttack))
+      if (action.type === 'block' || action.type === 'intercept' || action.type === 'splash' || (action.type === 'attack' && !next.pendingAttack))
         queueRecap(events, state, next, action, lostMine(state, next))
       const s = SFX_BY_ACTION[action.type]
       if (s) sfx(s)
@@ -273,13 +276,13 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   useEffect(() => { setSkipToMyWindow(false) }, [view.round]) // re-arm each round
   useEffect(() => {
     if (config.mode === 'hotseat') return
-    if (!myWindow || isIntercept || isBlock || isChoose || view.outOfRound[seat]) return
+    if (!myWindow || isIntercept || isBlock || isChoose || isSplash || view.outOfRound[seat]) return
     if (onlyPass && skipToMyWindow) {
       const t = setTimeout(() => apply({ type: 'pass' }, seat), 450)
       return () => clearTimeout(t)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, onlyPass, skipToMyWindow, isIntercept, isBlock, isChoose, config.mode])
+  }, [state, onlyPass, skipToMyWindow, isIntercept, isBlock, isChoose, isSplash, config.mode])
 
   useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight }, [view.log])
   // #27: make round transitions impossible to miss — banner + chime (skipped on mount)
@@ -637,6 +640,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     if (view.phase === 'bank') return 'already banked this round — one per round (skip to begin the round)'
     if (view.phase === 'intercept') return 'an attack is incoming — answer the intercept first'
     if (view.phase === 'block') return 'an attack is incoming — assign blockers or let it through'
+    if (view.phase === 'splash') return 'breakthrough broke through — choose where the leftover lands first'
     const ready = my.resources.filter(r => !r.exhausted).length
     if (def.cost > ready) return `costs ${def.cost}, you have ${ready} ready resource${ready === 1 ? '' : 's'}`
     if (def.type === 'upgrade') return 'needs one of your units in play to attach to'
@@ -898,6 +902,26 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
         </span>
       </div>
     </div>
+  ) : isSplash && myWindow && view.pendingSplash ? (
+    // #128 (Breakthrough chain): the leftover broke through your defeated unit — you choose where it
+    // lands next. A unit soaks it (and dies if it can't); a felled link passes the rest on; a Shield
+    // or Ward stops it cold. In your own Home the base is on offer too.
+    <div className="rounded-md border border-[#b23a2c] bg-[#b23a2c]/10 p-2 text-xs">
+      <p className="text-goldbright">
+        💥 <b>Breakthrough!</b> <b>{view.pendingSplash.leftover}</b> leftover damage broke through — <b>choose where it lands</b>.
+      </p>
+      <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+        {view.pendingSplash.targets.map(t => (
+          <button key={t.kind === 'base' ? 'base' : t.id} className="btn !py-0.5 text-xs"
+            onClick={() => apply({ type: 'splash', target: t }, seat)}>
+            {t.kind === 'base' ? '🏰 Your base' : `Your ${unitName(t.id)}`}
+          </button>
+        ))}
+      </div>
+      <p className="mt-1 text-[11px] text-dim">
+        A unit soaks it — if it falls, the rest chains on. A <b>Shield</b> or <b>Ward</b> stops the chain.
+      </p>
+    </div>
   ) : (selection || lethalPlay) && myWindow ? (
     <>
       {lethalPlay && (
@@ -1149,6 +1173,8 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       ? `${names[view.actorSeat]} (AI) is thinking…`
       : isIntercept
         ? 'Under attack — intercept, or let it land.'
+        : isSplash
+        ? 'Breakthrough! Choose where the leftover damage lands.'
         : isChoose
         ? (chooseEntry?.to === 'deckBottom' ? 'Choose a card to put on the bottom of your deck.' : 'Choose a card to discard.')
         : view.phase === 'setup'
@@ -1175,6 +1201,8 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       hints.push(`Banking tucks a card away forever and pays +1 toward costs every round — you'd have ${ready + 1} each round after this. Bank early and often — but once your bank covers your biggest costs, every further bank is a card you'll miss in the late game.`)
     } else if (isIntercept) {
       hints.push('An attack is incoming. Intercepting redirects the whole blow onto one of your ready units (Guards stay ready; others exhaust). Let it through to take it on the declared target instead.')
+    } else if (isSplash) {
+      hints.push('A Breakthrough attacker defeated your unit and the leftover damage broke through. You choose where it lands next — a unit soaks it (dying if it can’t), and if that unit falls the rest chains on to your next pick. In your own Home your base is a choice too. A Shield or Ward turns the whole blow aside and ends the chain.')
     } else if (isChoose) {
       hints.push(chooseEntry?.to === 'deckBottom'
         ? 'A card you played is filtering your hand — tap one to tuck it under your deck (you may draw it again later). The whole hand is fair game.'

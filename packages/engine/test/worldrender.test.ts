@@ -95,6 +95,10 @@ describe('Worldrender — combat pierce (ignores enemy Shield + Armor) (#107)', 
     const baseBefore = s.sides[them].life
     s = act(s, me, { type: 'attack', attackers: [atk], target: { kind: 'unit', id: def } })
     expect(s.units[def]).toBeUndefined()             // 4 pierces armor 2 and fells the 3-health wall
+    // #128: the spill past the felled wall is now the defender's chain pick — the base is the only
+    // legal target left, and the pierce carries down it (spills off raw Health, ignoring nothing here)
+    expect(s.phase).toBe('splash')
+    s = act(s, them, { type: 'splash', target: { kind: 'base', seat: them } })
     expect(s.sides[them].life).toBe(baseBefore - 1)  // 1 breakthrough excess past raw Health spills to the base
   })
 

@@ -92,6 +92,7 @@ export function createGame(opts: CreateGameOpts): GameState {
     pendingAttack: null,
     pendingChoices: [],
     chooseOpener: null,
+    pendingSplash: null,
     influence: 0,
     sides,
     units: {},

@@ -24,7 +24,10 @@ A4. Blocking: unblocked attackers hit the base in your Home zone. In Neutral, do
     nothing (safe skirmish), or something else? →
 A5. Multi-block: who divides the attacker's damage among the blockers — attacker or defender? →
 A6. New Breakthrough (no number, pushes all excess): who picks where the spill goes when
-    there are options? →
+    there are options? → ANSWERED (#128, decision 114): the DEFENDER picks. Past a defeated
+    target the leftover redirects to a legal target the defender chooses (their own unit in the
+    zone, or their base in their Home), chaining on each further defeat until a unit soaks it or
+    nothing's left. Shield/Ward end the chain; only the Breakthrough portion chains.
 A7. Hidden: can a Hidden (ready) unit block? And attacking exhausts it, so it's exposed until
     it readies — right? →
 A8. Sneak = a per-card exhaust ability ("Sneak — [effect]", same-zone target) — confirm? →

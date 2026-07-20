@@ -41,8 +41,8 @@ export const KEYWORDS: Record<string, KeywordInfo> = {
   },
   breakthrough: {
     icon: '💪',
-    short: 'kills its blocker → all excess spills to the declared target — and in the enemy Home, past a killed target into the base',
-    gloss: 'When this attacker kills its blocker, all the leftover damage pushes through to its original target — unit or base. (Classic v2.3 capped the spill at N and sent it to the owner\'s life.)',
+    short: 'defeats what it strikes → the leftover splashes on, and the DEFENDER picks where it lands (a unit, or their base in their Home), chaining on each defeat',
+    gloss: 'When this attacker defeats what it strikes, the leftover damage splashes onward and the DEFENDER chooses where it lands — another of their units in the zone, or their base when the fight is in their own Home. Defeat that link too and the rest chains to the next pick, until a unit survives and soaks it or nothing is left to hit. Only Breakthrough chains; a Shield or Ward turns the whole blow aside and ends it. (Classic v2.3 capped the spill at N and sent it to the owner\'s life.)',
   },
   cantAttack: {
     icon: '⛔',

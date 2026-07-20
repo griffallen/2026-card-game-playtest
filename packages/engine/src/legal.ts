@@ -101,6 +101,18 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     return out2
   }
 
+  if (state.phase === 'splash') {
+    // #128 (Breakthrough chain): the defender places the leftover on any of their in-zone bodies
+    // (exhaustion doesn't matter — it's not a block), or their base in their Home. Always non-empty
+    // for the actor: the phase only opened because at least one such target existed.
+    const ps = state.pendingSplash
+    if (!ps || seat !== other(ps.seat)) return []
+    const out2: GameAction[] = []
+    for (const u of unitsInZone(state, ps.zone, seat)) out2.push({ type: 'splash', target: { kind: 'unit', id: u.id } })
+    if (ps.zone === homeZone(seat)) out2.push({ type: 'splash', target: { kind: 'base', seat } })
+    return out2
+  }
+
   out.push({ type: 'pass' })
   if (!state.claimedThisRound) out.push({ type: 'claimInitiative' })
   const ready = state.sides[seat].resources.filter(r => !r.exhausted).length

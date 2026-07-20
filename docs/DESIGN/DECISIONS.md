@@ -240,3 +240,33 @@ rulings that changed how the game works get a number.*
      (a one-time hand peek — Twilight Scout), and the pick-from-hand foundation behind Glimpse and
      Obscure. — Purple's identity is information and denial; none of it was expressible in the
      existing vocabulary.
+
+114. ✅ **Breakthrough splash + chain — the defender steers the leftover** (issue #128, 2026-07-20 —
+     Griff, **amends decision 102**). Breakthrough no longer just pours into the declared target and
+     (in the enemy Home) auto-dumps the rest into the base. Now, in **every zone**, when a Breakthrough
+     attacker's leftover breaks past a **defeated** target it **redirects to a legal target the DEFENDER
+     picks**; if that link is defeated too, the remainder **chains** to the defender's next pick — link
+     after link — until no legal target remains (it dissipates) or a target **survives and soaks the
+     rest**. Each link opens **only on a defeat** (spill is the leftover of a lethal blow). A **legal
+     target** is one of the defender's (enemy-of-attacker) units in that zone; **in the enemy Home the
+     base is also legal**, so there the defender chooses unit-or-base each step — a unit can soak it to
+     **spare the base**, and if it dies the chain continues with the base still on offer. This preserves
+     Griff's #66 intent ("no damage left behind from a Breakthrough attacker in an opponent's Home"):
+     the leftover still always lands on *a* legal target, but the defender now chooses **where**. Rules:
+     **only the Breakthrough portion chains** (plain unblocked damage still stops at the declared
+     target); each link **absorbs like a blocker** (remaining Health + Armor); **Shield and Ward end the
+     chain** (decision 108 — a prevented hit has no leftover); **Worldrender's pierce carries down the
+     chain** (decision 107) the way it carries into the target. The **name stays Breakthrough** — a
+     future `Breakthrough N` cap is out of scope. *(Engine: a new mid-resolution pause — phase `splash`
+     + `pendingSplash`, the fifth of its family after bank/intercept/block/choose — answered by the AI
+     policy in sims and the human in the demo, mirroring decision 105's `retaliationOrder` /
+     `applyBlockPhase` machinery. TDD RED-first in `breakthrough-splash.test.ts`; the decision-102 and
+     Worldrender siege tests were rewritten to answer the new base-pour pick; RULES_VERSION 3.2.0 →
+     3.3.0.)* ⚑ **Agent readings (veto welcome):** (a) the **declared target is not a defender pick** —
+     it takes the direct pour as before (the attacker chose it); only links 2+ are the defender's; (b)
+     a chained-link **defeat credits onKill** to the breakthrough attackers whose spill fed the pool
+     (decision 74, mirroring the declared-target credit); (c) a **mixed pierced+normal** spill falls back
+     to normal mitigation on the chain (the same flagged edge decision 107 already carries at the target);
+     (d) the **bot's default** minimizes the defender's own loss (soak with a survivor → spare units by
+     taking base damage → sacrifice the cheapest body) rather than retaliation's "biggest first," because
+     here the defender is ordering **its own** units, not the enemy's.

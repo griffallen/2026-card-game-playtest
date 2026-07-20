@@ -172,6 +172,27 @@ function blockScore(state: GameState, seat: Seat, action: GameAction & { type: '
   return score
 }
 
+/** #128 (Breakthrough chain): the DEFENDER places the attacker's leftover on one of THEIR OWN bodies
+ *  (or their base), so the bot minimizes its own loss — soak with a survivor if one can, else spend
+ *  Life on the base to spare good units, else sacrifice the cheapest body. (Note: unlike retaliation's
+ *  "biggest threat first" — which orders enemy attackers — this orders the defender's own units, so
+ *  the sane default is loss-minimizing, not power-maximizing.) Deterministic; ties broken by seeded
+ *  jitter in the policy. The phase is always answerable, so the bot never strands the chain in a sim. */
+function splashScore(state: GameState, action: GameAction & { type: 'splash' }): number {
+  const ps = state.pendingSplash
+  if (!ps) return 0
+  const ref = action.target
+  if (ref.kind === 'base') return -ps.leftover              // lose Life, keep every unit, chain ends
+  const u = ref.kind === 'unit' ? state.units[ref.id] : undefined
+  if (!u) return -100
+  const warded = !!u.blockWard
+  const shielded = u.shielded && !ps.pierced
+  const gross = Math.max(0, effHealth(state, u) - u.damage) + (ps.pierced ? 0 : effArmor(state, u))
+  if (warded || shielded || ps.leftover < gross) return 5   // soaks it and lives — the defender loses nothing
+  // this body is felled; the remainder chains on
+  return -(defOf(state, u.id).cost + effPower(state, u)) - (ps.leftover - gross) * 0.5
+}
+
 /** Score an exhaust-activated ability: a volley's damage or a Sneak payload, against its chosen target. */
 function activateScore(state: GameState, seat: Seat, action: GameAction & { type: 'activate' }): number {
   const unit = state.units[action.unit]
@@ -407,6 +428,7 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
         score = defOf(state, action.card).cost
         break
       case 'block': score = blockScore(state, seat, action); break
+      case 'splash': score = splashScore(state, action); break
       case 'activate': score = activateScore(state, seat, action); break
       case 'attachOrphan': score = 10; break
       case 'passUpgrade': score = 3; break   // #86: the bot rarely shuffles the banner — tempo self-regulates; never crash on it

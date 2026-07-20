@@ -125,10 +125,11 @@ describe('pair isolation and counter attribution (issue #58, Griff)', () => {
   })
 })
 
-describe('siege breakthrough (decision 102, issue #66)', () => {
-  // Griff: "no damage should be left behind from a Breakthrough attacker in an opponent's
-  // Home" — excess pours through blockers, then the declared target, then into the base.
-  it('in the enemy Home, breakthrough excess past the unit target hits the base', () => {
+describe('siege breakthrough (decision 102, issue #66; amended by #128)', () => {
+  // Griff: "no damage should be left behind from a Breakthrough attacker in an opponent's Home" —
+  // excess pours through blockers, then the declared target, then into the base. #128 turns that
+  // final base-pour into the DEFENDER's choice (base is one legal chain target in the Home).
+  it('in the enemy Home, breakthrough excess past the unit target chains to the base (defender picks)', () => {
     let s = g()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const enemyHome = (me === 0 ? 2 : 0) as 0 | 2
@@ -139,9 +140,12 @@ describe('siege breakthrough (decision 102, issue #66)', () => {
     const lifeBefore = s.sides[them].life
     s = applyAction(s, { type: 'attack', attackers: [big, chaff], target: { kind: 'unit', id: victim } }, me).state
     s = applyAction(s, { type: 'block', pairs: [{ blocker, onto: big }] }, them).state
-    // crusher 3 → blocker absorbs 1, spill 2; chaff's 1 (no breakthrough) fills the target
-    // first; the 2 breakthrough points pass whole into the base
+    // crusher 3 → blocker absorbs 1, spill 2; chaff's 1 (no breakthrough) fills the target first;
+    // the target and its blocker both fall, so the base is the only legal chain target — the
+    // defender must place the 2 there (the choice is forced, but it's still the defender's window)
     expect(s.units[victim]).toBeUndefined()
+    expect(s.phase).toBe('splash')                   // #128: the pour into the base is now a defender pick
+    s = applyAction(s, { type: 'splash', target: { kind: 'base', seat: them } }, them).state
     expect(s.sides[them].life).toBe(lifeBefore - 2)
   })
   it('outside the enemy Home, excess still stops at the declared target', () => {
