@@ -27,6 +27,12 @@ stale). Backlogged: **#134** (full prison removal), **#135** (a retired-mechanic
 - **Every GitHub comment opens with an action header**, one ask per comment (`.claude/skills/watch/SKILL.md`).
 - The demo is the only surface anyone plays; deploy it yourself, never defer to a human.
 
-**Open question nobody has answered yet:** the corrected sims say red is the problem colour and
-yellow the genuine bottom (red 67% over yellow, corroborated by piloted games on #98). The balance
-pass that follows from that has not been scoped.
+**Do not scope a balance pass off the current numbers** (Blaine, 2026-07-20). The corrected sims
+read red 67% over yellow, but they are **heuristic bot vs heuristic bot** — they measure the bot's
+red against the bot's yellow, not the game. Fixing #98 made the numbers honest about *which game*
+they played; it did nothing about *who played it*. `sim-matchups.ts` has carried this warning since
+playtest 001 ("these numbers are bounded by the bot's quality"), and decision 55→56 is the worked
+example: a ruling made on sim evidence was reversed once the bot learned to fight prisons.
+
+**Red is fine for now.** The real prerequisite is a better bot — that is what #97 (learned eval)
+and #98 (the game corpus) are for. Balance work with trustworthy numbers waits on that.
