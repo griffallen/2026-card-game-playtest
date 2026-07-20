@@ -14,6 +14,8 @@
     "sim": "npm run sim -w packages/engine",
     "cards": "tsx scripts/cards-build.ts",
     "cards:check": "tsx scripts/cards-build.ts --check",
+    "rules:doc": "tsx --tsconfig apps/demo/tsconfig.json scripts/rules-doc.ts",
+    "rules:doc:check": "tsx --tsconfig apps/demo/tsconfig.json scripts/rules-doc.ts --check",
     "sim:matchups": "tsx scripts/sim-matchups.ts",
     "corpus:collect": "tsx packages/corpus/src/cli.ts collect",
     "corpus:list": "tsx packages/corpus/src/cli.ts list",
