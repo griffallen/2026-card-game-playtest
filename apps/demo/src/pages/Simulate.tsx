@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { DECKS } from '../local.ts'
-import { deckSlugs, simulateGame, type PolicyName, type SimResult } from '@newgame/engine'
+import { V3_RULES, deckSlugs, simulateGame, type PolicyName, type SimResult } from '@newgame/engine'
 
 interface Row extends SimResult { seed: number; firstDeck: string }
 
@@ -33,7 +33,9 @@ export function Simulate() {
         const seed = base + i
         const redFirst = !alternate || i % 2 === 0
         const [dA, dB] = redFirst ? [red, yellow] : [yellow, red]
-        const r = simulateGame(seed, dA, dB, { policyA, policyB })
+        // V3_RULES = the rules the Play tab runs. Until #98 this passed none and silently
+        // simulated the legacy v2.3 game, so the numbers on this page were the wrong game.
+        const r = simulateGame(seed, dA, dB, { rules: V3_RULES, policyA, policyB })
         out.push({ ...r, seed, firstDeck: redFirst ? 'red' : 'yellow' })
         if (i % 5 === 4) {
           setProgress(i + 1)

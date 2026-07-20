@@ -4,14 +4,19 @@ import { assertConservation } from './helpers.ts'
 import { createGame } from './setup.ts'
 import { applyAction } from './engine.ts'
 import { getLegalActions } from './legal.ts'
-import { DEFAULT_RULES } from './rules.ts'
 import { CARD_SET } from './cards/index.ts'
 import { POLICIES, policyRngInit, type PolicyName } from './ai.ts'
 
 const MAX_ACTIONS = 4000
 
 export interface SimOpts {
-  rules?: RulesConfig
+  /**
+   * REQUIRED — no default (2026-07-19, #98, decision 107). This used to fall back to
+   * DEFAULT_RULES, which despite the name is the *legacy* v2.3 preset: forgetting the argument
+   * silently measured a game nobody plays. It cost us the entire balance grid and the AI's
+   * quality bar before anyone noticed. Pass V3_RULES for the current game.
+   */
+  rules: RulesConfig
   cardSet?: CardSet
   policyA?: PolicyName
   policyB?: PolicyName
@@ -22,8 +27,8 @@ export interface SimOpts {
  * Deterministic: policy rng derives from the game seed — one seed reproduces
  * the entire game, bugs included.
  */
-export function simulateGame(seed: number, deckA: string[], deckB: string[], opts: SimOpts = {}): SimResult {
-  const rules = opts.rules ?? DEFAULT_RULES
+export function simulateGame(seed: number, deckA: string[], deckB: string[], opts: SimOpts): SimResult {
+  const rules = opts.rules
   const cardSet = opts.cardSet ?? CARD_SET
   const policies = [POLICIES[opts.policyA ?? 'random'], POLICIES[opts.policyB ?? 'random']] as const
 
@@ -61,12 +66,12 @@ export function simulateGame(seed: number, deckA: string[], deckB: string[], opt
   }
 }
 
-/** Back-compat alias used by the v0 harness tests. */
+/** Back-compat alias used by the v0 harness tests. `rules` is required — see SimOpts. */
 export function simulateRandomGame(
   seed: number,
   deckA: string[],
   deckB: string[],
-  rules: RulesConfig = DEFAULT_RULES,
+  rules: RulesConfig,
   cardSet: CardSet = CARD_SET,
 ): SimResult {
   return simulateGame(seed, deckA, deckB, { rules, cardSet })
