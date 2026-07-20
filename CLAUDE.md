@@ -41,6 +41,8 @@ The loop is **design → spec → build plan → implement → playtest** — an
 
 **Audit after mechanics change** (Blaine, issue #25): any significant mechanical change — a new or changed rule, keyword rework, combat change — ends with a full consistency audit of spec ↔ engine ↔ cards ↔ every teaching surface (rulebook, help panel, keyword gloss), hunting two things: stale traces of the old rule, and *hidden mechanics* the engine enforces but no surface teaches (how the upgrade-pressure tax lived unnoticed for a month). The fold isn't done until the audit is clean. **The demo is always a priority** — it must teach exactly the game it runs.
 
+**Cutting a mechanic ends with an engine cull** (#135): a ruling that removes a mechanic strips it from the keyword/op vocabulary and adds its name to `packages/engine/test/dead-vocabulary.test.ts` — or, when a shape must survive for replay compatibility, leaves a `RETIRED` comment saying why (the way `UnitInstance.overextendedBy` and the attack action's `overextend` field are kept for the #97/#98 replays). `packages/engine/test/vocabulary-coverage.test.ts` fails if a live keyword or op sits on no card, so a half-finished cut — the word gone from the rules but still authorable in the engine — can't hide.
+
 Live project state lives on **GitHub** — **the Board (issue #129)** is the always-current index of every open decision, by owner (rebuilt every watch tick). `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md` is a lean **pointer** to it — phase, who's next, what to read — written once at wrap, so never trust it for the open-decision list; read the Board for that. **Read the handoff at the start of every session**, then load the playbook for the current phase:
 
 | Phase | Playbook |

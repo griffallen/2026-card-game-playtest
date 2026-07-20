@@ -11,14 +11,20 @@ export const adjacent = (a: ZoneId, b: ZoneId) => Math.abs(a - b) === 1
 
 // ─── Keywords ────────────────────────────────────────────────────────────────
 // Reach (#8), Flying and Untargetable (superseded by Hidden, v3) and Overextend (superseded by
-// Scar, decisions 70->94) were CUT. They are gone from this union so a card cannot carry one.
-export type KeywordName =
-  | 'guard' | 'armor' | 'rush' | 'ranged'
-  | 'breakthrough' | 'cantAttack'
+// Scar, decisions 70->94) were CUT. They are gone from this list so a card cannot carry one.
+// KEYWORD_NAMES is the ONE source of the keyword vocabulary: KeywordName derives from it, and both
+// runtime guards — validate.ts's KEYWORDS and cardfile.ts's KW_NAMES — are built from it (they used
+// to be three hand-kept copies a comment begged to "keep in step"). vocabulary-coverage.test.ts
+// fails if any name here sits on no card, so a cut that forgets to strip a name can't hide.
+export const KEYWORD_NAMES = [
+  'guard', 'armor', 'rush', 'ranged',
+  'breakthrough', 'cantAttack',
   // v3 keyword suite (docs/rules.md §Keywords; decisions 59-61, 70)
-  | 'scar' | 'shielded' | 'hidden' | 'infiltrate' | 'capture' | 'sneak'
+  'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak',
   // decision 88 (#29): standing in Neutral with the majority sways the influence track
-  | 'politician'
+  'politician',
+] as const
+export type KeywordName = (typeof KEYWORD_NAMES)[number]
 export interface KeywordSpec { k: KeywordName; n?: number }
 
 // ─── Effect DSL ──────────────────────────────────────────────────────────────
