@@ -1,8 +1,18 @@
 # Design Decisions
 
+> **This file is the *why*, not the *what*.** It is an append-only history of rulings in the
+> order they were made — so it necessarily contains decisions that have since been overturned.
+> **Never read it to learn the current rules.** For what the game does today:
+> **`docs/rules.md`** (rules) and **`data/cards/`** (cards). Those are the authority; this
+> file explains how they got that way (issue #119).
+>
+> **Appending:** new decisions go at the end, numbered, never renumbered. When a decision is
+> overturned, leave the entry intact and add a **SUPERSEDED by NN** marker *at the front of the
+> entry* — a reader skimming must see it before the obsolete rule, not after.
+
 Numbered, in the order they were made. Format: decision — reason.
 
-**Status key:** ✅ agreed with user · ⚑ **assumed by the agent during the 2026-07-07 autonomous build** — made so a playable prototype could exist tonight; each ⚑ needs designer review. Overturning any ⚑ is expected and cheap: most are engine parameters or one function.
+**Status key:** ✅ agreed with user · ⚑ **assumed by the agent during the 2026-07-07 autonomous build** — made so a playable prototype could exist tonight. Note that many ⚑ entries have since been ruled on by Griff and simply never had their mark updated, so a ⚑ is *not* reliable evidence that a question is still open — check the issue tracker.
 
 ## Scope
 

@@ -1,9 +1,8 @@
-# Purple Deck Charter — PROPOSAL (session 006, not yet canon)
+# Purple Deck Charter
 
-*Status: a complete, playable third deck built strictly from existing engine mechanics — zero new
-ops or keywords. It ships as `status: draft` in the ledger and joins the canon only when Griff
-adopts it (CANON.md open question 7). Everything below follows the same two-parent law as red and
-yellow.*
+*One of the card pool's two parents: every purple card must obey this charter **and** the base
+rules (`docs/rules.md`). Adopted by Griff on issue #5 and rebuilt through #122 — all 36 cards are
+`canon`. The prebuilt deck is **The Veiled Court**, Griff's own 58-card build.*
 
 ## Identity
 
@@ -20,20 +19,25 @@ Blue's future identity — purple keeps exactly two archers, Dusk Archer and Noc
 
 | Keyword | What it means for purple | Limits |
 |---|---|---|
-| **Ranged N** | An ability action (decision 80): exhaust to volley N at one enemy unit, any zone; attacks are ordinary, statlines low. | **Reserved for Blue** — purple keeps exactly two carriers (Dusk Archer, Nocturne Sniper); new purple Ranged is ratify-first. |
-| **Flying** | Position is the argument — arrive anywhere. | Common at mid-cost; taxed a statline point. |
-| **Untargetable** | The court cannot be subpoenaed. | On bodies, not granted en masse. |
+| **Hidden** (7 cards) | While ready, it cannot be targeted or attacked — but anything that exhausts it reveals it. Strike, vanish, repeat. | Purple's signature. Beats choices, not consequences: "all" effects still reach it. |
+| **Infiltrate** (6 cards) | May be played into any zone, not just your Home. | The unanswered arrival; purple's tempo substitute for Rush. |
+| **Sneak** (4 cards) | An ability used as your turn: exhaust to resolve the card's printed Sneak effect in its own zone. | Each card states its own payload. |
+| **Ranged N** (2 cards) | An ability (decision 80): exhaust to volley N at one enemy unit, any zone. | **Reserved for Blue** — purple keeps exactly two carriers (Dusk Archer, Nocturne Sniper); new purple Ranged is ratify-first. |
+| **Politician** (2 cards) | The court works the crowd too. | Shared with yellow, who owns it; purple prints few. |
 
-**Forbidden:** Rush, Breakthrough, Overextend, Reach (red's); Guard, printed Armor, cantAttack
+**Forbidden:** Rush, Breakthrough, Scar (red's); Guard, printed Armor, Capture, cantAttack
 *as its own keyword* (yellow's walls — purple may *grant* cantAttack to enemies for a round: a
 pacification, not a wall).
+
+*Retired:* **Flying** and **Untargetable**, both cut in v3 (Untargetable superseded by Hidden). No
+purple card carries either.
 
 ## Invariants (the design laws)
 
 1. **Influence moves only on kills** (onKill, small: +1; the 8-drop's +2 is the cap). No defend
    payouts (yellow), no play payouts, never passive.
 2. **Removal is attrition, never a verdict:** permanent -Power debuffs and precise damage. No
-   `destroy` ops, no imprison, no exile. A withered unit still stands — at 0 Power, as a warning.
+   `destroy` ops, no Capture, no exile. A withered unit still stands — at 0 Power, as a warning.
 3. **Sweeps are surgical:** purple zone/board damage hits **enemies only** — and is costed above
    red's friendly-fire equivalents for the privilege.
 4. **Purple does not heal, wall, or protect its base** beyond one-round misdirection
@@ -41,7 +45,7 @@ pacification, not a wall).
 5. **Card flow is purple's economy** — it is the only color that draws freely. Every deck's
    cantrips (draw riders) are purple-legal; big draws live on bodies (Duskweaver Oracle).
 6. **Statline grammar:** Power + Health = **2 × cost**, with a **1-point tax per evasive keyword**
-   (Ranged / Flying / Untargetable) — shooting without an answer is worth a stat. Power-lean on
+   (Hidden / Infiltrate / Ranged) — acting without an answer is worth a stat. Power-lean on
    assassins; nothing purple is a wall.
 
 ## Curve & size (the standard base set)
@@ -58,7 +62,6 @@ A purple influence win should feel like a career of assassinations, not an econo
 
 ## Provisional / open (all of it — this is a proposal)
 
-- Adopt / revise / shelve: Griff's call (CANON.md question 7).
 - Art is a **placeholder direction**: deterministic "veil" SVGs (night-violet, eclipse + sigil)
   so the deck reads as intentional until real art exists. Regenerate any time.
 - Balance (fixed-bot sims, N=300, rules v2.3 — `npm run sim:matchups`): **~50% into red,
