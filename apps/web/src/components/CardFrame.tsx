@@ -1,6 +1,7 @@
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { ProceduralArt } from './ProceduralArt.tsx'
 import { SLEEVE_EDGE, SLEEVE_TAB, type Sleeve } from '../game/sleeves.ts'
+import { iconFor, shortGlossFor } from '../game/gloss.ts'
 
 /** Long-press (450ms, cancels on drag) that also swallows the click it would otherwise trigger.
  *  Right-click fires the same inspect path — the desktop mirror of the mobile long-press. */
@@ -50,6 +51,8 @@ export interface CardLike {
   pips?: string[] | null
   /** printed cost is "X", declared at cast (issue #45) */
   xCost?: boolean | null
+  /** printed keywords (issue #114) — each wears its locked symbol on the frame */
+  kw?: { k: string; n?: number }[] | null
 }
 
 const frameTint: Record<string, string> = {
@@ -79,7 +82,7 @@ const typeMeta: Record<string, { icon: string; label: string; chip: string }> = 
 }
 
 /** One component renders any card at any size — hand, browser, admin preview. */
-export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge, onLongPress, sleeve, stamp }: {
+export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge, onLongPress, sleeve, stamp, onHoverPreview }: {
   card: CardLike
   size?: 'sm' | 'md' | 'lg'
   onClick?: () => void
@@ -92,6 +95,8 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
   sleeve?: Sleeve
   /** #28: bold overlay banner across the card (e.g. "Resource" while picking setup banks) */
   stamp?: string
+  /** issue #114: mouse-hover card preview — never fired by touch (see useCardPreview) */
+  onHoverPreview?: (pos: { x: number; y: number } | null) => void
 }) {
   // a mobile/CDN blip must not strip a card's art for the whole session (issue #19):
   // retry twice with a cache-busting src before conceding to procedural art
@@ -111,10 +116,23 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
   const isUnit = card.type === 'unit'
   const meta = typeMeta[card.type] ?? typeMeta.unit
   const bigStat = size === 'sm' ? 'text-[13px]' : size === 'lg' ? 'text-[16px]' : 'text-[14px]'
+  const kwSize = size === 'sm' ? 'text-[9.5px]' : size === 'lg' ? 'text-[13px]' : 'text-[11px]'
+  // #114: one chip per printed keyword, numbered ones carrying their number (🪖2, 🏹3)
+  const keywordChips = (card.kw ?? [])
+    .filter(k => iconFor(k.k))
+    .map(k => ({
+      key: k.k,
+      text: `${iconFor(k.k)}${k.n ?? ''}`,
+      title: `${k.k}${k.n !== undefined ? ` ${k.n}` : ''} — ${shortGlossFor(k.k)}`,
+    }))
 
   return (
     <div
       {...lp.handlers}
+      // #114: hover raises a full-size copy — the hand renders at size="sm", where a long
+      // rules box is genuinely hard to read. Touch never fires it (see useCardPreview).
+      onPointerMove={e => { lp.handlers.onPointerMove(e); if (e.pointerType === 'mouse') onHoverPreview?.({ x: e.clientX, y: e.clientY }) }}
+      onPointerLeave={() => { lp.handlers.onPointerLeave(); onHoverPreview?.(null) }}
       style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
       onClick={() => { if (lp.fired.current) { lp.fired.current = false; return } onClick?.() }}
       title={card.designerNote ? `⚑ ${card.designerNote}` : undefined}
@@ -180,6 +198,18 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
         <span className={`absolute left-1 top-1 rounded-full px-1.5 py-0.5 text-[8.5px] font-bold uppercase tracking-wide shadow ring-1 ${meta.chip}`}>
           {meta.icon} {meta.label}
         </span>
+        {/* #114 (Griff): the keyword symbols, opposite the type chip — the card's abilities are
+            readable from across the table without parsing the rules box. Locked symbol set in gloss.ts. */}
+        {keywordChips.length > 0 && (
+          <span className="absolute right-1 top-1 flex max-w-[60%] flex-wrap justify-end gap-0.5">
+            {keywordChips.map(c => (
+              <span key={c.key} title={c.title}
+                className={`rounded bg-black/65 px-1 py-px leading-none shadow ring-1 ring-black/40 ${kwSize}`}>
+                {c.text}
+              </span>
+            ))}
+          </span>
+        )}
       </div>
 
       {/* rules text — faction-tinted, semi-transparent, and fit-to-content: no min-height floor,

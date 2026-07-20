@@ -3,28 +3,9 @@ import type { UnitView } from '@newgame/engine'
 import { ProceduralArt } from '../components/ProceduralArt.tsx'
 import { useLongPress } from '../components/CardFrame.tsx'
 import { SLEEVE_EDGE, SLEEVE_TAB, sleeveFor, type Sleeve } from './sleeves.ts'
+import { iconFor, shortGlossFor } from './gloss.ts'
 
-/** Issue #63 (Blaine): keywords are hard to remember mid-game — every table unit's hover
- *  tooltip glosses its keywords in one line each. Long-press/right-click still opens the
- *  full inspector; this is the glance-level reminder. */
-const KW_GLOSS: Record<string, string> = {
-  guard: 'the only unit that may block a lone attack on a unit, and it never exhausts to block',
-  breakthrough: 'kills its blocker → all excess spills to the declared target — and in the enemy Home, past a killed target into the base',
-  rush: 'its first move each round is free',
-  ranged: 'exhaust to volley that much damage at any enemy unit, any zone',
-  armor: 'every hit it takes is reduced by that much',
-  cantAttack: 'holds the zone and blocks, but never attacks',
-  hidden: "while ready it can't be targeted or attacked; exhausting reveals it",
-  infiltrate: 'may deploy into any zone',
-  sneak: 'exhaust as your turn to use its printed ability',
-  capture: 'takes an enemy unit under it until the holder leaves play',
-  shielded: 'the first hit it would take is fully prevented',
-  scar: '+1 power per damage marked on it — no cap',
-  politician: 'round end: +1 Influence per politician for a Neutral majority, +2 each for an enemy-Home majority (stacks)',
-  overextend: 'may gamble bonus power now for that much self-damage at end of round',
-}
-
-export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, sleeve: sleeveProp }: {
+export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, sleeve: sleeveProp, onHoverPreview }: {
   unit: UnitView
   mine: boolean
   glow: 'none' | 'selected' | 'target' | 'attack'
@@ -35,6 +16,8 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, s
   onLongPress?: () => void
   /** issue #61: the owner's chosen sleeve — falls back to the ivory/gunmetal defaults */
   sleeve?: Sleeve
+  /** issue #114: mouse-hover card preview — never fired by touch (see useCardPreview) */
+  onHoverPreview?: (pos: { x: number; y: number } | null) => void
 }) {
   const [artBroken, setArtBroken] = useState(false)
   const lp = useLongPress(onLongPress)
@@ -52,17 +35,29 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, s
     }
     prevDamage.current = unit.damage
   }, [unit.damage])
-  const chips: string[] = []
-  if (unit.keywords.some(k => k.startsWith('guard'))) chips.push('🛡')
-  if (unit.keywords.includes('cantAttack')) chips.push('⊘')   // printed wall or a disarming effect (#40)
-  if (unit.armor > 0) chips.push(`◈${unit.armor}`)
-  if (unit.rushFreeMove) chips.push('💨')
-  if (unit.overextendedBy > 0) chips.push(`🔥${unit.overextendedBy}`)
-  if (unit.shielded) chips.push('⛨')
-  if (unit.captives.length > 0) chips.push(`⛓${unit.captives.length}`)
+  // #114 (Griff): every keyword wears its own symbol, so a crowded board reads at a glance
+  // instead of asking you to remember which 1/1 was the archer. The strip is driven straight
+  // off the engine's live keyword list — granted keywords show up, a spent Shielded token
+  // disappears — with the numbered ones carrying their number (🪖2, 🏹3).
+  const chips: { key: string; text: string; title: string; dim?: boolean }[] = []
+  for (const k of unit.keywords) {
+    const name = k.split(' ')[0]
+    const icon = iconFor(k)
+    if (!icon) continue                                       // a keyword with no symbol says nothing
+    if (name === 'capture' && unit.captives.length) continue   // the captive count below says it louder
+    // armor's live value can differ from the printed one (upgrades, auras) — trust the view
+    const n = name === 'armor' ? String(unit.armor) : (k.split(' ')[1] ?? '')
+    chips.push({
+      key: name, text: `${icon}${n}`, title: `${name} — ${shortGlossFor(k)}`,
+      // Rush's 💨 has always meant "the free move is still there" (#105) — spent, it greys out
+      dim: name === 'rush' && !unit.rushFreeMove,
+    })
+  }
+  if (unit.overextendedBy > 0) chips.push({ key: 'overextended', text: `🔥${unit.overextendedBy}`, title: `takes ${unit.overextendedBy} damage at end of round` })
+  if (unit.captives.length > 0) chips.push({ key: 'captives', text: `${iconFor('capture')}${unit.captives.length}`, title: `holding captive: ${unit.captives.map(c => c.name).join(', ')}` })
   const tooltip = [
     `${unit.name}`,
-    ...unit.keywords.map(k => KW_GLOSS[k.split(' ')[0]] ? `${k[0].toUpperCase()}${k.slice(1)} — ${KW_GLOSS[k.split(' ')[0]]}` : k),
+    ...unit.keywords.map(k => shortGlossFor(k) ? `${iconFor(k)} ${k[0].toUpperCase()}${k.slice(1)} — ${shortGlossFor(k)}` : k),
     unit.upgrades.length ? `Upgrades: ${unit.upgrades.map(u => u.name).join(', ')}` : '',
     unit.captives.length ? `Holding captive: ${unit.captives.map(c => c.name).join(', ')}` : '',
   ].filter(Boolean).join('\n')
@@ -70,6 +65,10 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, s
   return (
     <div
       {...lp.handlers}
+      // #114: hover raises the full card. Merged with the long-press handlers rather than
+      // replacing them — a mouse drag still cancels the press, a touch still never previews.
+      onPointerMove={e => { lp.handlers.onPointerMove(e); if (e.pointerType === 'mouse') onHoverPreview?.({ x: e.clientX, y: e.clientY }) }}
+      onPointerLeave={() => { lp.handlers.onPointerLeave(); onHoverPreview?.(null) }}
       style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
       onClick={() => { if (lp.fired.current) { lp.fired.current = false; return } onClick?.() }}
       title={tooltip}
@@ -110,11 +109,22 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, s
         )}
       </div>
       <div className="truncate px-0.5 text-center text-[9px] leading-tight text-parchment/90">{unit.name}</div>
-      <div className="flex items-center justify-between px-0.5 pb-0.5 font-display text-[11px] font-bold leading-none">
-        <span className="rounded bg-black/50 px-1 py-0.5">{unit.power}</span>
-        <span className="text-[8px] font-normal text-dim">{chips.join(' ')}</span>
-        <span className={`rounded px-1 py-0.5 ${hurt ? 'bg-crimson/70 text-white' : 'bg-black/50'}`}>
-          {unit.health - unit.damage}
+      {/* #114: the keyword strip gets its own line — the stats row stayed unreadable once three
+          symbols had to share the gap between the numbers. Hidden entirely when there's nothing to say. */}
+      {chips.length > 0 && (
+        <div className="flex flex-wrap items-center justify-center gap-x-0.5 px-0.5 text-[9px] leading-none">
+          {chips.map(c => (
+            <span key={c.key} title={c.title} className={c.dim ? 'opacity-40' : undefined}>{c.text}</span>
+          ))}
+        </div>
+      )}
+      {/* #114 (Griff): the numbers say what they are — ⚔ power, ♥ health, same marks the card frame wears */}
+      <div className="mt-0.5 flex items-center justify-between px-0.5 pb-0.5 font-display text-[11px] font-bold leading-none">
+        <span title="Power" className="flex items-center gap-px rounded bg-black/50 px-1 py-0.5">
+          <span className="text-[0.7em] opacity-80">⚔</span>{unit.power}
+        </span>
+        <span title="Health" className={`flex items-center gap-px rounded px-1 py-0.5 ${hurt ? 'bg-crimson/70 text-white' : 'bg-black/50'}`}>
+          {unit.health - unit.damage}<span className="text-[0.7em] opacity-80">♥</span>
         </span>
       </div>
     </div>

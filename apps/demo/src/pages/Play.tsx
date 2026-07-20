@@ -65,15 +65,16 @@ export function Play() {
     })
   }
 
-  // #61: sleeve picker — bold swatches, one row per seat
+  // #61: sleeve picker — bold swatches, one row per seat. #114: the palette outgrew a single
+  // row, so it wraps; every swatch keeps a hairline border so Obsidian isn't an invisible hole.
   const sleevePick = (value: Sleeve, onChange: (s: Sleeve) => void, other: Sleeve, label: string) => (
     <div className="text-xs uppercase tracking-wider text-dim">{label}
-      <div className="mt-1 flex gap-1.5">
+      <div className="mt-1 flex flex-wrap gap-1.5">
         {SLEEVE_CHOICES.map(c => (
           <button key={c.id} title={c.label + (c.id === other ? ' — taken by the other seat' : '')}
             disabled={c.id === other}
             onClick={() => onChange(c.id)}
-            className={`h-7 w-7 rounded-md ${SLEEVE_SWATCH[c.id]} ${value === c.id ? 'ring-2 ring-goldbright ring-offset-2 ring-offset-black' : c.id === other ? 'opacity-25' : 'opacity-70 hover:opacity-100'}`}
+            className={`h-7 w-7 rounded-md border border-white/25 ${SLEEVE_SWATCH[c.id]} ${value === c.id ? 'ring-2 ring-goldbright ring-offset-2 ring-offset-black' : c.id === other ? 'opacity-25' : 'opacity-70 hover:opacity-100'}`}
             aria-label={`${label}: ${c.label}`} />
         ))}
       </div>

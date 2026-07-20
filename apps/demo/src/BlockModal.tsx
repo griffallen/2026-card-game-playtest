@@ -1,6 +1,9 @@
 import { useRef, useState } from 'react'
 import type { Seat, TargetRef, UnitView } from '@newgame/engine'
 import { UnitChip } from '@ui/game/UnitChip.tsx'
+import { UnitInspector } from '@ui/game/Sheets.tsx'
+import { useCardPreview } from '@ui/game/CardPreview.tsx'
+import type { CardLike } from '@ui/components/CardFrame.tsx'
 import type { Sleeve } from '@ui/game/sleeves.ts'
 
 export interface BlockPair { blocker: string; onto: string }
@@ -13,7 +16,7 @@ export interface BlockPair { blocker: string; onto: string }
  *  the old side-panel did: { type:'block', pairs:[{blocker,onto}] } — presentation only. */
 export function BlockModal({
   attackers, target, targetName, targetView, defenders, allowedOnto, duel,
-  myLife, pairs, onChange, onConfirm, onCancel, sleeveOf, onInspect,
+  myLife, pairs, onChange, onConfirm, onCancel, sleeveOf, cardOf,
 }: {
   attackers: UnitView[]
   target: TargetRef
@@ -33,7 +36,8 @@ export function BlockModal({
   /** let-it-all-through shortcut kept reachable even mid-assignment */
   onCancel: () => void
   sleeveOf: (owner: Seat) => Sleeve
-  onInspect?: (id: string) => void
+  /** issue #114: the modal reads cards itself now — see the inspector note below */
+  cardOf: (slug: string) => CardLike | undefined
 }) {
   const [selected, setSelected] = useState<string | null>(null)
   // hand-rolled pointer drag (works with mouse AND touch — HTML5 DnD skips touch)
@@ -43,12 +47,23 @@ export function BlockModal({
   // component stays mounted, so blockPairs (owned by DemoTable) and every in-progress selection
   // survive untouched; we just render a compact "back" control instead of the panel.
   const [peeking, setPeeking] = useState(false)
+  // #114 (Griff): "when I'm in the defender pop-up, I can't preview the cards in that window
+  // unless I hide the defense window." The inspector used to be rendered by DemoTable, as a
+  // SIBLING of this modal at the same z-50 — and this modal is later in the DOM, so it painted
+  // over the very sheet it opened. Owning the inspector here puts it inside the modal's own
+  // stacking context, where it lands on top and the block assignment underneath is untouched.
+  const [inspectId, setInspectId] = useState<string | null>(null)
+  const preview = useCardPreview()
   const rootRef = useRef<HTMLDivElement>(null)
 
   const targetIsBase = target.kind === 'base'
   // the target is always the defender's own base/unit — say "your …" rather than "<name>'s …"
   const friendlyTarget = targetIsBase ? 'your base' : targetView ? `your ${targetView.name}` : targetName
   const canPair = (blocker: string, onto: string) => !!allowedOnto.get(blocker)?.has(onto)
+  // every unit visible in this modal, by id — attackers, your defenders, and the unit under attack
+  const unitById = (id: string) =>
+    attackers.find(u => u.id === id) ?? defenders.find(u => u.id === id) ?? (targetView?.id === id ? targetView : undefined)
+  const hover = (u: UnitView) => preview.bind(cardOf(u.slug))
   const blockersOf = (atkId: string) => pairs.filter(p => p.onto === atkId)      // in pour order
   const assignedIds = new Set(pairs.map(p => p.blocker))
   const pool = defenders.filter(d => !assignedIds.has(d.id))
@@ -159,6 +174,15 @@ export function BlockModal({
             or leave a slot empty to let it through.
             {duel && <span className="text-[#e5a99f]"> Duel law: this lone attacker takes at most one Guard.</span>}
           </p>
+          {/* #114 (Griff): you can read every card without leaving the window now. */}
+          <p className="mt-0.5 text-[11.5px] text-dim">
+            🔍 Tap an attacker — or long-press one of your defenders — to read its card here.
+            {targetView && (
+              <button className="ml-1 underline decoration-dotted hover:text-body" onClick={() => setInspectId(targetView.id)}>
+                Read {targetView.name}
+              </button>
+            )}
+          </p>
         </div>
 
         {/* attacker row + slots */}
@@ -174,7 +198,8 @@ export function BlockModal({
                 <div key={a.id} className="flex w-[132px] flex-col items-center">
                   <div className="text-[10px] uppercase tracking-widest text-[#e5a99f]/80">Attacker</div>
                   <UnitChip unit={a} mine={false} glow="attack" sleeve={sleeveOf(a.owner)}
-                    onClick={() => onInspect?.(a.id)} onLongPress={() => onInspect?.(a.id)} />
+                    onHoverPreview={hover(a)}
+                    onClick={() => setInspectId(a.id)} onLongPress={() => setInspectId(a.id)} />
                   <div className="my-1 text-dim">↓</div>
                   {/* drop slot */}
                   <div
@@ -202,7 +227,8 @@ export function BlockModal({
                               )}
                               <div className="scale-90 origin-bottom">
                                 <UnitChip unit={d} mine glow="selected" sleeve={sleeveOf(d.owner)}
-                                  onClick={() => unassign(p.blocker)} onLongPress={() => onInspect?.(p.blocker)} />
+                                  onHoverPreview={hover(d)}
+                                  onClick={() => unassign(p.blocker)} onLongPress={() => setInspectId(p.blocker)} />
                               </div>
                               <button className="mt-0.5 block w-full text-[9px] text-dim hover:text-[#e5a99f]"
                                 onClick={e => { e.stopPropagation(); unassign(p.blocker) }}>✕ remove</button>
@@ -252,8 +278,9 @@ export function BlockModal({
                   onPointerDown={e => onPointerDownDefender(e, d.id)}>
                   <UnitChip unit={d} mine glow={selected === d.id ? 'selected' : 'none'} sleeve={sleeveOf(d.owner)}
                     actionable={selected !== d.id}
+                    onHoverPreview={hover(d)}
                     onClick={() => { if (!drag) clickDefender(d.id) }}
-                    onLongPress={() => onInspect?.(d.id)} />
+                    onLongPress={() => setInspectId(d.id)} />
                 </div>
               ))}
             </div>
@@ -306,6 +333,26 @@ export function BlockModal({
             style={{ left: drag.x, top: drag.y }}>
             <UnitChip unit={d} mine glow="selected" sleeve={sleeveOf(d.owner)} />
           </div>
+        )
+      })()}
+
+      {/* #114: hovering any chip in the modal raises its full card (mouse only) */}
+      {!drag && preview.layer}
+
+      {/* #114: the card sheet, owned by the modal so it paints ABOVE it — the whole point.
+          Closing it drops you back into an untouched assignment. */}
+      {inspectId && (() => {
+        const u = unitById(inspectId)
+        const card = u && cardOf(u.slug)
+        if (!u || !card) return null
+        return (
+          <UnitInspector
+            unit={u}
+            card={card}
+            upgradeCards={u.upgrades.map(up => cardOf(up.slug)).filter((c): c is CardLike => !!c)}
+            sleeve={sleeveOf(u.owner)}
+            onClose={() => setInspectId(null)}
+          />
         )
       })()}
     </div>
