@@ -8,6 +8,17 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.9.0 — 2026-07-20
+major — **Breakthrough splash + chain** (#128, **decision 114**, amends 102; Blaine fired the build).
+A Breakthrough attacker's leftover past a *defeated* target no longer auto-pours into the base — in
+**every zone** the DEFENDER now picks where it lands (a unit in the zone, or, in their Home,
+unit-or-base), **chaining** on each further defeat until a survivor soaks it or none remain. New
+mid-resolution `splash` phase — a defender-interactive pause like blocking, answered by AI policy in
+sims and the human in the demo. Only the breakthrough portion chains; Shield/Ward end it (108);
+Worldrender's pierce carries down (107). Touches the twelve red cards that carry or grant Breakthrough.
+`RULES_VERSION` 3.2.0 → **3.3.0**. 484 tests green (13 new, RED-first). Deployed — playability gate
+passed (vs-AI drive through the new splash UI, 0 page errors). `ada6271`.
+
 ## v0.8.3 — 2026-07-20
 patch — **the retired-mechanics convention** (#135; Blaine: "sure, go for it"). The three
 hand-kept keyword lists (`KeywordName` / `KEYWORDS` / `KW_NAMES`) fold into one `KEYWORD_NAMES`
