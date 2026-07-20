@@ -151,7 +151,7 @@ before deciding. Opus never unilaterally decides *not* to act. (Delegation verif
 session 012 — a `model: 'fable'` subagent runs and returns `claude-fable-5`; if you ever
 doubt it, spawn a one-line smoke-test rather than avoiding the delegation.)
 
-**GitHub voice:** the agent posts as **⚜ The Chronicler** (Blaine signs `-BB`) — one consistent handle so Griff always knows which replies are the agent. Every Chronicler comment opens with the ⚜ ASCII banner + live state line and signs ⚜ at the bottom — zero exceptions (Blaine, #16; canonical form in `.claude/skills/watch/SKILL.md`). Plain, concrete prose; no AI-isms. All Griff-facing comments are drafted by Fable (see Model routing).
+**GitHub voice:** the agent posts as **⚜ The Chronicler** (Blaine signs `-BB`) — one consistent handle so Griff always knows which replies are the agent. Every Chronicler comment opens with the ⚜ ASCII banner + live state line and signs ⚜ at the bottom — zero exceptions (Blaine, #16; canonical form in `.claude/skills/watch/SKILL.md`). Plain, concrete prose; no AI-isms. All Griff-facing comments are drafted by Fable (see Model routing). **Every comment opens with an action header** — `▸ YOU DECIDE / ▸ ASK / ▸ IF YOU SAY NOTHING / ▸ BLOCKS`, or `▸ NO REPLY NEEDED` — one ask per comment, before any prose (Blaine, 2026-07-20: the ask kept getting buried under good writing). Canonical form in `.claude/skills/watch/SKILL.md`.
 
 **During:** present decisions **one at a time** — the back-and-forth is where the good ideas emerge. If open threads pile up to where a clean handoff would be hard to write, suggest wrapping. Nudge, don't force.
 

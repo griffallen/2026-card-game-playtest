@@ -107,6 +107,49 @@ starts blank — the brief is everything. It MUST contain:
      5 clean nerfs wired — 81.7% → 70.7%
    ```
 
+5. **The action header — every comment, no exceptions** (Blaine, 2026-07-20). Blaine's problem
+   with the old comments was not the prose, it was that *the ask was buried*: he had to read four
+   good paragraphs to learn he needed to say one word. So the banner states the ask **before any
+   prose**, and every comment is one of exactly two kinds.
+
+   **Needs a human decision:**
+
+   ```
+           ⚜
+     THE CHRONICLER · keeper of the ledger
+    ─────────────────────────────────────────
+     ▸ YOU DECIDE — Griff
+     ▸ ASK — must a Politician stand in the zone to get paid?
+     ▸ IF YOU SAY NOTHING — stays as it is now ("anywhere")
+     ▸ BLOCKS — the influence swing on #125
+   ```
+
+   **Everything else:**
+
+   ```
+           ⚜
+     THE CHRONICLER · keeper of the ledger
+     ▸ NO REPLY NEEDED — shipped: what changed and why
+   ```
+
+   Rules for the header:
+   - **ONE ask per comment.** If you have three questions, you have three comments — or, better,
+     ask the one whose answer determines whether the other two matter at all. A comment with
+     three asks reliably gets none of them answered.
+   - **`IF YOU SAY NOTHING` is mandatory on every decision.** State what ships, stays, or waits
+     when they don't reply. It makes silence a real choice with a known outcome instead of an
+     open loop the human has to carry. If the honest answer is "nothing moves until you answer,"
+     say exactly that — that's a blocker, and it should look like one.
+   - **`BLOCKS`** names what is actually waiting. If nothing is, write `BLOCKS — nothing, answer
+     when you like`, which is permission to ignore it.
+   - **`YOU DECIDE`** names one person. If it's genuinely both, it's usually two comments.
+   - Set the `designer` label and **assign** the person named in `YOU DECIDE` (#91).
+
+6. **The Board** — one pinned issue listing every open decision, grouped by owner: the ask,
+   what it blocks, and the default if unanswered. Rebuild it whenever a decision opens or closes.
+   It is `docs`-lane work, so it never waits on a human. It exists because Blaine could not tell,
+   from a dozen threads, what was actually on his plate.
+
 Before posting, **re-fetch the thread** (`gh issue view N --comments`) and confirm no new
 comment landed while the draft was being written (Blaine, 2026-07-15) — a fresh reply can
 change or obsolete the draft (it happened: a `queued` reversal arrived mid-draft). If the
