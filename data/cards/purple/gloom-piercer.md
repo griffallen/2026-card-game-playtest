@@ -6,7 +6,7 @@ power: 3
 health: 2
 keywords: infiltrate
 pips: purple
-status: draft
+status: canon
 art: /cards/gloom-piercer.jpg
 ---
 Infiltrate.

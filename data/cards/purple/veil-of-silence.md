@@ -3,7 +3,7 @@ name: Veil of Silence
 type: action
 cost: 6
 pips: purple, purple
-status: draft
+status: canon
 art: /cards/veil-of-silence.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"grant","t":{"side":"enemy"},"kw":{"k":"cantAttack"},"dur":"round"},{"op":"damage","t":"enemyBase","n":1,"per":{"count":"exhaustedEnemyUnits"}}]}

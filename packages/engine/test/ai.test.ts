@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { simulateGame } from '../src/simulate.ts'
+import { V3_RULES } from '../src/rules.ts'
 import { applyAction } from '../src/engine.ts'
 import { heuristicPolicy, policyRngInit } from '../src/ai.ts'
 import { PREBUILT_DECKS, deckSlugs } from '../src/decks.ts'
@@ -9,14 +10,19 @@ import { game, put, toLoop } from './util.ts'
 const red = deckSlugs(PREBUILT_DECKS[0])
 const yellow = deckSlugs(PREBUILT_DECKS[1])
 
+/* Run the game we actually play. Until 2026-07-19 (#98, decision 107) these calls passed no
+   rules and silently got DEFAULT_RULES — the legacy v2.3 'intercept' combat — so both the AI
+   quality bar and the balance picture below described a game nobody plays. */
+const RULES = V3_RULES
+
 describe('baseline heuristic AI', () => {
   it('beats random play convincingly and never crashes (60 games)', { timeout: 180_000 }, () => {
     let aiWins = 0
     for (let seed = 1; seed <= 30; seed++) {
       // heuristic plays red as seat 0, then yellow as seat 1 — both colors covered
-      const asRed = simulateGame(seed, red, yellow, { policyA: 'heuristic', policyB: 'random' })
+      const asRed = simulateGame(seed, red, yellow, { rules: RULES, policyA: 'heuristic', policyB: 'random' })
       if (asRed.winner === 0) aiWins++
-      const asYellow = simulateGame(seed + 500, red, yellow, { policyA: 'random', policyB: 'heuristic' })
+      const asYellow = simulateGame(seed + 500, red, yellow, { rules: RULES, policyA: 'random', policyB: 'heuristic' })
       if (asYellow.winner === 1) aiWins++
     }
     // deterministic given fixed seeds; floor set below the observed rate to allow tuning drift
@@ -27,8 +33,8 @@ describe('baseline heuristic AI', () => {
   it('heuristic mirror: 60 games terminate; report the competent-play balance picture', { timeout: 240_000 }, () => {
     const rows: { winner: number; winReason: string; rounds: number; firstDeck: string }[] = []
     for (let seed = 1; seed <= 30; seed++) {
-      rows.push({ ...simulateGame(seed, red, yellow, { policyA: 'heuristic', policyB: 'heuristic' }), firstDeck: 'red' })
-      rows.push({ ...simulateGame(seed + 900, yellow, red, { policyA: 'heuristic', policyB: 'heuristic' }), firstDeck: 'yellow' })
+      rows.push({ ...simulateGame(seed, red, yellow, { rules: RULES, policyA: 'heuristic', policyB: 'heuristic' }), firstDeck: 'red' })
+      rows.push({ ...simulateGame(seed + 900, yellow, red, { rules: RULES, policyA: 'heuristic', policyB: 'heuristic' }), firstDeck: 'yellow' })
     }
     const redWins = rows.filter(r => (r.firstDeck === 'red' ? r.winner === 0 : r.winner === 1)).length
     const byReason = new Map<string, number>()
@@ -69,7 +75,7 @@ describe('AI under v2 rules (decisions 40–42)', () => {
   })
 
   it('random policy completes games under the new rules (smoke)', () => {
-    const r = simulateGame(77, deckSlugs(PREBUILT_DECKS[0]), deckSlugs(PREBUILT_DECKS[1]), { policyA: 'random', policyB: 'random' })
+    const r = simulateGame(77, deckSlugs(PREBUILT_DECKS[0]), deckSlugs(PREBUILT_DECKS[1]), { rules: RULES, policyA: 'random', policyB: 'random' })
     expect(r.winner === 0 || r.winner === 1).toBe(true)
   })
 })

@@ -7,7 +7,24 @@ A two-person project to design, prototype, and balance an original card game (wo
 - **The game designer** owns the game: rules, mechanics, cards, balance, feel. Not a software engineer — and shouldn't need to become one.
 - **The builder** (Blaine) owns the software: architecture, code, deployment.
 
-The creative brief is `docs/DESIGN/01-GENESYS.md`. The authoritative rules are `docs/REFERENCES/extracted/rules-v1.3.md` — earlier rules documents are superseded.
+The creative brief is `docs/DESIGN/01-GENESYS.md`.
+
+**The rules are `docs/rules.md`** — one document, always current, no version chain to reason
+about. It is **generated** (`npm run rules:doc`) from the rulebook players read on the demo,
+`apps/demo/src/pages/Rules.tsx`, with the engine's tunable values appended straight from
+`packages/engine/src/rules.ts`. So:
+
+- **To read the rules:** `docs/rules.md`. Nothing else is canon; every other rules document in
+  the repo is history (see `docs/archive/`).
+- **To change the rules:** edit `apps/demo/src/pages/Rules.tsx` (prose) or
+  `packages/engine/src/rules.ts` (numbers), then `npm run rules:doc`. Never hand-edit
+  `docs/rules.md` — it is overwritten, and `npm run rules:doc:check` fails the build if it
+  has drifted.
+
+Truth has two homes and one shape (issue #119): the **engine + `data/cards`** decide what the
+game *does* — executable, can't drift from itself — and **`docs/DESIGN/DECISIONS.md`** records
+*why*. Every other rules surface is derived from those and is checked against them, never
+maintained as a rival authority.
 
 ## Your role
 
@@ -46,11 +63,22 @@ The labels are the board, on **two orthogonal axes: scope ≠ approval**. Releas
 `RELEASES.md`. **Full spec + rationale: `docs/AGENT/build-workflow.md`** — read it before
 touching the flow. In brief:
 
-- **Scope** (how big / who fires / version bump): `patch` = one self-contained fix →
-  **agent auto-ships**; `minor` = a batch → **Blaine or Griff** fire; `major` = a **tripwire**
-  (engine primitive, `rules-v1.3.md`/`DECISIONS.md`, or changes what a card *does*) →
-  **Blaine only** fires (tick verifies the actor). Classify: tripwire? → major; else one
-  contained thing? → patch; else → minor.
+- **Scope = blast radius** (Blaine, 2026-07-19): *how much does the game a player experiences
+  change?* Not which files were touched. `docs` = **nothing changes**, the words catch up to
+  what the engine already does → **agent commits, no release, no deploy**; `patch` = one
+  self-contained fix → **agent auto-ships**; `minor` = a batch → **Blaine or Griff** fire;
+  `major` = **the game does something different** — a new/changed/removed mechanic, a new
+  engine primitive, a rules change → **Blaine only** fires (tick verifies the actor).
+- **Card work is never `major`.** Stats, costs, pips, statuses, new cards, balance — the
+  designer's lane, never blocked on Blaine. Re-tuning invalidates old sims; that's fine and
+  expected. The line is whether **the engine must learn something new**, and the build says so:
+  `npm run cards:check` errors `unknown op` for any effect the engine lacks. Compiles → card
+  work. Fails → engine change → `major`.
+- **The `docs` lane guard:** no file under `packages/engine/` or `data/cards/` changed, and
+  `test` + `cards:check` + `rules:doc:check` green. **Except rulebook prose** — wording in
+  `apps/demo/src/pages/Rules.tsx` is a truth claim to a player and nothing machine-checks it
+  (this is how #106's "Guard gate" ghost — a rule the engine never had — reached the book), so
+  that gets a human read.
 - **Approval / lifecycle** (independent of scope): `backlog` (noted) → *(scope tag, no
   `queued`)* = **scoped but unapproved** → `queued` = **approved + ready** → `building` →
   `shipped` + close. A `major` can be fully scoped and never approved (never gets `queued`).
@@ -97,9 +125,13 @@ long-running discussions, and every Griff-facing word. **Opus writes all the cod
 including new engine primitives and other tripwire work.** Fable rules on *how it should
 behave*; Opus builds it (Blaine: a Fable subagent costs ~150k tokens on a card build —
 don't spend one on implementation). **Tripwires** — work that touches engine primitives,
-`DECISIONS.md`, `rules-v1.3.md`, or changes what a card *does* (not just its stats) —
-route the **design decision** to Fable regardless of how well-specified it looks; once
-Fable (or Griff/Blaine) has ruled, **Opus implements it**.
+`DECISIONS.md`, or a rules change (`packages/engine/src/rules.ts`, rulebook prose in
+`apps/demo/src/pages/Rules.tsx`) — route the **design decision** to Fable regardless of how
+well-specified it looks; once Fable (or Griff/Blaine) has ruled, **Opus implements it**.
+**Card work is not a tripwire**: stats, costs, statuses, balance, and new cards built from
+mechanics the engine already has are Griff's lane — build them, don't route them. A card
+needing an effect the engine lacks fails `cards:check` with `unknown op`; *that* is the
+tripwire, because it's a new primitive.
 **Where the build runs (Blaine — keep the router's context lean; it's re-read every tick):**
 Opus does the implementation, but *where* matters. Three modes:
 • **Inline** — router edits directly. Default for a *contained* change (a card wiring, a
@@ -119,7 +151,7 @@ before deciding. Opus never unilaterally decides *not* to act. (Delegation verif
 session 012 — a `model: 'fable'` subagent runs and returns `claude-fable-5`; if you ever
 doubt it, spawn a one-line smoke-test rather than avoiding the delegation.)
 
-**GitHub voice:** the agent posts as **⚜ The Chronicler** (Blaine signs `-BB`) — one consistent handle so Griff always knows which replies are the agent. Every Chronicler comment opens with the ⚜ ASCII banner + live state line and signs ⚜ at the bottom — zero exceptions (Blaine, #16; canonical form in `.claude/skills/watch/SKILL.md`). Plain, concrete prose; no AI-isms. All Griff-facing comments are drafted by Fable (see Model routing).
+**GitHub voice:** the agent posts as **⚜ The Chronicler** (Blaine signs `-BB`) — one consistent handle so Griff always knows which replies are the agent. Every Chronicler comment opens with the ⚜ ASCII banner + live state line and signs ⚜ at the bottom — zero exceptions (Blaine, #16; canonical form in `.claude/skills/watch/SKILL.md`). Plain, concrete prose; no AI-isms. All Griff-facing comments are drafted by Fable (see Model routing). **Every comment opens with an action header** — `▸ YOU DECIDE / ▸ ASK / ▸ IF YOU SAY NOTHING / ▸ BLOCKS`, or `▸ NO REPLY NEEDED` — one ask per comment, before any prose (Blaine, 2026-07-20: the ask kept getting buried under good writing). Canonical form in `.claude/skills/watch/SKILL.md`.
 
 **During:** present decisions **one at a time** — the back-and-forth is where the good ideas emerge. If open threads pile up to where a clean handoff would be hard to write, suggest wrapping. Nudge, don't force.
 
@@ -151,13 +183,11 @@ doubt it, spawn a one-line smoke-test rather than avoiding the delegation.)
    the session established a durable rule or standing agreement, fold it into CLAUDE.md or
    the relevant skill/playbook *now*, not into the handoff: rules parked in the handoff get
    overwritten at the next wrap and drift.
-3. Add the session's entry to **The Chronicle** (`apps/demo/src/pages/Journal.tsx`) — the
-   demo's illuminated journal. Two parts per entry (Blaine, session 011): a one-sentence
-   fantasy-voiced **intro** in the hand of ⚜ The Chronicler, then a technical **log** (2–3
-   paragraphs) that reads like the session summary — exact, naming Blaine/Griff, with
-   decision numbers, issue/PR refs, sim numbers, and the quirks. A marginal note where one
-   fits. Deploy so it's live before the session closes.
-4. Offer to commit everything, with a suggested message.
+3. Offer to commit everything, with a suggested message.
+
+*(The Chronicle — the demo's illuminated session journal — was retired 2026-07-19: it was
+effort spent narrating the build rather than building. The session summary above is the
+record.)*
 
 ## Working principles
 

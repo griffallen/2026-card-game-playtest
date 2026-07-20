@@ -3,7 +3,7 @@ name: Shadowstep
 type: action
 cost: 2
 pips: purple
-status: draft
+status: canon
 art: /cards/shadowstep.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"grant","t":"chosen0","kw":{"k":"hidden"},"dur":"round"},{"op":"draw","n":1}]}

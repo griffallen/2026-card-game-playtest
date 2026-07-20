@@ -6,7 +6,7 @@ power: 2
 health: 6
 keywords: politician, sneak
 pips: purple
-status: draft
+status: canon
 art: /cards/duskweaver-oracle.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"draw","n":1},{"op":"influence","n":1}],"sneak":{"ops":[{"op":"draw","n":2},{"op":"chooseFromHand","to":"deckBottom","n":1}]}}

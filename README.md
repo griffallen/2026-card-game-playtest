@@ -48,9 +48,8 @@ Every idea starts the same way: say it in an [issue](../../issues/new), plain wo
 
 You never need to know the size in advance — just say the idea. The agent keeps you posted on the thread from there.
 
-**What the game is right now:** [`docs/GAME-FLOW.md`](docs/GAME-FLOW.md) — the rules as a story,
-every prototype ruling flagged ⚑. The locked baseline lives in
-[`docs/canon/CANON.md`](docs/canon/CANON.md); the why-log of every decision is
+**What the game is right now:** [`docs/rules.md`](docs/rules.md) — the complete current rules,
+the same words as the demo's Rulebook tab. The why-log behind every ruling is
 [`docs/DESIGN/DECISIONS.md`](docs/DESIGN/DECISIONS.md). **Feel and balance are yours** — the agent
 never rejects a card for being strong, only for being broken, dishonest, or off-color.
 
@@ -79,11 +78,9 @@ Full spec: [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 | Path | What it is |
 |------|-----------|
 | `data/cards/` | **The card ledger — one file per card, the single source of truth** |
-| `docs/GAME-FLOW.md` | How the prototype plays — the designer-facing rules narrative |
-| `docs/canon/` | The locked baseline: CANON index + a charter per deck (the design law) |
-| `docs/SPECS/game-rules.md` | The precise ruleset — the engine's contract |
-| `docs/DESIGN/DECISIONS.md` | Every design decision, numbered, with reasons |
-| `docs/PLAYTESTS/` | Playtest + simulation campaign records |
+| `docs/rules.md` | **The rules — complete and current.** Generated; edit `apps/demo/src/pages/Rules.tsx` |
+| `docs/DESIGN/DECISIONS.md` | Every design decision, numbered, with reasons — the why-log |
+| `docs/canon/decks/` | A charter per deck: what each colour is allowed to print |
 | `docs/PROMPTS/` | Session summaries and the current handoff prompt |
 | `CLAUDE.md` | The agent's guide: roles, session protocol, working principles |
 | `packages/engine` | Pure deterministic game engine (rules as code + data) |

@@ -3,7 +3,7 @@ name: Eclipse
 type: action
 cost: 7
 pips: purple, purple, purple
-status: draft
+status: canon
 art: /cards/eclipse.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"lockPlays","who":"opponent"},{"op":"discardRandom","who":"opponent","n":1},{"op":"draw","upTo":7}]}

@@ -1,6 +1,6 @@
 # Playbook: Implement
 
-Session-based implementation. Each session picks up a slice from `docs/DESIGN/03-BUILD-PLAN.md` and drives it to done.
+Session-based implementation. Work is scoped per issue and shipped per `docs/AGENT/build-workflow.md`.
 
 ## Rules of the road
 

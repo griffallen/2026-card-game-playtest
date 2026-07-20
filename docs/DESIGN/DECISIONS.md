@@ -1,8 +1,18 @@
 # Design Decisions
 
+> **This file is the *why*, not the *what*.** It is an append-only history of rulings in the
+> order they were made — so it necessarily contains decisions that have since been overturned.
+> **Never read it to learn the current rules.** For what the game does today:
+> **`docs/rules.md`** (rules) and **`data/cards/`** (cards). Those are the authority; this
+> file explains how they got that way (issue #119).
+>
+> **Appending:** new decisions go at the end, numbered, never renumbered. When a decision is
+> overturned, leave the entry intact and add a **SUPERSEDED by NN** marker *at the front of the
+> entry* — a reader skimming must see it before the obsolete rule, not after.
+
 Numbered, in the order they were made. Format: decision — reason.
 
-**Status key:** ✅ agreed with user · ⚑ **assumed by the agent during the 2026-07-07 autonomous build** — made so a playable prototype could exist tonight; each ⚑ needs designer review. Overturning any ⚑ is expected and cheap: most are engine parameters or one function.
+**Status key:** ✅ agreed with user · ⚑ **assumed by the agent during the 2026-07-07 autonomous build** — made so a playable prototype could exist tonight. Note that many ⚑ entries have since been ruled on by Griff and simply never had their mark updated, so a ⚑ is *not* reliable evidence that a question is still open — check the issue tracker.
 
 ## Scope
 
@@ -192,3 +202,41 @@ Numbered, in the order they were made. Format: decision — reason.
 - **Yellow event-economy:** Aura of Resolve startOfRound income (charter-illegal) → +2 on wearer defend @3; guard payout ladder (≤3-cost guards pay 1: Justicar Enforcer 2→1); Champion of the Faith 6/6→7/7 + honest "gain"; Hierophant 2/6→3/7.
 - **Yellow re-costs:** Absolution 7→3 (it's a jailbreak), Devout Intervention 6→3, Sanctify 6→4 (+1 inf not +2), Light of Authority 6→3, Disarming Order 5→3, Mobilize the Faithful 4→6, Resolve Banner 6→4.
 - **Decision-51/52 honest text** across all auto-target imprisons and zone-choice actions; Radiant Citadel decision-49 text; Flying decision-48 note; "Influence: +N" prose normalized to "Gain N Influence."
+
+## Backfill — 2026-07-17 → 2026-07-19 (the purple arc)
+
+*Recorded 2026-07-19 during the docs canon reset. The `docs` lane did not exist yet, so a week of
+rulings landed in commits and issue threads without a numbered entry (#109). Card stat and cost
+tweaks are deliberately **not** numbered — those live in each card's Design notes and in git; only
+rulings that changed how the game works get a number.*
+
+107. ⚠️ **Every sim number quoted before 2026-07-19 measured the wrong game** (issue #98, commit
+     `cbfe6c7`). `scripts/sim-matchups.ts` called `simulateGame` with no rules override, so it
+     silently ran `DEFAULT_RULES` — `combatModel: 'intercept'`, the legacy v2.3 model — while the
+     demo and every v3 card run `V3_RULES` (`blockerPairing`). The harness has been fixed to pass
+     `V3_RULES`. **This voids the sim evidence under decisions 99–106**, including decision 106's
+     "±20 drops yellow 76.0% → 69.7%" and the whole yellow-overpowered read. Scale of the error:
+     yellow-vs-purple read **65/35 under intercept and 43/57 — purple favoured — under real v3**, a
+     complete reversal. — Re-run any number before trusting it; no balance call should cite a
+     pre-2026-07-19 figure.
+108. ✅ **Shield and Ward stop Breakthrough spill** (issue #118, Griff). A prevented hit is not a
+     killed blocker, so nothing pours past it into the target or the base. — Breakthrough's spill
+     is the *leftover* of a lethal blow; a shield means there was no blow to have leftovers.
+109. ✅ **Card vocabulary: "defeats", not "kills"** (issue #122). One verb across every card and
+     teaching surface. — A shared game has one word for one event; two words read as two rules.
+110. ✅ **Upgrades may attach to either side** (issue #122 — Silence the Song, Wither). Until now an
+     upgrade attached only to a friendly unit (with Subjugate the odd enemy-clamp exception); the
+     attach target is now an explicit any-side choice, and upgrades may carry `onHostDeath`. —
+     Curses and enchantments are the same mechanic pointed in opposite directions; the engine
+     shouldn't need two systems for it.
+111. ✅ **Infiltrate asks which zone** (issue #121, Griff). Playing an Infiltrate unit now offers a
+     deploy-zone choice rather than picking one for you. — The keyword's whole point is arriving
+     where you're least wanted; choosing for the player deletes the decision.
+112. ✅ **The Veiled Court is purple's canonical deck** (issues #5/#122). Griff's hand-curated
+     58-card build is locked and seated beside Crimson Assault and Radiant Order; all 36 purple
+     cards are `canon`. — Purple was adopted on #5 and rebuilt through #122; the ledger just hadn't
+     said so.
+113. ✅ **New engine primitives for purple** (issue #122): `reckoning` (an AoE finisher), `revealHand`
+     (a one-time hand peek — Twilight Scout), and the pick-from-hand foundation behind Glimpse and
+     Obscure. — Purple's identity is information and denial; none of it was expressible in the
+     existing vocabulary.

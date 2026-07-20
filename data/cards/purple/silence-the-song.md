@@ -3,7 +3,7 @@ name: Silence the Song
 type: upgrade
 cost: 3
 pips: purple, purple
-status: draft
+status: canon
 art: /cards/silence-the-song.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"attach":{"side":"any"},"statics":[{"s":"aura","scope":"attached","p":-2}],"onHostDeath":[{"op":"draw","n":2}]}

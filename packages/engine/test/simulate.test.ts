@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { simulateRandomGame } from '../src/simulate.ts'
+import { V3_RULES } from '../src/rules.ts'
 import { PREBUILT_DECKS, deckSlugs } from '../src/decks.ts'
 import type { SimResult } from '../src/types.ts'
 
@@ -11,8 +12,8 @@ describe('random-playout simulation (GENESYS harness v0)', () => {
   it('150 seeded games all terminate with a winner, no crashes, both win conditions reachable', { timeout: 180_000 }, () => {
     const results: (SimResult & { firstDeck: string })[] = []
     for (let seed = 1; seed <= SEEDS; seed++) {
-      results.push({ ...simulateRandomGame(seed, red, yellow), firstDeck: 'red' })
-      results.push({ ...simulateRandomGame(seed + 10_000, yellow, red), firstDeck: 'yellow' })
+      results.push({ ...simulateRandomGame(seed, red, yellow, V3_RULES), firstDeck: 'red' })
+      results.push({ ...simulateRandomGame(seed + 10_000, yellow, red, V3_RULES), firstDeck: 'yellow' })
     }
 
     expect(results.length).toBe(SEEDS * 2)

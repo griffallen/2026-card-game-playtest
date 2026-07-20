@@ -5,7 +5,7 @@ cost: 8
 health: 8
 keywords: hidden
 pips: purple, purple, purple
-status: draft
+status: canon
 art: /cards/the-unseen-court.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"powerFromCount":"discardUnitsBoth"}

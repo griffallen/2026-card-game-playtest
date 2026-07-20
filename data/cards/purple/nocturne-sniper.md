@@ -6,7 +6,7 @@ power: 0
 health: 3
 keywords: ranged 3
 pips: purple, purple, purple
-status: draft
+status: canon
 art: /cards/nocturne-sniper.jpg
 ---
 Ranged 3.

@@ -18,11 +18,28 @@ Every live item wears **one scope tag + one lifecycle state**. They move indepen
 
 **Axis 1 — Scope** (how big / who fires / which version bumps):
 
+Scope measures **blast radius — how much the game a player experiences changes** (Blaine,
+2026-07-19). It is *not* a measure of which files were touched, and it is *not* about whether
+old balance sims stay valid: re-tuning a card legitimately invalidates old sims, and that's fine.
+
 | Scope | one-line test | fired by |
 |-------|---------------|----------|
-| `patch` | one self-contained fix — a stat/number tweak, card wiring, copy fix, bugfix-with-test; no tripwire | **agent, automatically** |
-| `minor` | a batch worth shipping together (several cards/nerfs or a small feature); no tripwire | **Blaine or Griff** (`build-now`) |
-| `major` | a **tripwire** — engine primitive, `rules-v1.3.md`/`DECISIONS.md`, or changes what a card *does* | **Blaine only** (`build-now`) |
+| `docs` | **nothing changes** — the words catch up to behaviour the engine already runs | **agent, automatically** (see below) |
+| `patch` | one self-contained fix — a stat/cost tweak, card wiring, copy fix, bugfix-with-test | **agent, automatically** |
+| `minor` | a batch worth shipping together (several cards/nerfs or a small feature) | **Blaine or Griff** (`build-now`) |
+| `major` | **the game does something different** — a new/changed/removed mechanic, a new engine primitive, a rules change | **Blaine only** (`build-now`) |
+
+**Card work is never `major`.** Tweaking stats, costs, pips or statuses, adding or dropping
+cards, and balancing are the designer's own lane — they must never block on Blaine. The line is
+whether **the engine has to learn something new**, and the build already answers it:
+
+> `npm run cards:check` validates every card against the engine's effect vocabulary
+> (`packages/engine/src/validate.ts` — `unknown op` is a hard error). **A card that compiles uses
+> only mechanics that already exist → card work.** A card that needs a new op fails the check →
+> that's an engine change → `major`.
+
+So a brand-new card built from existing mechanics is Griff's to make freely. A card that needs a
+new primitive stops for Blaine — and the failing check tells you which, no judgement call.
 
 **Axis 2 — Lifecycle / approval** (where it is):
 
@@ -38,9 +55,27 @@ Plus one flag — `build-now` — and the `designer` gate (blocked on Griff's de
 
 ## Classification test (scope)
 
-In order: **tripwire? → `major`.** Else **one contained thing? → `patch`.** Else → `minor`.
-Because `major` == tripwire, the agent can only ever auto-ship (patch) genuinely contained
-work — a tripwire always stops for Blaine and Fable.
+In order: **does the game behave differently? → `major`** (the design decision routes to Fable
+first; Opus implements after the ruling). Else **does anything behave differently at all?** If
+no → **`docs`**. Else **one contained thing? → `patch`.** Else → `minor`.
+
+### The `docs` lane (#109)
+
+A **doc-sync** brings the written word in line with behaviour the engine *already* runs. It
+carries **no `RELEASES.md` line, no version bump and no deploy** — nothing shipped, because
+nothing changed. The agent commits it directly, under a guard that is checkable rather than a
+judgement call:
+
+- **no file under `packages/engine/` or `data/cards/` changed**, and
+- `npm test`, `npm run cards:check` and `npm run rules:doc:check` are all green.
+
+If the fix needs an engine or card change, it isn't a sync — it's design, and it's `major`.
+
+**One carve-out: rulebook prose is not in the auto lane.** Wording in
+`apps/demo/src/pages/Rules.tsx` is a truth claim made to a player, and nothing machine-checks
+prose against the engine — that is exactly how the "Guard gate" ghost reached the rulebook on
+#106, describing a rule the engine never had. Rulebook wording gets a human read. Everything
+else — `DECISIONS.md`, `RELEASES.md`, the charters, README, CLAUDE.md — the agent may commit.
 
 ## Flow per tier
 

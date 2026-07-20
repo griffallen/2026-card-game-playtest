@@ -4,7 +4,7 @@ Convert design decisions into implementable specs in `docs/SPECS/`. The bar: a d
 
 ## The five specs
 
-1. **`game-rules.md`** — the living rules document and the heart of the project. Three sections:
+1. **`docs/rules.md`** — the rules, generated from `apps/demo/src/pages/Rules.tsx`. Three sections:
    - **Core mechanics** — turn structure, zones, action alternation, combat resolution, timing and trigger ordering, win-condition checks. These become engine code; changing them requires the builder.
    - **Parameters** — every tunable value, named, typed, with its current default: starting life, influence win threshold, starting hand size, draw count, deck minimum, max copies, … These become data the designer edits in the admin.
    - **Effect vocabulary** — every keyword and trigger pattern the engine implements (Guard, Armor X, Rush, Breakthrough, Overextend, Imprison, influence triggers, …), each with precise semantics and its parameters. Every card must be expressible in this vocabulary.

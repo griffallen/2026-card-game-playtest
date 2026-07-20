@@ -24,8 +24,15 @@ Anything newer is a finding.
 Two axes: **scope** (`patch`|`minor`|`major`) and **approval** (`backlog`→`queued`→`building`
 →`shipped`). Every tick, on top of the sweep:
 
-1. **Scope-classify new/unlabeled work.** tripwire? → `major`; one contained thing? → `patch`;
-   else → `minor`. If blocked on a human, **assign** them (#91). On a `minor`/`major`, post a
+1. **Scope-classify new/unlabeled work** by **blast radius** — how much the game a player
+   experiences changes (not which files were touched). Does it behave differently? → `major`
+   (route the design call to Fable first). Nothing behaves differently? → `docs` — the agent
+   commits it, no `RELEASES.md` line and no deploy, provided nothing under `packages/engine/`
+   or `data/cards/` changed and `test` + `cards:check` + `rules:doc:check` are green; rulebook
+   prose (`apps/demo/src/pages/Rules.tsx`) is excluded and needs a human read. One contained
+   thing? → `patch`; else → `minor`. **Card work is never `major`** — stats, costs, statuses,
+   new cards and balance are Griff's lane and never wait on Blaine; if a card needs an effect
+   the engine lacks, `cards:check` fails with `unknown op`, and *that* is the `major`. If blocked on a human, **assign** them (#91). On a `minor`/`major`, post a
    **scoping brief** (effort + side-effects/impacts, Fable-drafted) — the input to the human's
    `queued` (approval) call (#92); patches skip it.
 2. **Ship patches on sight.** A `patch` self-approves — no `queued`, no trigger: build +
@@ -64,7 +71,7 @@ handled activity — don't re-trigger on your own edits.
 | Nothing new | End the tick. No Fable, no summary. |
 | Git/CI mechanics — conflicts, failing gate, labels, branch cleanup | Router, directly |
 | Well-specified code work — clear repro, agreed spec, stat-only card wiring | Router codes it (test-first; deploy after demo-facing changes) |
-| **Tripwire** — touches engine primitives, `DECISIONS.md`, `rules-v1.3.md`, or changes what a card *does* (not just its stats) | Fable rules on the **design/behavior**; then **Opus implements the code** (not a ~150k Fable build) |
+| **Tripwire** — a new engine primitive, `DECISIONS.md`, or a rules change (`packages/engine/src/rules.ts`, rulebook prose in `apps/demo/src/pages/Rules.tsx` — never generated `docs/rules.md`). **Card work is NOT a tripwire** — stats/costs/statuses/balance/new cards on existing mechanics are Griff's lane; only a card needing an op the engine lacks (`cards:check` → `unknown op`) is one | Fable rules on the **design/behavior**; then **Opus implements the code** (not a ~150k Fable build) |
 | **Where the Opus build runs** | *Contained* edit → **inline**. *Sprawling* build (heavy multi-file reads / from-scratch primitive) → **Opus subagent** (`model:'opus'` general-purpose, or `fork`) so its reads stay out of the router's context. Override: Blaine says **`fable-build`** → route that one build to a `model:'fable'` subagent; reverts to Opus next item. (Canon: CLAUDE.md → Model routing.) |
 | **Any outbound GitHub comment** — reply, ack, triage ruling, release clarification | **Fable drafts** (template below); router posts it verbatim |
 | Mechanics design, architecture call, the *judgment* in a cross-surface audit | Fable (decision only) — or switch the session (`/model`) for long design work; Opus writes any resulting code |
@@ -99,6 +106,49 @@ starts blank — the brief is everything. It MUST contain:
      THE CHRONICLER · keeper of the ledger
      5 clean nerfs wired — 81.7% → 70.7%
    ```
+
+5. **The action header — every comment, no exceptions** (Blaine, 2026-07-20). Blaine's problem
+   with the old comments was not the prose, it was that *the ask was buried*: he had to read four
+   good paragraphs to learn he needed to say one word. So the banner states the ask **before any
+   prose**, and every comment is one of exactly two kinds.
+
+   **Needs a human decision:**
+
+   ```
+           ⚜
+     THE CHRONICLER · keeper of the ledger
+    ─────────────────────────────────────────
+     ▸ YOU DECIDE — Griff
+     ▸ ASK — must a Politician stand in the zone to get paid?
+     ▸ IF YOU SAY NOTHING — stays as it is now ("anywhere")
+     ▸ BLOCKS — the influence swing on #125
+   ```
+
+   **Everything else:**
+
+   ```
+           ⚜
+     THE CHRONICLER · keeper of the ledger
+     ▸ NO REPLY NEEDED — shipped: what changed and why
+   ```
+
+   Rules for the header:
+   - **ONE ask per comment.** If you have three questions, you have three comments — or, better,
+     ask the one whose answer determines whether the other two matter at all. A comment with
+     three asks reliably gets none of them answered.
+   - **`IF YOU SAY NOTHING` is mandatory on every decision.** State what ships, stays, or waits
+     when they don't reply. It makes silence a real choice with a known outcome instead of an
+     open loop the human has to carry. If the honest answer is "nothing moves until you answer,"
+     say exactly that — that's a blocker, and it should look like one.
+   - **`BLOCKS`** names what is actually waiting. If nothing is, write `BLOCKS — nothing, answer
+     when you like`, which is permission to ignore it.
+   - **`YOU DECIDE`** names one person. If it's genuinely both, it's usually two comments.
+   - Set the `designer` label and **assign** the person named in `YOU DECIDE` (#91).
+
+6. **The Board** — one pinned issue listing every open decision, grouped by owner: the ask,
+   what it blocks, and the default if unanswered. Rebuild it whenever a decision opens or closes.
+   It is `docs`-lane work, so it never waits on a human. It exists because Blaine could not tell,
+   from a dozen threads, what was actually on his plate.
 
 Before posting, **re-fetch the thread** (`gh issue view N --comments`) and confirm no new
 comment landed while the draft was being written (Blaine, 2026-07-15) — a fresh reply can

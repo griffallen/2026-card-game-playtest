@@ -3,7 +3,7 @@ name: Wither
 type: upgrade
 cost: 2
 pips: purple
-status: draft
+status: canon
 art: /cards/wither.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"attach":{"side":"enemy","consumedOnHostDeath":true},"onPlay":[{"op":"buff","t":"attached","p":-1,"h":-1,"dur":"perm"}],"startOfRound":{"ops":[{"op":"buff","t":"attached","p":-1,"h":-1,"dur":"perm"}]}}

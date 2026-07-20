@@ -1,20 +1,13 @@
 import { useMemo, useState, type ReactNode } from 'react'
 import decisions from '@docs/DESIGN/DECISIONS.md?raw'
 import genesys from '@docs/DESIGN/01-GENESYS.md?raw'
-import gameFlow from '@docs/GAME-FLOW.md?raw'
-import rulesSpec from '@docs/SPECS/game-rules.md?raw'
-import colors from '@docs/DESIGN/04-COLORS-ROADMAP.md?raw'
-import playtests from '@docs/PLAYTESTS.md?raw'
-import uxAudit from '@docs/UX-AUDIT.md?raw'
+import identities from '@docs/DESIGN/07-COLOR-IDENTITIES.md?raw'
 
+// The rules live on the Rulebook tab (/rules) — one rules surface, no second copy here.
 const DOCS = [
-  { key: 'decisions', title: 'Design Decisions', blurb: 'Every ruling made so far and the reasoning behind it — the canonical record.', src: decisions },
+  { key: 'decisions', title: 'Design Decisions', blurb: 'Every ruling made so far and the reasoning behind it — the why-log.', src: decisions },
+  { key: 'identities', title: 'Colour Identities', blurb: 'What each colour is allowed to be — the charter cards are designed against.', src: identities },
   { key: 'genesys', title: 'The Creative Brief', blurb: 'The original vision: what this game is trying to be.', src: genesys },
-  { key: 'flow', title: 'How the Game Plays', blurb: "The designer's walkthrough, with the ⚑ judgment calls called out.", src: gameFlow },
-  { key: 'colors', title: 'Colors Roadmap', blurb: 'Dreaming ahead — Green, Blue, and Purple factions.', src: colors },
-  { key: 'playtests', title: 'Playtest Log', blurb: 'What real games at the table taught us.', src: playtests },
-  { key: 'ux', title: 'UX Audit', blurb: 'The "can a player always tell what’s happening?" pass.', src: uxAudit },
-  { key: 'spec', title: 'Full Rules Spec', blurb: 'The technical contract the engine implements (v3.0).', src: rulesSpec },
 ] as const
 
 // ── minimal markdown → JSX (no dependency): headings, lists, tables, code, hr, inline ──

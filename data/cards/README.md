@@ -1,6 +1,6 @@
 # The Card Ledger — how to edit cards
 
-Every card in the game is one file in this folder: `red/`, `yellow/`, and `purple/` (a proposal deck awaiting adoption), one `.md` file per card.
+Every card in the game is one file in this folder: `red/`, `yellow/`, and `purple/`, one `.md` file per card.
 **These files are the real cards** — the game engine is built from them. Change a file, and once
 it's merged, every new game uses your version.
 
@@ -83,5 +83,5 @@ respond on the thread, and fold accepted changes into the canon. The why gets lo
 
 ## The rules this all hangs from
 
-- [`docs/GAME-FLOW.md`](../../docs/GAME-FLOW.md) — how the game plays, designer-friendly.
-- [`docs/canon/CANON.md`](../../docs/canon/CANON.md) — the current locked baseline + open questions.
+- [`docs/rules.md`](../../docs/rules.md) — the rules, always current (also the demo's Rulebook tab).
+- [`docs/DESIGN/DECISIONS.md`](../../docs/DESIGN/DECISIONS.md) — the why-log behind every ruling.

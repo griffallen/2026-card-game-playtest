@@ -1,27 +1,32 @@
-# Yellow Deck Charter — canon-v1.0
+# Yellow Deck Charter
 
 *One of the card pool's two parents: every yellow card must obey this charter **and** the base
-rules (`docs/SPECS/game-rules.md`). A card that breaks a law here is a review-blocker.*
+rules (`docs/rules.md`). A card that breaks a law here is a review-blocker.*
 
 ## Identity
 
-**Yellow is order made inevitable.** It wins by refusing to lose — walls that intercept for free,
-laws that lock threats away, and a shared Influence track that ticks toward yellow every time its
-defense *does something*. Yellow has two win axes: outlast red's aggression and win on Life late,
-or convert a long game into an **Influence** victory. Yellow's weakness is tempo: it must actually
-contest the board, not just sit (Guard no longer auto-blocks — decision 42).
+**Yellow is order made inevitable.** It wins by refusing to lose — Guards that block for free,
+laws that take threats into custody, and a shared Influence track that ticks toward yellow every
+time its defense *does something*. Yellow has two win axes: outlast red's aggression and win on
+Life late, or convert a long game into an **Influence** victory. Yellow's weakness is tempo: it
+must actually contest the board, not just sit.
 
 ## Keywords yellow may print
 
 | Keyword | What it means for yellow | Limits |
 |---|---|---|
-| **Guard** | The signature: intercepts attacks without exhausting. | Yellow-only. Guards get *paid* for stepping in (onDefend Influence), never for existing. |
-| **cantAttack** | Pure walls — statlines no attacker enjoys hitting. | Yellow-only. The statline discount pays for the passivity. |
-| **Untargetable** | Law protects its instruments (Chain of Law). | Rare. |
-| **Flying** | Mobility as judgment — arrives where needed (Light's Vanguard). | Rare; premium cost. |
-| **Armor N** | Granted by upgrades/auras (Radiant Aegis-style), not printed on base units today. | Keep as granted-defense; printing it on units is a ratify-first change. |
+| **Guard** (9 cards) | The signature. Under the duel law a lone attacker on a unit can *only* be blocked by a Guard — and Guards never exhaust to block. | Yellow-only. Guards get *paid* for stepping in (onDefend Influence), never for existing. |
+| **Politician** (7 cards) | The middle gets a constituency: round-end Influence for holding a zone majority (+1 Neutral, +2 enemy Home, stacking). | Yellow's influence engine. Shared with purple; forbidden to red. |
+| **cantAttack** (4 cards) | Pure walls — statlines no attacker enjoys hitting. | Yellow-only. The statline discount pays for the passivity. |
+| **Capture** (3 cards) | Custody, not a wound: the captive leaves the board and returns only when the capturer does (decision 92). | Yellow's signature control. Prison's successor. |
+| **Armor N** (3 cards) | Every hit shrunk by N, per pairing. | Keep it defensive; big N on a cheap body is a design smell. |
+| **Shielded** (2 cards) | Arrives with a token that eats one whole hit. | Rare; premium. |
 
-**Forbidden:** Rush, Breakthrough, Overextend, Reach. Yellow never spends blood for tempo.
+**Forbidden:** Rush, Breakthrough, Scar, Hidden, Infiltrate, Sneak. Yellow never spends blood
+for tempo and never fights from the shadows — it stands in the open and is paid for it.
+
+*Retired:* the **prison** package — cut whole on issue #3 and succeeded by Capture. No yellow card
+imprisons, releases, or decays a prison; those words are gone from the game.
 
 ## Invariants (the design laws)
 
@@ -35,12 +40,10 @@ contest the board, not just sit (Guard no longer auto-blocks — decision 42).
    is when guard units earn. A guard with no onDefend payoff needs a reason.
 3. **No dead thresholds** (decision 50): no card may reference an Influence value at or beyond the
    win threshold.
-4. **Yellow's removal is conditional, never efficient.** Imprison (position-bound, decaying),
-   destroy-if-damaged, power-capped effects. Clean unconditional "destroy target unit" or
-   efficient direct burn is red-shaped and forbidden.
-5. **The prison package is provisional** (decisions 37/53): the ~15 prison cards stay normalized
-   and playable, but **no new prison-dependent designs** until Griff rules on the mechanic's fate.
-6. **Yellow heals** — units and base. It's the only current color that may.
+4. **Yellow's removal is conditional, never efficient.** Capture (custody — the unit comes back
+   when the capturer falls), destroy-if-damaged, power-capped effects. Clean unconditional
+   "destroy target unit" or efficient direct burn is red-shaped and forbidden.
+5. **Yellow heals** — units and base. It's the only current color that may.
 
 ## Curve & size (the standard base set)
 
@@ -55,12 +58,11 @@ contest the board, not just sit (Guard no longer auto-blocks — decision 42).
 ## Influence posture
 
 Yellow is the only color whose *plan* may be the track. All gains event-earned (invariant 1);
-the natural rhythm is "you attacked my wall, I got paid." Prison inverts it: holding prisoners
-*costs* Influence every round (§1.11) — mass imprisonment is a mortgage against the win axis.
+the natural rhythm is "you attacked my wall, I got paid." Politician adds the second rhythm —
+hold a zone majority at round end and the crowd pays you.
 
 ## Provisional / open
 
-- **Prison's fate** — decision 37, Griff's call. Blocks ~15 cards' long-term identity.
 - Whether Armor should appear printed on yellow base units (currently upgrade/aura-granted only).
 - Is the ~5% Influence-win rate the intended upset frequency, or should the trickle bite harder?
   (Feeds the win-threshold parameter conversation.)

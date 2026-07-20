@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { DEFAULT_RULES, V3_RULES, normalizeRules } from '../src/rules.ts'
 
 // Slice V3-1 (build plan): one engine, two rule sets. v2.3 defaults preserve today's
-// behavior exactly; the V3_RULES preset flips the structural switches (spec: game-rules-v3-draft).
+// behavior exactly; the V3_RULES preset flips the structural switches (docs/rules.md).
 describe('rules versioning (v3 plumbing)', () => {
   it('v2.3 defaults keep legacy behavior: intercept combat, no pips, upgrades die with wearer', () => {
     expect(DEFAULT_RULES.combatModel).toBe('intercept')

@@ -1,7 +1,7 @@
-# Red Deck Charter — canon-v1.0
+# Red Deck Charter
 
 *One of the card pool's two parents: every red card must obey this charter **and** the base rules
-(`docs/SPECS/game-rules.md`). A card that breaks a law here is a review-blocker, whatever its numbers.*
+(`docs/rules.md`). A card that breaks a law here is a review-blocker, whatever its numbers.*
 
 ## Identity
 
@@ -14,13 +14,15 @@ deck's signature. Red wins by **Life**, never by Influence.
 
 | Keyword | What it means for red | Limits |
 |---|---|---|
-| **Rush** | The tempo engine: reposition free the round a unit lands (first move only). | Red's most common keyword; cheap units first. |
-| **Breakthrough N** | Kills must convert to face damage — red hates walls. | N ≤ cost−1 as a rule of thumb; N scales with cost. |
-| **Overextend N** | The gamble: +N power now, N self-damage at end of round. **Units only** (decision 47). | Never on actions/upgrades. The self-damage is real — no card may waive it. |
-| **Reach** | The wall-breaker exception (Blaze Juggernaut): threatens adjacent zones *and* bases, takes counter-damage. | Rare — at most 1–2 cards per set. |
+| **Rush** (7 cards) | The tempo engine: the unit's first move each round is free. | Red's signature; cheap units first. |
+| **Breakthrough** (7 cards) | Kills must convert to face damage — red hates walls. | No number, no cap: everything past a slain blocker spills. |
+| **Scar** (4 cards) | The gamble, reshaped: +1 Power per damage marked, uncapped (decision 94). | Red's wound-fuel identity — Overextend's successor. |
 
-**Forbidden:** Guard, Armor, cantAttack, untargetable, Flying, Ranged. Red doesn't defend, hide,
-or shoot from safety — it closes distance and swings.
+**Forbidden:** Armor, cantAttack, Hidden, Infiltrate, Sneak, Ranged, Capture, Politician. Red
+doesn't defend, hide, shoot from safety, or campaign — it closes distance and swings.
+
+*Retired, never to return without a fresh ruling:* **Overextend** (cut; Scar carries the flame —
+decisions 70→94) and **Reach** (cut on issue #8). Neither appears on any card.
 *One sworn exception (designer, PR #31, 2026-07-12): **Spark Hound** carries Guard — "they look
 like guard dogs." Flavor may overrule the law, but each new exception is ratify-first.*
 
@@ -29,12 +31,13 @@ like guard dogs." Flavor may overrule the law, but each new exception is ratify-
 1. **Red never gains Influence.** No red card moves the shared track toward red's side — not on
    kill, not on play, not ever. (Ceding Influence *to the opponent* as a printed cost is legal
    charter space — it's the original "burn your standing" idea — but no current card uses it.)
-2. **Overextend is a unit combat gamble, never printed on actions or upgrades** (decision 47).
+2. **Scar is a unit keyword, never printed on actions or upgrades** (decision 47's rule, inherited
+   from Overextend).
 3. **Every discount has a visible cost.** A red card that beats the statline grammar or the
-   damage-per-cost norm must print what it charges you: self-damage, Overextend, a dead-end board
-   state. No free power.
+   damage-per-cost norm must print what it charges you: self-damage, a Scar body that must be
+   wounded to pay off, a dead-end board state. No free power.
 4. **Red does not heal** — not units, not its base. Damage taken is the price already paid.
-5. **Red does not imprison, release, or touch the prison system in any way.**
+5. **Red does not Capture.** Taking prisoners is yellow's law, not red's.
 6. **Red's removal is damage — or an execute that finishes a fight.** Destroy-effects are legal
    only against *damaged* units (Execution Swing); unconditional destroy or exile is forbidden.
 
@@ -60,4 +63,3 @@ being violated somewhere.
 
 - The twelve-doubles deck rule (decision 25) is a prototype convenience — real deckbuilding rules
   replace it eventually.
-- Reach's "at most 1–2 per set" cap is an aesthetic call — Griff may want more wall-hate.

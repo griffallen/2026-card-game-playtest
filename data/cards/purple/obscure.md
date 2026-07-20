@@ -3,7 +3,7 @@ name: Obscure
 type: action
 cost: 3
 pips: purple, purple
-status: draft
+status: canon
 art: /cards/obscure.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"draw","n":2},{"op":"chooseFromHand","who":"each","to":"discard"}]}
