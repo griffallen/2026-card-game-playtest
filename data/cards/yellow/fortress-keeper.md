@@ -4,13 +4,13 @@ type: unit
 cost: 4
 power: 2
 health: 3
-keywords: cantAttack, politician
+keywords: cantAttack, tribune
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"aura","scope":"friendlyInZone","kw":{"k":"guard"}}]}
 ---
-This can't attack. Politician. Other friendly units in this zone have Guard.
+This can't attack. Tribune. Other friendly units in this zone have Guard.
 ## Design notes
 
 2026-07-12 (decision 85, issues #25/#24 — designer: "yes, push these up"): door 2 (retaliation)

@@ -4,13 +4,13 @@ type: unit
 cost: 6
 power: 1
 health: 6
-keywords: politician
+keywords: tribune
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"aura","scope":"otherFriendly","p":1,"cond":{"influenceAtLeast":1}}]}
 ---
-Politician. Other friendly units get +1 Power while your Influence is positive.
+Tribune. Other friendly units get +1 Power while your Influence is positive.
 
 ## Design notes
 

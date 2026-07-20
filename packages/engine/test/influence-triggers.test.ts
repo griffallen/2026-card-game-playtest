@@ -144,7 +144,7 @@ describe('the four real influence-trigger cards (#104/#107)', () => {
     })
     expect(CARD_SET['burning-oath'].statics).toContainEqual({ s: 'aura', scope: 'attached', p: 2 })
     expect(CARD_SET['high-justiciar']).toMatchObject({ power: 1, health: 4, onKill: [{ op: 'influence', n: 2 }] })
-    expect(CARD_SET['high-justiciar'].kw?.map(k => k.k)).toEqual(['guard', 'politician'])
+    expect(CARD_SET['high-justiciar'].kw?.map(k => k.k)).toEqual(['guard', 'tribune'])
     expect(CARD_SET['high-justiciar'].onDefend).toBeUndefined()   // the old defend payout is gone
     expect(CARD_SET['exemplar-knight']).toMatchObject({ power: 4, health: 4, onKill: [{ op: 'influence', n: 1 }] })
     expect(CARD_SET['exemplar-knight'].onAttack).toBeUndefined()  // the old +2 self-buff is gone

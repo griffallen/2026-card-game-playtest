@@ -29,14 +29,14 @@ const activatesFor = (s: GameState, seat: Seat, unit: string) =>
   getLegalActions(s, seat).filter((a): a is Extract<GameAction, { type: 'activate' }> => a.type === 'activate' && a.unit === unit)
 
 describe('Censer of Purity (#104): the locked design', () => {
-  it('compiles to Power 0, Health 6, two yellow pips, Politician, and a moveDamage activated ability', () => {
+  it('compiles to Power 0, Health 6, two yellow pips, Tribune, and a moveDamage activated ability', () => {
     const def = CARD_SET['censer-of-purity']
     expect(def.type).toBe('unit')
     expect(def.cost).toBe(5)
     expect(def.power).toBe(0)
     expect(def.health).toBe(6)
     expect(def.pips).toEqual(['yellow', 'yellow'])
-    expect((def.kw ?? []).some(k => k.k === 'politician')).toBe(true)
+    expect((def.kw ?? []).some(k => k.k === 'tribune')).toBe(true)
     expect(def.activated).toBeTruthy()
     expect(def.activated!.ops.some(o => o.op === 'moveDamage')).toBe(true)
   })
@@ -151,13 +151,13 @@ describe('Censer of Purity (#104): the action economy & inert body', () => {
     expect(() => applyAction(s, { type: 'activate', unit: censer, targets: [{ kind: 'unit', id: undamaged }], amount: 1 }, me)).toThrow()
   })
 
-  it('is an inert 0-Power Politician body with no other triggers', () => {
+  it('is an inert 0-Power Tribune body with no other triggers', () => {
     const def = CARD_SET['censer-of-purity']
     let s = arena()
     const me = s.actorSeat
     const censer = put(s, me, 'censer-of-purity', 0)
     expect(def.power).toBe(0)
-    expect(hasKw(s, s.units[censer], 'politician')).toBe(true)
+    expect(hasKw(s, s.units[censer], 'tribune')).toBe(true)
     expect(def.onAttack).toBeUndefined()
     expect(def.onDefend).toBeUndefined()
     expect(def.onDeath).toBeUndefined()

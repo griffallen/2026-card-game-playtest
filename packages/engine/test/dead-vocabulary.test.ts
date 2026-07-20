@@ -32,7 +32,7 @@ describe('cut keywords are unauthorable', () => {
   }
 
   it('still accepts the live keywords', () => {
-    for (const live of ['guard', 'rush', 'breakthrough', 'scar', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician', 'shielded', 'cantAttack']) {
+    for (const live of ['guard', 'rush', 'breakthrough', 'scar', 'hidden', 'infiltrate', 'capture', 'sneak', 'tribune', 'shielded', 'cantAttack']) {
       const errors = validateCardSet({ 'test-unit': unit({ kw: [{ k: live as never }] }) })
       expect(errors, `${live} should be authorable`).toEqual([])
     }

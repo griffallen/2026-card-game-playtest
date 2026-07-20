@@ -4,13 +4,13 @@ type: unit
 cost: 3
 power: 1
 health: 4
-keywords: cantAttack, politician
+keywords: cantAttack, tribune
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"aura","scope":"friendlyInZone","armor":1}]}
 ---
-This can't attack. Politician. Other friendly units in this zone have Armor 1.
+This can't attack. Tribune. Other friendly units in this zone have Armor 1.
 
 ## Design notes
 

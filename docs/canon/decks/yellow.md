@@ -16,7 +16,7 @@ must actually contest the board, not just sit.
 | Keyword | What it means for yellow | Limits |
 |---|---|---|
 | **Guard** (9 cards) | The signature. Under the duel law a lone attacker on a unit can *only* be blocked by a Guard — and Guards never exhaust to block. | Yellow-only. Guards get *paid* for stepping in (onDefend Influence), never for existing. |
-| **Politician** (7 cards) | The middle gets a constituency: round-end Influence for holding a zone majority (+1 Neutral, +2 enemy Home, stacking). | Yellow's influence engine. Shared with purple; forbidden to red. |
+| **Tribune** (7 cards) | Sways the track just by taking the field: ±1 Influence on every enter/leave of play (cause-blind, nets to zero over a life). Plus a constituency: round-end Influence for holding a zone majority (+1 Neutral, +2 enemy Home, stacking). | Yellow's influence engine. Shared with purple; forbidden to red. |
 | **cantAttack** (4 cards) | Pure walls — statlines no attacker enjoys hitting. | Yellow-only. The statline discount pays for the passivity. |
 | **Capture** (3 cards) | Custody, not a wound: the captive leaves the board and returns only when the capturer does (decision 92). | Yellow's signature control. Prison's successor. |
 | **Armor N** (3 cards) | Every hit shrunk by N, per pairing. | Keep it defensive; big N on a cheap body is a design smell. |
@@ -58,8 +58,9 @@ imprisons, releases, or decays a prison; those words are gone from the game.
 ## Influence posture
 
 Yellow is the only color whose *plan* may be the track. All gains event-earned (invariant 1);
-the natural rhythm is "you attacked my wall, I got paid." Politician adds the second rhythm —
-hold a zone majority at round end and the crowd pays you.
+the natural rhythm is "you attacked my wall, I got paid." Tribune adds two more rhythms — a ±1 tick
+each time a Tribune enters or leaves play (net zero over its life), and holding a zone majority at
+round end so the crowd pays you.
 
 ## Provisional / open
 

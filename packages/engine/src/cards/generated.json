@@ -1570,13 +1570,13 @@
   "cost": 3,
   "power": 1,
   "health": 4,
-  "text": "This can't attack. Politician. Other friendly units in this zone have Armor 1.",
+  "text": "This can't attack. Tribune. Other friendly units in this zone have Armor 1.",
   "kw": [
    {
     "k": "cantAttack"
    },
    {
-    "k": "politician"
+    "k": "tribune"
    }
   ],
   "pips": [
@@ -1761,13 +1761,13 @@
   "cost": 4,
   "power": 2,
   "health": 3,
-  "text": "This can't attack. Politician. Other friendly units in this zone have Guard.",
+  "text": "This can't attack. Tribune. Other friendly units in this zone have Guard.",
   "kw": [
    {
     "k": "cantAttack"
    },
    {
-    "k": "politician"
+    "k": "tribune"
    }
   ],
   "pips": [
@@ -1791,13 +1791,13 @@
   "cost": 4,
   "power": 1,
   "health": 4,
-  "text": "Guard. Politician. When this unit defeats a unit, gain 2 Influence.",
+  "text": "Guard. Tribune. When this unit defeats a unit, gain 2 Influence.",
   "kw": [
    {
     "k": "guard"
    },
    {
-    "k": "politician"
+    "k": "tribune"
    }
   ],
   "pips": [
@@ -1918,17 +1918,17 @@
   "cost": 5,
   "power": 0,
   "health": 6,
-  "text": "Politician. As an action, move any amount of damage from one friendly unit onto this unit — up to what this unit can take without its Health falling below 0. Doing so exhausts the Censer.",
+  "text": "Tribune. As an action, move any amount of damage from one friendly unit onto this unit — up to what this unit can take without its Health falling below 0. Doing so exhausts the Censer.",
   "kw": [
    {
-    "k": "politician"
+    "k": "tribune"
    }
   ],
   "pips": [
    "yellow",
    "yellow"
   ],
-  "designerNote": "#104 rework (Griff): the old start-of-round \"lose 1 Influence, heal 2 from your base\" engine is gone — \"change text\" replaces it wholesale. The Censer is now a martyr: it stands in the middle as a Politician and, once per turn cycle, draws an ally's wounds onto itself.\n\nThe ability is the engine's first activated ability that takes a player-chosen number: pick a friendly unit, then pick how much of its damage to move. The amount is capped at the smaller of the ally's current damage and the Censer's remaining Health — moving enough to reach exactly 0 Health is a full martyr's sacrifice and kills the Censer (permitted: the cap forbids going *below* 0, not reaching it). It is a transfer of existing wounds, so armor and shields never soften it.",
+  "designerNote": "#104 rework (Griff): the old start-of-round \"lose 1 Influence, heal 2 from your base\" engine is gone — \"change text\" replaces it wholesale. The Censer is now a martyr: it stands in the middle as a Tribune and, once per turn cycle, draws an ally's wounds onto itself.\n\nThe ability is the engine's first activated ability that takes a player-chosen number: pick a friendly unit, then pick how much of its damage to move. The amount is capped at the smaller of the ally's current damage and the Censer's remaining Health — moving enough to reach exactly 0 Health is a full martyr's sacrifice and kills the Censer (permitted: the cap forbids going *below* 0, not reaching it). It is a transfer of existing wounds, so armor and shields never soften it.",
   "artUrl": "/cards/censer-of-purity.jpg"
  },
  "custodian-of-law": {
@@ -1939,13 +1939,13 @@
   "cost": 5,
   "power": 2,
   "health": 5,
-  "text": "Guard. Politician.",
+  "text": "Guard. Tribune.",
   "kw": [
    {
     "k": "guard"
    },
    {
-    "k": "politician"
+    "k": "tribune"
    }
   ],
   "pips": [
@@ -2160,10 +2160,10 @@
   "cost": 6,
   "power": 1,
   "health": 6,
-  "text": "Politician. Other friendly units get +1 Power while your Influence is positive.",
+  "text": "Tribune. Other friendly units get +1 Power while your Influence is positive.",
   "kw": [
    {
-    "k": "politician"
+    "k": "tribune"
    }
   ],
   "pips": [
@@ -2486,7 +2486,7 @@
       "k": "guard"
      },
      {
-      "k": "politician"
+      "k": "tribune"
      },
      {
       "k": "cantAttack"
@@ -2502,13 +2502,13 @@
   "cost": 7,
   "power": 1,
   "health": 4,
-  "text": "This can't attack. When it enters play, if it's the only Radiant Citadel you own in play, it raises two 0/1 copies of itself in your Home — ready, with Guard and Politician, unable to attack. Copies vanish when they die.",
+  "text": "This can't attack. When it enters play, if it's the only Radiant Citadel you own in play, it raises two 0/1 copies of itself in your Home — ready, with Guard and Tribune, unable to attack. Copies vanish when they die.",
   "kw": [
    {
     "k": "guard"
    },
    {
-    "k": "politician"
+    "k": "tribune"
    },
    {
     "k": "cantAttack"
@@ -2523,7 +2523,7 @@
    "yellow",
    "yellow"
   ],
-  "designerNote": "2026-07-14 (#69, Griff): the summoning wall replaces the old threshold static — decision 49's\noppThreshold +2 is dropped, and the old 1/8 body becomes 1/4 with Armor 2 (Griff ruled the\nstats at 18:11). One cast, three walls: the entry check counts only YOUR Radiant Citadels, so\nthe two copies enter, run the same check against a board of three, and fizzle — that's the\nwhole recursion fuse. An opponent's Citadels never touch your check. Copies are born ready in\nyour Home at 0/1 with Guard/Politician/cantAttack and no Armor (only the body was respecified;\nthe parent keeps Armor 2). Copies were never deck cards: they vanish on death, touching no\ndiscard pile.",
+  "designerNote": "2026-07-14 (#69, Griff): the summoning wall replaces the old threshold static — decision 49's\noppThreshold +2 is dropped, and the old 1/8 body becomes 1/4 with Armor 2 (Griff ruled the\nstats at 18:11). One cast, three walls: the entry check counts only YOUR Radiant Citadels, so\nthe two copies enter, run the same check against a board of three, and fizzle — that's the\nwhole recursion fuse. An opponent's Citadels never touch your check. Copies are born ready in\nyour Home at 0/1 with Guard/Tribune/cantAttack and no Armor (only the body was respecified;\nthe parent keeps Armor 2). Copies were never deck cards: they vanish on death, touching no\ndiscard pile.",
   "artUrl": "/cards/radiant-citadel.jpg"
  },
  "supreme-sentence": {
@@ -2856,10 +2856,10 @@
   "cost": 2,
   "power": 1,
   "health": 3,
-  "text": "Politician. When this enters play, draw a card.",
+  "text": "Tribune. When this enters play, draw a card.",
   "kw": [
    {
-    "k": "politician"
+    "k": "tribune"
    }
   ],
   "pips": [
@@ -3408,10 +3408,10 @@
   "cost": 6,
   "power": 2,
   "health": 6,
-  "text": "Politician. When this enters play, draw a card and gain 1 Influence. Sneak - draw 2 cards, then put a card from your hand on the bottom of your deck.",
+  "text": "Tribune. When this enters play, draw a card and gain 1 Influence. Sneak - draw 2 cards, then put a card from your hand on the bottom of your deck.",
   "kw": [
    {
-    "k": "politician"
+    "k": "tribune"
    },
    {
     "k": "sneak"
@@ -3420,7 +3420,7 @@
   "pips": [
    "purple"
   ],
-  "designerNote": "2026-07-19 (#122, Griff's rework): was a plain 4/6 \"draw 2 on enter.\" Now a 2/6 Politician whose enter-play\nbundle draws a card and sways the track (+1 Influence, both resolve inline). Its Sneak is the pick-from-hand\nfoundation firing from an ACTIVATE context: `draw 2`, then `chooseFromHand to:deckBottom` enqueues one pick\n— the Sneak taps the Oracle, parks the game in phase 'choose', and continues once the bottom card is chosen.\nThe `sneak` keyword is carried alongside `politician` because a Sneak ability is only activatable when the\nunit actually has the keyword (the engine and the legal-action enumerator both gate on it).",
+  "designerNote": "2026-07-19 (#122, Griff's rework): was a plain 4/6 \"draw 2 on enter.\" Now a 2/6 Tribune whose enter-play\nbundle draws a card and sways the track (+1 Influence, both resolve inline). Its Sneak is the pick-from-hand\nfoundation firing from an ACTIVATE context: `draw 2`, then `chooseFromHand to:deckBottom` enqueues one pick\n— the Sneak taps the Oracle, parks the game in phase 'choose', and continues once the bottom card is chosen.\nThe `sneak` keyword is carried alongside `tribune` because a Sneak ability is only activatable when the\nunit actually has the keyword (the engine and the legal-action enumerator both gate on it).",
   "artUrl": "/cards/duskweaver-oracle.jpg"
  },
  "fog-of-knives": {

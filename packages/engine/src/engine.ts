@@ -4,7 +4,7 @@ import type {
 import { EngineError, adjacent, homeZone } from './types.ts'
 import { shuffle } from './rng.ts'
 import {
-  addInfluence, choosesEntryExhaust, condHolds, defOf, effArmor, effHealth, effPower, entryExhaustTargets, hasKw, hasLastStand, idNum, isSick, kwOf, log, moveDamageCap, other, pipGateSatisfied, satisfiesAnyOf, unitsInZone,
+  addInfluence, choosesEntryExhaust, condHolds, defOf, effArmor, effHealth, effPower, entryExhaustTargets, hasKw, hasLastStand, idNum, isSick, kwOf, log, moveDamageCap, other, pipGateSatisfied, satisfiesAnyOf, tribuneEnter, unitsInZone,
 } from './helpers.ts'
 import { damageBase, damageUnit, destroyUnit, fireTrigger, runOps, stateBasedCleanup } from './effects.ts'
 import { startRound, endRound, finishBankStep } from './round.ts'
@@ -540,6 +540,7 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     }
     log(state, seat, `${side.name} deploys ${def.name}${mode ? ` — ${mode.label}` : ''}`)
     const unit = state.units[action.card]
+    tribuneEnter(state, unit)   // #125 (decision 115): a Tribune deployed from hand sways the track +1
     const onPlayOps = mode ? mode.ops : def.onPlay   // #75: a modal unit runs its DECLARED mode's ops on entry
     if (onPlayOps?.length) runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat, x: action.x, srcLabel: def.name }, onPlayOps)
     // #104 (Lawbringer): validate the chosen entry-arrest against the enemies in the entered zone

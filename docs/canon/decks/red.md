@@ -18,7 +18,7 @@ deck's signature. Red wins by **Life**, never by Influence.
 | **Breakthrough** (7 cards) | Kills must convert to face damage — red hates walls. | No number, no cap: everything past a slain blocker spills. |
 | **Scar** (4 cards) | The gamble, reshaped: +1 Power per damage marked, uncapped (decision 94). | Red's wound-fuel identity — Overextend's successor. |
 
-**Forbidden:** Armor, cantAttack, Hidden, Infiltrate, Sneak, Ranged, Capture, Politician. Red
+**Forbidden:** Armor, cantAttack, Hidden, Infiltrate, Sneak, Ranged, Capture, Tribune. Red
 doesn't defend, hide, shoot from safety, or campaign — it closes distance and swings.
 
 *Retired, never to return without a fresh ruling:* **Overextend** (cut; Scar carries the flame —

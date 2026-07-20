@@ -79,10 +79,10 @@ export const KEYWORDS: Record<string, KeywordInfo> = {
     short: '+1 power per damage marked on it — no cap',
     gloss: 'Gets +1 Power for each damage marked on it — no cap. Every wound is fuel; a Scar unit at 1 health hits hardest.',
   },
-  politician: {
+  tribune: {
     icon: '⚖️',
-    short: 'round end: +1 Influence per politician for a Neutral majority, +2 each for an enemy-Home majority (stacks)',
-    gloss: 'At the end of each round, count your Politicians: hold the majority in the Neutral zone and you gain +1 Influence per Politician; hold the majority in your enemy\'s Home zone and you gain +2 per Politician — the two stack (both majorities = +3 each). "Majority" means strictly more of your units than the opponent\'s in that zone; a tie is not a majority.',
+    short: 'enters/leaves play → ±1 Influence (nets to zero). Round end: +1 per Tribune for a Neutral majority, +2 each for an enemy-Home majority (stacks)',
+    gloss: 'A Tribune sways the shared Influence track just by taking or leaving the field: +1 Influence to its controller every time it enters play (deployed, or returned from capture), and −1 every time it leaves (defeated OR captured). It keys off the event, not the reason, so over a Tribune\'s whole life it nets to zero and cannot be farmed — a capture (−1) and its later release (+1) cancel. Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and you gain +1 Influence per Tribune; hold the majority in your enemy\'s Home zone and you gain +2 per Tribune — the two stack (both majorities = +3 each). "Majority" means strictly more of your units than the opponent\'s in that zone; a tie is not a majority.',
   },
 }
 

@@ -4,7 +4,7 @@ import type {
 import { EngineError, adjacent, homeZone } from './types.ts'
 import {
   addInfluence, checkWin, condHolds, defOf, draw, effArmor, effHealth, effPower,
-  idNum, influenceFor, log, moveDamageCap, other, unitsInZone, unitsOf,
+  idNum, influenceFor, log, moveDamageCap, other, tribuneEnter, tribuneLeave, unitsInZone, unitsOf,
 } from './helpers.ts'
 import { rngInt } from './rng.ts'
 
@@ -280,6 +280,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
           state.units[cid] = c.unit
           delete state.captives[cid]
           log(state, controller, `${name(state, cid)} is freed, ready`)
+          tribuneEnter(state, c.unit)   // #125: return-from-capture is an enter-play event (+1)
         }
         break
       }
@@ -638,6 +639,9 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         }
         const body = op.p !== undefined || op.h !== undefined ? ` (${op.p ?? '—'}/${op.h ?? '—'})` : ''
         log(state, controller, `${name(state, src.id)} raises ${op.n} ${op.n === 1 ? 'copy' : 'copies'} of itself${body}`)
+        // #125: each created copy is an enter-play event — a copy carrying `tribune` swings +1. This
+        // fires BEFORE the copies' own onPlay so the entry swing lands even if the body then dies.
+        for (const copy of born) if (state.units[copy.id]) tribuneEnter(state, copy)
         // the copies' own entry check runs too — against a board that now holds them, so a
         // gated card fizzles here (Griff's fuse: one cast, three walls, no spiral)
         for (const copy of born) {
@@ -656,6 +660,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         // v3 Capture: out of play, under the capturer. #112 (Griff): the captive sheds its
         // upgrades into the zone it held before capture — the gear does NOT ride into the cell.
         // Shed BEFORE removing the unit (shedUpgrades reads t.zone while it still knows it).
+        tribuneLeave(state, t)   // #125: capture is a leave-play event (−1) — cause-blind, not a defeat
         shedUpgrades(state, t, true)
         delete state.units[t.id]
         state.captives[t.id] = { unit: t, by: srcU.id, ...(op.income ? { income: op.income } : {}) }
@@ -709,6 +714,10 @@ export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
   // death flows through (combat, effects, state-based, doom, and the created-copy vanish below) —
   // by OWNER seat, exactly once per death (the guard above blocks the re-entrant double-count).
   state.deaths[unit.owner] += 1
+  // #125 (decision 115): a defeated Tribune leaves play — swing −1. Fired while it is still in
+  // state.units (its keyword still reads) and before onDeath, so the exit is booked the instant it
+  // falls, cause-blind like any other leave. The guard above makes this exactly once per death.
+  tribuneLeave(state, unit)
   // PR #54 (onDeath): last words. The body leaves play FIRST — ops run over a state where the
   // unit is already gone, so the op-tail cleanup can't re-enter this death and recurse.
   // actorSeat attribution uses the owner (win-tie edge; today's onDeath ops are influence-only).
@@ -728,6 +737,7 @@ export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
     state.units[cid] = c.unit
     delete state.captives[cid]
     log(state, c.unit.owner, `${name(state, cid)} is freed as ${name(state, unit.id)} falls`)
+    tribuneEnter(state, c.unit)   // #125: the captor's fall returns the captive to play — an enter (+1)
   }
   shedUpgrades(state, unit)
   delete state.units[unit.id]

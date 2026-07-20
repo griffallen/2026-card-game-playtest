@@ -33,7 +33,7 @@ const other = (s: Seat): Seat => (1 - s) as Seat
 export const KEYWORDS = [
   'guard', 'armor', 'rush', 'ranged', 'breakthrough',
   'cantAttack', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture',
-  'sneak', 'politician',
+  'sneak', 'tribune',
 ] as const satisfies readonly KeywordName[]
 // Exhaustiveness guard: KeywordName must be assignable to the union of KEYWORDS members.
 // (Non-distributive — KeywordName is a concrete union here, so this checks whole-set coverage.)

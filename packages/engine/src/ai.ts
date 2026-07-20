@@ -358,11 +358,11 @@ function moveScore(state: GameState, seat: Seat, action: GameAction & { type: 'm
     score = toward ? 18 + power : 3
     if (action.to === enemyHome && enemiesAtDest === 0) score += 10 // open lane to the base
   }
-  // decision 88 (Politician): campaign in the middle — politicians march to Neutral, and
-  // escorts follow when a politician of ours stands (or will stand) there without a majority
+  // decision 88 (Tribune, renamed from Politician in #125): campaign in the middle — tribunes march to
+  // Neutral, and escorts follow when a tribune of ours stands (or will stand) there without a majority
   if (action.to === 1) {
-    const polMoving = hasKw(state, unit, 'politician')
-    const polThere = unitsInZone(state, 1, seat).some(u => hasKw(state, u, 'politician'))
+    const polMoving = hasKw(state, unit, 'tribune')
+    const polThere = unitsInZone(state, 1, seat).some(u => hasKw(state, u, 'tribune'))
     if (polMoving || polThere) {
       const mine = unitsInZone(state, 1, seat).length
       const theirs = unitsInZone(state, 1, other(seat)).length

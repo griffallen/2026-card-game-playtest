@@ -40,11 +40,11 @@ describe('the keyword gloss covers exactly the live keyword set', () => {
   it("keeps Griff's locked symbols exactly (issue #114 — he picked these)", () => {
     expect({
       shielded: iconFor('shielded'), guard: iconFor('guard'), rush: iconFor('rush'),
-      breakthrough: iconFor('breakthrough'), politician: iconFor('politician'),
+      breakthrough: iconFor('breakthrough'), tribune: iconFor('tribune'),
       armor: iconFor('armor'), ranged: iconFor('ranged'), sneak: iconFor('sneak'),
       infiltrate: iconFor('infiltrate'),
     }).toEqual({
-      shielded: '🛡️', guard: '🏰', rush: '💨', breakthrough: '💪', politician: '⚖️',
+      shielded: '🛡️', guard: '🏰', rush: '💨', breakthrough: '💪', tribune: '⚖️',
       armor: '🪖', ranged: '🏹', sneak: '🥷', infiltrate: '🗝️',
     })
   })

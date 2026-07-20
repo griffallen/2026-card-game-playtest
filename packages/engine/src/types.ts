@@ -21,8 +21,10 @@ export const KEYWORD_NAMES = [
   'breakthrough', 'cantAttack',
   // v3 keyword suite (docs/rules.md §Keywords; decisions 59-61, 70)
   'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak',
-  // decision 88 (#29): standing in Neutral with the majority sways the influence track
-  'politician',
+  // decision 88 (#29): a majority in Neutral / the enemy Home sways the influence track at round end.
+  // #125 (decision 115): renamed Politician → Tribune, and the keyword now also swings Influence ±1
+  // on every enter/leave of play (cause-blind, net-zero over a life).
+  'tribune',
 ] as const
 export type KeywordName = (typeof KEYWORD_NAMES)[number]
 export interface KeywordSpec { k: KeywordName; n?: number }

@@ -23,7 +23,7 @@ Blue's future identity — purple keeps exactly two archers, Dusk Archer and Noc
 | **Infiltrate** (6 cards) | May be played into any zone, not just your Home. | The unanswered arrival; purple's tempo substitute for Rush. |
 | **Sneak** (4 cards) | An ability used as your turn: exhaust to resolve the card's printed Sneak effect in its own zone. | Each card states its own payload. |
 | **Ranged N** (2 cards) | An ability (decision 80): exhaust to volley N at one enemy unit, any zone. | **Reserved for Blue** — purple keeps exactly two carriers (Dusk Archer, Nocturne Sniper); new purple Ranged is ratify-first. |
-| **Politician** (2 cards) | The court works the crowd too. | Shared with yellow, who owns it; purple prints few. |
+| **Tribune** (2 cards) | The court works the crowd too. | Shared with yellow, who owns it; purple prints few. |
 
 **Forbidden:** Rush, Breakthrough, Scar (red's); Guard, printed Armor, Capture, cantAttack
 *as its own keyword* (yellow's walls — purple may *grant* cantAttack to enemies for a round: a

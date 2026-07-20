@@ -3,7 +3,7 @@ import { ZONES, homeZone } from './types.ts'
 import { baseCount, defOf, effArmor, effHealth, effPower, hasKw, kwOf, other, thresholds, unitsInZone } from './helpers.ts'
 import { getLegalActions } from './legal.ts'
 
-const KW_LIST = ['guard', 'armor', 'rush', 'ranged', 'breakthrough', 'cantAttack', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'] as const
+const KW_LIST = ['guard', 'armor', 'rush', 'ranged', 'breakthrough', 'cantAttack', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'tribune'] as const
 
 function unitView(state: GameState, id: string): UnitView {
   const u = state.units[id]

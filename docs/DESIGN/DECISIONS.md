@@ -154,7 +154,7 @@ Numbered, in the order they were made. Format: decision — reason.
 
 87. ✅ **The declaration counts: "attacks a base" fires on zero damage** (issue #25, 2026-07-12 — Griff: "it attacked the base but unsuccessfully"). An unblocked declared base attack fires `onAttackBase` even when every point is prevented (or the attacker's power is zero); the reserved "damages a base" trigger (decision 78) would not fire. Pinned by test. — *Same session, the designer set bot doctrine ("always favor damage to a base and then unit removal; it's meant to move quick"): the heuristic learned to block (it was random in block windows), volley, and cost retaliation; base attacks outrank removal. First honest-defense sims: red 34.5% (influence wins 52%) — the raised ladder plus competent blocking overshoots; ladder-one-notch-back probe recovers red to 40%. Ball returned to the designer.*
 
-88. ✅ **Politician: the middle gets a constituency** (issue #29, 2026-07-12 — Griff, after the door-1 sim: "Love that it mattered. Rather than a hard-coded rule, let's make it a keyword"). New keyword: at round end, a seat with a Politician standing in Neutral AND more units there than the opponent gains 1 influence — once per round. Supersedes the door-1 `neutralControlInfluence` knob (removed same day it was born; the sim did its job). Color law: yellow/blue/purple identity, red few-if-any. Assumptions ⚑: Neutral-only (home majority is free — no passive income, decision 34's doctrine), any-units majority per the designer's wording (not ready-only), 1/round cap. First carriers ⚑ (agent picks): **Veiled Messenger** (the courier-diplomat) and **Hierophant** (the church politician whose own aura wants the influence it campaigns for). — **⚠ SUPERSEDED by the #104 Politician rework (Griff):** the flat once-per-round +1 became **per-Politician**, and an **enemy-Home majority** now pays **+2 per Politician**, stacking on top of Neutral's +1 (both majorities = +3 × P). The 1/round cap and Neutral-only assumptions are retired; an imprisoned Politician is inert and doesn't count. Engine: `round.ts` ~L144–164; canonical text `rules-v1.3.md:156` + spec row in `game-rules.md`.
+88. ✅ **Politician: the middle gets a constituency** (issue #29, 2026-07-12 — Griff, after the door-1 sim: "Love that it mattered. Rather than a hard-coded rule, let's make it a keyword"). New keyword: at round end, a seat with a Politician standing in Neutral AND more units there than the opponent gains 1 influence — once per round. Supersedes the door-1 `neutralControlInfluence` knob (removed same day it was born; the sim did its job). Color law: yellow/blue/purple identity, red few-if-any. Assumptions ⚑: Neutral-only (home majority is free — no passive income, decision 34's doctrine), any-units majority per the designer's wording (not ready-only), 1/round cap. First carriers ⚑ (agent picks): **Veiled Messenger** (the courier-diplomat) and **Hierophant** (the church politician whose own aura wants the influence it campaigns for). — **⚠ SUPERSEDED by the #104 Politician rework (Griff):** the flat once-per-round +1 became **per-Politician**, and an **enemy-Home majority** now pays **+2 per Politician**, stacking on top of Neutral's +1 (both majorities = +3 × P). The 1/round cap and Neutral-only assumptions are retired; an imprisoned Politician is inert and doesn't count. Engine: `round.ts` ~L144–164; canonical text `rules-v1.3.md:156` + spec row in `game-rules.md`. **Renamed Politician → Tribune in #125 (decision 115),** which also added a *separate* cause-blind ±1 Influence swing on every enter/leave of play; this round-end majority payout is otherwise unchanged.
 
 89. ✅ **The rage's tax and the onslaught's toll get precise timing** (PRs #38/#39, 2026-07-12 — agent interpretation of the designer's new text, ⚑ ratify/veto). Two new engine ops for two merged cards. **Unchained Rage** (`attackTax`): "for each unit of yours that attacks, lose 2 influence" charges at attack *declaration* — 2 per declared attacker, blocked or not — and the tax expires with the doubling, ticking down at the same round-ends. **Final Onslaught** (`doom`): "after the action" = your granted extra action, whatever it is (attack, move, even a pass — the readied unit dies regardless); "any unit damaged by this unit's attack" is verified wounds, not intent — armor that soaked the hit, a shield that ate the pour, or a blocker that kept everything off the target means no doom for the untouched; the toll collects the moment combat resolves (after the defender's block, if any). The doomed unit dying in combat doesn't save the units it wounded.
 
@@ -270,3 +270,31 @@ rulings that changed how the game works get a number.*
      (d) the **bot's default** minimizes the defender's own loss (soak with a survivor → spare units by
      taking base damage → sacrifice the cheapest body) rather than retaliation's "biggest first," because
      here the defender is ordering **its own** units, not the enemy's.
+
+115. ✅ **Politician becomes Tribune, and the keyword now sways the Influence track on entering and
+     leaving play** (issue #125, 2026-07-20 — Griff proposed the name, Blaine locked it: "I like
+     tribune"; a `major` Blaine fired build-now). **Two parts.** *(A) Rename* — the keyword `politician`
+     → `tribune` everywhere (the `KEYWORD_NAMES` source in `types.ts` — from which `validate.ts` and
+     `cardfile.ts` derive since #135 — the nine carriers, the rulebook keyword table, the gloss, the
+     AI heuristic). Nothing about the **round-end majority payout** (decision 88 / the #104 rework:
+     majority in Neutral = +1 per Tribune, in the enemy Home = +2, stacking) changes — only the name.
+     *(B) The swing — a new engine primitive)* — a Tribune's keyword moves the shared, signed Influence
+     track by **+1 to its controller on EVERY enter-play** (deployed from hand, a created copy, or a
+     return-from-capture) and **−1 on EVERY leave-play** (defeated OR captured). It is **cause-blind**:
+     it keys off the enter/leave EVENT, not the reason, so over a Tribune's whole life the swing **nets
+     to zero and cannot be farmed** — a capture's −1 and its release's +1 cancel exactly. Because
+     Influence is one shared signed track, "−1 to the controller" slides the marker one step toward the
+     opponent's win (Griff: "you lose 1" and "the opponent gains 1" are the same move). This swing is
+     **independent of and additive to** the majority payout (both land in the same round when both
+     apply). Engine: two keyword-general helpers `tribuneEnter`/`tribuneLeave` (`helpers.ts`), each
+     called at one place per direction — enter at deploy (`engine.ts` `playUnit`), created-copy birth
+     and `freeCaptives` and captor-death captive-return (`effects.ts`); leave at defeat (`destroyUnit`)
+     and capture (the `capture` op). `RULES_VERSION` 3.3.0 → 3.4.0; TDD RED-first in `tribune.test.ts`.
+     ⚑ **Agent readings (veto welcome):** (a) **created copies swing** — a Radiant Citadel is a Tribune
+     and so are its summoned copies, so casting it gains **+3 Influence** (parent + two copies each
+     enter), then bleeds it back **−1 per copy as they fall**; this is the only way to keep the swing
+     symmetric (a copy's death already −1s, so its birth must +1) and it still nets to zero. (b) The
+     net-zero guarantee holds because no card **grants or auras** the Tribune keyword — every carrier
+     prints it, so enter and leave read the same keyword state; if a future card grants Tribune
+     mid-life, a unit could leave as a Tribune without having entered as one (or vice-versa) and the
+     symmetry would break for that unit. Flag if either reading is wrong.

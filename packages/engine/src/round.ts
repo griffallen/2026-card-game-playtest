@@ -120,26 +120,27 @@ export function endRound(state: GameState, actorSeat: Seat) {
   state.attackTaxes = state.attackTaxes.filter(t => t.rounds > 0)
   state.preventBase = [0, 0]
 
-  // Politician (#104 rework, Griff): at round end, per seat, count P = your politicians.
-  // Hold the majority of units in the Neutral zone → gain +1 × P; hold the
-  // majority in your ENEMY's Home → gain +2 × P. Both can apply (a seat with both majorities gains
+  // Tribune (#104 rework, Griff; renamed from Politician in #125 — decision 115): at round end, per
+  // seat, count P = your tribunes. Hold the majority of units in the Neutral zone → gain +1 × P; hold
+  // the majority in your ENEMY's Home → gain +2 × P. Both can apply (a seat with both majorities gains
   // +3 × P). "Majority" = strictly MORE of your units than the opponent's in that zone — a tie is
-  // never a majority (superseding decision 88's single flat +1).
-  // ⚑ LITERAL reading (flagged for Griff to confirm): P is your TOTAL politicians wherever they
-  // stand — the two zone-majority checks are global. The alternative ("a politician must STAND in
-  // the zone it's paid for") is the forward-positioning reading; this builds the plain text.
+  // never a majority (superseding decision 88's single flat +1). This round-end payout is UNCHANGED by
+  // #125; only the keyword's NAME changed (and it gained the separate enter/leave ±1 swing).
+  // ⚑ LITERAL reading (flagged for Griff to confirm): P is your TOTAL tribunes wherever they stand —
+  // the two zone-majority checks are global. The alternative ("a tribune must STAND in the zone it's
+  // paid for") is the forward-positioning reading; this builds the plain text.
   {
     const countIn = (seat: Seat, zone: ZoneId) => unitsOf(state, seat).filter(u => u.zone === zone).length
     const majority = (seat: Seat, zone: ZoneId) => countIn(seat, zone) > countIn(other(seat), zone)
     for (const seat of [0, 1] as const) {
-      const politicians = unitsOf(state, seat).filter(u => hasKw(state, u, 'politician')).length
-      if (politicians === 0) continue
+      const tribunes = unitsOf(state, seat).filter(u => hasKw(state, u, 'tribune')).length
+      if (tribunes === 0) continue
       let gain = 0
-      if (majority(seat, 1)) gain += politicians                          // the Neutral zone: +1 each
-      if (majority(seat, homeZone(other(seat)))) gain += 2 * politicians   // the enemy's Home: +2 each
+      if (majority(seat, 1)) gain += tribunes                          // the Neutral zone: +1 each
+      if (majority(seat, homeZone(other(seat)))) gain += 2 * tribunes   // the enemy's Home: +2 each
       if (gain === 0) continue
       addInfluence(state, seat, gain)
-      log(state, seat, `${state.sides[seat].name}'s ${politicians} politician${politicians > 1 ? 's' : ''} press ${politicians > 1 ? 'their' : 'its'} advantage (+${gain} influence)`)
+      log(state, seat, `${state.sides[seat].name}'s ${tribunes} tribune${tribunes > 1 ? 's' : ''} press ${tribunes > 1 ? 'their' : 'its'} advantage (+${gain} influence)`)
     }
   }
   stateBasedCleanup(state, actorSeat)

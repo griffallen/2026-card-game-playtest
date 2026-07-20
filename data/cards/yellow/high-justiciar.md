@@ -4,13 +4,13 @@ type: unit
 cost: 4
 power: 1
 health: 4
-keywords: guard, politician
+keywords: guard, tribune
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onKill":[{"op":"influence","n":2}]}
 ---
-Guard. Politician. When this unit defeats a unit, gain 2 Influence.
+Guard. Tribune. When this unit defeats a unit, gain 2 Influence.
 
 ## Design notes
 

@@ -87,13 +87,13 @@ describe('#122 final seven — compile to the locked design', () => {
     expect(c.onKill).toBeUndefined()
   })
 
-  it('Duskweaver Oracle: 2/6 cost 6, Politician + Sneak; onPlay draw+influence, Sneak draw2 + deckBottom', () => {
+  it('Duskweaver Oracle: 2/6 cost 6, Tribune + Sneak; onPlay draw+influence, Sneak draw2 + deckBottom', () => {
     const c = CARD_SET['duskweaver-oracle']
     expect(c.type).toBe('unit')
     expect(c.cost).toBe(6)
     expect(c.power).toBe(2)
     expect(c.health).toBe(6)
-    expect((c.kw ?? []).some(k => k.k === 'politician')).toBe(true)
+    expect((c.kw ?? []).some(k => k.k === 'tribune')).toBe(true)
     expect((c.kw ?? []).some(k => k.k === 'sneak')).toBe(true)   // required for the Sneak to be activatable
     expect(c.onPlay).toEqual([
       { op: 'draw', n: 1 },
@@ -200,7 +200,7 @@ describe('#122 Mist Stalker — chooseFromHand parks `choose` from a UNIT onPlay
 })
 
 describe('#122 Duskweaver Oracle — onPlay inline; Sneak parks `choose` from an ACTIVATE', () => {
-  it('onPlay draws a card and gains 1 Influence, no pending choice', () => {
+  it('onPlay draws a card and gains 2 Influence (its +1 rider + the Tribune deploy swing), no pending choice', () => {
     const { s: g, me } = fresh()
     let s = g
     const oracle = toHand(s, me, 'duskweaver-oracle')
@@ -212,7 +212,9 @@ describe('#122 Duskweaver Oracle — onPlay inline; Sneak parks `choose` from an
     expect(s.units[oracle]).toBeTruthy()
     expect(s.phase).toBe('loop')                    // no chooseFromHand on the enter-play bundle
     expect(s.pendingChoices).toHaveLength(0)
-    expect(influenceFor(s, me)).toBe(inf0 + 1)
+    // #125 (decision 115): the Oracle is a Tribune, so deploying it swings +1 on top of its own
+    // onPlay +1 rider — the two are independent gains that both land the instant it enters play.
+    expect(influenceFor(s, me)).toBe(inf0 + 2)
     expect(s.sides[me].hand).toHaveLength(1)         // drew 1
     assertConservation(s)
   })

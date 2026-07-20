@@ -4,14 +4,14 @@ type: unit
 cost: 2
 power: 1
 health: 3
-keywords: politician
+keywords: tribune
 pips: purple
 status: canon
 art: /cards/veiled-messenger.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"draw","n":1}]}
 ---
-Politician. When this enters play, draw a card.
+Tribune. When this enters play, draw a card.
 
 ## Design notes
 

@@ -216,6 +216,25 @@ export function kwOf(state: GameState, unit: UnitInstance, k: KeywordName): numb
 
 export const hasKw = (state: GameState, unit: UnitInstance, k: KeywordName) => kwOf(state, unit, k) !== false
 
+/** #125 (decision 115): the Tribune influence swing. A unit carrying `tribune` sways the shared
+ *  Influence track by ±1 as it enters or leaves play — CAUSE-BLIND: it keys off the enter/leave
+ *  EVENT, never the reason. `tribuneEnter` (+1 to the controller) fires on EVERY entry — deploy,
+ *  created copy, or return-from-capture; `tribuneLeave` (−1) on EVERY exit — defeat or capture.
+ *  Symmetric by construction, so over a Tribune's whole life the swing nets to zero and cannot be
+ *  farmed (a capture's −1 and its release's +1 cancel). Two functions, called at each event site —
+ *  never inlined — so the swing has exactly one home per direction. Call `tribuneLeave` BEFORE the
+ *  unit is removed from `state.units` (so its keyword still reads); `tribuneEnter` AFTER it is added. */
+export function tribuneEnter(state: GameState, unit: UnitInstance) {
+  if (!hasKw(state, unit, 'tribune')) return
+  addInfluence(state, unit.owner, 1)
+  log(state, unit.owner, `${defOf(state, unit.id).name} takes the floor (Tribune: +1 influence)`)
+}
+export function tribuneLeave(state: GameState, unit: UnitInstance) {
+  if (!hasKw(state, unit, 'tribune')) return
+  addInfluence(state, unit.owner, -1)
+  log(state, unit.owner, `${defOf(state, unit.id).name} yields the floor (Tribune: −1 influence)`)
+}
+
 /** Win thresholds per seat, with oppThreshold statics applied (a seat's own statics raise the OPPONENT's bar). */
 export function thresholds(state: GameState): [number, number] {
   const t: [number, number] = [state.rules.influenceWinThreshold, state.rules.influenceWinThreshold]

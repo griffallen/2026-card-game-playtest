@@ -13,9 +13,9 @@ import { fuel, put, toHand, toLoop } from './util.ts'
 
 // Issue #69 (Radiant Citadel) — the game's first unit-creation mechanic.
 // Locked with Griff on the thread (stats ruled 2026-07-14 18:11): the Citadel is a
-// 1/4 Armor 2 Guard Politician that can't attack; on entering play, if it is the ONLY
+// 1/4 Armor 2 Guard Tribune that can't attack; on entering play, if it is the ONLY
 // Radiant Citadel its controller owns in play, it raises two 0/1 copies (Guard,
-// Politician, cantAttack — no Armor) in the controller's Home, ready. The copies run
+// Tribune, cantAttack — no Armor) in the controller's Home, ready. The copies run
 // the same entry check and fizzle (the recursion fuse: one cast → three walls).
 // Created copies are not deck cards: they vanish on death, touching no discard pile.
 
@@ -50,7 +50,7 @@ function castCitadel(s: GameState, seat: Seat): { s: GameState; id: string } {
 }
 
 describe('Radiant Citadel — create-copies on entry (#69)', () => {
-  it('your first Citadel raises two 0/1 copies in your Home: ready, Guard, Politician, cantAttack, no Armor', () => {
+  it('your first Citadel raises two 0/1 copies in your Home: ready, Guard, Tribune, cantAttack, no Armor', () => {
     let { s, p1 } = arena()
     const cast = castCitadel(s, p1)
     s = cast.s
@@ -64,7 +64,7 @@ describe('Radiant Citadel — create-copies on entry (#69)', () => {
       expect(effHealth(s, c)).toBe(1)
       expect(effArmor(s, c)).toBe(0)                     // the 0/1 body carries no Armor
       expect(hasKw(s, c, 'guard')).toBe(true)
-      expect(hasKw(s, c, 'politician')).toBe(true)
+      expect(hasKw(s, c, 'tribune')).toBe(true)
       expect(hasKw(s, c, 'cantAttack')).toBe(true)
     }
   })
@@ -135,7 +135,7 @@ describe('Radiant Citadel — create-copies on entry (#69)', () => {
     expect(() => assertConservation(s)).not.toThrow()
   })
 
-  it('the new body: 1/4, Armor 2, Guard, Politician, cantAttack — and the old threshold static is gone', () => {
+  it('the new body: 1/4, Armor 2, Guard, Tribune, cantAttack — and the old threshold static is gone', () => {
     const { s, p1 } = arena()
     const id = put(s, p1, 'radiant-citadel', homeZone(p1))
     const u = s.units[id]
@@ -143,7 +143,7 @@ describe('Radiant Citadel — create-copies on entry (#69)', () => {
     expect(effHealth(s, u)).toBe(4)
     expect(effArmor(s, u)).toBe(2)
     expect(hasKw(s, u, 'guard')).toBe(true)
-    expect(hasKw(s, u, 'politician')).toBe(true)
+    expect(hasKw(s, u, 'tribune')).toBe(true)
     expect(hasKw(s, u, 'cantAttack')).toBe(true)
     expect(CARD_SET['radiant-citadel'].statics ?? []).toEqual([])   // oppThreshold dropped (#69)
     expect(thresholds(s)).toEqual([20, 20])              // nobody's bar moves while it stands (±20 since #91)
@@ -160,7 +160,7 @@ describe('Radiant Citadel — create-copies on entry (#69)', () => {
       expect([v.power, v.health]).toEqual([0, 1])
       expect([v.basePower, v.baseHealth]).toEqual([0, 1])
       expect(v.keywords).toContain('guard')
-      expect(v.keywords).toContain('politician')
+      expect(v.keywords).toContain('tribune')
       expect(v.keywords).toContain('cantAttack')
       expect(v.keywords.some(k => k.startsWith('armor'))).toBe(false)
     }

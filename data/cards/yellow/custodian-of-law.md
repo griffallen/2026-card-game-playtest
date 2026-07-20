@@ -4,11 +4,11 @@ type: unit
 cost: 5
 power: 2
 health: 5
-keywords: guard, politician
+keywords: guard, tribune
 pips: yellow, yellow
 status: canon
 ---
-Guard. Politician.
+Guard. Tribune.
 
 ## Design notes
 
