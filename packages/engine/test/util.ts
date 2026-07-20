@@ -51,7 +51,7 @@ export function toLoop(state: GameState): GameState {
 let n = 1000
 /** Force a unit into play for combat fixtures (bypasses costs; tests own the setup). */
 export function put(state: GameState, seat: Seat, slug: string, zone: ZoneId, opts: Partial<{
-  exhausted: boolean; damage: number; enteredRound: number; imprisonedBy: Seat
+  exhausted: boolean; damage: number; enteredRound: number
 }> = {}): string {
   const id = `t${n++}`
   state.cardOf[id] = slug
@@ -62,7 +62,6 @@ export function put(state: GameState, seat: Seat, slug: string, zone: ZoneId, op
     enteredRound: opts.enteredRound ?? 0,
     movedThisRound: false,
     shielded: (state.cardSet[slug]?.kw ?? []).some(k => k.k === 'shielded'),
-    imprisoned: opts.imprisonedBy !== undefined ? { by: opts.imprisonedBy, source: null } : null,
     upgrades: [],
     mods: [],
     overextendedBy: 0,

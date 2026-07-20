@@ -9,9 +9,13 @@
  * shipped, and quietly contradicted the rulebook.
  *
  * These tests are the fence: the vocabulary a card may use is the vocabulary the rules teach.
+ *
+ * #134 finished the job for prison: the op, the imprisonWatcher static, UnitInstance.imprisoned,
+ * the decay/release logic and the two rules-config knobs are deleted, not merely unauthorable.
  */
 import { describe, expect, it } from 'vitest'
 import { validateCardSet } from '../src/validate.ts'
+import { DEFAULT_RULES } from '../src/rules.ts'
 import type { CardDef } from '../src/types.ts'
 
 const unit = (extra: Partial<CardDef>): CardDef => ({
@@ -35,11 +39,24 @@ describe('cut keywords are unauthorable', () => {
   })
 })
 
-describe('the prison package is unauthorable', () => {
+describe('the prison package is gone', () => {
   it('rejects a card using the imprison op', () => {
     const errors = validateCardSet({
       'test-unit': unit({ targets: [{ t: 'unit', side: 'enemy' }], onPlay: [{ op: 'imprison', t: 'chosen0' }] } as never),
     })
     expect(errors.join(' ')).toMatch(/unknown op/i)
+  })
+
+  it('rejects a card carrying the imprisonWatcher static', () => {
+    const errors = validateCardSet({ 'test-unit': unit({ statics: [{ s: 'imprisonWatcher', n: 1 }] } as never) })
+    expect(errors.join(' ')).toMatch(/unknown static/i)
+  })
+
+  // #134: the prison tuning knobs left with the mechanic. A key still sitting in RulesConfig is a
+  // rule the admin panel can dial that nothing enforces — the exact shape of a hidden mechanic.
+  it('has no prison keys left in the rules config', () => {
+    for (const dead of ['prisonDecayPerUnit', 'prisonReleaseThreshold']) {
+      expect(Object.keys(DEFAULT_RULES), `${dead} should be gone from RulesConfig`).not.toContain(dead)
+    }
   })
 })

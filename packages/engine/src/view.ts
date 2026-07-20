@@ -25,7 +25,6 @@ function unitView(state: GameState, id: string): UnitView {
     armor: effArmor(state, u),
     exhausted: u.exhausted,
     rushFreeMove: !u.movedThisRound && hasKw(state, u, 'rush') && !u.exhausted,   // #105: free first move every round, not just entry round
-    imprisoned: !!u.imprisoned,
     overextendedBy: u.overextendedBy,
     shielded: u.shielded,
     keywords,

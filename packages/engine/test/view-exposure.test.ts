@@ -108,7 +108,7 @@ describe('engine minors from the consistency sweep (#23, logged assumptions)', (
     expect(after - before).toBe(-1)   // opponent gains 1: the greed tax (v2.3 §1.6.4)
   })
 
-  it('v3 attacks reject an overextend declaration — the keyword left with the prisons', () => {
+  it('v3 attacks reject an overextend declaration — the keyword is retired', () => {
     const s = v3game()
     const me = s.actorSeat, them = (1 - me) as 0 | 1
     const raider = put(s, me, 'loner', 1)   // carries the overextend keyword; v3 must still refuse

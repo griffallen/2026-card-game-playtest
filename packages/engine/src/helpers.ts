@@ -50,12 +50,12 @@ export const choosesEntryExhaust = (def: CardDef): boolean =>
   (def.onEnterZone ?? []).some(o => o.op === 'exhaust' && o.t === 'auto' && !!o.auto?.choose)
 
 /** #104 (Lawbringer): enemy units in `zone` that a chosen entry-exhaust may arrest — READY (a down
- *  unit is a wasted arrest, matching the auto-pick), not imprisoned, and not shielded by
+ *  unit is a wasted arrest, matching the auto-pick) and not shielded by
  *  ready-Hidden (a player CHOICE is targeting, so the standing protections apply).
  *  Empty = no legal target, so the play/move happens with no arrest (a clean no-op). */
 export function entryExhaustTargets(state: GameState, controller: Seat, zone: ZoneId): UnitInstance[] {
   return unitsInZone(state, zone, other(controller)).filter(u =>
-    !u.imprisoned && !u.exhausted
+    !u.exhausted
     && !(!u.exhausted && hasKw(state, u, 'hidden')))
 }
 
@@ -82,7 +82,7 @@ export function condHolds(state: GameState, owner: Seat, cond: Cond | undefined)
 
 interface AuraGrant { p: number; armor: number; h: number; kws: { k: KeywordName; n?: number }[] }
 
-/** Collect aura contributions applying to `unit` from all in-play sources (imprisoned sources are inert). */
+/** Collect aura contributions applying to `unit` from all in-play sources. */
 function aurasFor(state: GameState, unit: UnitInstance): AuraGrant {
   const acc: AuraGrant = { p: 0, armor: 0, h: 0, kws: [] }
   const apply = (st: Static, anchor: UnitInstance) => {
@@ -100,7 +100,6 @@ function aurasFor(state: GameState, unit: UnitInstance): AuraGrant {
     if (st.kw) acc.kws.push(st.kw)
   }
   for (const anchor of unitsOf(state)) {
-    if (anchor.imprisoned) continue
     for (const st of defOf(state, anchor.id).statics ?? []) apply(st, anchor)
     for (const upId of anchor.upgrades) {
       for (const st of defOf(state, upId).statics ?? []) if (!(st.s === 'aura' && st.scope === 'attached')) apply(st, anchor)
@@ -221,7 +220,6 @@ export const hasKw = (state: GameState, unit: UnitInstance, k: KeywordName) => k
 export function thresholds(state: GameState): [number, number] {
   const t: [number, number] = [state.rules.influenceWinThreshold, state.rules.influenceWinThreshold]
   for (const u of unitsOf(state)) {
-    if (u.imprisoned) continue
     for (const st of defOf(state, u.id).statics ?? []) {
       if (st.s === 'oppThreshold') t[other(u.owner)] += st.n
     }
