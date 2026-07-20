@@ -6,7 +6,6 @@ import { DeckBuilder } from './pages/DeckBuilder.tsx'
 import { Simulate } from './pages/Simulate.tsx'
 import { Rules } from './pages/Rules.tsx'
 import { Audit } from './pages/Audit.tsx'
-import { Guide } from './pages/Guide.tsx'
 import { Appendix } from './pages/Appendix.tsx'
 import { ErrorBoundary } from './ErrorBoundary.tsx'
 import { ReloadNudge } from './ReloadNudge.tsx'
@@ -72,7 +71,6 @@ export function App() {
           <NavLink to="/cards" className={tab}>Cards</NavLink>
           <NavLink to="/simulate" className={tab}>Simulate</NavLink>
           <NavLink to="/rules" className={tab}>Rulebook</NavLink>
-          <NavLink to="/guide" className={tab}>Guide</NavLink>
           <ArchiveMenu tab={tab} />
         </nav>
       </header>
@@ -85,7 +83,6 @@ export function App() {
           <Route path="/cards" element={<Cards />} />
           <Route path="/simulate" element={<Simulate />} />
           <Route path="/rules" element={<Rules />} />
-          <Route path="/guide" element={<Guide />} />
           <Route path="/audit" element={<Audit />} />
           <Route path="/appendix" element={<Appendix />} />
           <Route path="*" element={<Navigate to="/play" replace />} />

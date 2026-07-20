@@ -6,7 +6,7 @@
 
 *Rules version **3.2.0** — the same number as the engine package, bumped on every combat-behaviour change (issue #119).*
 
-Everything you need to sit down and play, the game as it stands today. Want to try it while you read? The [Play](https://booherbg.github.io/new-game-demo/#/play) tab runs the full rules in your browser, and every card’s exact text is in the [Cards](https://booherbg.github.io/new-game-demo/#/cards) tab. When you know what’s legal and want to know what’s *smart*, Old Varga’s [Sellsword’s Primer](https://booherbg.github.io/new-game-demo/#/guide) is one tab over.
+Everything you need to sit down and play, the game as it stands today. Want to try it while you read? The [Play](https://booherbg.github.io/new-game-demo/#/play) tab runs the full rules in your browser, and every card’s exact text is in the [Cards](https://booherbg.github.io/new-game-demo/#/cards) tab.
 
 > **The one-minute version.**
 >
