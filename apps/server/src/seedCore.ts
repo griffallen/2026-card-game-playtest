@@ -1,9 +1,19 @@
-import { CARD_SET, DEFAULT_RULES, PREBUILT_DECKS } from '@newgame/engine'
+import { CARD_SET, DEFAULT_RULES, PREBUILT_DECKS, V3_RULES } from '@newgame/engine'
 import { prisma } from './db.ts'
 import { hashPassword } from './auth.ts'
 
-/** The rules row seeded from the engine's current defaults — named for the spec version it carries. */
-const RULES_NAME = 'v2.3'
+/**
+ * Rules rows, newest last. The **default** is what a new lobby game is dealt, and it must be the
+ * game we actually play (docs/rules.md) — the demo has run v3 since 2026-07-11 while this seeded
+ * v2.3, so the lobby would have dealt intercept combat and a 15-influence finish line to whoever
+ * opened it first. The legacy row stays seeded: games snapshot their rules at creation, so old
+ * replays need it, and the admin hall can still pick it for an A/B.
+ */
+const RULES_ROWS = [
+  { name: 'v2.3', config: DEFAULT_RULES, isDefault: false },
+  { name: 'v3.0', config: V3_RULES, isDefault: true },
+] as const
+const DEFAULT_RULES_NAME = 'v3.0'
 
 /**
  * Idempotent baseline data: admin, rules version, the full card pool, prebuilt decks.
@@ -19,14 +29,16 @@ export async function seedCore(adminPassword: string): Promise<void> {
     })
   }
 
-  await prisma.rulesVersion.upsert({
-    where: { name: RULES_NAME },
-    create: { name: RULES_NAME, config: DEFAULT_RULES as unknown as object, isDefault: true },
-    update: { config: DEFAULT_RULES as unknown as object, isDefault: true },
-  })
-  // exactly one default: demote older rows (their configs stay for replay/history)
+  for (const row of RULES_ROWS) {
+    await prisma.rulesVersion.upsert({
+      where: { name: row.name },
+      create: { name: row.name, config: row.config as unknown as object, isDefault: row.isDefault },
+      update: { config: row.config as unknown as object, isDefault: row.isDefault },
+    })
+  }
+  // exactly one default: demote any other row (their configs stay for replay/history)
   await prisma.rulesVersion.updateMany({
-    where: { name: { not: RULES_NAME }, isDefault: true },
+    where: { name: { not: DEFAULT_RULES_NAME }, isDefault: true },
     data: { isDefault: false },
   })
 
