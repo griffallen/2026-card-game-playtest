@@ -6,17 +6,14 @@ import { DeckBuilder } from './pages/DeckBuilder.tsx'
 import { Simulate } from './pages/Simulate.tsx'
 import { Rules } from './pages/Rules.tsx'
 import { Audit } from './pages/Audit.tsx'
-import { AuditArchive } from './pages/AuditArchive.tsx'
 import { Guide } from './pages/Guide.tsx'
 import { Appendix } from './pages/Appendix.tsx'
-import { Journal } from './pages/Journal.tsx'
 import { ErrorBoundary } from './ErrorBoundary.tsx'
 import { ReloadNudge } from './ReloadNudge.tsx'
 
-/* The design/history docs live under one "Archive" sub-menu so the nav stays lean (session 010).
+/* The design docs live under one "Archive" sub-menu so the nav stays lean (session 010).
    The Rulebook stays top-level — it teaches the game; these document its making. */
 const ARCHIVE = [
-  { to: '/journal', label: 'Journal', blurb: 'the Chronicle of every session' },
   { to: '/audit', label: 'Design Audit', blurb: 'the current state of the realm' },
   { to: '/appendix', label: 'Appendix', blurb: 'the dry ledgers in full' },
 ] as const
@@ -89,9 +86,7 @@ export function App() {
           <Route path="/simulate" element={<Simulate />} />
           <Route path="/rules" element={<Rules />} />
           <Route path="/guide" element={<Guide />} />
-          <Route path="/journal" element={<Journal />} />
           <Route path="/audit" element={<Audit />} />
-          <Route path="/audit/archive" element={<AuditArchive />} />
           <Route path="/appendix" element={<Appendix />} />
           <Route path="*" element={<Navigate to="/play" replace />} />
         </Routes>

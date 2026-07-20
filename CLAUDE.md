@@ -171,13 +171,11 @@ doubt it, spawn a one-line smoke-test rather than avoiding the delegation.)
    the session established a durable rule or standing agreement, fold it into CLAUDE.md or
    the relevant skill/playbook *now*, not into the handoff: rules parked in the handoff get
    overwritten at the next wrap and drift.
-3. Add the session's entry to **The Chronicle** (`apps/demo/src/pages/Journal.tsx`) — the
-   demo's illuminated journal. Two parts per entry (Blaine, session 011): a one-sentence
-   fantasy-voiced **intro** in the hand of ⚜ The Chronicler, then a technical **log** (2–3
-   paragraphs) that reads like the session summary — exact, naming Blaine/Griff, with
-   decision numbers, issue/PR refs, sim numbers, and the quirks. A marginal note where one
-   fits. Deploy so it's live before the session closes.
-4. Offer to commit everything, with a suggested message.
+3. Offer to commit everything, with a suggested message.
+
+*(The Chronicle — the demo's illuminated session journal — was retired 2026-07-19: it was
+effort spent narrating the build rather than building. The session summary above is the
+record.)*
 
 ## Working principles
 
