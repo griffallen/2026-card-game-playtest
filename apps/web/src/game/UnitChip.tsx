@@ -5,7 +5,7 @@ import { useLongPress } from '../components/CardFrame.tsx'
 import { SLEEVE_EDGE, SLEEVE_TAB, sleeveFor, type Sleeve } from './sleeves.ts'
 import { iconFor, shortGlossFor } from './gloss.ts'
 
-export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, sleeve: sleeveProp }: {
+export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, sleeve: sleeveProp, onHoverPreview }: {
   unit: UnitView
   mine: boolean
   glow: 'none' | 'selected' | 'target' | 'attack'
@@ -16,6 +16,8 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, s
   onLongPress?: () => void
   /** issue #61: the owner's chosen sleeve — falls back to the ivory/gunmetal defaults */
   sleeve?: Sleeve
+  /** issue #114: mouse-hover card preview — never fired by touch (see useCardPreview) */
+  onHoverPreview?: (pos: { x: number; y: number } | null) => void
 }) {
   const [artBroken, setArtBroken] = useState(false)
   const lp = useLongPress(onLongPress)
@@ -63,6 +65,10 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, s
   return (
     <div
       {...lp.handlers}
+      // #114: hover raises the full card. Merged with the long-press handlers rather than
+      // replacing them — a mouse drag still cancels the press, a touch still never previews.
+      onPointerMove={e => { lp.handlers.onPointerMove(e); if (e.pointerType === 'mouse') onHoverPreview?.({ x: e.clientX, y: e.clientY }) }}
+      onPointerLeave={() => { lp.handlers.onPointerLeave(); onHoverPreview?.(null) }}
       style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
       onClick={() => { if (lp.fired.current) { lp.fired.current = false; return } onClick?.() }}
       title={tooltip}

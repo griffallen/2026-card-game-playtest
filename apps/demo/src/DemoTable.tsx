@@ -9,6 +9,7 @@ import { UnitChip } from '@ui/game/UnitChip.tsx'
 import { InfluenceTrack } from '@ui/game/InfluenceTrack.tsx'
 import { BaseSheet, CardSheet, EventTicker, PileSheet, UnitInspector, useValueFlash } from '@ui/game/Sheets.tsx'
 import { sleeveFor } from '@ui/game/sleeves.ts'
+import { useCardPreview } from '@ui/game/CardPreview.tsx'
 import { DEMO_CARDS, aiControls, newLocalGame, seatedDeckCards, type DemoConfig } from './local.ts'
 import { allDecks } from './custom-decks.ts'
 import { BlockModal } from './BlockModal.tsx'
@@ -90,6 +91,9 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   const [lethalPlay, setLethalPlay] = useState<{ card: string; cede: number } | null>(null)
   const [skipToMyWindow, setSkipToMyWindow] = useState(false)
   const [inspect, setInspect] = useState<Inspect>(null)
+  // #114 (Griff): hover any card or unit on the table to raise a full-size copy. Mouse only —
+  // phones keep long-press-to-inspect (#124), so nothing lands under the player's thumb.
+  const preview = useCardPreview()
   const [setupPicks, setSetupPicks] = useState<string[]>([])
   const [armOverextend, setArmOverextend] = useState(false)
   // #122 (Twilight Scout): the one-time hand peek. A new reveal entry addressed to the viewer pops a
@@ -1334,6 +1338,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
                       return (
                         <UnitChip key={u.id} unit={u} mine={mine} glow={glow} sleeve={sleeveOf(u.owner)}
                           actionable={mine && myWindow && unitActionable(u.id)}
+                          onHoverPreview={preview.bind(DEMO_CARDS[u.slug])}
                           onLongPress={() => setInspect({ kind: 'unit', id: u.id })}
                           onClick={() => {
                             if (isBlocker) { toggleBlocker(u.id); return }
@@ -1431,6 +1436,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
               const canAct = playActionsFor(h.id).length > 0 || !!resourceActionFor(h.id)
               return (
                 <CardFrame key={h.id} card={def} size="sm" sleeve={sleeveOf(seat)}
+                  onHoverPreview={preview.bind(def)}
                   selected={view.phase === 'setup' ? setupPicks.includes(h.id) : (isChoose && myWindow) || selectedHand === h.id || (selection?.kind === 'targeting' && selection.card === h.id)}
                   stamp={(view.phase === 'setup' && setupPicks.includes(h.id))
                     || (view.phase === 'bank' && selection?.kind === 'hand' && selection.id === h.id) ? 'Resource' : undefined}
@@ -1617,6 +1623,9 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
 
       {showHelp && <HelpPanel edition={state.rules.combatModel === 'blockerPairing' ? 'v3' : 'v2.3'} keyboard onClose={() => setShowHelp(false)} />}
 
+      {/* #114: the hovered card, raised over the table. Mouse only, pointer-events-none. */}
+      {preview.layer}
+
       {/* issue #58 (Griff): blocking is a spatial act — attackers in a row, defenders dropped
           under each. Emits the identical block action; the engine's resolution is untouched. */}
       {isBlock && myWindow && pendingAttack && (
@@ -1634,7 +1643,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
           onConfirm={pairs => apply({ type: 'block', pairs }, seat)}
           onCancel={() => apply({ type: 'block', pairs: [] }, seat)}
           sleeveOf={sleeveOf}
-          onInspect={id => setInspect({ kind: 'unit', id })}
+          cardOf={slug => DEMO_CARDS[slug]}
         />
       )}
 

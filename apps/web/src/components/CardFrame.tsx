@@ -82,7 +82,7 @@ const typeMeta: Record<string, { icon: string; label: string; chip: string }> = 
 }
 
 /** One component renders any card at any size — hand, browser, admin preview. */
-export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge, onLongPress, sleeve, stamp }: {
+export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge, onLongPress, sleeve, stamp, onHoverPreview }: {
   card: CardLike
   size?: 'sm' | 'md' | 'lg'
   onClick?: () => void
@@ -95,6 +95,8 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
   sleeve?: Sleeve
   /** #28: bold overlay banner across the card (e.g. "Resource" while picking setup banks) */
   stamp?: string
+  /** issue #114: mouse-hover card preview — never fired by touch (see useCardPreview) */
+  onHoverPreview?: (pos: { x: number; y: number } | null) => void
 }) {
   // a mobile/CDN blip must not strip a card's art for the whole session (issue #19):
   // retry twice with a cache-busting src before conceding to procedural art
@@ -127,6 +129,10 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
   return (
     <div
       {...lp.handlers}
+      // #114: hover raises a full-size copy — the hand renders at size="sm", where a long
+      // rules box is genuinely hard to read. Touch never fires it (see useCardPreview).
+      onPointerMove={e => { lp.handlers.onPointerMove(e); if (e.pointerType === 'mouse') onHoverPreview?.({ x: e.clientX, y: e.clientY }) }}
+      onPointerLeave={() => { lp.handlers.onPointerLeave(); onHoverPreview?.(null) }}
       style={{ WebkitTouchCallout: 'none' } as React.CSSProperties}
       onClick={() => { if (lp.fired.current) { lp.fired.current = false; return } onClick?.() }}
       title={card.designerNote ? `⚑ ${card.designerNote}` : undefined}
