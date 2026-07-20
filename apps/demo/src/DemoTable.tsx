@@ -805,7 +805,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     const tgt = view.zones.flatMap(z => z.units).find(u => u.id === targetRef.id)
     if (!tgt) return []
     return view.zones[tgt.zone].units
-      .filter(u => u.id !== tgt.id && u.id !== splasher && !u.imprisoned
+      .filter(u => u.id !== tgt.id && u.id !== splasher
         && !(u.owner !== seat && !u.exhausted && u.keywords.includes('hidden')))
       .map(u => u.id)
   }
@@ -818,7 +818,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     actions.some(a => a.type === 'attack' && a.attackers.includes(unitId))
 
   function clickMyUnit(unitId: string) {
-    // no actions available (exhausted, imprisoned, not your window…) → inspect instead of a dead tap
+    // no actions available (exhausted, not your window…) → inspect instead of a dead tap
     if (!myWindow || !unitActionable(unitId)) { setInspect({ kind: 'unit', id: unitId }); return }
     setSelection(sel => {
       if (sel?.kind === 'unit') {
@@ -1585,7 +1585,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
             discardCount={side.discard.length}
             resourcesReady={side.resources.filter(r => !r.exhausted).length}
             resourcesTotal={side.resources.length}
-            guards={home.filter(u => u.owner === s && !u.imprisoned && u.keywords.some(k => k.startsWith('guard'))).length}
+            guards={home.filter(u => u.owner === s && u.keywords.some(k => k.startsWith('guard'))).length}
             invaders={home.filter(u => u.owner !== s).length}
             influence={s === 0 ? view.influence : -view.influence}
             onClose={() => setInspect(null)}

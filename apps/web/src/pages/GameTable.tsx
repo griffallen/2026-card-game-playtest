@@ -506,7 +506,7 @@ export function GameTable() {
             discardCount={side.discard.length}
             resourcesReady={side.resources.filter(r => !r.exhausted).length}
             resourcesTotal={side.resources.length}
-            guards={home.filter(u => u.owner === s && !u.imprisoned && u.keywords.some(k => k.startsWith('guard'))).length}
+            guards={home.filter(u => u.owner === s && u.keywords.some(k => k.startsWith('guard'))).length}
             invaders={home.filter(u => u.owner !== s).length}
             influence={s === 0 ? view.influence : -view.influence}
             onClose={() => setInspect(null)}
