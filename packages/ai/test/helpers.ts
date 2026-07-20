@@ -30,7 +30,7 @@ let counter = 5000
 /** Drop a unit onto the board directly (bypasses costs/phases — the fixture owns the setup). */
 export function place(
   state: GameState, seat: Seat, slug: string, zone: ZoneId = 1,
-  opts: Partial<{ damage: number; exhausted: boolean; enteredRound: number; imprisonedBy: Seat }> = {},
+  opts: Partial<{ damage: number; exhausted: boolean; enteredRound: number }> = {},
 ): string {
   const id = `x${counter++}`
   state.cardOf[id] = slug
@@ -41,7 +41,6 @@ export function place(
     enteredRound: opts.enteredRound ?? 0,
     movedThisRound: false,
     shielded: (state.cardSet[slug]?.kw ?? []).some(k => k.k === 'shielded'),
-    imprisoned: opts.imprisonedBy !== undefined ? { by: opts.imprisonedBy, source: null } : null,
     upgrades: [],
     mods: [],
     overextendedBy: 0,
