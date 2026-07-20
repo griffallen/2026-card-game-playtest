@@ -8,6 +8,17 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.10.0 — 2026-07-20
+major — **Politician → Tribune, and the keyword now sways Influence** (#125, **decision 115**; Blaine
+fired the build). Two parts. *(A)* The keyword `politician` is renamed **Tribune** everywhere (nine
+carrier cards, rulebook, gloss, deck charters) — the round-end majority payout is unchanged. *(B)* a
+new engine primitive: a Tribune moves the shared Influence track **+1 on every enter-play** (deploy,
+created copy, or return-from-capture) and **−1 on every leave-play** (defeat or capture), **cause-blind**
+— so it nets to zero over a Tribune's life and can't be farmed. It sits **on top of** the majority
+payout. `RULES_VERSION` 3.3.0 → **3.4.0**. 493 tests green (17 new, RED-first). Deployed — gate passed.
+⚑ decision 115 flags for Griff's veto: a Radiant Citadel + its two copies now swings +3 on cast
+(symmetric, still nets to zero). `b2b8f2d`.
+
 ## v0.9.0 — 2026-07-20
 major — **Breakthrough splash + chain** (#128, **decision 114**, amends 102; Blaine fired the build).
 A Breakthrough attacker's leftover past a *defeated* target no longer auto-pours into the base — in
