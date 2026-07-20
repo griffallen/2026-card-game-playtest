@@ -8,6 +8,34 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.8.0 — 2026-07-20
+major — **the prison package deleted** (#134, #137; Blaine fired). Prison was cut by ruling (#3)
+and succeeded by Capture; #131 blocked it at the validator, this removes the implementation —
+~89 references across 11 engine files: the `imprison` op, the `imprisonWatcher` static,
+`UnitInstance.imprisoned` and its view field, `prisonDecayPerUnit`/`prisonReleaseThreshold`, the
+round-end decay and release loops, and every imprisoned gate in `legal.ts`/`engine.ts`/`helpers.ts`.
+The AI's `jailerBonus` and `heldPrisoners` went too (both structurally returned 0);
+`FEATURE_VERSION` 2 → 3 drops the two imprisoned-count slots.
+
+**Capture is untouched** — the names are close enough to be dangerous, so that was the guardrail:
+`op: 'capture'`, `state.captives`, `freeCaptives`, capture income and the retired-but-retained
+`releaseCaptive` action all stand, as do the live *capture* cards whose names sound like prison
+(Prison Warrant, Prison of Light, Imprisonment Chamber).
+
+Replay safety was verified rather than assumed: `packages/corpus/src/replay.ts` rebuilds state from
+`createGame` + `applyAction` over the recorded actions — no serialized `GameState` in a log — and
+no card in `data/cards/**` including `_archive` carries an `imprison` op. Known residue:
+`apps/server` may hold stale `stateCache` rows with an inert `imprisoned: null`.
+
+Also fixed here: the help panel still **taught** Overextend and Reach, a #131 leftover — both are
+gone from the engine, so that text was wrong even in the legacy panel it lived in. Three
+prison-only tests deleted; `dead-vocabulary.test.ts` extended to pin `imprisonWatcher` and the two
+rules keys as gone.
+
+580 tests green (engine 467, demo 32, ai 34, corpus 37, server 10), typecheck clean across six
+workspaces, cards:check 120 valid, rules:doc:check current. Playability gate passed — 120 art
+loaded, 0 broken, no page errors. Deployed.
+
 ## v0.7.0 — 2026-07-20
 major — **the canon reset, Griff's UI batch, and the cut keywords** (#126, #130, #131; #114,
 #119, #109, #92, #5, #122; Blaine fired).
