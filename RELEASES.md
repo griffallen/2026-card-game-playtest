@@ -8,6 +8,14 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.8.2 — 2026-07-20
+patch — **the Sellsword's Primer removed** (Blaine: "its hokey"). The strategy guide voiced by Old
+Varga, a retired-sellsword persona, is gone: page, route, nav tab, and the rulebook sentence
+pointing at it. A voice competing with the game rather than teaching it — the Rulebook says what is
+legal, the Cards tab says what a card does, the Design Audit says why. Same call as retiring the
+Chronicle journal earlier today. `docs/rules.md` regenerated so the intro no longer sends players
+to a tab that does not exist. Deployed.
+
 ## v0.8.1 — 2026-07-20
 patch — **two small cleanups** (#132, #133; agent-shipped per the patch lane).
 
