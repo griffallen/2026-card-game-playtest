@@ -10,8 +10,8 @@
  *
  *  `gloss` mirrors the rulebook's keyword table (issue #23: one voice on every surface).
  *  `short` is the glance-level reminder for hover tooltips on the table (issue #63).
- *  `icon` is Griff's locked symbol set (issue #114) — nine picked by him, four chosen to
- *  match in spirit (scar 🩸, hidden 🌫️, capture ⛓️, cantAttack ⛔). */
+ *  `icon` is Griff's locked symbol set (issue #114) — eleven picked by him (hidden 🙈 and
+ *  capture 🔒 added in his 2026-07-20 pass), two chosen to match in spirit (scar 🩸, cantAttack ⛔). */
 export interface KeywordInfo {
   icon: string
   short: string
@@ -50,7 +50,7 @@ export const KEYWORDS: Record<string, KeywordInfo> = {
     gloss: 'Cannot attack.',
   },
   hidden: {
-    icon: '🌫️',
+    icon: '🙈',
     short: "while ready it can't be targeted or attacked; exhausting reveals it",
     gloss: 'While Ready, enemy actions can\'t target it and enemy attacks can\'t be declared at it. Effects that don\'t choose ("all", whole-zone, automatic picks) still reach it.',
   },
@@ -65,7 +65,7 @@ export const KEYWORDS: Record<string, KeywordInfo> = {
     gloss: 'An ability used as your turn: exhaust the unit to resolve its printed Sneak effect on something in its own zone.',
   },
   capture: {
-    icon: '⛓️',
+    icon: '🔒',
     short: 'takes an enemy unit under it until the holder leaves play',
     gloss: 'Takes an enemy unit under this one, off the board entirely. Holding costs nothing — the grip breaks only when the capturer dies, and the freed captive returns to that zone ready. Kill the jailer to free the prisoner.',
   },

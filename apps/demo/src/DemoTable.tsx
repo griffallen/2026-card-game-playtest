@@ -1129,7 +1129,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
           : unitName(selection.via.unit)
         return (
           <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
-            <span>⛓ <b>{arriving}</b> arrests an enemy as it takes the zone — tap a glowing enemy to exhaust it.</span>
+            <span>🔒 <b>{arriving}</b> arrests an enemy as it takes the zone — tap a glowing enemy to exhaust it.</span>
             <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
           </div>
         )
@@ -1387,7 +1387,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
             const zoneLabel = (zi: number) => zi === 1 ? 'the Neutral zone' : zi === (seat === 0 ? 0 : 2) ? 'your Home' : 'their Home'
             return (
               <p className="mt-1 text-[11.5px] text-dim">
-                ⛓ {held.map(({ c, captor, zi }) => (
+                🔒 {held.map(({ c, captor, zi }) => (
                   <span key={c.id}><b className="text-body">{c.name}</b> is held by{' '}
                     <button className="underline decoration-dotted hover:text-body" onClick={() => setInspect({ kind: 'unit', id: captor.id })}>{captor.name}</button>{' '}
                     in {zoneLabel(zi)}</span>
