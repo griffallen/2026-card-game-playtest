@@ -19,6 +19,18 @@ gh api 'repos/booherbg/2026-card-game/issues/comments?sort=created&direction=des
 Compare `updatedAt` / `created_at` against the last activity this session has handled.
 Anything newer is a finding.
 
+## Keep the Board current (#129) — every tick, first-class
+
+The Board (issue #129) is the **one live index** of every open decision, by owner: the ask,
+what it blocks, and the default if unanswered. It is the single source of truth for "what's
+waiting on whom" — the handoff points here instead of duplicating it, so this is the surface
+that must never go stale. **Reconcile it on every tick, whether or not the tick spawns Fable:**
+if a decision opened or closed since it was last rebuilt (a new `designer` issue, a Griff/Blaine
+answer, a close), rebuild it now — `gh issue edit 129 --body-file <file>`. This is `docs`-lane:
+the router does it directly — no human, no Fable, no release. Your own Board edit counts as
+handled activity; don't re-trigger on it next tick. (It went stale once because this rule lived
+buried in the Fable template and a no-Fable tick skipped it — hence first-class here.)
+
 ## Build labels (tick-side) — see `docs/AGENT/build-workflow.md`
 
 Two axes: **scope** (`patch`|`minor`|`major`) and **approval** (`backlog`→`queued`→`building`
@@ -87,8 +99,15 @@ starts blank — the brief is everything. It MUST contain:
 1. **The full thread, verbatim** — paste the output of `gh issue view N --comments` (or
    `gh pr view N --comments`). Never a summary: a summarized thread produces a confident
    reply to a half-understood conversation.
-2. **Project state** — the current handoff (`docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md`), or
-   the relevant slice, plus any decision/spec files the thread touches.
+2. **The current rules — ALWAYS, verbatim, non-negotiable.** Paste all of `docs/rules.md`
+   into every brief (~170 lines / 17KB, ~5k tokens — cheap). It is generated and gated
+   always-current (`rules:doc:check`), so this is the one thing that guarantees a Fable
+   ruling can never argue from stale or half-remembered rules. Never summarize it, never
+   assume the thread carries it, never skip it to "save tokens" — a wrong ruling costs more
+   than 5k tokens. **Plus project state:** the current handoff
+   (`docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md`), the specific `data/cards/<color>/*` files for
+   every card the thread names (the named cards, not the 123-file corpus), and any
+   `docs/DESIGN/DECISIONS.md` entries the thread touches.
 3. **The ask** — draft the reply / make the ruling / answer the question. One ask per spawn.
 4. **The voice contract** — copy this into every brief:
 
@@ -145,11 +164,9 @@ starts blank — the brief is everything. It MUST contain:
    - **`YOU DECIDE`** names one person. If it's genuinely both, it's usually two comments.
    - Set the `designer` label and **assign** the person named in `YOU DECIDE` (#91).
 
-6. **The Board — issue #129** (pinned) lists every open decision, grouped by owner: the ask,
-   what it blocks, and the default if unanswered. Rebuild it whenever a decision opens or closes
-   — `gh issue edit 129 --body-file <file>`.
-   It is `docs`-lane work, so it never waits on a human. It exists because Blaine could not tell,
-   from a dozen threads, what was actually on his plate.
+6. **The Board — issue #129.** When this draft opens or closes a decision, rebuild the Board so
+   it stays live — see **Keep the Board current (#129)** above for the canonical rule. (It exists
+   because Blaine could not tell, from a dozen threads, what was actually on his plate.)
 
 Before posting, **re-fetch the thread** (`gh issue view N --comments`) and confirm no new
 comment landed while the draft was being written (Blaine, 2026-07-15) — a fresh reply can

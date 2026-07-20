@@ -41,7 +41,7 @@ The loop is **design → spec → build plan → implement → playtest** — an
 
 **Audit after mechanics change** (Blaine, issue #25): any significant mechanical change — a new or changed rule, keyword rework, combat change — ends with a full consistency audit of spec ↔ engine ↔ cards ↔ every teaching surface (rulebook, help panel, keyword gloss), hunting two things: stale traces of the old rule, and *hidden mechanics* the engine enforces but no surface teaches (how the upgrade-pressure tax lived unnoticed for a month). The fold isn't done until the audit is clean. **The demo is always a priority** — it must teach exactly the game it runs.
 
-Project state lives in `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md`. **Read it at the start of every session**, then load the playbook for the current phase:
+Live project state lives on **GitHub** — **the Board (issue #129)** is the always-current index of every open decision, by owner (rebuilt every watch tick). `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md` is a lean **pointer** to it — phase, who's next, what to read — written once at wrap, so never trust it for the open-decision list; read the Board for that. **Read the handoff at the start of every session**, then load the playbook for the current phase:
 
 | Phase | Playbook |
 |-------|----------|
@@ -178,11 +178,14 @@ doubt it, spawn a one-line smoke-test rather than avoiding the delegation.)
    the chair, what to read, what's next, open questions.]
    ```
 
-2. Overwrite `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md` with the Hand-off section. **The
-   handoff is state only** — phase, who's next in the chair, open items, what to read. If
-   the session established a durable rule or standing agreement, fold it into CLAUDE.md or
-   the relevant skill/playbook *now*, not into the handoff: rules parked in the handoff get
-   overwritten at the next wrap and drift.
+2. Overwrite `docs/PROMPTS/CURRENT-HANDOFF-PROMPT.md` with the Hand-off section. **Keep it
+   lean — it's a pointer, not a snapshot:** phase, who's next in the chair, what to read, and
+   any live situational caution. **For open decisions and who owes what, point to the Board
+   (#129) — never re-list them.** A duplicated decision list rots the moment a decision moves;
+   the Board is kept live every tick, so it is the single source. If the session established a
+   durable rule or standing agreement, fold it into CLAUDE.md or the relevant skill/playbook
+   *now*, not into the handoff: rules parked in the handoff get overwritten at the next wrap
+   and drift.
 3. Offer to commit everything, with a suggested message.
 
 *(The Chronicle — the demo's illuminated session journal — was retired 2026-07-19: it was
