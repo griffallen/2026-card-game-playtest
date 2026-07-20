@@ -8,6 +8,16 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.8.3 — 2026-07-20
+patch — **the retired-mechanics convention** (#135; Blaine: "sure, go for it"). The three
+hand-kept keyword lists (`KeywordName` / `KEYWORDS` / `KW_NAMES`) fold into one `KEYWORD_NAMES`
+source in `types.ts`; the runtime sets derive from it. New `vocabulary-coverage.test.ts` fails if
+any live keyword or op sits on no canon card — reading the **compiled** pool, not `.md` prose, so a
+design-note mention can't mask an orphan. It caught one: `preventBase`, orphaned since Obscure's
+#122 rework, now allowlisted (kept-for-future, not culled). CLAUDE.md's audit convention now ends a
+mechanic cut with an engine cull, guarded by the test. **Not deployed** — dev-side guard-rail +
+refactor, zero player-facing change (rules.md unchanged). 471 tests green (467 + 4). `bce0406`.
+
 ## v0.8.2 — 2026-07-20
 patch — **the Sellsword's Primer removed** (Blaine: "its hokey"). The strategy guide voiced by Old
 Varga, a retired-sellsword persona, is gone: page, route, nav tab, and the rulebook sentence
