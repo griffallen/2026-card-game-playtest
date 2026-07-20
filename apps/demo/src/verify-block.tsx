@@ -34,15 +34,30 @@ function craftBlockScenario(): GameState {
     } as UnitInstance
   }
   // seat 0's home is zone 0; a base attack fights in the defender's home zone
-  put('ATK_A', 1, 'crimson-behemoth', 0)   // 6/5 — will get ganged
-  put('ATK_B', 1, 'warcry-leader', 0)      // 2/3 — will be waved through to base
-  put('DEF_1', 0, 'noble-purifier', 0)     // 3/3
-  put('DEF_2', 0, 'exemplar-knight', 0)    // 4/4
-  put('DEF_3', 0, 'nightweaver', 0)        // 3/3
+  //
+  // CONSTRAINT (#132): Crimson Behemoth's onAttack deals 2 damage to every OTHER unit in its zone
+  // — ours included — so every defender here must have **3+ health** or it dies before the block
+  // window it is meant to exercise. That is exactly how this harness broke: #107 gave the Behemoth
+  // its AoE and a balance pass cut Noble Purifier (the old DEF_1) to 4/1, so the driver spent days
+  // failing on a defender that was dead on arrival.
+  put('ATK_A', 1, 'crimson-behemoth', 0)        // 6/6 — will get ganged; AoEs the zone on attack
+  put('ATK_B', 1, 'warcry-leader', 0)           // 4/3 — will be waved through to base
+  put('DEF_1', 0, 'champion-of-the-faith', 0)   // 7/7 — its onAttack never fires while blocking
+  put('DEF_2', 0, 'exemplar-knight', 0)         // 4/4
+  put('DEF_3', 0, 'nightweaver', 0)             // 3/3
   s.phase = 'loop'
   s.actorSeat = 1
   // a real attack action opens the real block window (phase='block', actorSeat=0 = the human)
   s = applyAction(s, { type: 'attack', attackers: ['ATK_A', 'ATK_B'], target: { kind: 'base', seat: 0 } }, 1).state
+
+  // Fail loudly, here, rather than as a mystery timeout in the Playwright driver 40 lines later.
+  const lost = ['DEF_1', 'DEF_2', 'DEF_3'].filter(id => !s.units[id])
+  if (lost.length) {
+    throw new Error(
+      `block-verify fixture is stale: ${lost.join(', ')} died before the block window. ` +
+      'A card in this scenario was rebalanced — check the defenders still survive 2 AoE damage.',
+    )
+  }
   return s
 }
 

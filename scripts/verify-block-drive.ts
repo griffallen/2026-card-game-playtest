@@ -93,7 +93,7 @@ async function main() {
     'back restores the modal': headerRestored === 1,
     'assignments survive the peek': def1StillAssigned && def2StillAssigned && /block with 2/.test(confirmLabel),
     'per-pair source (Behemoth)': /takes \d+ damage from Crimson Behemoth/.test(log),
-    'combined counter names both blockers': /Crimson Behemoth takes \d+ damage from Noble Purifier \+ Exemplar Knight/.test(log),
+    'combined counter names both blockers': /Crimson Behemoth takes \d+ damage from Champion of the Faith \+ Exemplar Knight/.test(log),
     'waved attacker hit the base': /from Warcry Leader/.test(log),
     'behemoth destroyed': /Crimson Behemoth is destroyed/.test(log),
   }
