@@ -7,8 +7,13 @@
  * Deterministic: seeds 1000..1000+N-1, seat alternates by game index. NOTE (playtest 001,
  * finding 2 — proven twice): these numbers are bounded by the bot's quality. Re-run every
  * matchup after ANY change to ai.ts before quoting results.
+ *
+ * RULES (fixed 2026-07-19, #98): runs under V3_RULES — the blocker-pairing combat the demo and
+ * every v3 card actually use. Before this, it passed NO rules and silently fell back to
+ * simulateGame's DEFAULT_RULES (legacy 'intercept' combat), so every quoted matchup measured the
+ * WRONG game — e.g. yellow-vs-purple read 65/35 under intercept but 43/57 under real V3.
  */
-import { PREBUILT_DECKS, deckSlugs, simulateGame, type PolicyName } from '@newgame/engine'
+import { PREBUILT_DECKS, deckSlugs, simulateGame, V3_RULES, type PolicyName } from '@newgame/engine'
 
 const N = Number(process.argv[2] ?? 300)
 const policy = (process.argv[3] ?? 'heuristic') as PolicyName
@@ -27,7 +32,7 @@ function matchup(aSlug: string, bSlug: string) {
   for (let i = 0; i < N; i++) {
     const aSeat = i % 2
     const decks = aSeat === 0 ? [A, B] : [B, A]
-    const r = simulateGame(1000 + i, decks[0], decks[1], { policyA: policy, policyB: policy })
+    const r = simulateGame(1000 + i, decks[0], decks[1], { policyA: policy, policyB: policy, rules: V3_RULES })
     if (r.winner === aSeat) aWins++
     if (r.winReason === 'influence') byInf++
     lens.push(r.rounds)
@@ -41,7 +46,7 @@ function matchup(aSlug: string, bSlug: string) {
   )
 }
 
-console.log(`policy=${policy} N=${N} (alternating seats, seeds 1000+)`)
+console.log(`policy=${policy} N=${N} rules=V3 (blocker-pairing) (alternating seats, seeds 1000+)`)
 if (only.length === 2) matchup(only[0], only[1])
 else {
   const slugs = PREBUILT_DECKS.map(d => d.slug)
