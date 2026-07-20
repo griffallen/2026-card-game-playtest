@@ -145,8 +145,9 @@ starts blank — the brief is everything. It MUST contain:
    - **`YOU DECIDE`** names one person. If it's genuinely both, it's usually two comments.
    - Set the `designer` label and **assign** the person named in `YOU DECIDE` (#91).
 
-6. **The Board** — one pinned issue listing every open decision, grouped by owner: the ask,
-   what it blocks, and the default if unanswered. Rebuild it whenever a decision opens or closes.
+6. **The Board — issue #129** (pinned) lists every open decision, grouped by owner: the ask,
+   what it blocks, and the default if unanswered. Rebuild it whenever a decision opens or closes
+   — `gh issue edit 129 --body-file <file>`.
    It is `docs`-lane work, so it never waits on a human. It exists because Blaine could not tell,
    from a dozen threads, what was actually on his plate.
 
