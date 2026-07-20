@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { KEYWORDS } from '../game/gloss.ts'
 
 const Row = ({ icon, title, children }: { icon: string; title: string; children: ReactNode }) => (
   <div className="flex gap-3">
@@ -37,33 +38,36 @@ function V3Content() {
       <H>Combat — who takes what</H>
       <div className="mt-2 flex flex-col gap-2">
         <Row icon="⚔" title="Everything hits back, always">Attacking a unit — or blocking one — means <b>both deal their Power to each other at once</b>, and the defender counters <i>even while exhausted</i>. So the question before any swing is: <b>does my unit survive the counter?</b> Send a 3-Power unit at a 5-Power one and, unless it can soak 5, you hand your own unit away.</Row>
-        <Row icon="◈" title="Armor">Shaves its number off <b>every</b> hit the unit takes. A ◈2 unit struck for 5 feels 3.</Row>
-        <Row icon="⛨" title="Shield">Eats <b>one whole hit</b> of any size, then the token is gone. It buys a single free trade — spend it against their biggest blow.</Row>
-        <Row icon="🛡" title="Guard">The bodyguard: the <b>only</b> unit that may block a lone attacker aimed at another unit, stepping fully in front of it — and it blocks <b>without exhausting</b>. (A base is everyone's to defend, so lone base attacks stay open to all.)</Row>
-        <Row icon="💥" title="Breakthrough (red)">When the attacker <b>kills its blocker</b>, the leftover damage doesn't stop — the excess <b>spills through</b> to what it was aimed at (a unit, or the base behind a felled defender in the enemy Home). Chump blocks don't save you.</Row>
-        <Row icon="🏰" title="The base never hits back">An unblocked attack on Life is <b>just damage</b> — no counter. Only units strike back; bases don't. That's why racing life can be safer than trading units.</Row>
+        <Row icon="🪖" title="Armor">Shaves its number off <b>every</b> hit the unit takes. A 🪖2 unit struck for 5 feels 3.</Row>
+        <Row icon="🛡️" title="Shield">Eats <b>one whole hit</b> of any size, then the token is gone. It buys a single free trade — spend it against their biggest blow.</Row>
+        <Row icon="🏰" title="Guard">The bodyguard: the <b>only</b> unit that may block a lone attacker aimed at another unit, stepping fully in front of it — and it blocks <b>without exhausting</b>. (A base is everyone's to defend, so lone base attacks stay open to all.)</Row>
+        <Row icon="💪" title="Breakthrough (red)">When the attacker <b>kills its blocker</b>, the leftover damage doesn't stop — the excess <b>spills through</b> to what it was aimed at (a unit, or the base behind a felled defender in the enemy Home). Chump blocks don't save you.</Row>
+        <Row icon="🏛️" title="The base never hits back">An unblocked attack on Life is <b>just damage</b> — no counter. Only units strike back; bases don't. That's why racing life can be safer than trading units.</Row>
       </div>
 
       <H>Reading the board</H>
       <div className="mt-2 flex flex-col gap-2">
         <Row icon="⟳" title="Exhausted">Dimmed with a ⟳ — already acted; readies at the start of its owner's next round.</Row>
         <Row icon="💨" title="Rush ready">Its <b>free move for this round</b> — move <i>without</i> exhausting, then it can still fight. It refreshes every round.</Row>
-        <Row icon="⛨" title="Shielded">Carries its shield token: the <b>first</b> hit is prevented entirely, then the ⛨ disappears — what you see is what's live.</Row>
-        <Row icon="⛓" title="Captives">A ⛓ on a unit means it holds an enemy unit <b>under it</b>, off the board. The grip breaks only one way: <b>when the capturer dies</b>, the captive returns to that zone, <b>ready</b>. There is no letting go — kill the jailer to free the prisoner.</Row>
+        <Row icon="🛡️" title="Shielded">Carries its shield token: the <b>first</b> hit is prevented entirely, then the 🛡️ disappears — what you see is what's live.</Row>
+        <Row icon="⛓️" title="Captives">A ⛓️ on a unit means it holds an enemy unit <b>under it</b>, off the board. The grip breaks only one way: <b>when the capturer dies</b>, the captive returns to that zone, <b>ready</b>. There is no letting go — kill the jailer to free the prisoner.</Row>
         <Row icon="↑" title="Orphaned upgrades">When a unit dies, its upgrades stay <b>lying in the zone</b> as dashed ↑ tokens. Either player may tap one to <b>salvage</b> it onto their own unit there — paying its full cost and pips, as if played.</Row>
-        <Row icon="🛡" title="Guard">The <b>bodyguard</b>: the only unit that may block a <b>lone</b> attacker striking a unit — stepping fully in front of the target — and it blocks <b>without exhausting</b>, in duels or gangs. (Lone attacks on a <b>base</b> are open to every ready unit.) ◈ is armor: every hit is reduced by that much.</Row>
-        <Row icon="⊘" title="Can't attack">This unit <b>can't attack right now</b> — either its own card forbids it (walls), or an enemy effect <b>disarmed it for the round</b>. It can still move and block.</Row>
+        <Row icon="🏰" title="Guard">The <b>bodyguard</b>: the only unit that may block a <b>lone</b> attacker striking a unit — stepping fully in front of the target — and it blocks <b>without exhausting</b>, in duels or gangs. (Lone attacks on a <b>base</b> are open to every ready unit.) 🪖 is armor: every hit is reduced by that much.</Row>
+        <Row icon="⛔" title="Can't attack">This unit <b>can't attack right now</b> — either its own card forbids it (walls), or an enemy effect <b>disarmed it for the round</b>. It can still move and block.</Row>
         <Row icon="⚑" title="Flagged card">A prototype ruling was needed for this card's printed text — hover/long-press to read it.</Row>
       </div>
 
       <H>Keywords in one line</H>
+      {/* #114: generated from the one gloss source (apps/web/src/game/gloss.ts) — this panel used to
+          keep its own third copy of the keyword lines, which is how a cut keyword survives on a
+          teaching surface. Every symbol here is the symbol printed on the card. */}
       <p className="mt-2 text-[13px] leading-relaxed text-body/90">
-        <b>Rush</b> one free move each round · <b>Breakthrough</b> kills its blocker → <i>all</i> excess pushes to the original target (and in the enemy Home, past a killed unit target into the base) ·
-        <b> Ranged N</b> exhaust to volley N at any enemy unit, any zone (its attacks are ordinary) · <b>Guard</b> the only block against a lone attacker on a unit (base attacks stay open to all); always blocks free ·
-        <b> Hidden</b> while ready it can't be targeted or attacked; exhausting reveals it · <b>Infiltrate</b> deploys to any zone ·
-        <b> Sneak</b> exhaust as your turn to use its printed ability · <b>Capture</b> takes a unit under until the holder dies; it returns ready ·
-        <b> Shielded</b> first hit prevented · <b>Scar</b> +1 power per damage marked — no cap ·
-        <b> Politician</b> at round end +1 Influence per politician for a Neutral majority, +2 each for an enemy-Home majority (they stack).
+        {Object.entries(KEYWORDS).map(([k, info], i) => (
+          <span key={k}>
+            {i > 0 && ' · '}
+            <b className="capitalize">{info.icon} {k === 'cantAttack' ? "Can't attack" : k}</b> {info.short}
+          </span>
+        ))}
       </p>
 
       <H>Strategy starters</H>

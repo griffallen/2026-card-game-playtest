@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import type { LogLine, UnitView } from '@newgame/engine'
 import { CardFrame, type CardLike } from '../components/CardFrame.tsx'
-import { STATUS_GLOSS, glossFor } from './gloss.ts'
+import { STATUS_GLOSS, glossFor, iconFor } from './gloss.ts'
 import type { Sleeve } from './sleeves.ts'
 
 /** Bottom sheet on phones, centered dialog on desktop. */
@@ -45,17 +45,16 @@ export function UnitInspector({ unit, card, upgradeCards, onClose, sleeve }: {
               {statChanged && `— printed ${unit.basePower}/${unit.baseHealth}`}
             </span>
           </p>
-          {unit.armor > 0 && <p className="mt-1 text-dim">◈ Armor {unit.armor} — hits are reduced by {unit.armor}.</p>}
+          {unit.armor > 0 && <p className="mt-1 text-dim">{iconFor('armor')} Armor {unit.armor} — hits are reduced by {unit.armor}.</p>}
           <div className="mt-2 flex flex-col gap-1">
-            {unit.imprisoned && <p className="text-[#e5a99f]">{STATUS_GLOSS.imprisoned}</p>}
-            {unit.exhausted && !unit.imprisoned && <p className="text-dim">{STATUS_GLOSS.exhausted}</p>}
+            {unit.exhausted && <p className="text-dim">{STATUS_GLOSS.exhausted}</p>}
             {unit.rushFreeMove && <p className="text-dim">{STATUS_GLOSS.rushFreeMove}</p>}
             {unit.overextendedBy > 0 && <p className="text-[#ff9a5e]">🔥 Overextended — will take {unit.overextendedBy} damage at end of round.</p>}
           </div>
           {unit.keywords.length > 0 && (
             <div className="mt-2 border-t hairline pt-2">
               {unit.keywords.map(k => (
-                <p key={k} className="mt-0.5"><b className="capitalize text-goldbright">{k}</b> <span className="text-body/80">— {glossFor(k)}</span></p>
+                <p key={k} className="mt-0.5"><b className="capitalize text-goldbright">{iconFor(k)} {k}</b> <span className="text-body/80">— {glossFor(k)}</span></p>
               ))}
             </div>
           )}
@@ -118,7 +117,7 @@ export function BaseSheet({ name, life, mine, handCount, deckCount, discardCount
 
 /** A card on its own — for hand long-press and pile items. */
 export function CardSheet({ card, onClose, sleeve }: { card: CardLike; onClose: () => void; sleeve?: Sleeve }) {
-  const kws = (card as CardLike & { kw?: { k: string; n?: number }[] }).kw ?? []
+  const kws = card.kw ?? []
   return (
     <Sheet title={card.name} onClose={onClose}>
       <div className="flex flex-wrap gap-4">
@@ -129,7 +128,7 @@ export function CardSheet({ card, onClose, sleeve }: { card: CardLike; onClose: 
           {kws.length > 0 && (
             <div className="mt-2 border-t hairline pt-2">
               {kws.map(k => (
-                <p key={k.k} className="mt-0.5"><b className="capitalize text-goldbright">{k.k}{k.n !== undefined ? ` ${k.n}` : ''}</b> <span className="text-body/80">— {glossFor(k.k)}</span></p>
+                <p key={k.k} className="mt-0.5"><b className="capitalize text-goldbright">{iconFor(k.k)} {k.k}{k.n !== undefined ? ` ${k.n}` : ''}</b> <span className="text-body/80">— {glossFor(k.k)}</span></p>
               ))}
             </div>
           )}
