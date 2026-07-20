@@ -8,6 +8,27 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.8.1 — 2026-07-20
+patch — **two small cleanups** (#132, #133; agent-shipped per the patch lane).
+
+- **#133** — the dead overextend-arming UI. Both play tables still carried the controls to declare
+  Overextend: the arm checkbox, its state, the reset effects, the keyword scans and the action
+  field. Inert since #131 deleted the keyword (the view stopped emitting it, so the lookups always
+  came back empty), but UI for a mechanic the game does not have. 30 references across the two
+  tables; also drops `oe` from the demo's splash-selection type.
+- **#132** — `verify-block-drive.ts` had been failing on a defender that was dead on arrival. Two
+  real balance changes landed under the fixture: #107 gave Crimson Behemoth an onAttack AoE ("2
+  damage to each other unit in its zone, yours included") and a later pass cut Noble Purifier, the
+  old DEF_1, to 4/1. The scenario killed its own blocker on the attack declaration, and the driver
+  waited 30s for a unit in the discard. DEF_1 is now Champion of the Faith (7/7, onAttack only, so
+  it never fires while blocking); stale statline comments corrected. **The durable fix is a guard**
+  — the fixture now asserts all three defenders survived and throws a named error saying a card was
+  rebalanced, so the next break reports its own cause instead of timing out. Same shape as decision
+  107: a check that quietly stopped checking reads as coverage.
+
+580 tests green, typecheck clean, cards:check 120 valid, rules:doc:check current. Block driver
+verified end-to-end against `vite dev` — all 7 log checks pass. Deployed.
+
 ## v0.8.0 — 2026-07-20
 major — **the prison package deleted** (#134, #137; Blaine fired). Prison was cut by ruling (#3)
 and succeeded by Capture; #131 blocked it at the validator, this removes the implementation —
