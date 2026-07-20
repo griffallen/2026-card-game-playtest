@@ -4,22 +4,10 @@ import { addInfluence, condHolds, defOf, draw, hasKw, log, other, unitsOf } from
 import { runOps, stateBasedCleanup } from './effects.ts'
 // (draw handles decision-33 penalties internally; endRound settles decision-35 overextension)
 
-/** One seat's automatic start-step: decay → startOfRound triggers → ready → draw (spec §1.4). */
+/** One seat's automatic start-step: startOfRound triggers → ready → draw (spec §1.4). */
 function runStartStepAuto(state: GameState, seat: Seat) {
-  // Prison decay FIRST: upkeep for prisoners already held. Running it after start-of-round
-  // triggers would instantly break a prison taken this very step (imprison → decay → below
-  // threshold → release), which guts every start-of-round jailer card.
-  const held = unitsOf(state).filter(u => u.imprisoned?.by === seat).length
-  if (held > 0 && state.rules.prisonDecayPerUnit > 0) {
-    addInfluence(state, seat, -held * state.rules.prisonDecayPerUnit)
-    log(state, seat, `${state.sides[seat].name} pays ${held * state.rules.prisonDecayPerUnit} influence to hold ${held} prisoner${held > 1 ? 's' : ''}`)
-    stateBasedCleanup(state, seat)
-  }
-  if (state.winner !== null) return
-
   for (const u of unitsOf(state, seat)) {
     if (state.winner !== null) return
-    if (u.imprisoned) continue
     const own = defOf(state, u.id).startOfRound
     if (own && condHolds(state, seat, own.cond)) {
       // #64: automatic ticks name their card, or they read as invisible magic
@@ -98,7 +86,6 @@ export function endRound(state: GameState, actorSeat: Seat) {
   for (const seat of [state.initiative, other(state.initiative)] as const) {
     for (const u of unitsOf(state, seat)) {
       if (state.winner !== null) return
-      if (u.imprisoned) continue
       const own = defOf(state, u.id).endOfRound
       if (own && condHolds(state, seat, own.cond)) runOps({ state, controller: seat, sourceUnit: u.id, actorSeat }, own.ops)
       for (const upId of u.upgrades) {
@@ -133,8 +120,8 @@ export function endRound(state: GameState, actorSeat: Seat) {
   state.attackTaxes = state.attackTaxes.filter(t => t.rounds > 0)
   state.preventBase = [0, 0]
 
-  // Politician (#104 rework, Griff): at round end, per seat, count P = your politicians (inert
-  // prisoners don't lobby). Hold the majority of units in the Neutral zone → gain +1 × P; hold the
+  // Politician (#104 rework, Griff): at round end, per seat, count P = your politicians.
+  // Hold the majority of units in the Neutral zone → gain +1 × P; hold the
   // majority in your ENEMY's Home → gain +2 × P. Both can apply (a seat with both majorities gains
   // +3 × P). "Majority" = strictly MORE of your units than the opponent's in that zone — a tie is
   // never a majority (superseding decision 88's single flat +1).
@@ -145,7 +132,7 @@ export function endRound(state: GameState, actorSeat: Seat) {
     const countIn = (seat: Seat, zone: ZoneId) => unitsOf(state, seat).filter(u => u.zone === zone).length
     const majority = (seat: Seat, zone: ZoneId) => countIn(seat, zone) > countIn(other(seat), zone)
     for (const seat of [0, 1] as const) {
-      const politicians = unitsOf(state, seat).filter(u => !u.imprisoned && hasKw(state, u, 'politician')).length
+      const politicians = unitsOf(state, seat).filter(u => hasKw(state, u, 'politician')).length
       if (politicians === 0) continue
       let gain = 0
       if (majority(seat, 1)) gain += politicians                          // the Neutral zone: +1 each

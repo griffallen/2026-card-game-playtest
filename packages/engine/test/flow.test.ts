@@ -88,13 +88,6 @@ describe('movement', () => {
     // exhausted grunt cannot move again
     expect(() => act(s, p1, { type: 'move', unit: grunt, to: 0 })).toThrow(/exhaust/i)
   })
-
-  it('imprisoned units cannot move', () => {
-    let s = toLoop(game())
-    const p1 = s.actorSeat
-    const jailed = put(s, p1, 'soldier', homeZone(p1), { imprisonedBy: (1 - p1) as Seat })
-    expect(() => act(s, p1, { type: 'move', unit: jailed, to: 1 })).toThrow(/imprison/i)
-  })
 })
 
 describe('concede and game over', () => {

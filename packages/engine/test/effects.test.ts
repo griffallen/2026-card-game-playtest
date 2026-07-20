@@ -132,7 +132,7 @@ describe('the capture era (v3 churn pass 3 — prison is gone from canon)', () =
     const mine = put(s, p2, 'berserker', 1)
     // p1 captures p2's berserker (test owns the setup)
     delete s.units[mine]
-    s.captives[mine] = { unit: { id: mine, slug: 'berserker', owner: p2, zone: 1, damage: 0, exhausted: false, enteredRound: 0, movedThisRound: false, shielded: false, imprisoned: null, upgrades: [], mods: [], overextendedBy: 0 }, by: jailer }
+    s.captives[mine] = { unit: { id: mine, slug: 'berserker', owner: p2, zone: 1, damage: 0, exhausted: false, enteredRound: 0, movedThisRound: false, shielded: false, upgrades: [], mods: [], overextendedBy: 0 }, by: jailer }
     const hero = put(s, p2, 'sunguard-defender', 2)
     const abso = toHand(s, p2, 'absolution')
     s = act(s, p1, { type: 'pass' })

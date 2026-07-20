@@ -50,7 +50,7 @@ function putUnit(s: GameState, seat: Seat, slug: string, zone: ZoneId, opts: { e
   s.cardOf[id] = slug
   s.units[id] = {
     id, slug, owner: seat, zone, damage: opts.damage ?? 0, exhausted: opts.exhausted ?? false,
-    enteredRound: 0, movedThisRound: false, shielded: false, imprisoned: null, upgrades: [], mods: [], overextendedBy: 0,
+    enteredRound: 0, movedThisRound: false, shielded: false, upgrades: [], mods: [], overextendedBy: 0,
   }
   return id
 }

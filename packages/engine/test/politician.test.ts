@@ -6,7 +6,7 @@ import { applyAction } from '../src/engine.ts'
 import { V3_RULES } from '../src/rules.ts'
 import { T, toyDeck, put } from './util.ts'
 
-// Politician (#104 rework — Griff): at round end, count P = your (non-imprisoned) politicians.
+// Politician (#104 rework — Griff): at round end, count P = your politicians.
 // Neutral majority → +1 × P; enemy-Home majority → +2 × P; both apply (up to +3 × P). "Majority" =
 // strictly MORE of your units than the opponent's in that zone (a tie is not a majority).
 // ⚑ LITERAL reading (built, pending Griff confirmation): P is your TOTAL politicians wherever they

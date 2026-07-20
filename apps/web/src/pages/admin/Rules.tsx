@@ -14,8 +14,6 @@ const LABELS: Record<string, string> = {
   deckMinSize: 'Deck minimum size',
   maxCopies: 'Max copies of one card',
   upgradePressureInfluence: 'Influence to opponent per extra upgrade',
-  prisonDecayPerUnit: 'Influence upkeep per prisoner',
-  prisonReleaseThreshold: 'Prisons break below this influence',
   summoningSickness: 'Units wait a round before acting',
   moveExhausts: 'Moving exhausts the unit',
   rushCoversAttack: 'Rush also waives the entry-round attack exhaust',

@@ -61,22 +61,6 @@ describe('attacks', () => {
     expect(s.units[foe].damage).toBe(2)      // full 2 lands
     expect(s.units[tank].damage).toBe(2)     // 4 − armor 2
   })
-
-  it('imprisoned defenders deal no counter-damage and their guard is inert', () => {
-    let { s, p1, p2 } = arena()
-    const atk = put(s, p1, 'soldier', 1)
-    const jailedGuard = put(s, p2, 'guardian', 1, { imprisonedBy: p1 })
-    const soft = put(s, p2, 'pawn', 1)
-    // guard is imprisoned → may attack the other unit instead (which counters normally)
-    s = act(s, p1, { type: 'attack', attackers: [atk], target: { kind: 'unit', id: soft } })
-    expect(s.units[soft]).toBeUndefined()
-    expect(s.units[atk].damage).toBe(1)
-    // and attacking the imprisoned unit draws no counter-damage
-    const atk2 = put(s, p1, 'soldier', 1)
-    s = act(s, p2, { type: 'pass' })
-    s = act(s, p1, { type: 'attack', attackers: [atk2], target: { kind: 'unit', id: jailedGuard } })
-    expect(s.units[atk2].damage).toBe(0)
-  })
 })
 
 describe('the base', () => {

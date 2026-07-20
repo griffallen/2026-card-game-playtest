@@ -20,7 +20,9 @@ import { effHealth, effPower, hasKw, influenceFor } from '@newgame/engine'
 // v2 (2026-07-20): reach, flying, overextend and untargetable were cut from the engine, so the
 // vector loses four always-zero slots. Nothing to invalidate — no model artifact is versioned
 // (data/models/ is gitignored as regenerable) and no corpus store exists yet.
-export const FEATURE_VERSION = 2
+// v3 (2026-07-20, #134): the prison package left the engine with it — me/opp_imprisoned_count
+// were two more always-zero slots reading a field that no longer exists.
+export const FEATURE_VERSION = 3
 
 const other = (s: Seat): Seat => (1 - s) as Seat
 
@@ -42,9 +44,7 @@ void _keywordsCoverAll
 const PHASES = ['setup', 'bank', 'loop', 'intercept', 'block'] as const
 
 // ─── Per-seat aggregates ───────────────────────────────────────────────────────
-// Everything below is a stat or a count of stats. Board aggregates cover a seat's
-// NON-imprisoned units only (imprisoned units are inert — they can't act and their auras
-// are off), with imprisoned units surfaced separately as a plain count.
+// Everything below is a stat or a count of stats.
 interface SeatStats {
   life: number
   influence: number             // from THIS seat's perspective (+ = toward this seat's win)
@@ -59,7 +59,6 @@ interface SeatStats {
   totalRemainingHealth: number  // sum of (effective Health − damage), floored at 0
   avgUnitCost: number           // mean printed cost over units (0 when no units)
   maxPower: number              // highest single effective Power (0 when no units)
-  imprisonedCount: number
   upgradeCount: number          // attached upgrades this seat owns
   kw: Record<KeywordName, number>  // count of units carrying each keyword (effective)
 }
@@ -67,10 +66,9 @@ interface SeatStats {
 function computeSeatStats(state: GameState, seat: Seat): SeatStats {
   const side = state.sides[seat]
   const kw = Object.fromEntries(KEYWORDS.map(k => [k, 0])) as Record<KeywordName, number>
-  let unitCount = 0, totalPower = 0, totalHealth = 0, totalRemaining = 0, costSum = 0, maxPower = 0, imprisoned = 0
+  let unitCount = 0, totalPower = 0, totalHealth = 0, totalRemaining = 0, costSum = 0, maxPower = 0
   for (const u of Object.values(state.units)) {
     if (u.owner !== seat) continue
-    if (u.imprisoned) { imprisoned++; continue }
     const p = effPower(state, u)
     const h = effHealth(state, u)
     unitCount++
@@ -99,7 +97,6 @@ function computeSeatStats(state: GameState, seat: Seat): SeatStats {
     totalRemainingHealth: totalRemaining,
     avgUnitCost: unitCount ? costSum / unitCount : 0,
     maxPower,
-    imprisonedCount: imprisoned,
     upgradeCount,
     kw,
   }
@@ -138,7 +135,6 @@ function buildSpecs(): FeatureSpec[] {
     push(`${prefix}_remaining_health`, c => pick(c).totalRemainingHealth)
     push(`${prefix}_avg_unit_cost`, c => pick(c).avgUnitCost)
     push(`${prefix}_max_power`, c => pick(c).maxPower)
-    push(`${prefix}_imprisoned_count`, c => pick(c).imprisonedCount)
     push(`${prefix}_upgrade_count`, c => pick(c).upgradeCount)
     for (const k of KEYWORDS) push(`${prefix}_kw_${k}`, c => pick(c).kw[k])
   }

@@ -72,7 +72,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     if (!pa || seat !== other(pa.seat)) return []
     const zone = pa.target.kind === 'unit' ? state.units[pa.target.id]?.zone
       : pa.target.kind === 'base' ? homeZone(pa.target.seat) : undefined  // attacks only ever target unit|base
-    const candidates = unitsOf(state, seat).filter(u => u.zone === zone && !u.exhausted && !u.imprisoned)
+    const candidates = unitsOf(state, seat).filter(u => u.zone === zone && !u.exhausted)
     const out2: GameAction[] = [{ type: 'block', pairs: [] }]
     // issue #50 (duel law): a lone attacker is answered by at most ONE Guard — full redirect.
     // decision 100: the Home is everyone's to defend — base attacks keep the open window
@@ -150,7 +150,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
 
   // moves — both players act in their own windows now (decision 40; no active-player gate)
   for (const unit of unitsOf(state, seat)) {
-    if (unit.exhausted || unit.imprisoned || isSick(state, unit)) continue
+    if (unit.exhausted || isSick(state, unit)) continue
     const zones = ZONES.filter(z => adjacent(z, unit.zone))
     // #104 (Lawbringer): a unit that arrests a CHOSEN enemy on entry expands each destination into
     // one move per eligible enemy waiting there (a plain move when none) — the same choose-which-not-
@@ -165,7 +165,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
 
   // v3 Sneak: exhaust-activated abilities (decision 60)
   for (const u of unitsOf(state, seat)) {
-    if (u.exhausted || u.imprisoned) continue
+    if (u.exhausted) continue
     const def = defOf(state, u.id)
     if (!def.sneak || !(def.kw ?? []).some(k => k.k === 'sneak')) continue
     const specs = def.sneak.targets ?? []
@@ -185,7 +185,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   // v3 Ranged (decision 80): exhaust to volley N at one enemy unit, any zone
   if (state.rules.combatModel === 'blockerPairing') {
     for (const u of unitsOf(state, seat)) {
-      if (u.exhausted || u.imprisoned) continue
+      if (u.exhausted) continue
       if (typeof kwOf(state, u, 'ranged') !== 'number') continue
       for (const t of unitsOf(state, other(seat))) {
         if (!t.exhausted && hasKw(state, t, 'hidden')) continue   // decision 76: a volley chooses
@@ -198,7 +198,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   // damage, this unit's remaining Health). A full or exhausted unit, or one with no damaged ally, offers
   // nothing. This is the engine's only free-numeric activated ability — the demo renders it as a picker.
   for (const u of unitsOf(state, seat)) {
-    if (u.exhausted || u.imprisoned) continue
+    if (u.exhausted) continue
     const def = defOf(state, u.id)
     if (!def.activated) continue
     if (effHealth(state, u) - u.damage <= 0) continue   // a full body can absorb nothing more
@@ -249,7 +249,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   }
 
   // attacks (decision 42): each ready unit alone, plus one full-group per (zone, shared target). No guard-forcing.
-  const attackers = unitsOf(state, seat).filter(u => !u.exhausted && !u.imprisoned && !isSick(state, u) && !hasKw(state, u, 'cantAttack'))
+  const attackers = unitsOf(state, seat).filter(u => !u.exhausted && !isSick(state, u) && !hasKw(state, u, 'cantAttack'))
   // PR #46 (splashReap): a chosen-splash attacker declares its victim with the attack — one
   // action variant per victim combination (decision 24: everything is declared up front)
   const withSplash = (a: Extract<GameAction, { type: 'attack' }>): GameAction[] => {
@@ -261,7 +261,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     let combos: { by: string; unit: string }[][] = [[]]
     for (const sid of splashers) {
       const cands = unitsInZone(state, tgt.zone).filter(u =>
-        u.id !== tgtId && u.id !== sid && !u.imprisoned && !(u.owner !== seat && !u.exhausted && hasKw(state, u, 'hidden')))
+        u.id !== tgtId && u.id !== sid && !(u.owner !== seat && !u.exhausted && hasKw(state, u, 'hidden')))
       if (!cands.length) continue
       combos = combos.flatMap(cur => cands.map(v => [...cur, { by: sid, unit: v.id }]))
     }

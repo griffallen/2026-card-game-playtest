@@ -29,7 +29,7 @@ function craftBlockScenario(): GameState {
     const def = s.cardSet[slug]
     s.units[id] = {
       id, slug, owner: seat, zone, damage: 0, exhausted: false, enteredRound: 0,
-      movedThisRound: false, imprisoned: null, upgrades: [], mods: [], overextendedBy: 0,
+      movedThisRound: false, upgrades: [], mods: [], overextendedBy: 0,
       shielded: (def?.kw ?? []).some(k => k.k === 'shielded'),
     } as UnitInstance
   }

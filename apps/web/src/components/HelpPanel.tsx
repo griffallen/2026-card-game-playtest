@@ -93,7 +93,7 @@ function V2Content() {
       <H>Winning</H>
       <div className="mt-2 flex flex-col gap-2">
         <Row icon="⚔" title="Life">Drop your opponent to 0 life (both start at 20).</Row>
-        <Row icon="☯" title="Influence">One shared tug-of-war track. Reach +20 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (guards pay when they defend, Exemplar when it kills); red mostly ignores it. Its <b>Overextend</b> is a combat gamble now — self-damage, not an influence cost.</Row>
+        <Row icon="☯" title="Influence">One shared tug-of-war track. Reach +20 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (guards pay when they defend, Exemplar when it kills); red mostly ignores it. </Row>
       </div>
 
       <H>Your round</H>
@@ -112,7 +112,6 @@ function V2Content() {
       <div className="mt-2 flex flex-col gap-2">
         <Row icon="⟳" title="Exhausted">Dimmed with a ⟳ — already acted; readies at the start of its owner's next round.</Row>
         <Row icon="💨" title="Rush ready">Its <b>free move for this round</b> — move <i>without</i> exhausting, then it can still fight. It refreshes every round.</Row>
-        <Row icon="⛓" title="Imprisoned">Can't attack, move, intercept, or use abilities. Prisons cost the jailer 1 influence at the start of each round and shatter if the jailer's influence goes negative.</Row>
         <Row icon="🛡" title="Guard">Can <b>intercept an attack in its zone without exhausting</b> — step in front of a targeted ally or the base. ◈ is armor: every hit is reduced by that much.</Row>
         <Row icon="⚑" title="Flagged card">A prototype ruling was needed for this card's printed text — hover/long-press to read it.</Row>
       </div>
@@ -120,20 +119,16 @@ function V2Content() {
       <H>Keywords in one line</H>
       <p className="mt-2 text-[13px] leading-relaxed text-body/90">
         <b>Rush</b> one free move each round · <b>Breakthrough N</b> spills up to N excess damage onto the owner when it kills ·
-        <b> Overextend N</b>: an optional gamble when attacking — +N power now, N self-damage at end of round ·
-        <b> Ranged</b> shoots adjacent zones, never bases · <b>Reach</b> attacks adjacent zones normally · <b>Guard</b> intercepts free.
+        <b> Ranged</b> shoots adjacent zones, never bases · <b>Guard</b> intercepts free.
       </p>
 
       <H>Strategy starters</H>
       <div className="mt-2 flex flex-col gap-2">
         <Row icon="🔴" title="Playing Crimson (red)">
-          Go <i>wide</i> and swing <b>together</b> — a pile of cheap bodies combines into one hit that overwhelms armor and outraces a single blocker's interception. <b>Overextend only when it converts a kill</b> — the end-of-round bill is real.
+          Go <i>wide</i> and swing <b>together</b> — a pile of cheap bodies combines into one hit that overwhelms armor and outraces a single blocker's interception.
         </Row>
         <Row icon="🟡" title="Playing Radiant (yellow)">
-          Walls, armor, prisons — but Guard no longer stops an assault by decree; you must <b>choose</b> to intercept (free for guards). Mind the jail upkeep: <b>every prisoner costs you 1 influence per round</b>.
-        </Row>
-        <Row icon="⛓" title="The prison economy cuts both ways">
-          Imprisoned units draw no counter-damage — but a flooded jail taxes the jailer every round. If you're red and they love prisons: feed them cheap bodies and bleed the track.
+          Walls and armor — but Guard no longer stops an assault by decree; you must <b>choose</b> to intercept (free for guards).
         </Row>
       </div>
     </>

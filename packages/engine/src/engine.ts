@@ -252,7 +252,6 @@ function activateAbility(state: GameState, action: Extract<GameAction, { type: '
   const unit = state.units[action.unit] ?? fail('no-unit', 'no such unit')
   if (unit.owner !== seat) fail('not-yours', 'not your unit')
   if (unit.exhausted) fail('exhausted', 'exhausted units cannot use abilities')
-  if (unit.imprisoned) fail('imprisoned', 'imprisoned units cannot use abilities')
   const def = defOf(state, unit.id)
 
   // #104 (Censer of Purity): the activated move-damage ability. Pick a friendly unit and a numeric
@@ -532,7 +531,7 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
       id: action.card, slug: def.slug, owner: seat, zone,
       damage: 0, exhausted: false, enteredRound: state.round, movedThisRound: false,
       shielded: (def.kw ?? []).some(k => k.k === 'shielded'),
-      imprisoned: null, upgrades: [], mods: [], overextendedBy: 0,
+      upgrades: [], mods: [], overextendedBy: 0,
     }
     log(state, seat, `${side.name} deploys ${def.name}${mode ? ` — ${mode.label}` : ''}`)
     const unit = state.units[action.card]
@@ -558,7 +557,6 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
 function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat, exhaust?: string) {
   const unit = state.units[unitId] ?? fail('no-unit', 'no such unit')
   if (unit.owner !== seat) fail('not-yours', 'not your unit')
-  if (unit.imprisoned) fail('imprisoned', 'imprisoned units cannot move')
   if (unit.exhausted) fail('exhausted', 'exhausted units cannot move')
   if (isSick(state, unit)) fail('sick', 'this unit just arrived this round')
   if (to === unit.zone) fail('bad-move', 'already there')
@@ -595,7 +593,7 @@ const zoneName = (state: GameState, z: ZoneId) =>
 
 // ─── Combat ──────────────────────────────────────────────────────────────────
 
-/** Ready, non-imprisoned defender units in the target's zone that could step in (never the target itself). */
+/** Ready defender units in the target's zone that could step in (never the target itself). */
 export function interceptCandidates(state: GameState, pa: NonNullable<GameState['pendingAttack']>): UnitInstance[] {
   const defender = other(pa.seat)
   const zone = pa.target.kind === 'unit'
@@ -603,7 +601,7 @@ export function interceptCandidates(state: GameState, pa: NonNullable<GameState[
     : pa.target.kind === 'base' ? homeZone(pa.target.seat) : undefined
   if (zone === undefined) return []
   return unitsInZone(state, zone, defender).filter(u =>
-    !u.imprisoned && !u.exhausted && !(pa.target.kind === 'unit' && u.id === pa.target.id))
+    !u.exhausted && !(pa.target.kind === 'unit' && u.id === pa.target.id))
 }
 
 /** Declare a multi-unit attack (decision 42): validate the group, exhaust, fire onAttack, open the intercept window. */
@@ -616,7 +614,6 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
   const units = ids.map(id => state.units[id] ?? fail('no-unit', 'no such attacker'))
   for (const u of units) {
     if (u.owner !== seat) fail('not-yours', 'not your unit')
-    if (u.imprisoned) fail('imprisoned', 'imprisoned units cannot attack')
     if (u.exhausted) fail('exhausted', 'exhausted units cannot attack')
     if (isSick(state, u)) fail('sick', 'this unit just arrived this round')
     if (hasKw(state, u, 'cantAttack')) fail('cant-attack', 'this unit cannot attack')
@@ -661,7 +658,6 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
     if (v.zone !== combatZoneForSplash) fail('bad-splash', 'the skewer reaches only the combat zone')
     if (action.target.kind === 'unit' && v.id === action.target.id) fail('bad-splash', 'the skewer wants a second victim — it ALSO deals damage')
     if (v.id === e.by) fail('bad-splash', 'the skewer cannot turn on its own wielder')
-    if (v.imprisoned) fail('bad-splash', 'imprisoned units cannot be skewered')
     if (v.owner !== seat && !v.exhausted && hasKw(state, v, 'hidden')) fail('bad-splash', 'a ready hidden unit cannot be chosen (decision 76)')
     splashChoice[e.by] = e.unit
   }
@@ -669,7 +665,7 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
     for (const u of units) {
       if (!needsSplash(u.id) || splashChoice[u.id]) continue
       const cands = unitsInZone(state, combatZoneForSplash).filter(x =>
-        x.id !== (action.target as { id: string }).id && x.id !== u.id && !x.imprisoned
+        x.id !== (action.target as { id: string }).id && x.id !== u.id
         && !(x.owner !== seat && !x.exhausted && hasKw(state, x, 'hidden')))
       if (cands.length) fail('missing-splash', `${defOf(state, u.id).name} must declare its skewer victim with the attack`)
     }
@@ -715,7 +711,7 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
     const combatZone = action.target.kind === 'base' ? homeZone(action.target.seat) : zone
     const defSeat = other(seat)
     const crossZone = combatZone !== zone   // unreachable under v3 since decision 80 (no cross-zone attacks); v2.3-only path
-    let candidates = unitsInZone(state, combatZone, defSeat).filter(u => !u.imprisoned && !u.exhausted)
+    let candidates = unitsInZone(state, combatZone, defSeat).filter(u => !u.exhausted)
     // issue #50 (duel law): a lone attacker opens a window only for Guards —
     // unless it strikes the Home (decision 100: base defense is open to all)
     if (state.rules.singleAttackerDuels && action.target.kind === 'unit' && state.pendingAttack.attackers.length === 1) {
@@ -775,7 +771,6 @@ function applyBlockPhase(state: GameState, action: GameAction, seat: Seat) {
     const b = state.units[blocker] ?? fail('no-unit', 'no such blocker')
     if (b.owner !== seat) fail('not-yours', 'not your unit')
     if (b.exhausted) fail('exhausted', 'exhausted units cannot block')
-    if (b.imprisoned) fail('imprisoned', 'imprisoned units cannot block')
     if (b.zone !== combatZone) fail('bad-zone', 'blockers must stand in the combat zone')
     if (seen.has(blocker)) fail('bad-block', 'a unit blocks at most one attacker')
     seen.add(blocker)
@@ -1064,7 +1059,7 @@ function resolveAttack(state: GameState, interceptorId: string | null) {
     const piercedCombined = alive.reduce((s2, u) => s2 + (defOf(state, u.id).piercesArmorShield ? power(u) : 0), 0)
     const normalCombined = combined - piercedCombined
     const dealt = Math.max(0, normalCombined - effArmor(state, defender)) + piercedCombined // armor once (armorPerAttack: 'once')
-    const defPower = defender.imprisoned ? 0 : effPower(state, defender)
+    const defPower = effPower(state, defender)
     const counterTarget = alive.slice().sort((a, b) => power(b) - power(a) || idNum(a.id) - idNum(b.id))[0]
     const crossZone = !!counterTarget && defender.zone !== counterTarget.zone
     const noCounter = !counterTarget || (crossZone && hasKw(state, counterTarget, 'ranged'))

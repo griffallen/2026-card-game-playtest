@@ -177,67 +177,12 @@ export function damageBase(state: GameState, seat: Seat, n: number, source: stri
   log(state, seat, `${state.sides[seat].name} takes ${dmg} damage${source ? ` from ${source}` : ''} (${state.sides[seat].life} life)`)  // decision 104: life may read negative
 }
 
-export function imprisonUnit(ctx: FxCtx, unit: UnitInstance) {
-  const { state, controller } = ctx
-  if (unit.imprisoned) return
-  if (unit.owner === controller) return // no self-jailing in the card pool; guard against filter slips
-  unit.imprisoned = { by: controller, source: ctx.sourceUnit ?? null }
-  log(state, controller, `${name(state, unit.id)} is imprisoned`)
-  // imprisonWatchers (Gateward Colossus): any non-imprisoned unit with the static
-  for (const w of unitsOf(state)) {
-    if (w.imprisoned) continue
-    for (const st of defOf(state, w.id).statics ?? []) {
-      if (st.s === 'imprisonWatcher') {
-        addInfluence(state, w.owner, st.n)
-        log(state, w.owner, `${name(state, w.id)} grants ${st.n} influence`)
-      }
-    }
-  }
-}
-
-export function releaseUnit(state: GameState, unit: UnitInstance, why: string) {
-  if (!unit.imprisoned) return
-  unit.imprisoned = null
-  log(state, unit.owner, `${name(state, unit.id)} is released (${why})`)
-}
-
-function autoImprison(ctx: FxCtx, auto: AutoPick) {
-  const { state, controller } = ctx
-  const src = ctx.sourceUnit ? unitById(state, ctx.sourceUnit) : undefined
-  const eligible = (zone?: ZoneId) =>
-    unitsOf(state, other(controller)).filter(u =>
-      !u.imprisoned
-      && (auto.maxPower === undefined || effPower(state, u) <= auto.maxPower)
-      && (zone === undefined || u.zone === zone))
-  if (auto.scope === 'eachZone') {
-    for (const zone of [0, 1, 2] as ZoneId[]) {
-      const pick = pickStrongest(state, eligible(zone))
-      if (pick) imprisonUnit(ctx, pick)
-    }
-    return
-  }
-  let zone: ZoneId | undefined
-  if (auto.scope === 'enteredZone') zone = ctx.enteredZone ?? src?.zone
-  else if (auto.scope === 'targetZone') {
-    const t = ctx.attackTarget
-    zone = t?.kind === 'unit' ? unitById(ctx.state, t.id)?.zone : undefined
-  } else if (auto.scope === 'otherZone') {
-    // any zone except the source's — flatten candidates across them
-    const pick = pickStrongest(state, eligible().filter(u => !src || u.zone !== src.zone))
-    if (pick) imprisonUnit(ctx, pick)
-    return
-  }
-  if (zone === undefined) return
-  const pick = pickStrongest(state, eligible(zone))
-  if (pick) imprisonUnit(ctx, pick)
-}
-
 /** #104 (Lawbringer): the deterministic enemy an auto-scoped, zone-bound op arrests — the strongest
- *  READY (non-exhausted, non-imprisoned) enemy in the resolved zone. On an onEnterZone trigger the
- *  scope is 'enteredZone' → the zone the source just marched into (ctx.enteredZone, which equals the
- *  source's current zone). Undefined = no eligible enemy there (a clean no-op). Mirrors the
- *  imprison auto path (autoImprison), but skips the already-exhausted: re-exhausting a down unit is a
- *  wasted arrest, so the law lands on one still standing. */
+ *  READY (non-exhausted) enemy in the resolved zone. On an onEnterZone trigger the scope is
+ *  'enteredZone' → the zone the source just marched into (ctx.enteredZone, which equals the
+ *  source's current zone). Undefined = no eligible enemy there (a clean no-op). The
+ *  already-exhausted are skipped: re-exhausting a down unit is a wasted arrest, so the law lands
+ *  on one still standing. */
 function autoPickEnemy(ctx: FxCtx, auto: AutoPick): UnitInstance | undefined {
   const { state, controller } = ctx
   const src = ctx.sourceUnit ? unitById(state, ctx.sourceUnit) : undefined
@@ -249,7 +194,7 @@ function autoPickEnemy(ctx: FxCtx, auto: AutoPick): UnitInstance | undefined {
   }
   if (zone === undefined) return undefined
   const cands = unitsOf(state, other(controller)).filter(u =>
-    u.zone === zone && !u.imprisoned && !u.exhausted
+    u.zone === zone && !u.exhausted
     && (auto.maxPower === undefined || effPower(state, u) <= auto.maxPower))
   return pickStrongest(state, cands)
 }
@@ -531,13 +476,6 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         log(state, u.owner, `${state.sides[u.owner].name} ${n >= 0 ? 'gains' : 'cedes'} ${Math.abs(n)} influence (${influenceFor(state, u.owner)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
         break
       }
-      case 'imprison': {
-        if (op.t === 'auto' && op.auto) { autoImprison(ctx, op.auto); break }
-        if (op.f) { for (const u of filterUnits(ctx, op.f)) imprisonUnit(ctx, u); break }
-        const u = resolveUnitTarget(ctx, op.t)
-        if (u) imprisonUnit(ctx, u)
-        break
-      }
       case 'buff': {
         // #104 (Dawnspear Paladin): `per` scales the granted stats by a live count (+1 Power PER
         // attacker on defense). No `per` → mult 1 (flat, unchanged). A per that counts 0 is a no-op,
@@ -644,7 +582,6 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
       case 'removeNegative': {
         const u = resolveUnitTarget(ctx, op.t)
         if (!u) break
-        if (u.imprisoned) releaseUnit(state, u, 'absolved')
         u.mods = u.mods.filter(m => (m.p ?? 0) >= 0 && (m.h ?? 0) >= 0)
         log(state, u.owner, `${name(state, u.id)} is cleansed`)
         break
@@ -689,7 +626,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
             id, slug: src.slug, owner: controller, zone: homeZone(controller),
             damage: 0, exhausted: false, enteredRound: state.round, movedThisRound: false,
             shielded: kw.some(k => k.k === 'shielded'),
-            imprisoned: null, upgrades: [], mods: [], overextendedBy: 0,
+            upgrades: [], mods: [], overextendedBy: 0,
             created: {
               ...(op.p !== undefined ? { p: op.p } : {}),
               ...(op.h !== undefined ? { h: op.h } : {}),
@@ -775,7 +712,7 @@ export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
   // PR #54 (onDeath): last words. The body leaves play FIRST — ops run over a state where the
   // unit is already gone, so the op-tail cleanup can't re-enter this death and recurse.
   // actorSeat attribution uses the owner (win-tie edge; today's onDeath ops are influence-only).
-  const deathOps = unit.imprisoned ? undefined : defOf(state, unit.id).onDeath
+  const deathOps = defOf(state, unit.id).onDeath
   delete state.units[unit.id]
   if (deathOps?.length) {
     // #107: the body is already off the field, so snapshot the trade flag into the context (an
@@ -804,7 +741,7 @@ export function destroyUnit(state: GameState, unit: UnitInstance, why: string) {
   log(state, unit.owner, `${name(state, unit.id)} is ${why}`)
 }
 
-/** Deaths → prison releases → win check. Run after every batch of changes. */
+/** Deaths → win check. Run after every batch of changes. */
 export function stateBasedCleanup(state: GameState, actorSeat: Seat) {
   // deaths (loop: destroying a unit can drop auras that change effHealth of others)
   for (let guard = 0; guard < 10; guard++) {
@@ -812,24 +749,17 @@ export function stateBasedCleanup(state: GameState, actorSeat: Seat) {
     if (!dying.length) break
     for (const u of dying) destroyUnit(state, u, 'destroyed')
   }
-  // prison release: source left play, or jailer influence below threshold
-  for (const u of unitsOf(state)) {
-    if (!u.imprisoned) continue
-    if (u.imprisoned.source && !state.units[u.imprisoned.source]) { releaseUnit(state, u, 'its captor left play'); continue }
-    if (influenceFor(state, u.imprisoned.by) < state.rules.prisonReleaseThreshold) releaseUnit(state, u, 'influence broke')
-  }
   // decision 104: influence is an uncapped value — it is never clamped to the win band.
   // Only checkWin ends the game (influence at/beyond threshold, or a base at/below 0 life).
   checkWin(state, actorSeat)
 }
 
-/** Fire a unit-trigger key with an existing context; imprisoned sources are inert. */
+/** Fire a unit-trigger key with an existing context. */
 export function fireTrigger(
   ctx: Omit<FxCtx, 'controller' | 'sourceUnit'>,
   unit: UnitInstance,
   key: 'onPlay' | 'onEnterZone' | 'onAttack' | 'onAttackBase' | 'onDefend' | 'onKill',
 ) {
-  if (unit.imprisoned) return
   // #107 (Flameblade Raider): mark the killer the instant it fells a unit — before any cleanup fires
   // onDeath — so a trade (it dies dealing the lethal blow) reads as a kill. True even when the unit
   // itself carries no onKill op (the combat code still fires onKill for every killer). Window advance

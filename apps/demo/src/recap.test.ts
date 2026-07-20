@@ -4,8 +4,8 @@ import { composeCombatRecap } from './recap.ts'
 
 // A minimal synthetic state — just the fields composeCombatRecap + effPower read on vanilla units
 // (no mods/upgrades/auras/scar), so the reconstruction logic is exercised without a full engine game.
-type Unit = { id: string; owner: 0 | 1; zone: 0 | 1 | 2; upgrades: never[]; mods: never[]; damage: number; imprisoned: null; created: undefined }
-const unit = (id: string, owner: 0 | 1): Unit => ({ id, owner, zone: 1, upgrades: [], mods: [], damage: 0, imprisoned: null, created: undefined })
+type Unit = { id: string; owner: 0 | 1; zone: 0 | 1 | 2; upgrades: never[]; mods: never[]; damage: number; created: undefined }
+const unit = (id: string, owner: 0 | 1): Unit => ({ id, owner, zone: 1, upgrades: [], mods: [], damage: 0, created: undefined })
 
 function makeState(defs: Record<string, { name: string; power: number }>, unitIds: Record<string, 0 | 1>, extra: Partial<GameState> = {}): GameState {
   const cardSet: Record<string, unknown> = {}

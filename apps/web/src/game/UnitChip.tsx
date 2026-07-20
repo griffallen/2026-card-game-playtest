@@ -79,7 +79,7 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, s
         onClick ? 'cursor-pointer hover:-translate-y-0.5' : '',
         glow === 'selected' ? 'glow-selected' : glow === 'target' ? 'glow-target' : glow === 'attack' ? 'glow-attack' : '',
         // #28: exhausted units turn sideways, like cards tapped at a real table
-        unit.imprisoned ? 'saturate-[0.25] opacity-80' : unit.exhausted ? 'rotate-90 scale-90 opacity-60' : '',
+        unit.exhausted ? 'rotate-90 scale-90 opacity-60' : '',
       ].join(' ')}
     >
       <span aria-hidden className={`pointer-events-none absolute left-1/2 top-0 z-10 h-[4px] w-6 -translate-x-1/2 rounded-b shadow-[0_1px_2px_rgba(0,0,0,0.5)] ${SLEEVE_TAB[sleeve]}`} />
@@ -95,13 +95,7 @@ export function UnitChip({ unit, mine, glow, onClick, actionable, onLongPress, s
         {!artBroken
           ? <img src={`${import.meta.env.BASE_URL}cards/${unit.slug}.jpg`} alt="" draggable={false} onError={() => setArtBroken(true)} className="h-full w-full object-cover" />
           : <ProceduralArt slug={unit.slug} color={mine ? 'yellow' : 'red'} type="unit" className="h-full w-full [&>svg]:h-full [&>svg]:w-full" />}
-        {unit.imprisoned && (
-          <div className="absolute inset-0 grid place-items-center bg-black/45 text-lg" aria-label="imprisoned">
-            ⛓️
-            <span className="absolute inset-x-0 bottom-0 bg-black/70 text-center text-[7px] font-bold uppercase tracking-[0.2em] text-[#e5a99f]">imprisoned</span>
-          </div>
-        )}
-        {unit.exhausted && !unit.imprisoned && (
+        {unit.exhausted && (
           <span className="absolute right-0.5 top-0.5 rounded bg-black/60 px-1 text-[10px]">⟳</span>
         )}
         {unit.upgrades.length > 0 && (

@@ -44,15 +44,6 @@ describe('featurize — board aggregates from stats, not identities', () => {
     expect(val(s, 0, 'me_total_health')).toBe(4)
     expect(val(s, 0, 'me_remaining_health')).toBe(1)
   })
-
-  it('imprisoned units are excluded from board aggregates and counted separately', () => {
-    const s = blankGame()
-    place(s, 0, 'bruiser')                       // active
-    place(s, 0, 'grunt', 1, { imprisonedBy: 1 }) // inert
-    expect(val(s, 0, 'me_unit_count')).toBe(1)
-    expect(val(s, 0, 'me_total_power')).toBe(5)  // grunt's 2 is not counted
-    expect(val(s, 0, 'me_imprisoned_count')).toBe(1)
-  })
 })
 
 describe('featurize — differentials and perspective', () => {
@@ -138,7 +129,7 @@ describe('featurize — vector contract', () => {
     const s = blankGame()  // no units placed
     const named = describeFeatures(s, 0)
     const boardZeroed = named.filter(f =>
-      /^(me|opp)_(unit_count|total_power|total_health|remaining_health|avg_unit_cost|max_power|imprisoned_count|upgrade_count|kw_)/.test(f.name))
+      /^(me|opp)_(unit_count|total_power|total_health|remaining_health|avg_unit_cost|max_power|upgrade_count|kw_)/.test(f.name))
     expect(boardZeroed.length).toBeGreaterThan(0)
     for (const f of boardZeroed) expect(f.value).toBe(0)
   })

@@ -96,7 +96,6 @@ export type Op =
   | { op: 'chooseFromHand'; who?: 'controller' | 'each'; to: 'discard' | 'deckBottom'; n?: number }
   | { op: 'influence'; n: number; per?: PerCount; cond?: Cond; ifKilled?: boolean }   // + toward controller; per scales n (PR #70/#71); cond gates the gain (#79 Radiant Aegis); ifKilled (#107 Flameblade Raider): onDeath-only — the gain fires only if this unit felled a unit in the same combat it died in (a trade counts)
   | { op: 'influenceOwner'; t: 'chosen0' | 'chosen1'; n: number; per?: PerCount }   // #122 (Assassin's Contract): grant the CHOSEN target's OWNER (not the controller) influence, n scaled by `per` (targetCostHalf). Kill an enemy unit and the ENEMY's Influence rises; kill your own and you gain. Owner read live, before any same-action destroy.
-  | { op: 'imprison'; t: OpTarget | 'auto'; f?: UnitFilter; auto?: AutoPick }
   | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'round' | 'perm'; cond?: Cond; per?: PerCount }  // per (#104 Dawnspear Paladin): scale the granted p/h/armor by a live count (e.g. +1 Power PER attacker, onDefend)
   | { op: 'double'; t: OpTarget | UnitFilter; rounds?: number }  // v3 (Unchained Rage): filter-wide, multi-round
   | { op: 'grant'; t: OpTarget | UnitFilter; kw: KeywordSpec; dur: 'round' | 'perm' }
@@ -111,7 +110,7 @@ export type Op =
   | { op: 'clearDamage'; t: OpTarget }
   | { op: 'countBuff'; t: OpTarget; per: { color?: Color; side: 'all' | 'friendly' | 'enemy'; zone: 'ofTarget'; other?: boolean }; p: number; dur: 'round' | 'perm' }  // v3 (Reckless mode B): +p per matching unit                            // v3 (Blood Rush): remove ALL damage; the amount becomes the linked value
   | { op: 'capture'; t: OpTarget; by?: 'chosen0'; income?: number }  // v3: take the enemy unit under the source unit — or a chosen warden; income = influence per round while held (PR #53)
-  | { op: 'exhaust'; t: OpTarget | 'auto' | UnitFilter; auto?: AutoPick }  // v3 yellow: order a unit to stand down. #104 (Lawbringer): t:'auto' + auto:{scope:'enteredZone'} arrests the strongest READY enemy in the zone the source just entered — the deterministic single-target auto-pick that backs onEnterZone triggers (mirrors imprison's auto path)
+  | { op: 'exhaust'; t: OpTarget | 'auto' | UnitFilter; auto?: AutoPick }  // v3 yellow: order a unit to stand down. #104 (Lawbringer): t:'auto' + auto:{scope:'enteredZone'} arrests the strongest READY enemy in the zone the source just entered — the deterministic single-target auto-pick that backs onEnterZone triggers
   | { op: 'freeCaptives' }                                        // v3 yellow: your captured units return, READY (decision 73)
   | { op: 'move'; t: OpTarget; to: 'chosenZone' }                 // decision 72: relocate the unit — exhausted or not, exhausting nothing
   | { op: 'attackTax'; n: number; rounds: number }                // PR #39 (Unchained Rage): each of your attacking units cedes n influence
@@ -130,7 +129,6 @@ export type Static =
    *  Health. Read live through effHealth, so detaching the upgrade recomputes lethality at once. */
   | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; pPerHostPip?: number; armor?: number; h?: number; kw?: KeywordSpec; cond?: Cond }
   | { s: 'oppThreshold'; n: number }      // opponent's win threshold raised by n
-  | { s: 'imprisonWatcher'; n: number }   // controller gains n influence whenever any unit is imprisoned
 
 /** What a play action must supply as chosen targets, in order. */
 export interface TargetSpec {
@@ -254,8 +252,6 @@ export interface RulesConfig {
   deckMinSize: number
   maxCopies: number
   upgradePressureInfluence: number
-  prisonDecayPerUnit: number
-  prisonReleaseThreshold: number
   /** decision 41: units enter ready — false by default; true restores can't-act-on-entry */
   summoningSickness: boolean
   moveExhausts: boolean
@@ -312,7 +308,6 @@ export interface UnitInstance {
   /** #105 (supersedes decision 41's entry-round gate): Rush waives the move-exhaust for the FIRST move
    *  of EACH round — this flag, reset when the unit readies at round start, is what makes it per-round */
   movedThisRound: boolean
-  imprisoned: { by: Seat; source: string | null } | null
   upgrades: string[]         // upgrade instance ids
   mods: Mod[]
   /** RETIRED (decisions 70→94, superseded by Scar): always 0. Kept on the shape for replay
@@ -475,7 +470,7 @@ export interface UnitView {
   id: string; slug: string; name: string; owner: Seat; zone: ZoneId
   power: number; health: number; damage: number
   basePower: number; baseHealth: number; armor: number
-  exhausted: boolean; rushFreeMove: boolean; imprisoned: boolean
+  exhausted: boolean; rushFreeMove: boolean
   overextendedBy: number
   /** v3 Shielded: live token — false once spent (keywords list tracks this too) */
   shielded: boolean

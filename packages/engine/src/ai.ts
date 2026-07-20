@@ -23,19 +23,6 @@ export function randomPolicy(state: GameState, seat: Seat, rngState: number): [G
   return [pool[Math.floor(v * pool.length)], s]
 }
 
-/** How many units this seat currently holds imprisoned (each costs prisonDecayPerUnit influence per round — the mortgage). */
-const heldPrisoners = (state: GameState, seat: Seat): number =>
-  Object.values(state.units).filter(u => u.imprisoned?.by === seat).length
-
-/** Value of killing this unit beyond its stats: freeing every friendly it jails. */
-function jailerBonus(state: GameState, seat: Seat, victim: UnitInstance): number {
-  let bonus = 0
-  for (const u of Object.values(state.units)) {
-    if (u.owner === seat && u.imprisoned?.source === victim.id) bonus += (defOf(state, u.id).cost + effPower(state, u)) * 2
-  }
-  return bonus
-}
-
 /** Score a (possibly multi-unit) attack: combined power vs the target, counter on the highest-power member. */
 function attackScore(state: GameState, action: GameAction & { type: 'attack' }): number {
   const units = action.attackers.map(id => state.units[id]).filter(Boolean) as UnitInstance[]
@@ -62,8 +49,8 @@ function attackScore(state: GameState, action: GameAction & { type: 'attack' }):
     // v3 costing (decision 84): the target strikes EVERY unblocked attacker back at full
     // power — cost the swing by the attackers retaliation would fell (blocks are the
     // defender's unknown; assume the worst honest case: nobody blocks, everyone bleeds)
-    const retaliates = !defender.imprisoned
-      && (state.rules.retaliation === 'always' || (state.rules.retaliation === 'ready' && !defender.exhausted))
+    const retaliates = state.rules.retaliation === 'always'
+      || (state.rules.retaliation === 'ready' && !defender.exhausted)
     const tPow = retaliates ? effPower(state, defender) : 0
     let lostValue = 0
     for (const u of units) {
@@ -79,14 +66,13 @@ function attackScore(state: GameState, action: GameAction & { type: 'attack' }):
   // counter lands on the highest-power attacker (ties → lowest id) — mirror the engine
   const counterTarget = units.slice().sort((x, y) => pw(y) - pw(x) || idNum(x.id) - idNum(y.id))[0]
   const ctRemaining = effHealth(state, counterTarget) - counterTarget.damage
-  const counter = defender.imprisoned ? 0 : Math.max(0, effPower(state, defender) - effArmor(state, counterTarget))
+  const counter = Math.max(0, effPower(state, defender) - effArmor(state, counterTarget))
   const dies = counter >= ctRemaining
   const defValue = defOf(state, defender.id).cost + effPower(state, defender)
   const atkValue = defOf(state, counterTarget.id).cost + effPower(state, counterTarget)
 
-  const freed = jailerBonus(state, units[0].owner, defender)
-  if (kills && !dies) return 70 + defValue * 3 + freed + groupKill
-  if (kills && dies) return 40 + (defValue - atkValue) * 3 + freed + groupKill
+  if (kills && !dies) return 70 + defValue * 3 + groupKill
+  if (kills && dies) return 40 + (defValue - atkValue) * 3 + groupKill
   if (dealt > 0 && !dies) return 15 + dealt + groupMiss
   return (dealt > 0 ? 4 : 0) + groupMiss
 }
@@ -267,23 +253,14 @@ function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'p
         const remaining = effHealth(state, u) - u.damage
         const through = Math.max(0, dmg - effArmor(state, u))
         score += Math.min(through, remaining) * 2
-        if (through >= remaining) score += stockValue(u) * 2 + jailerBonus(state, seat, u)
+        if (through >= remaining) score += stockValue(u) * 2
         break
       }
       case 'destroy': {
         const u = unitAt(chosenIdx(op.t) ?? -1)
         if (!u) break
-        if (u.owner !== seat) score += stockValue(u) * 2 + jailerBonus(state, seat, u)
+        if (u.owner !== seat) score += stockValue(u) * 2
         else score -= 25 // Execution Swing on our own damaged unit is not a play, it's a suicide
-        break
-      }
-      case 'imprison': {
-        const i = chosenIdx((op as { t?: unknown }).t)
-        const u = i !== null ? unitAt(i) : undefined
-        if (u) {
-          if (u.owner === seat || u.imprisoned) { score -= 25; break }   // jailing our own / the already-jailed
-          score += stockValue(u) * 2 - heldPrisoners(state, seat) * 3    // decay mortgage awareness
-        } else score += 10                                               // auto/filter imprisons
         break
       }
       case 'heal': {
@@ -326,7 +303,7 @@ function playScore(state: GameState, seat: Seat, action: GameAction & { type: 'p
           const remaining = effHealth(state, u) - u.damage
           const through = Math.max(0, op.n - effArmor(state, u))
           const dealt = Math.min(through, remaining)
-          if (u.owner !== seat) score += dealt * 1.5 + (through >= remaining ? stockValue(u) + jailerBonus(state, seat, u) : 0)
+          if (u.owner !== seat) score += dealt * 1.5 + (through >= remaining ? stockValue(u) : 0)
           else score -= dealt * 1.5 + (through >= remaining ? stockValue(u) : 0)
         }
         break

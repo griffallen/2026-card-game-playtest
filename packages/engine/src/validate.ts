@@ -5,7 +5,7 @@ import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 const KEYWORDS = new Set(['guard', 'armor', 'rush', 'ranged', 'breakthrough', 'cantAttack', 'scar', 'shielded', 'hidden', 'infiltrate', 'capture', 'sneak', 'politician'])
 const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'chooseFromHand', 'influence', 'influenceOwner', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand', 'reckoning', 'lockPlays', 'discardRandom', 'revealHand'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
-const STATICS = new Set(['aura', 'oppThreshold', 'imprisonWatcher'])
+const STATICS = new Set(['aura', 'oppThreshold'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
 const TARGET_KINDS = new Set(['unit', 'unitOrBase', 'zone', 'upgrade'])
 const COND_KEYS = new Set(['influenceAtLeast', 'influenceAtMost', 'selfLifeAtMost'])
@@ -254,12 +254,6 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       if (!isInt(op.n, -20, 20) || op.n === 0) err('bad influence amount')
       checkPer(op.per)
       break
-    case 'imprison':
-      if (op.t === 'auto') {
-        if (!op.auto && !op.f) err('auto imprison needs auto or f')
-        if (op.auto && !['targetZone', 'otherZone', 'eachZone', 'enteredZone'].includes(op.auto.scope)) err(`bad auto scope`)
-      } else checkTargetRef(op.t)
-      break
     case 'buff': {
       checkTargetRef(op.t)
       if (op.p === undefined && op.h === undefined && op.armor === undefined) err('buff changes nothing')
@@ -316,6 +310,5 @@ function validateStatic(slug: string, st: Static): string[] {
     for (const k of Object.keys(st.cond ?? {})) if (!COND_KEYS.has(k)) errors.push(`${slug}: unknown condition ${k}`)
   }
   if (st.s === 'oppThreshold' && !isInt(st.n, -10, 10)) errors.push(`${slug}: bad oppThreshold`)
-  if (st.s === 'imprisonWatcher' && !isInt(st.n, 1, 10)) errors.push(`${slug}: bad imprisonWatcher`)
   return errors
 }
