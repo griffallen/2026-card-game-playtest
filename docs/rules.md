@@ -66,6 +66,12 @@ From **round 2 onward**, upkeep runs **one player at a time** — the **initiati
 
 Order matters here. The holder banks **first — and blind**, before the opponent has drawn or banked a thing. The opponent banks **second, having already seen** what the holder laid down, and can answer it. First to the initiative, first to commit.
 
+> **The exact order, step by step.**
+>
+> **Initiative holder, in full:** ready → draw 2 → bank one or skip. This bank is **blind** — the opponent hasn’t drawn or banked yet.
+>
+> **Then the opponent, in full:** ready → draw 2 → bank one or skip — now **seeing** the resource the holder just banked, and free to answer it.
+
 > **Round 1 has no start step at all.**
 >
 > Setup already gave you everything: your opening hand and your 2 banked resources. So round 1 dives straight into the action loop — no readying (nothing’s exhausted yet), no draw, no banking. Your first “ready, draw 2, bank” comes at the top of round 2. Round 1 is played from the hand you kept, on exactly 2 resources — spend them well.

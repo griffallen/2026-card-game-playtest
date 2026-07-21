@@ -109,6 +109,13 @@ export function Rules() {
         initiative, first to commit.
       </P>
       <Card>
+        <B>The exact order, step by step.</B>
+        <ol className="ml-5 mt-2 list-decimal">
+          <LI><B>Initiative holder, in full:</B> ready → draw 2 → bank one or skip. This bank is <B>blind</B> — the opponent hasn’t drawn or banked yet.</LI>
+          <LI><B>Then the opponent, in full:</B> ready → draw 2 → bank one or skip — now <B>seeing</B> the resource the holder just banked, and free to answer it.</LI>
+        </ol>
+      </Card>
+      <Card>
         <B>Round 1 has no start step at all.</B>
         <P>
           Setup already gave you everything: your opening hand and your 2 banked resources. So round 1 dives
