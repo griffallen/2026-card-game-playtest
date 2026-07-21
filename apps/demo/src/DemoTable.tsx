@@ -1216,7 +1216,6 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       const sneaks = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'activate' }> => a.type === 'activate').map(a => a.unit)).size
       const salvables = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'attachOrphan' }> => a.type === 'attachOrphan').map(a => a.upgrade)).size
       const passables = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'passUpgrade' }> => a.type === 'passUpgrade').map(a => a.upgrade)).size
-      const captors = new Set(view.actions.filter((a): a is Extract<GameAction, { type: 'releaseCaptive' }> => a.type === 'releaseCaptive').map(a => a.unit)).size
       const bits = [
         playable && `play ${playable} card${playable > 1 ? 's' : ''}`,
         attackers && `attack with ${attackers} unit${attackers > 1 ? 's' : ''}`,
@@ -1224,7 +1223,6 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
         sneaks && `use ${sneaks} unit abilit${sneaks > 1 ? 'ies' : 'y'}`,
         salvables && `salvage ${salvables} orphaned upgrade${salvables > 1 ? 's' : ''}`,
         passables && `pass ${passables} upgrade${passables > 1 ? 's' : ''}`,
-        captors && `release a captive`,
       ].filter(Boolean)
       if (bits.length) hints.push(`Right now you can ${bits.join(' · ')} — or pass. ${ready} resource${ready === 1 ? '' : 's'} ready.`)
       if (canClaim) hints.push('You can claim the initiative: it spends your round, but you act first next round (and locks the token to you).')

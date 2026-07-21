@@ -18,7 +18,7 @@ const KEYWORDS: [string, string, string][] = [
   ['breakthrough', 'Breakthrough', 'When this attacker DEFEATS what it strikes, the leftover damage splashes onward — and the DEFENDER chooses where it lands: another of their units in that zone, or their base when the fight is in their own Home. Defeat that one too and the rest chains to their next pick, link after link, until a unit survives and soaks it or nothing is left to hit. Plain (non-Breakthrough) damage never chains. A Shield or Ward turns the whole blow aside and ends the chain. No number, no cap: everything spills.'],
   ['cantAttack', 'Can’t attack', 'A defensive body — it can hold a zone and block, but never attacks.'],
   ['capture', 'Capture', 'On its trigger, this unit takes an enemy unit under itself — off the board entirely. Holding costs nothing, and there is no letting go: the captive returns only when the capturer leaves play, coming back to that zone ready. Capture is custody, not a wound — and killing the jailer frees the prisoner.'],
-  ['guard', 'Guard', 'The bodyguard. When a single unit attacks one of yours, ONLY a Guard may step in front of the target — one Guard, taking the whole hit. (Attacks on your base are different: anyone may block those.) And it never exhausts to block, in duels or gangs, so it can do it again and still take its own turn.'],
+  ['guard', 'Guard', 'The bodyguard. When a single unit attacks one of yours, only a READY Guard may step in front of the target — one Guard, taking the whole hit. Two Guards can’t gang a lone attacker, and an exhausted Guard can’t block at all. (Attacks on your base are different: anyone may block those.) A Guard never exhausts to block, in duels or gangs — it stays ready, so it can block now and still take its own turn.'],
   ['hidden', 'Hidden', 'While this unit is ready, enemy actions can’t target it and enemy attacks can’t be declared at it. It can still block — blocking isn’t being targeted — but anything that exhausts it (attacking, blocking, a Sneak) reveals it until it readies again. Strike, vanish, repeat. One limit: Hidden beats choices, not consequences — effects that don’t choose (“all”, whole-zone damage, automatic picks) still reach it.'],
   ['infiltrate', 'Infiltrate', 'May be played into any zone — not just your Home.'],
   ['tribune', 'Tribune', 'A Tribune sways the shared Influence track just by taking the field or leaving it: +1 Influence to its controller every time it enters play — whether it is deployed from hand or returns from capture — and −1 every time it leaves play, whether it is defeated or captured. It keys off the event, not the reason, so over a Tribune’s whole life the swing nets to zero and cannot be farmed (a capture’s −1 and its release’s +1 cancel). Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and you gain 1 Influence per Tribune; hold the majority in your enemy’s Home zone and you gain 2 Influence per Tribune — the two stack, so holding both is worth 3 per Tribune. “Majority” means strictly more of your units than the opponent’s in that zone; a tie is not a majority. The middle finally has a constituency — and the boldest campaigns run in enemy territory: hold the crowd, sway the track.'],
@@ -97,12 +97,17 @@ export function Rules() {
       </Card>
 
       <p className="mt-4 font-display text-lg font-semibold text-goldbright">1 · Start of the round</p>
-      <P>From <B>round 2 onward</B>, each player, initiative holder first, does their upkeep automatically:</P>
+      <P>From <B>round 2 onward</B>, upkeep runs <B>one player at a time</B> — the <B>initiative holder first</B>, all the way through, then the opponent. Readying and drawing happen on their own; <B>banking is a decision</B>:</P>
       <ul className="ml-5 list-disc">
         <LI><B>Ready</B> all your cards (units and resources untap).</LI>
         <LI><B>Draw 2</B> cards. (Drawing from an empty deck costs you 1 Life and 1 Influence per missing card — slow decks have a clock.)</LI>
         <LI>You may <B>bank one card</B> from hand as a new resource, or skip.</LI>
       </ul>
+      <P>
+        Order matters here. The holder banks <B>first — and blind</B>, before the opponent has drawn or banked a thing. The
+        opponent banks <B>second, having already seen</B> what the holder laid down, and can answer it. First to the
+        initiative, first to commit.
+      </P>
       <Card>
         <B>Round 1 has no start step at all.</B>
         <P>
@@ -119,7 +124,7 @@ export function Rules() {
         <B> one</B> action:
       </P>
       <ul className="ml-5 list-disc">
-        <LI><B>Play a card</B> · <B>Move a unit</B> · <B>Attack</B> · <B>Use an ability</B> (a Sneak, or a Ranged volley) · <B>Release a captive</B> · <B>Salvage an orphaned upgrade</B> · <B>Claim the initiative</B> · <B>Pass</B>.</LI>
+        <LI><B>Play a card</B> · <B>Move a unit</B> · <B>Attack</B> · <B>Use an ability</B> (a Sneak, or a Ranged volley) · <B>Salvage an orphaned upgrade</B> · <B>Claim the initiative</B> · <B>Pass</B>.</LI>
       </ul>
       <P>
         There’s no cap on how many turns you take in a round — the limit is your resources and your ready units.
@@ -129,10 +134,12 @@ export function Rules() {
       <Card>
         <B>The initiative.</B>
         <P>
-          Whoever holds the initiative takes the <B>first turn</B> of each round. <B>Claiming the initiative</B> is itself a turn: you take the token and
-          are <B>done for the rest of this round</B> — but you take the <B>first turn next round</B>. It’s a tempo trade: bow out early to guarantee
-          the opening move next round. Only one claim per round; otherwise the initiative simply carries over to whoever held it. And note:
-          once someone has claimed, the round ends on a <B>single</B> pass — the "two passes in a row" rule needs two players still in it.
+          Whoever holds the initiative takes the <B>first turn</B> of each round. <B>Claiming the initiative</B> is itself a
+          turn: you take the token and are <B>done for the rest of this round</B>. Your opponent then keeps taking turns —
+          <B> one after another, alone</B> — until they pass, and that <B>single</B> pass ends the round (the "two passes in a row"
+          rule needs two players still in it). Your reward: the token <B>stays with you</B> and hands you the <B>first turn next
+          round</B>. It’s a tempo trade — bow out early to guarantee the opening move next round. Only <B>one claim per round</B>;
+          if nobody claims, the initiative carries over to whoever already held it.
         </P>
       </Card>
 
@@ -172,7 +179,7 @@ export function Rules() {
       <P>An attack is <B>one action</B>, and you can swing with a whole squad at once. The fight resolves in <B>pairs</B> — the defender decides who stands in front of whom:</P>
       <ul className="ml-5 list-disc">
         <LI><B>Declare.</B> Pick <B>one or more of your ready units in the same zone</B> — they all exhaust. Choose one target: an enemy unit in their zone, or the enemy <B>base</B> (only if your attackers stand in the enemy’s Home).</LI>
-        <LI><B>Block — the duel law.</B> A <B>single attacker striking a unit cannot be blocked</B>, with one exception: a ready <B>Guard</B> in the zone may step in front of the target — <B>one Guard, taking the entire hit</B>. <B>The base is everyone’s to defend:</B> a lone attacker striking a <B>base</B> faces the open window — any ready unit may block it. Duels are personal; sieges are everyone’s problem. Attack with <B>two or more</B> and the defense opens up: the defender may pair any of their <B>ready units in that zone</B> onto your attackers — one-on-one, or ganging up — trading your gang's power for their choice of who gets stopped. The declared target may block its own attacker in a gang; blocking exhausts the blocker — except a Guard, who blocks for free.</LI>
+        <LI><B>Block — the duel law.</B> A <B>single attacker striking a unit cannot be blocked</B>, with one exception: a <B>ready Guard</B> in the zone may step in front of the target — <B>one Guard, taking the entire hit</B> (two Guards can’t gang a lone attacker, and an exhausted Guard can’t block at all). <B>The base is everyone’s to defend:</B> a lone attacker striking a <B>base</B> faces the open window — any ready unit may block it. Duels are personal; sieges are everyone’s problem. Attack with <B>two or more</B> and the defense opens up: the defender may pair any of their <B>ready units in that zone</B> onto your attackers — one-on-one, or ganging up, though <B>each blocker answers only one attacker</B> — trading your gang's power for their choice of who gets stopped. The declared target may block its own attacker in a gang. Blocking <B>exhausts</B> the blocker — except a <B>Guard, who blocks for free and stays ready</B>, able to take its own turn after.</LI>
         <LI><B>Resolve — every pairing at once.</B> Each attacker deals its Power to its blocker, and a gang of blockers deals its <B>combined</B> Power back to their attacker. In a gang block the attacker’s damage <B>pours in pair order</B> — fill the first blocker, spill into the second — so the defender controls the split. Armor shrinks each hit it faces. Attackers <B>nobody blocked</B> (including every lone attacker no Guard answered) deal their full Power to the declared target — <B>and the target strikes back, exhausted or not</B>. Its Power is a single pool <B>poured across the unblocked attackers</B> — biggest threat first, or in the defender’s chosen order — felling as many as it can pay for before it runs dry. A <B>lone attacker takes the whole blow; a gang splits it</B> (a 5-Power wall ganged by three 2/2s fells two and wounds the third, not all three). No unit strikes without an answer. (A base never strikes back.) A <B>kill credits whoever's damage landed it</B> — blockers included; a walled-off attacker earns nothing from its allies' kills.</LI>
       </ul>
       <P>
@@ -215,7 +222,7 @@ export function Rules() {
           <LI><B>Round vs turn:</B> a <B>round</B> is one full cycle; a <B>turn</B> is one action. A round is made of many turns.</LI>
           <LI><B>Round 1:</B> no start step — straight into turns with your opening hand and 2 resources.</LI>
           <LI><B>Every round after:</B> both players ready up, draw 2, bank up to 1 — then take turns until two passes in a row.</LI>
-          <LI><B>Your turn:</B> play a card, move (exhausts), attack, use an ability (Sneak or volley), release a captive, salvage an upgrade, claim initiative, or pass.</LI>
+          <LI><B>Your turn:</B> play a card, move (exhausts), attack, use an ability (Sneak or volley), salvage an upgrade, claim initiative, or pass.</LI>
           <LI><B>Attack:</B> exhaust your attackers, name one target; the defender pairs blockers onto attackers (blocking exhausts — Guards block free); pairs trade blows at once; unblocked attackers hit the target, and the target strikes back — exhausted or not — its Power poured across the unblocked attackers (a gang splits it; a lone attacker eats it whole).</LI>
           <LI><B>Costs:</B> pay with any resources; colored pips just have to be <i>present</i> in your bank.</LI>
           <LI><B>Base:</B> attack it only from inside the enemy’s Home zone.</LI>

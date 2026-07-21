@@ -58,11 +58,13 @@ The game runs in **rounds**. A round has two parts — a quick automatic **start
 
 ### 1 · Start of the round
 
-From **round 2 onward**, each player, initiative holder first, does their upkeep automatically:
+From **round 2 onward**, upkeep runs **one player at a time** — the **initiative holder first**, all the way through, then the opponent. Readying and drawing happen on their own; **banking is a decision**:
 
 - **Ready** all your cards (units and resources untap).
 - **Draw 2** cards. (Drawing from an empty deck costs you 1 Life and 1 Influence per missing card — slow decks have a clock.)
 - You may **bank one card** from hand as a new resource, or skip.
+
+Order matters here. The holder banks **first — and blind**, before the opponent has drawn or banked a thing. The opponent banks **second, having already seen** what the holder laid down, and can answer it. First to the initiative, first to commit.
 
 > **Round 1 has no start step at all.**
 >
@@ -72,13 +74,13 @@ From **round 2 onward**, each player, initiative holder first, does their upkeep
 
 The **initiative holder takes the first turn**, then you **alternate turns**. On your turn you take exactly**one** action:
 
-- **Play a card** · **Move a unit** · **Attack** · **Use an ability** (a Sneak, or a Ranged volley) · **Release a captive** · **Salvage an orphaned upgrade** · **Claim the initiative** · **Pass**.
+- **Play a card** · **Move a unit** · **Attack** · **Use an ability** (a Sneak, or a Ranged volley) · **Salvage an orphaned upgrade** · **Claim the initiative** · **Pass**.
 
 There’s no cap on how many turns you take in a round — the limit is your resources and your ready units.**Passing is soft:** if your opponent takes a turn after you passed, you’re back in. **Two passes in a row end the round**, and the next round begins.
 
 > **The initiative.**
 >
-> Whoever holds the initiative takes the **first turn** of each round. **Claiming the initiative** is itself a turn: you take the token and are **done for the rest of this round** — but you take the **first turn next round**. It’s a tempo trade: bow out early to guarantee the opening move next round. Only one claim per round; otherwise the initiative simply carries over to whoever held it. And note: once someone has claimed, the round ends on a **single** pass — the "two passes in a row" rule needs two players still in it.
+> Whoever holds the initiative takes the **first turn** of each round. **Claiming the initiative** is itself a turn: you take the token and are **done for the rest of this round**. Your opponent then keeps taking turns —**one after another, alone** — until they pass, and that **single** pass ends the round (the "two passes in a row" rule needs two players still in it). Your reward: the token **stays with you** and hands you the **first turn next round**. It’s a tempo trade — bow out early to guarantee the opening move next round. Only **one claim per round**; if nobody claims, the initiative carries over to whoever already held it.
 
 ## Resources & playing cards
 
@@ -106,7 +108,7 @@ Moving a unit sends it **one adjacent zone** (Home ↔ Neutral ↔ their Home) a
 An attack is **one action**, and you can swing with a whole squad at once. The fight resolves in **pairs** — the defender decides who stands in front of whom:
 
 - **Declare.** Pick **one or more of your ready units in the same zone** — they all exhaust. Choose one target: an enemy unit in their zone, or the enemy **base** (only if your attackers stand in the enemy’s Home).
-- **Block — the duel law.** A **single attacker striking a unit cannot be blocked**, with one exception: a ready **Guard** in the zone may step in front of the target — **one Guard, taking the entire hit**. **The base is everyone’s to defend:** a lone attacker striking a **base** faces the open window — any ready unit may block it. Duels are personal; sieges are everyone’s problem. Attack with **two or more** and the defense opens up: the defender may pair any of their **ready units in that zone** onto your attackers — one-on-one, or ganging up — trading your gang's power for their choice of who gets stopped. The declared target may block its own attacker in a gang; blocking exhausts the blocker — except a Guard, who blocks for free.
+- **Block — the duel law.** A **single attacker striking a unit cannot be blocked**, with one exception: a **ready Guard** in the zone may step in front of the target — **one Guard, taking the entire hit** (two Guards can’t gang a lone attacker, and an exhausted Guard can’t block at all). **The base is everyone’s to defend:** a lone attacker striking a **base** faces the open window — any ready unit may block it. Duels are personal; sieges are everyone’s problem. Attack with **two or more** and the defense opens up: the defender may pair any of their **ready units in that zone** onto your attackers — one-on-one, or ganging up, though **each blocker answers only one attacker** — trading your gang's power for their choice of who gets stopped. The declared target may block its own attacker in a gang. Blocking **exhausts** the blocker — except a **Guard, who blocks for free and stays ready**, able to take its own turn after.
 - **Resolve — every pairing at once.** Each attacker deals its Power to its blocker, and a gang of blockers deals its **combined** Power back to their attacker. In a gang block the attacker’s damage **pours in pair order** — fill the first blocker, spill into the second — so the defender controls the split. Armor shrinks each hit it faces. Attackers **nobody blocked** (including every lone attacker no Guard answered) deal their full Power to the declared target — **and the target strikes back, exhausted or not**. Its Power is a single pool **poured across the unblocked attackers** — biggest threat first, or in the defender’s chosen order — felling as many as it can pay for before it runs dry. A **lone attacker takes the whole blow; a gang splits it** (a 5-Power wall ganged by three 2/2s fells two and wounds the third, not all three). No unit strikes without an answer. (A base never strikes back.) A **kill credits whoever's damage landed it** — blockers included; a walled-off attacker earns nothing from its allies' kills.
 
 **Breakthrough** won’t let damage stop at a corpse. When such an attacker **defeats** what it strikes, the leftover **splashes onward** — and the **defender chooses where it lands**: another of their units in that zone, or (when the fight stands in their own **Home**) their **base**. Defeat that link too and the rest **chains** to the defender’s next pick, on and on, until a unit **survives and soaks it** or nothing is left to strike. Only Breakthrough chains — plain damage stops at the declared target. A **Shield** or**Ward** turns the whole blow aside and **ends the chain**. Damage **stays** on units between rounds; a unit is destroyed when its damage reaches its Health and goes to the discard — leaving any upgrades it wore**orphaned** in the zone, salvageable by either side.
@@ -125,7 +127,7 @@ The shorthand you’ll see on cards. Tap any card in the [Cards](https://booherb
 | 💪 Breakthrough | When this attacker DEFEATS what it strikes, the leftover damage splashes onward — and the DEFENDER chooses where it lands: another of their units in that zone, or their base when the fight is in their own Home. Defeat that one too and the rest chains to their next pick, link after link, until a unit survives and soaks it or nothing is left to hit. Plain (non-Breakthrough) damage never chains. A Shield or Ward turns the whole blow aside and ends the chain. No number, no cap: everything spills. |
 | ⛔ Can’t attack | A defensive body — it can hold a zone and block, but never attacks. |
 | 🔒 Capture | On its trigger, this unit takes an enemy unit under itself — off the board entirely. Holding costs nothing, and there is no letting go: the captive returns only when the capturer leaves play, coming back to that zone ready. Capture is custody, not a wound — and killing the jailer frees the prisoner. |
-| 🏰 Guard | The bodyguard. When a single unit attacks one of yours, ONLY a Guard may step in front of the target — one Guard, taking the whole hit. (Attacks on your base are different: anyone may block those.) And it never exhausts to block, in duels or gangs, so it can do it again and still take its own turn. |
+| 🏰 Guard | The bodyguard. When a single unit attacks one of yours, only a READY Guard may step in front of the target — one Guard, taking the whole hit. Two Guards can’t gang a lone attacker, and an exhausted Guard can’t block at all. (Attacks on your base are different: anyone may block those.) A Guard never exhausts to block, in duels or gangs — it stays ready, so it can block now and still take its own turn. |
 | 🙈 Hidden | While this unit is ready, enemy actions can’t target it and enemy attacks can’t be declared at it. It can still block — blocking isn’t being targeted — but anything that exhausts it (attacking, blocking, a Sneak) reveals it until it readies again. Strike, vanish, repeat. One limit: Hidden beats choices, not consequences — effects that don’t choose (“all”, whole-zone damage, automatic picks) still reach it. |
 | 🗝️ Infiltrate | May be played into any zone — not just your Home. |
 | ⚖️ Tribune | A Tribune sways the shared Influence track just by taking the field or leaving it: +1 Influence to its controller every time it enters play — whether it is deployed from hand or returns from capture — and −1 every time it leaves play, whether it is defeated or captured. It keys off the event, not the reason, so over a Tribune’s whole life the swing nets to zero and cannot be farmed (a capture’s −1 and its release’s +1 cancel). Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and you gain 1 Influence per Tribune; hold the majority in your enemy’s Home zone and you gain 2 Influence per Tribune — the two stack, so holding both is worth 3 per Tribune. “Majority” means strictly more of your units than the opponent’s in that zone; a tie is not a majority. The middle finally has a constituency — and the boldest campaigns run in enemy territory: hold the crowd, sway the track. |
@@ -141,7 +143,7 @@ The shorthand you’ll see on cards. Tap any card in the [Cards](https://booherb
 > - **Round vs turn:** a **round** is one full cycle; a **turn** is one action. A round is made of many turns.
 > - **Round 1:** no start step — straight into turns with your opening hand and 2 resources.
 > - **Every round after:** both players ready up, draw 2, bank up to 1 — then take turns until two passes in a row.
-> - **Your turn:** play a card, move (exhausts), attack, use an ability (Sneak or volley), release a captive, salvage an upgrade, claim initiative, or pass.
+> - **Your turn:** play a card, move (exhausts), attack, use an ability (Sneak or volley), salvage an upgrade, claim initiative, or pass.
 > - **Attack:** exhaust your attackers, name one target; the defender pairs blockers onto attackers (blocking exhausts — Guards block free); pairs trade blows at once; unblocked attackers hit the target, and the target strikes back — exhausted or not — its Power poured across the unblocked attackers (a gang splits it; a lone attacker eats it whole).
 > - **Costs:** pay with any resources; colored pips just have to be *present* in your bank.
 > - **Base:** attack it only from inside the enemy’s Home zone.
