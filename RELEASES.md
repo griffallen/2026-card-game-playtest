@@ -8,6 +8,25 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.10.1 — 2026-07-21
+patch — **#139 rulebook clarity — the words catch up to the engine** (#139; agent auto-shipped).
+Griff read the demo Rulebook tab and flagged five items; every claim was engine-verified. Four were
+the book drifting from what the engine already does, now fixed: the phantom **"Release a captive"**
+action struck from both turn lists (retired in **decision 92**, the engine always rejects it, and it
+contradicted our own Capture gloss) — plus the dead `DemoTable` hint that referenced it (legal actions
+never emit it, so it could never fire); the **claim-initiative loop** spelled out (after you claim, the
+opponent takes consecutive turns alone until a single pass ends the round; the token stays with the
+claimer and hands them the first turn next round — the engine's actual model); start-of-round
+**upkeep** taught as sequential (holder first, fully, then opponent) with the **bank asymmetry** named
+(the holder banks blind, the opponent banks having seen it — real in the engine, previously untaught);
+and the **Guard/blocker limits** stated plainly (one blocker answers one attacker, a Guard blocks free
+and stays ready, an exhausted Guard can't block, a lone attacker draws exactly one Guard). The
+quick-ref initiative line was already correct. No engine or rules change — prose + one dead-code
+removal; `RULES_VERSION` unchanged. 493 tests green. Deployed — gate passed (vs-AI drive, 120 card art,
+0 page errors). `ba49bf7`.
+⚐ Open on the thread (#139): whether the bank asymmetry — blind holder / informed opponent — is
+intended or should be flipped to both-blind. Flipping it is an engine change → a `major` (Blaine fires).
+
 ## v0.10.0 — 2026-07-20
 major — **Politician → Tribune, and the keyword now sways Influence** (#125, **decision 115**; Blaine
 fired the build). Two parts. *(A)* The keyword `politician` is renamed **Tribune** everywhere (nine
