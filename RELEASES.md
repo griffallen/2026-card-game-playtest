@@ -8,6 +8,16 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.10.3 — 2026-07-21
+patch — **#141 Phantom Duelist reworded for clarity** (#141; card work, agent auto-shipped).
+Griff saw the Duelist take damage blocking and thought the dodge was broken; verified in the
+resolver that it isn't — `dodgesWeakerCombatant` fires when it attacks or blocks but needs to
+**strictly** out-power the foe, and never dodges when it's the passive attacked target (the 4/1
+dies to a siege, decision #122). His own #98 game confirmed it (4-power Duelist took a hit
+blocking a 5-power Blaze Juggernaut). He chose keep-the-function + reword. Printed text now
+spells out when the dodge applies; the flag is untouched — no engine or balance change.
+`RULES_VERSION` unchanged. 493 tests green. Deployed — gate passed. `0d505c0`.
+
 ## v0.10.2 — 2026-07-21
 patch — **#139 the exact start-of-round bank order, spelled out** (#139; agent auto-shipped).
 Griff confirmed he's keeping the blind-holder / informed-opponent bank asymmetry ("I'm ok
