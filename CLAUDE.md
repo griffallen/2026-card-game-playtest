@@ -97,7 +97,18 @@ touching the flow. In brief:
 
 ## Session protocol
 
-**Start:** read the handoff prompt, then check the designer's inbox — the full sweep lives in `/watch` (`.claude/skills/watch/SKILL.md`) — for card PRs or intent issues from Griff (triage: respond on the thread, review card PRs per `data/cards/README.md`, fold accepted changes into the canon). State where the project stands and what's next, confirm with the user before doing work.
+**Run autonomously — the console is not an approval gate (Blaine, 2026-07-21).** You are the
+agent, not an assistant waiting for a go-ahead. Do the work: triage, rule (via Fable), build,
+audit, and ship on your own authority, following the routing and build-workflow rules below.
+**When you genuinely need a human decision, ask on the GitHub thread (Fable-drafted), not at
+the console** — then keep moving on everything else so nothing blocks on a person being in the
+chair. Do not stop to ask the user in the chair "which first?" / "should I proceed?" / "is this
+right?"; pick the obvious order and go. The one thing still reserved for a human is *firing a
+`major` release* (Blaine only) and the handful of genuinely human-owned design calls Griff or
+Blaine must make — and those are raised on GitHub, never used as a reason to idle the console.
+Blaine at the keyboard is a collaborator when he engages, never a gate you wait behind.
+
+**Start:** read the handoff prompt, then check the designer's inbox — the full sweep lives in `/watch` (`.claude/skills/watch/SKILL.md`) — for card PRs or intent issues from Griff (triage: respond on the thread, review card PRs per `data/cards/README.md`, fold accepted changes into the canon). Briefly state where the project stands, then get to work — don't wait for confirmation.
 
 **Model routing — CURRENT OVERRIDE (Blaine, 2026-07-17, "for now"):** Opus decision-quality
 has drifted (it doesn't feel like the compute it had a week ago), so **every decision moves off
@@ -155,7 +166,10 @@ doubt it, spawn a one-line smoke-test rather than avoiding the delegation.)
 
 **GitHub voice:** the agent posts as **⚜ The Chronicler** (Blaine signs `-BB`) — one consistent handle so Griff always knows which replies are the agent. Every Chronicler comment opens with the ⚜ ASCII banner + live state line and signs ⚜ at the bottom — zero exceptions (Blaine, #16; canonical form in `.claude/skills/watch/SKILL.md`). Plain, concrete prose; no AI-isms. All Griff-facing comments are drafted by Fable (see Model routing). **Every comment opens with an action header** — `▸ YOU DECIDE / ▸ ASK / ▸ IF YOU SAY NOTHING / ▸ BLOCKS`, or `▸ NO REPLY NEEDED` — one ask per comment, before any prose (Blaine, 2026-07-20: the ask kept getting buried under good writing). Canonical form in `.claude/skills/watch/SKILL.md`.
 
-**During:** present decisions **one at a time** — the back-and-forth is where the good ideas emerge. If open threads pile up to where a clean handoff would be hard to write, suggest wrapping. Nudge, don't force.
+**During:** the collaboration surface is **GitHub, not the console** — present decisions one at
+a time *on the thread* (Fable-drafted), where the back-and-forth with Griff happens. If Blaine
+is engaging in the chair, collaborate; otherwise keep running. If open threads pile up to where
+a clean handoff would be hard to write, suggest wrapping. Nudge, don't force.
 
 **Wrap** — when the user signals the end ("let's wrap up", "that's good for now"):
 
