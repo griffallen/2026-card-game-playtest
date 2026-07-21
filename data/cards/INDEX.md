@@ -123,7 +123,7 @@
 | [Blackout](purple/blackout.md) | — | 4 | action | — |  | canon | Choose a zone. Enemy units there can't attack this round. |
 | [Cull the Weak](purple/cull-the-weak.md) | — | 4 | action | — |  | canon | Deal 1 damage to every enemy unit. Draw a card. |
 | [Duskwing Assassin](purple/duskwing-tyrant.md) | — | 4 | unit | 1/4 | hidden, sneak | canon | Hidden. Sneak — deal 2 damage to target enemy unit in this zone. |
-| [Phantom Duelist](purple/phantom-duelist.md) | — | 4 | unit | 4/1 | hidden | canon | Hidden. If this unit has more power than its combatant, it takes no reciprocal damage. |
+| [Phantom Duelist](purple/phantom-duelist.md) | — | 4 | unit | 4/1 | hidden | canon | Hidden. When this unit attacks or blocks, it takes no return damage from a weaker foe — its power must be greater (a gang's combined power counts; ties hit). When an enemy attacks it, it dodges nothing. |
 | [Rain of Quarrels](purple/rain-of-quarrels.md) | — | 4 | action | — |  | canon | Choose a zone. Deal 2 damage to every enemy unit there. |
 | [Shade of the Bazaar](purple/shade-of-the-bazaar.md) | — | 4 | unit | 3/2 |  | canon | When this enters play, draw a card. |
 | [Dream Thief](purple/dream-thief.md) | — | 5 | unit | 4/4 | hidden, sneak | canon | Hidden. When this enters play, draw a card. Sneak — gain 2 Influence. |
