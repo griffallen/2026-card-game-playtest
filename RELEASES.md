@@ -8,6 +8,15 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.10.2 — 2026-07-21
+patch — **#139 the exact start-of-round bank order, spelled out** (#139; agent auto-shipped).
+Griff confirmed he's keeping the blind-holder / informed-opponent bank asymmetry ("I'm ok
+keeping it as is today") and asked the rules be explicit on the specific order timing. Added a
+step-by-step card to the upkeep section: (1) initiative holder readies → draws 2 → banks or
+skips, blind; (2) then the opponent does the same, now seeing the holder's banked card. Closes
+the last open thread on #139. No engine or rules change — rulebook prose only; `RULES_VERSION`
+unchanged. 493 tests green. Deployed — gate passed (0 page errors). `9f1c340`.
+
 ## v0.10.1 — 2026-07-21
 patch — **#139 rulebook clarity — the words catch up to the engine** (#139; agent auto-shipped).
 Griff read the demo Rulebook tab and flagged five items; every claim was engine-verified. Four were
