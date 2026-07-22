@@ -40,25 +40,20 @@ export function Rules() {
         and every card’s exact text is in the <Link className="text-goldbright underline" to="/cards">Cards</Link> tab.
       </P>
 
-      <Card>
-        <B>The one-minute version.</B>
-        <P>
-          Two players, two decks. You each start at <B>20 Life</B>. Play units into three zones, march them at your
-          opponent, and attack — reduce their Life to <B>0</B> to win. Or win the other way: tug the shared{' '}
-          <B>Influence</B> track to <B>+20 on your side</B>. Players take turns — single actions —
-          across shared rounds. That’s the whole shape; the rest is detail.
-        </P>
-      </Card>
-
       <H2 id="win">Winning the game</H2>
       <P>You win the instant either of these happens (checked after every single change):</P>
       <ul className="ml-5 list-disc">
         <LI><B>Life:</B> your opponent’s Life hits <B>0</B>.</LI>
         <LI><B>Influence:</B> the shared track reaches <B>+20 on your side</B>. One number sits between you; pulling it to your end wins — even if you’re behind on Life.</LI>
       </ul>
-      <P>If a single event would drop both players to 0 Life at once, the player who took the action wins.</P>
+      <P>
+        <B>If outcomes happen together:</B> if a single event would drop both players to 0 Life at once, the player who
+        took the action wins. If one blow would both reduce Life to 0 <i>and</i> reach the Influence finish line, the
+        Life victory wins.
+      </P>
 
-      <H2 id="board">The board</H2>
+      <H2 id="setup">The setup</H2>
+      <p className="mt-4 font-display text-lg font-semibold text-goldbright">1 · The board and your cards</p>
       <P>Three zones sit in a line. Units march one step at a time between them:</P>
       <Card>
         <div className="text-center font-display text-parchment">[ Your Home ] — [ Neutral ] — [ Their Home ]</div>
@@ -69,7 +64,6 @@ export function Rules() {
         <LI>Off to the side you keep your <B>deck</B> (face down), <B>hand</B> (hidden), <B>resource row</B> (face up), and <B>discard</B> (face up).</LI>
       </ul>
 
-      <H2 id="cards">The cards</H2>
       <ul className="ml-5 list-disc">
         <LI><B>Units</B> have <B>Power</B> (damage they deal) and <B>Health</B>. They stay on the board, hold zones, and fight.</LI>
         <LI><B>Actions</B> resolve their effect once, then go to the discard.</LI>
@@ -77,13 +71,51 @@ export function Rules() {
       </ul>
       <P>Every card has a <B>cost</B>, paid with <B>resources</B>, and may have colored <B>pips</B>, a check on what your bank contains (both below). Cards can carry <B>keywords</B> — the shorthand abilities listed at the bottom of this page.</P>
 
-      <H2 id="setup">Setting up</H2>
+      <p className="mt-6 font-display text-lg font-semibold text-goldbright">2 · Start the game</p>
       <ul className="ml-5 list-disc">
         <LI>Each deck is <B>48+ cards</B>, at most <B>4 copies</B> of any card.</LI>
         <LI>Draw <B>7</B>. Don’t like your hand? <B>Mulligan</B> as many times as you like — each redraw gives you one fewer card (down to the 2 you must bank).</LI>
         <LI>Then <B>bank 2 cards</B> from your hand face-up as your starting resources (you pick which — a real choice).</LI>
         <LI>A coin flip decides who holds the <B>initiative</B> first. Then round 1 begins — straight into the action (see below).</LI>
       </ul>
+
+      <p className="mt-6 font-display text-lg font-semibold text-goldbright">3 · Resources and playing cards</p>
+      <P>
+        A card is <B>ready</B> when it can act. To <B>exhaust</B> a card, turn it sideways; it normally cannot act again
+        until the next round.
+      </P>
+      <ul className="ml-5 list-disc">
+        <LI>Each resource pays <B>1</B> toward a card’s cost. To play a cost-3 card, <B>exhaust 3</B> ready resources — <B>any</B> 3; color never matters for payment.</LI>
+        <LI>Resources are <B>permanent</B> — the banked card is gone for good, but it pays every round forever. Banking is your economy; most rounds, bank.</LI>
+        <LI>A <B>unit enters ready</B> — it can move or attack that same round (each of those still exhausts it as usual). Upgrades attach to a friendly unit — though a rare card clamps onto an enemy instead.</LI>
+      </ul>
+      <p className="mt-5 font-display text-lg font-semibold text-goldbright">Colors and pips</p>
+      <P>
+        Some cards carry colored <B>pips</B> beside their cost. Pips are <B>not</B> an extra payment — they’re a{' '}
+        <B>presence check</B> on your bank. Playing a card asks two separate questions:
+      </P>
+      <ul className="ml-5 list-disc">
+        <LI><B>Can you pay?</B> Exhaust any resources equal to the cost — payment is color-blind, as above.</LI>
+        <LI><B>Do you have the colors?</B> For each color the card has pips in, your bank must <B>contain</B> at least that many cards providing that color. Nothing exhausts for this — the cards just have to be there, ready or spent.</LI>
+      </ul>
+      <P>
+        A banked card <B>provides 1 of each color in its own pips</B>: a card with red and yellow pips provides 1 red{' '}
+        <i>and</i> 1 yellow — but a card with four red pips still provides just <B>1 red</B>. Same-color pips never
+        stack on the providing side, and pip-less cards provide nothing. So a card demanding three red pips wants
+        three <i>separate</i> red cards in your bank: what you bank is your color identity.
+      </P>
+      <P>
+        One sharp edge: a <B>0-cost card can still have pips</B>. Free to pay for — but the gate still applies.
+      </P>
+      <Card>
+        <B>Example: cost and pips are separate.</B>
+        <P>
+          Suppose your bank holds three cards: one with a red pip, one with a red-and-yellow pip, and one with no pips.
+          You can spend <B>any three</B> of them to play a cost-3 card. A card needing <B>two red pips</B> is legal too,
+          because two separate banked cards provide red. A card needing <B>three red pips</B> is not legal yet — even if
+          one of your red cards prints several red pips, it provides only one red source.
+        </P>
+      </Card>
 
       <H2 id="round">A round, and your turns</H2>
       <P>The game runs in <B>rounds</B>. A round has two parts — a quick automatic <B>start</B>, then the <B>action loop</B>, where you and your opponent take <B>turns</B>. (Round 1 is the exception: it skips the start entirely — more in a moment.)</P>
@@ -150,32 +182,6 @@ export function Rules() {
         </P>
       </Card>
 
-      <H2 id="resources">Resources &amp; playing cards</H2>
-      <ul className="ml-5 list-disc">
-        <LI>Each resource pays <B>1</B> toward a card’s cost. To play a cost-3 card, <B>exhaust 3</B> ready resources — <B>any</B> 3; color never matters for payment.</LI>
-        <LI>Resources are <B>permanent</B> — the banked card is gone for good, but it pays every round forever. Banking is your economy; most rounds, bank.</LI>
-        <LI>A <B>unit enters ready</B> — it can move or attack that same round (each of those still exhausts it as usual). Upgrades attach to a friendly unit — though a rare card clamps onto an enemy instead.</LI>
-      </ul>
-
-      <H2 id="pips">Colors &amp; pips</H2>
-      <P>
-        Some cards carry colored <B>pips</B> beside their cost. Pips are <B>not</B> an extra payment — they’re a{' '}
-        <B>presence check</B> on your bank. Playing a card asks two separate questions:
-      </P>
-      <ul className="ml-5 list-disc">
-        <LI><B>Can you pay?</B> Exhaust any resources equal to the cost — payment is color-blind, as above.</LI>
-        <LI><B>Do you have the colors?</B> For each color the card has pips in, your bank must <B>contain</B> at least that many cards providing that color. Nothing exhausts for this — the cards just have to be there, ready or spent.</LI>
-      </ul>
-      <P>
-        A banked card <B>provides 1 of each color in its own pips</B>: a card with red and yellow pips provides 1 red{' '}
-        <i>and</i> 1 yellow — but a card with four red pips still provides just <B>1 red</B>. Same-color pips never
-        stack on the providing side, and pip-less cards provide nothing. So a card demanding three red pips wants
-        three <i>separate</i> red cards in your bank: what you bank is your color identity.
-      </P>
-      <P>
-        One sharp edge: a <B>0-cost card can still have pips</B>. Free to pay for — but the gate still applies.
-      </P>
-
       <H2 id="move">Moving</H2>
       <P>
         Moving a unit sends it <B>one adjacent zone</B> (Home ↔ Neutral ↔ their Home) and <B>exhausts</B> it — so a unit <i>marches or
@@ -184,6 +190,14 @@ export function Rules() {
 
       <H2 id="combat">Combat</H2>
       <P>An attack is <B>one action</B>, and you can swing with a whole squad at once. The fight resolves in <B>pairs</B> — the defender decides who stands in front of whom:</P>
+      <Card>
+        <B>Combat in three steps.</B>
+        <ol className="ml-5 mt-2 list-decimal">
+          <LI><B>Declare:</B> choose your ready attackers and name one target.</LI>
+          <LI><B>Block:</B> the defender assigns any legal ready blockers.</LI>
+          <LI><B>Resolve:</B> every pairing deals damage at once; anyone left unblocked hits the declared target.</LI>
+        </ol>
+      </Card>
       <ul className="ml-5 list-disc">
         <LI><B>Declare.</B> Pick <B>one or more of your ready units in the same zone</B> — they all exhaust. Choose one target: an enemy unit in their zone, or the enemy <B>base</B> (only if your attackers stand in the enemy’s Home).</LI>
         <LI><B>Block — the duel law.</B> A <B>single attacker striking a unit cannot be blocked</B>, with one exception: a <B>ready Guard</B> in the zone may step in front of the target — <B>one Guard, taking the entire hit</B> (two Guards can’t gang a lone attacker, and an exhausted Guard can’t block at all). <B>The base is everyone’s to defend:</B> a lone attacker striking a <B>base</B> faces the open window — any ready unit may block it. Duels are personal; sieges are everyone’s problem. Attack with <B>two or more</B> and the defense opens up: the defender may pair any of their <B>ready units in that zone</B> onto your attackers — one-on-one, or ganging up, though <B>each blocker answers only one attacker</B> — trading your gang's power for their choice of who gets stopped. The declared target may block its own attacker in a gang. Blocking <B>exhausts</B> the blocker — except a <B>Guard, who blocks for free and stays ready</B>, able to take its own turn after.</LI>
@@ -199,12 +213,26 @@ export function Rules() {
         unit is destroyed when its damage reaches its Health and goes to the discard — leaving any upgrades it wore
         <B>orphaned</B> in the zone, salvageable by either side.
       </P>
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <Card>
+          <B>Example: a duel</B>
+          <P>A 3-Power attacker challenges a 2-Power unit. With no ready Guard, nobody else may block the duel. The attacker deals 3 damage to the target, and the target deals 2 damage back.</P>
+        </Card>
+        <Card>
+          <B>Example: a gang</B>
+          <P>Two attackers swing at one enemy unit. The defender may assign ready units to either attacker, one at a time; each blocker can answer only one attacker. This is the moment a defender can choose who gets stopped.</P>
+        </Card>
+        <Card>
+          <B>Example: a base attack</B>
+          <P>A lone unit attacks the base from the enemy Home. Any ready defender may block it. If nobody blocks, the attacker deals its full Power to the base’s Life.</P>
+        </Card>
+      </div>
 
       <H2 id="influence">Influence</H2>
       <P>
         Influence is <B>one shared track</B> you fight over — gain some and the marker slides toward your <B>+20</B>. It’s <B>earned by
         events</B>, never just by sitting there: a guard is paid when it <B>defends</B> — blocking <i>or</i> being the one attacked — a champion when it <B>kills</B>, and some cards pay
-        out when <B>played</B>. Get it to +20 on your side and you win, even while losing the fight for Life. (If one blow crosses <i>both</i> finish lines at once, <B>Life wins</B>.)
+        out when <B>played</B>. Get it to +20 on your side and you win, even while losing the fight for Life.
       </P>
 
       <H2 id="keywords">Keywords</H2>

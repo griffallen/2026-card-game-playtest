@@ -8,10 +8,6 @@
 
 Everything you need to sit down and play, the game as it stands today. Want to try it while you read? The [Play](https://booherbg.github.io/new-game-demo/#/play) tab runs the full rules in your browser, and every card’s exact text is in the [Cards](https://booherbg.github.io/new-game-demo/#/cards) tab.
 
-> **The one-minute version.**
->
-> Two players, two decks. You each start at **20 Life**. Play units into three zones, march them at your opponent, and attack — reduce their Life to **0** to win. Or win the other way: tug the shared **Influence** track to **+20 on your side**. Players take turns — single actions — across shared rounds. That’s the whole shape; the rest is detail.
-
 ## Winning the game
 
 You win the instant either of these happens (checked after every single change):
@@ -19,9 +15,11 @@ You win the instant either of these happens (checked after every single change):
 - **Life:** your opponent’s Life hits **0**.
 - **Influence:** the shared track reaches **+20 on your side**. One number sits between you; pulling it to your end wins — even if you’re behind on Life.
 
-If a single event would drop both players to 0 Life at once, the player who took the action wins.
+**If outcomes happen together:** if a single event would drop both players to 0 Life at once, the player who took the action wins. If one blow would both reduce Life to 0 *and* reach the Influence finish line, the Life victory wins.
 
-## The board
+## The setup
+
+### 1 · The board and your cards
 
 Three zones sit in a line. Units march one step at a time between them:
 
@@ -33,20 +31,41 @@ Three zones sit in a line. Units march one step at a time between them:
 - Your **base** is you. It lives in your Home zone; damage to it is Life damage. An enemy can only attack your base from **inside your Home zone**.
 - Off to the side you keep your **deck** (face down), **hand** (hidden), **resource row** (face up), and **discard** (face up).
 
-## The cards
-
 - **Units** have **Power** (damage they deal) and **Health**. They stay on the board, hold zones, and fight.
 - **Actions** resolve their effect once, then go to the discard.
 - **Upgrades** attach to a unit and change it — most buff one of yours, though a few (like Subjugate) clamp onto an enemy to weaken it. If the wearer dies, the upgrade survives — it stays in that zone, **orphaned**, and either player may later spend a turn to **salvage** it back onto a valid unit in that zone by paying its full cost (resources *and* pips) again. A fallen champion’s sword is anyone’s prize.
 
 Every card has a **cost**, paid with **resources**, and may have colored **pips**, a check on what your bank contains (both below). Cards can carry **keywords** — the shorthand abilities listed at the bottom of this page.
 
-## Setting up
+### 2 · Start the game
 
 - Each deck is **48+ cards**, at most **4 copies** of any card.
 - Draw **7**. Don’t like your hand? **Mulligan** as many times as you like — each redraw gives you one fewer card (down to the 2 you must bank).
 - Then **bank 2 cards** from your hand face-up as your starting resources (you pick which — a real choice).
 - A coin flip decides who holds the **initiative** first. Then round 1 begins — straight into the action (see below).
+
+### 3 · Resources and playing cards
+
+A card is **ready** when it can act. To **exhaust** a card, turn it sideways; it normally cannot act again until the next round.
+
+- Each resource pays **1** toward a card’s cost. To play a cost-3 card, **exhaust 3** ready resources — **any** 3; color never matters for payment.
+- Resources are **permanent** — the banked card is gone for good, but it pays every round forever. Banking is your economy; most rounds, bank.
+- A **unit enters ready** — it can move or attack that same round (each of those still exhausts it as usual). Upgrades attach to a friendly unit — though a rare card clamps onto an enemy instead.
+
+### Colors and pips
+
+Some cards carry colored **pips** beside their cost. Pips are **not** an extra payment — they’re a **presence check** on your bank. Playing a card asks two separate questions:
+
+- **Can you pay?** Exhaust any resources equal to the cost — payment is color-blind, as above.
+- **Do you have the colors?** For each color the card has pips in, your bank must **contain** at least that many cards providing that color. Nothing exhausts for this — the cards just have to be there, ready or spent.
+
+A banked card **provides 1 of each color in its own pips**: a card with red and yellow pips provides 1 red *and* 1 yellow — but a card with four red pips still provides just **1 red**. Same-color pips never stack on the providing side, and pip-less cards provide nothing. So a card demanding three red pips wants three *separate* red cards in your bank: what you bank is your color identity.
+
+One sharp edge: a **0-cost card can still have pips**. Free to pay for — but the gate still applies.
+
+> **Example: cost and pips are separate.**
+>
+> Suppose your bank holds three cards: one with a red pip, one with a red-and-yellow pip, and one with no pips. You can spend **any three** of them to play a cost-3 card. A card needing **two red pips** is legal too, because two separate banked cards provide red. A card needing **three red pips** is not legal yet — even if one of your red cards prints several red pips, it provides only one red source.
 
 ## A round, and your turns
 
@@ -88,23 +107,6 @@ There’s no cap on how many turns you take in a round — the limit is your res
 >
 > Whoever holds the initiative takes the **first turn** of each round. **Claiming the initiative** is itself a turn: you take the token and are **done for the rest of this round**. Your opponent then keeps taking turns —**one after another, alone** — until they pass, and that **single** pass ends the round (the "two passes in a row" rule needs two players still in it). Your reward: the token **stays with you** and hands you the **first turn next round**. It’s a tempo trade — bow out early to guarantee the opening move next round. Only **one claim per round**; if nobody claims, the initiative carries over to whoever already held it.
 
-## Resources & playing cards
-
-- Each resource pays **1** toward a card’s cost. To play a cost-3 card, **exhaust 3** ready resources — **any** 3; color never matters for payment.
-- Resources are **permanent** — the banked card is gone for good, but it pays every round forever. Banking is your economy; most rounds, bank.
-- A **unit enters ready** — it can move or attack that same round (each of those still exhausts it as usual). Upgrades attach to a friendly unit — though a rare card clamps onto an enemy instead.
-
-## Colors & pips
-
-Some cards carry colored **pips** beside their cost. Pips are **not** an extra payment — they’re a **presence check** on your bank. Playing a card asks two separate questions:
-
-- **Can you pay?** Exhaust any resources equal to the cost — payment is color-blind, as above.
-- **Do you have the colors?** For each color the card has pips in, your bank must **contain** at least that many cards providing that color. Nothing exhausts for this — the cards just have to be there, ready or spent.
-
-A banked card **provides 1 of each color in its own pips**: a card with red and yellow pips provides 1 red *and* 1 yellow — but a card with four red pips still provides just **1 red**. Same-color pips never stack on the providing side, and pip-less cards provide nothing. So a card demanding three red pips wants three *separate* red cards in your bank: what you bank is your color identity.
-
-One sharp edge: a **0-cost card can still have pips**. Free to pay for — but the gate still applies.
-
 ## Moving
 
 Moving a unit sends it **one adjacent zone** (Home ↔ Neutral ↔ their Home) and **exhausts** it — so a unit *marches or fights* in a round, not both. Exception: a unit with **Rush** gets *one* free move (no exhaust) each round — so it can reposition and still fight.
@@ -113,15 +115,35 @@ Moving a unit sends it **one adjacent zone** (Home ↔ Neutral ↔ their Home) a
 
 An attack is **one action**, and you can swing with a whole squad at once. The fight resolves in **pairs** — the defender decides who stands in front of whom:
 
+> **Combat in three steps.**
+>
+> **Declare:** choose your ready attackers and name one target.
+>
+> **Block:** the defender assigns any legal ready blockers.
+>
+> **Resolve:** every pairing deals damage at once; anyone left unblocked hits the declared target.
+
 - **Declare.** Pick **one or more of your ready units in the same zone** — they all exhaust. Choose one target: an enemy unit in their zone, or the enemy **base** (only if your attackers stand in the enemy’s Home).
 - **Block — the duel law.** A **single attacker striking a unit cannot be blocked**, with one exception: a **ready Guard** in the zone may step in front of the target — **one Guard, taking the entire hit** (two Guards can’t gang a lone attacker, and an exhausted Guard can’t block at all). **The base is everyone’s to defend:** a lone attacker striking a **base** faces the open window — any ready unit may block it. Duels are personal; sieges are everyone’s problem. Attack with **two or more** and the defense opens up: the defender may pair any of their **ready units in that zone** onto your attackers — one-on-one, or ganging up, though **each blocker answers only one attacker** — trading your gang's power for their choice of who gets stopped. The declared target may block its own attacker in a gang. Blocking **exhausts** the blocker — except a **Guard, who blocks for free and stays ready**, able to take its own turn after.
 - **Resolve — every pairing at once.** Each attacker deals its Power to its blocker, and a gang of blockers deals its **combined** Power back to their attacker. In a gang block the attacker’s damage **pours in pair order** — fill the first blocker, spill into the second — so the defender controls the split. Armor shrinks each hit it faces. Attackers **nobody blocked** (including every lone attacker no Guard answered) deal their full Power to the declared target — **and the target strikes back, exhausted or not**. Its Power is a single pool **poured across the unblocked attackers** — biggest threat first, or in the defender’s chosen order — felling as many as it can pay for before it runs dry. A **lone attacker takes the whole blow; a gang splits it** (a 5-Power wall ganged by three 2/2s fells two and wounds the third, not all three). No unit strikes without an answer. (A base never strikes back.) A **kill credits whoever's damage landed it** — blockers included; a walled-off attacker earns nothing from its allies' kills.
 
 **Breakthrough** won’t let damage stop at a corpse. When such an attacker **defeats** what it strikes, the leftover **splashes onward** — and the **defender chooses where it lands**: another of their units in that zone, or (when the fight stands in their own **Home**) their **base**. Defeat that link too and the rest **chains** to the defender’s next pick, on and on, until a unit **survives and soaks it** or nothing is left to strike. Only Breakthrough chains — plain damage stops at the declared target. A **Shield** or**Ward** turns the whole blow aside and **ends the chain**. Damage **stays** on units between rounds; a unit is destroyed when its damage reaches its Health and goes to the discard — leaving any upgrades it wore**orphaned** in the zone, salvageable by either side.
 
+> **Example: a duel**
+>
+> A 3-Power attacker challenges a 2-Power unit. With no ready Guard, nobody else may block the duel. The attacker deals 3 damage to the target, and the target deals 2 damage back.
+
+> **Example: a gang**
+>
+> Two attackers swing at one enemy unit. The defender may assign ready units to either attacker, one at a time; each blocker can answer only one attacker. This is the moment a defender can choose who gets stopped.
+
+> **Example: a base attack**
+>
+> A lone unit attacks the base from the enemy Home. Any ready defender may block it. If nobody blocks, the attacker deals its full Power to the base’s Life.
+
 ## Influence
 
-Influence is **one shared track** you fight over — gain some and the marker slides toward your **+20**. It’s **earned by events**, never just by sitting there: a guard is paid when it **defends** — blocking *or* being the one attacked — a champion when it **kills**, and some cards pay out when **played**. Get it to +20 on your side and you win, even while losing the fight for Life. (If one blow crosses *both* finish lines at once, **Life wins**.)
+Influence is **one shared track** you fight over — gain some and the marker slides toward your **+20**. It’s **earned by events**, never just by sitting there: a guard is paid when it **defends** — blocking *or* being the one attacked — a champion when it **kills**, and some cards pay out when **played**. Get it to +20 on your side and you win, even while losing the fight for Life.
 
 ## Keywords
 
