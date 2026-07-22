@@ -8,7 +8,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"heal","t":"selfBase","n":4},{"op":"influence","n":1}]}
 ---
-Heal 4 damage from your base. Gain 1 Influence.
+Heal 4 damage from your base. Gain 1 Hope.
 
 ## Design notes
 

@@ -38,9 +38,9 @@ A10. Guard: the intercept window is gone under blocking — what should Guard me
 
 B. STILL OPEN FROM canon-v1.0 (naming + mulligans: answered Jul 10, decisions 57–58 — thanks!):
 
-B1. Claiming initiative — you give up the rest of your round to act first next round. Does the
+B1. Regrouping — you give up the rest of your round to act first next round. Does the
     trade ever feel good? (issue #7) →
-B2. Influence upsets land in 4–10% of mixed bot games and 23% of yellow mirrors — the track
+B2. Hope upsets land in 4–10% of mixed bot games and 23% of yellow mirrors — the track
     matters when both players court it. Intended, or should it press harder everywhere? (issue #6) →
 B3. Every card carries its redesign notes ("Design notes" on the card, ⓘ / right-click in game).
     Veto anything. (issue #4) →
@@ -113,7 +113,7 @@ export function Audit() {
         <b className="font-display text-parchment">Version line</b>
         <ul className="ml-5 mt-2 list-disc text-[14px]">
           <LI><b>v1.2-proto</b> (Jul 7) — the first playable prototype; per-player turns. <i>Archived.</i></LI>
-          <LI><b>v2.0</b> (Jul 8) — shared rounds, claimable initiative, multi-unit attacks + intercept.</LI>
+          <LI><b>v2.0</b> (Jul 8) — shared rounds, Regroup, multi-unit attacks + intercept.</LI>
           <LI><b>v2.1</b> (Jul 9) — Rush capped at one free reposition (playtest catch).</LI>
           <LI><b>v2.2</b> (Jul 9) — prison decay doubled… and lived six hours (see §3's honesty box).</LI>
           <LI><b>v2.3</b> (Jul 9) — decay restored to 1; <b>current</b>. The whole card pool reconciled to canon-v1.0.</LI>
@@ -123,9 +123,9 @@ export function Audit() {
 
       <H2 id="decks">2 · The decks today</H2>
       <ul className="ml-5 mt-3 list-disc">
-        <LI><b>Crimson Assault (red)</b> — Rush, Breakthrough, the Overextend gamble; wins by Life before inevitability arrives. Never touches the Influence track.</LI>
-        <LI><b>Radiant Order (yellow)</b> — Guards that intercept for free, armor, prison (functional today, <b>cut in v3.0</b>), and Influence earned by <i>events</i> — its second win axis.</LI>
-        <LI><b>Veiled Court (purple)</b> — a <b>proposal awaiting your verdict</b> (issue #5): ranged assassins, withering curses, kill-earned Influence, placeholder art by design. Fully playable in every mode.</LI>
+        <LI><b>Crimson Assault (red)</b> — Rush, Breakthrough, the Overextend gamble; wins by Life before inevitability arrives. Never touches the Hope track.</LI>
+        <LI><b>Radiant Order (yellow)</b> — Guards that intercept for free, armor, prison (functional today, <b>cut in v3.0</b>), and Hope earned by <i>events</i> — its second win axis.</LI>
+        <LI><b>Veiled Court (purple)</b> — a <b>proposal awaiting your verdict</b> (issue #5): ranged assassins, withering curses, kill-earned Hope, placeholder art by design. Fully playable in every mode.</LI>
       </ul>
 
       <H2 id="balance">3 · Current balance — the only numbers on this page</H2>
@@ -141,7 +141,7 @@ export function Audit() {
               <th className="px-3 py-2">Matchup</th>
               <th className="px-3 py-2">Competent play</th>
               <th className="px-3 py-2">Random play</th>
-              <th className="px-3 py-2">Influence wins (competent)</th>
+              <th className="px-3 py-2">Hope wins (competent)</th>
             </tr>
           </thead>
           <tbody>
@@ -158,7 +158,7 @@ export function Audit() {
         Three readings. <b>The triangle:</b> under competent play yellow edges red, purple beats yellow,
         red and purple tie — soft rock-paper-scissors. <b>Skill flips it:</b> under random play purple
         collapses (26–29%) and yellow feasts — purple's evasion and curses only work when piloted, while
-        yellow punishes neglect. Skill-dependence is itself a deck identity. <b>The Influence axis works
+        yellow punishes neglect. Skill-dependence is itself a deck identity. <b>The Hope axis works
         when courted:</b> 23% of yellow mirrors end on the track; red matchups almost never do.
       </P>
       <Card>

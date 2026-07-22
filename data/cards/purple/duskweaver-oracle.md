@@ -11,7 +11,7 @@ art: /cards/duskweaver-oracle.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"draw","n":1},{"op":"influence","n":1}],"sneak":{"ops":[{"op":"draw","n":2},{"op":"chooseFromHand","to":"deckBottom","n":1}]}}
 ---
-Tribune. When this enters play, draw a card and gain 1 Influence. Sneak - draw 2 cards, then put a card from your hand on the bottom of your deck.
+Tribune. When this enters play, draw a card and gain 1 Hope. Sneak - draw 2 cards, then put a card from your hand on the bottom of your deck.
 
 ## Design notes
 

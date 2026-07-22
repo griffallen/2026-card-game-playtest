@@ -11,7 +11,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onDeath":[{"op":"influence","n":1},{"op":"influence","n":1,"ifKilled":true}]}
 ---
-Rush. Breakthrough. When this unit dies, gain 1 Influence — and 1 more if it died defeating a unit (a trade counts).
+Rush. Breakthrough. When this unit dies, gain 1 Hope — and 1 more if it died defeating a unit (a trade counts).
 
 ## Design notes
 

@@ -148,7 +148,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   // #57 (Blaine): the recap is the primary source in a fast round — every consequence a card or
   // combat inflicts must pass this filter. Audited against the engine's full log vocabulary;
   // deliberately excluded: movement, draws, banking, round headers (visible on board / pure noise).
-  const COMBAT_RE = /damage|destroyed|blocks|attacks|volleys|sneaks|intercepts|retaliat|spill|captiv|captur|released|freed|suffers|overextend|onslaught|rage|falls|fell|influence|absorbs|heals|cleansed|gains|gets \+|power|ordered down|readies|ready for|extra action|made whole|wards/i
+  const COMBAT_RE = /damage|destroyed|blocks|attacks|volleys|sneaks|intercepts|retaliat|spill|captiv|captur|released|freed|suffers|overextend|onslaught|rage|falls|fell|hope|influence|absorbs|heals|cleansed|gains|gets \+|power|ordered down|readies|ready for|extra action|made whole|wards/i
   const BIG_RE = /destroyed|captures|released|freed|falls/i   // #44: one of these alone still deserves the stage
   // #100: a resolved duel gets narrated as a trade ("Berserker (3) ↔ Radiant Citadel (5): dealt 3,
   // took 5 — Berserker falls") so the human can read who hit whom, for how much each way, and who
@@ -927,7 +927,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       {lethalPlay && (
         <div className="rounded-md border border-[#b23a2c] bg-[#b23a2c]/10 p-2 text-xs">
           <p className="text-[#e5a99f]">
-            ⚠ <b>{DEMO_CARDS[state.cardOf[lethalPlay.card]]?.name}</b> cedes {lethalPlay.cede} influence — that
+            ⚠ <b>{DEMO_CARDS[state.cardOf[lethalPlay.card]]?.name}</b> cedes {lethalPlay.cede} Hope — that
             puts {names[foe]} at their winning threshold. <b>This play loses you the game.</b>
           </p>
           <div className="mt-1.5 flex gap-1.5">
@@ -1072,7 +1072,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
         const xs = [...new Set(playActionsFor(selection.card).map(a => a.x).filter((x): x is number => x !== undefined))].sort((a, b) => a - b)
         return (
           <div className="flex flex-wrap items-center gap-1.5 text-xs">
-            <span className="text-goldbright">Declare X for <b>{def?.name}</b> — you'll pay X resources and lose X influence:</span>
+            <span className="text-goldbright">Declare X for <b>{def?.name}</b> — you'll pay X resources and lose X Hope:</span>
             {xs.map(x => (
               <button key={x} className="btn btn-primary !px-2.5 !py-1 text-xs" onClick={() => pickX(selection.card, x)}>{x}</button>
             ))}
@@ -1225,7 +1225,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
         passables && `pass ${passables} upgrade${passables > 1 ? 's' : ''}`,
       ].filter(Boolean)
       if (bits.length) hints.push(`Right now you can ${bits.join(' · ')} — or pass. ${ready} resource${ready === 1 ? '' : 's'} ready.`)
-      if (canClaim) hints.push('You can claim the initiative: it spends your round, but you act first next round (and locks the token to you).')
+      if (canClaim) hints.push('You can Regroup: it ends your round, but gives you the 🥇 marker and the first turn next round.')
     }
   }
 
@@ -1247,7 +1247,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
         <button className="text-dim hover:text-body" onClick={onExit}>← Setup</button>
         <span className="font-display text-parchment">{names[0]} vs {names[1]}</span>
         <span className="text-xs text-dim">Round {view.round} · seed {config.seed}</span>
-        <span className="text-xs text-goldbright" title="holds the initiative — acts first each round">⚑ {names[view.initiative]}</span>
+        <span className="text-xs text-goldbright" title="holds the Regroup marker — acts first each round">🥇 {names[view.initiative]}</span>
         {/* wraps rather than stretching the layout viewport — a 393px row at 390px broke taps once (#17) */}
         <span className="ml-auto flex min-w-0 flex-wrap justify-end gap-1.5">
           {config.mode === 'vs-ai' && (
@@ -1286,7 +1286,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
               <div className="round-banner pointer-events-none absolute inset-x-0 top-1/3 z-40 text-center">
                 <div className="inline-block rounded-lg border border-goldbright/40 bg-black/85 px-6 py-3 shadow-xl">
                   <div className="font-display text-2xl font-bold text-parchment">Round {roundBanner}</div>
-                  <div className="mt-0.5 text-xs text-goldbright">⚑ {names[view.initiative]} leads</div>
+                  <div className="mt-0.5 text-xs text-goldbright">🥇 {names[view.initiative]} regroups first</div>
                 </div>
               </div>
             )}
@@ -1470,8 +1470,8 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
               )}
               {/* the Skip banking button lives in the amber bank-step banner over the hand (#57) */}
               {myWindow && canClaim && (
-                <button className="btn btn-primary !py-1 text-xs" title="take the initiative token: ends your round, but you act first next round"
-                  onClick={() => apply({ type: 'claimInitiative' }, seat)}>Claim initiative ⚑</button>
+                <button className="btn btn-primary !py-1 text-xs" title="take the 🥇 Regroup marker: end your round, but act first next round"
+                  onClick={() => apply({ type: 'claimInitiative' }, seat)}>Regroup 🥇</button>
               )}
               {myWindow && canPass && (() => {
                 // #27: tryPass opened the confirmation — this renders it
@@ -1652,7 +1652,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       {view.winner !== null && !overlayDismissed && (
         <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4">
           <div className="panel max-w-md p-8 text-center">
-            <div className="text-4xl">{view.winReason === 'influence' ? '☯' : view.winReason === 'concede' ? '🏳' : '⚔'}</div>
+            <div className="text-4xl">{view.winReason === 'influence' ? '🕊️' : view.winReason === 'concede' ? '🏳' : '⚔'}</div>
             <h2 className="mt-3 font-display text-2xl font-bold text-parchment">{names[view.winner]} is victorious</h2>
             <p className="mt-2 text-sm text-dim">Round {view.round} · {view.winReason} · seed {config.seed}</p>
             <div className="mt-6 flex justify-center gap-2">
@@ -1680,8 +1680,8 @@ function PlayerBar({ name, life, handCount, deckCount, discardCount, resources, 
     <div onClick={baseGlow ? onClick : undefined}
       className={`panel flex items-center gap-3 px-3 py-1.5 ${baseGlow ? 'glow-attack cursor-pointer' : ''}`}>
       <span className="min-w-0 truncate font-display font-semibold text-parchment">{name}</span>
-      {hasInitiative && <span className="text-xs text-goldbright" title="holds the initiative">⚑</span>}
-      {outOfRound && <span className="rounded bg-goldbright/15 px-1.5 py-0.5 text-[11.5px] uppercase tracking-wider text-goldbright/90" title="claimed the initiative — no more actions this round, but its units still block and retaliate; acts first next round">claimed — resting, still defends</span>}
+      {hasInitiative && <span className="text-xs text-goldbright" title="holds the Regroup marker">🥇</span>}
+      {outOfRound && <span className="rounded bg-goldbright/15 px-1.5 py-0.5 text-[11.5px] uppercase tracking-wider text-goldbright/90" title="Regrouped — no more actions this round, but units still block and retaliate; acts first next round">regrouped — resting, still defends</span>}
       {eclipsed && <span className="rounded bg-[#7c5cbf]/25 px-1.5 py-0.5 text-[11.5px] uppercase tracking-wider text-[#c8b6ef]" title="Eclipse: cannot play any cards from hand this round — units still attack, move, and use abilities. Lifts next round.">🌑 eclipsed — no plays from hand this round</span>}
       <button
         className={`rounded px-1 font-display text-xl font-bold hover:bg-raised ${lifeFlash || (life <= 5 ? 'text-[#e5735f]' : 'text-parchment')}`}

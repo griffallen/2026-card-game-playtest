@@ -9,7 +9,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onKill":[{"op":"influence","n":2}]}
 ---
-When this defeats a unit, gain 2 Influence.
+When this defeats a unit, gain 2 Hope.
 
 ## Design notes
 

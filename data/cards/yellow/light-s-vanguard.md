@@ -11,7 +11,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onDefend":[{"op":"influence","n":1,"per":{"count":"attackers"}}]}
 ---
-Guard. Shielded. For each unit that attacks this unit, gain 1 Influence.
+Guard. Shielded. For each unit that attacks this unit, gain 1 Hope.
 
 ## Design notes
 

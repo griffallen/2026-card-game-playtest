@@ -21,7 +21,7 @@ const KEYWORDS: [string, string, string][] = [
   ['guard', 'Guard', 'The bodyguard. When a single unit attacks one of yours, only a READY Guard may step in front of the target — one Guard, taking the whole hit. Two Guards can’t gang a lone attacker, and an exhausted Guard can’t block at all. (Attacks on your base are different: anyone may block those.) A Guard never exhausts to block, in duels or gangs — it stays ready, so it can block now and still take its own turn.'],
   ['hidden', 'Hidden', 'While this unit is ready, enemy actions can’t target it and enemy attacks can’t be declared at it. It can still block — blocking isn’t being targeted — but anything that exhausts it (attacking, blocking, a Sneak) reveals it until it readies again. Strike, vanish, repeat. One limit: Hidden beats choices, not consequences — effects that don’t choose (“all”, whole-zone damage, automatic picks) still reach it.'],
   ['infiltrate', 'Infiltrate', 'May be played into any zone — not just your Home.'],
-  ['tribune', 'Tribune', 'A Tribune sways the shared Influence track just by taking the field or leaving it: +1 Influence to its controller every time it enters play — whether it is deployed from hand or returns from capture — and −1 every time it leaves play, whether it is defeated or captured. It keys off the event, not the reason, so over a Tribune’s whole life the swing nets to zero and cannot be farmed (a capture’s −1 and its release’s +1 cancel). Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and you gain 1 Influence per Tribune; hold the majority in your enemy’s Home zone and you gain 2 Influence per Tribune — the two stack, so holding both is worth 3 per Tribune. “Majority” means strictly more of your units than the opponent’s in that zone; a tie is not a majority. The middle finally has a constituency — and the boldest campaigns run in enemy territory: hold the crowd, sway the track.'],
+  ['tribune', 'Tribune', 'A Tribune sways the shared Hope track just by taking the field or leaving it: +1 Hope to its controller every time it enters play — whether it is deployed from hand or returns from capture — and −1 every time it leaves play, whether it is defeated or captured. It keys off the event, not the reason, so over a Tribune’s whole life the swing nets to zero and cannot be farmed (a capture’s −1 and its release’s +1 cancel). Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and you gain 1 Hope per Tribune; hold the majority in your enemy’s Home zone and you gain 2 Hope per Tribune — the two stack, so holding both is worth 3 per Tribune. “Majority” means strictly more of your units than the opponent’s in that zone; a tie is not a majority. The middle finally has a constituency — and the boldest campaigns run in enemy territory: hold the crowd, sway the track.'],
   ['ranged', 'Ranged N', 'An ability used as your turn: exhaust this unit to deal N damage to one enemy unit in any zone — the volley. It’s a chosen shot, so a ready Hidden unit refuses it, and a lethal volley counts as a kill. The unit’s regular attacks are ordinary in every way: same zone, blockable, bases included. Archers carry small blades and big bows.'],
   ['rush', 'Rush', 'A static ability: this unit’s first move each round is free — that one move doesn’t exhaust it, so it can reposition and still fight. One free move per round, and it refreshes every round the unit stays in play; a second move the same round exhausts it like any unit. It grants no extra action and never lets the unit attack any sooner.'],
   ['scar', 'Scar', 'Gets +1 Power for each damage marked on it — no cap. A 3-Health unit with 2 damage gets +2. Every wound is fuel; the closer to death, the harder it hits.'],
@@ -44,11 +44,11 @@ export function Rules() {
       <P>You win the instant either of these happens (checked after every single change):</P>
       <ul className="ml-5 list-disc">
         <LI><B>Life:</B> your opponent’s Life hits <B>0</B>.</LI>
-        <LI><B>Influence:</B> the shared track reaches <B>+20 on your side</B>. One number sits between you; pulling it to your end wins — even if you’re behind on Life.</LI>
+        <LI><B>Hope:</B> the shared track reaches <B>+20 on your side</B>. One number sits between you; pulling it to your end wins — even if you’re behind on Life.</LI>
       </ul>
       <P>
         <B>If outcomes happen together:</B> if a single event would drop both players to 0 Life at once, the player who
-        took the action wins. If one blow would both reduce Life to 0 <i>and</i> reach the Influence finish line, the
+        took the action wins. If one blow would both reduce Life to 0 <i>and</i> reach the Hope finish line, the
         Life victory wins.
       </P>
 
@@ -76,7 +76,7 @@ export function Rules() {
         <LI>Each deck is <B>48+ cards</B>, at most <B>4 copies</B> of any card.</LI>
         <LI>Draw <B>7</B>. Don’t like your hand? <B>Mulligan</B> as many times as you like — each redraw gives you one fewer card (down to the 2 you must bank).</LI>
         <LI>Then <B>bank 2 cards</B> from your hand face-up as your starting resources (you pick which — a real choice).</LI>
-        <LI>A coin flip decides who holds the <B>initiative</B> first. Then round 1 begins — straight into the action (see below).</LI>
+        <LI>A coin flip gives one player the <B>🥇 Regroup marker</B>. That player takes the first turn of round 1. Then the action begins (see below).</LI>
       </ul>
 
       <p className="mt-6 font-display text-lg font-semibold text-goldbright">3 · Resources and playing cards</p>
@@ -129,21 +129,21 @@ export function Rules() {
       </Card>
 
       <p className="mt-4 font-display text-lg font-semibold text-goldbright">1 · Start of the round</p>
-      <P>From <B>round 2 onward</B>, upkeep runs <B>one player at a time</B> — the <B>initiative holder first</B>, all the way through, then the opponent. Readying and drawing happen on their own; <B>banking is a decision</B>:</P>
+      <P>From <B>round 2 onward</B>, upkeep runs <B>one player at a time</B> — the player holding the <B>🥇 Regroup marker first</B>, all the way through, then the opponent. Readying and drawing happen on their own; <B>banking is a decision</B>:</P>
       <ul className="ml-5 list-disc">
         <LI><B>Ready</B> all your cards (units and resources untap).</LI>
-        <LI><B>Draw 2</B> cards. (Drawing from an empty deck costs you 1 Life and 1 Influence per missing card — slow decks have a clock.)</LI>
+        <LI><B>Draw 2</B> cards. (Drawing from an empty deck costs you 1 Life and 1 Hope per missing card — slow decks have a clock.)</LI>
         <LI>You may <B>bank one card</B> from hand as a new resource, or skip.</LI>
       </ul>
       <P>
         Order matters here. The holder banks <B>first — and blind</B>, before the opponent has drawn or banked a thing. The
         opponent banks <B>second, having already seen</B> what the holder laid down, and can answer it. First to the
-        initiative, first to commit.
+        Regroup marker, first to commit.
       </P>
       <Card>
         <B>The exact order, step by step.</B>
         <ol className="ml-5 mt-2 list-decimal">
-          <LI><B>Initiative holder, in full:</B> ready → draw 2 → bank one or skip. This bank is <B>blind</B> — the opponent hasn’t drawn or banked yet.</LI>
+          <LI><B>Regroup-marker holder, in full:</B> ready → draw 2 → bank one or skip. This bank is <B>blind</B> — the opponent hasn’t drawn or banked yet.</LI>
           <LI><B>Then the opponent, in full:</B> ready → draw 2 → bank one or skip — now <B>seeing</B> the resource the holder just banked, and free to answer it.</LI>
         </ol>
       </Card>
@@ -159,11 +159,11 @@ export function Rules() {
 
       <p className="mt-4 font-display text-lg font-semibold text-goldbright">2 · The action loop — taking turns</p>
       <P>
-        The <B>initiative holder takes the first turn</B>, then you <B>alternate turns</B>. On your turn you take exactly
+        The player holding the <B>🥇 Regroup marker takes the first turn</B>, then you <B>alternate turns</B>. On your turn you take exactly
         <B> one</B> action:
       </P>
       <ul className="ml-5 list-disc">
-        <LI><B>Play a card</B> · <B>Move a unit</B> · <B>Attack</B> · <B>Use an ability</B> (a Sneak, or a Ranged volley) · <B>Salvage an orphaned upgrade</B> · <B>Claim the initiative</B> · <B>Pass</B>.</LI>
+        <LI><B>Play a card</B> · <B>Move a unit</B> · <B>Attack</B> · <B>Use an ability</B> (a Sneak, or a Ranged volley) · <B>Salvage an orphaned upgrade</B> · <B>Regroup</B> · <B>Pass</B>.</LI>
       </ul>
       <P>
         There’s no cap on how many turns you take in a round — the limit is your resources and your ready units.
@@ -171,14 +171,14 @@ export function Rules() {
         end the round</B>, and the next round begins.
       </P>
       <Card>
-        <B>The initiative.</B>
+        <B>Regroup.</B>
         <P>
-          Whoever holds the initiative takes the <B>first turn</B> of each round. <B>Claiming the initiative</B> is itself a
-          turn: you take the token and are <B>done for the rest of this round</B>. Your opponent then keeps taking turns —
+          Whoever holds the <B>🥇 Regroup marker</B> takes the <B>first turn</B> of each round. <B>Regrouping</B> is itself a
+          turn: you take the marker and are <B>done for the rest of this round</B>. Your opponent then keeps taking turns —
           <B> one after another, alone</B> — until they pass, and that <B>single</B> pass ends the round (the "two passes in a row"
           rule needs two players still in it). Your reward: the token <B>stays with you</B> and hands you the <B>first turn next
-          round</B>. It’s a tempo trade — bow out early to guarantee the opening move next round. Only <B>one claim per round</B>;
-          if nobody claims, the initiative carries over to whoever already held it.
+          round</B>. It’s a tempo trade — bow out early to guarantee the opening move next round. Only <B>one player can Regroup each round</B>;
+          if nobody regroups, the marker stays with its current holder.
         </P>
       </Card>
 
@@ -228,9 +228,9 @@ export function Rules() {
         </Card>
       </div>
 
-      <H2 id="influence">Influence</H2>
+      <H2 id="hope">🕊️ Hope</H2>
       <P>
-        Influence is <B>one shared track</B> you fight over — gain some and the marker slides toward your <B>+20</B>. It’s <B>earned by
+        Hope is <B>one shared track</B> you fight over — gain some and the marker slides toward your <B>+20</B>. It’s <B>earned by
         events</B>, never just by sitting there: a guard is paid when it <B>defends</B> — blocking <i>or</i> being the one attacked — a champion when it <B>kills</B>, and some cards pay
         out when <B>played</B>. Get it to +20 on your side and you win, even while losing the fight for Life.
       </P>
@@ -253,15 +253,15 @@ export function Rules() {
       <H2 id="quick">Quick reference</H2>
       <Card>
         <ul className="ml-5 list-disc">
-          <LI><B>Win:</B> enemy to 0 Life, or Influence to +20 your side.</LI>
+          <LI><B>Win:</B> enemy to 0 Life, or Hope to +20 your side.</LI>
           <LI><B>Round vs turn:</B> a <B>round</B> is one full cycle; a <B>turn</B> is one action. A round is made of many turns.</LI>
           <LI><B>Round 1:</B> no start step — straight into turns with your opening hand and 2 resources.</LI>
           <LI><B>Every round after:</B> both players ready up, draw 2, bank up to 1 — then take turns until two passes in a row.</LI>
-          <LI><B>Your turn:</B> play a card, move (exhausts), attack, use an ability (Sneak or volley), salvage an upgrade, claim initiative, or pass.</LI>
+          <LI><B>Your turn:</B> play a card, move (exhausts), attack, use an ability (Sneak or volley), salvage an upgrade, Regroup, or pass.</LI>
           <LI><B>Attack:</B> exhaust your attackers, name one target; the defender pairs blockers onto attackers (blocking exhausts — Guards block free); pairs trade blows at once; unblocked attackers hit the target, and the target strikes back — exhausted or not — its Power poured across the unblocked attackers (a gang splits it; a lone attacker eats it whole).</LI>
           <LI><B>Costs:</B> pay with any resources; colored pips just have to be <i>present</i> in your bank.</LI>
           <LI><B>Base:</B> attack it only from inside the enemy’s Home zone.</LI>
-          <LI><B>Claim initiative:</B> end your round now to take the first turn next round.</LI>
+          <LI><B>Regroup:</B> end your round now and take the 🥇 marker, so you take the first turn next round.</LI>
         </ul>
       </Card>
 

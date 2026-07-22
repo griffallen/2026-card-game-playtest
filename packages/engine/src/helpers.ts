@@ -227,12 +227,12 @@ export const hasKw = (state: GameState, unit: UnitInstance, k: KeywordName) => k
 export function tribuneEnter(state: GameState, unit: UnitInstance) {
   if (!hasKw(state, unit, 'tribune')) return
   addInfluence(state, unit.owner, 1)
-  log(state, unit.owner, `${defOf(state, unit.id).name} takes the floor (Tribune: +1 influence)`)
+  log(state, unit.owner, `${defOf(state, unit.id).name} takes the floor (Tribune: +1 Hope)`)
 }
 export function tribuneLeave(state: GameState, unit: UnitInstance) {
   if (!hasKw(state, unit, 'tribune')) return
   addInfluence(state, unit.owner, -1)
-  log(state, unit.owner, `${defOf(state, unit.id).name} yields the floor (Tribune: −1 influence)`)
+  log(state, unit.owner, `${defOf(state, unit.id).name} yields the floor (Tribune: −1 Hope)`)
 }
 
 /** Win thresholds per seat, with oppThreshold statics applied (a seat's own statics raise the OPPONENT's bar). */
@@ -259,7 +259,7 @@ export function draw(state: GameState, seat: Seat, n: number) {
       // decision 33: every card that fails to appear costs life and influence
       side.life -= state.rules.emptyDrawLifeLoss
       addInfluence(state, seat, -state.rules.emptyDrawInfluenceLoss)
-      log(state, seat, `${side.name}'s deck is empty — the missing card costs ${state.rules.emptyDrawLifeLoss} life and ${state.rules.emptyDrawInfluenceLoss} influence (${side.life} life)`)
+      log(state, seat, `${side.name}'s deck is empty — the missing card costs ${state.rules.emptyDrawLifeLoss} life and ${state.rules.emptyDrawInfluenceLoss} Hope (${side.life} life)`)
       continue
     }
     side.hand.push(id)
@@ -287,7 +287,7 @@ export function checkWin(state: GameState, actorSeat: Seat) {
     const w: Seat = state.influence >= t0 ? 0 : 1
     state.winner = w
     state.winReason = 'influence'
-    log(state, w, `${state.sides[w].name} wins — influence reached ${Math.abs(state.influence)}`)
+    log(state, w, `${state.sides[w].name} wins — Hope reached ${Math.abs(state.influence)}`)
   }
 }
 

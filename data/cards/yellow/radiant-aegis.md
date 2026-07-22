@@ -8,7 +8,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"grant","t":"chosen0","kw":{"k":"shielded"},"dur":"perm"},{"op":"influence","n":2,"cond":{"influenceAtMost":-1}}]}
 ---
-Give a friendly unit a Shield. If your Influence is below 0, gain 2 Influence.
+Give a friendly unit a Shield. If your Hope is below 0, gain 2 Hope.
 
 ## Design notes
 

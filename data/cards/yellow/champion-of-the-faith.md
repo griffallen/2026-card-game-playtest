@@ -10,7 +10,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onAttack":[{"op":"influence","n":1}]}
 ---
-When this attacks, gain 1 Influence.
+When this attacks, gain 1 Hope.
 
 ## Design notes
 

@@ -190,7 +190,7 @@ function applyLoopPhase(state: GameState, action: GameAction, seat: Seat) {
       state.initiative = seat
       state.claimedThisRound = true
       state.outOfRound[seat] = true
-      log(state, seat, `${state.sides[seat].name} claims the initiative`)
+      log(state, seat, `${state.sides[seat].name} regroups and takes the 🥇 marker`)
       const opp = other(seat)
       if (state.outOfRound[opp]) { endRound(state, seat); return }
       state.actorSeat = opp
@@ -347,7 +347,7 @@ function attachOrphan(state: GameState, action: Extract<GameAction, { type: 'att
   // upgrade pressure applies to salvage too — the greed tax doesn't care how the second upgrade arrived (#23 sweep)
   if (unit.upgrades.length >= 1 && state.rules.upgradePressureInfluence > 0) {
     runOps({ state, controller: other(seat), actorSeat: seat }, [{ op: 'influence', n: state.rules.upgradePressureInfluence }])
-    log(state, other(seat), `upgrade pressure: ${state.sides[other(seat)].name} gains ${state.rules.upgradePressureInfluence} influence`)
+    log(state, other(seat), `upgrade pressure: ${state.sides[other(seat)].name} gains ${state.rules.upgradePressureInfluence} Hope`)
   }
   up.owner = seat
   up.attachedTo = unit.id
@@ -378,7 +378,7 @@ function passUpgrade(state: GameState, action: Extract<GameAction, { type: 'pass
   // upgrade pressure applies to the receiving unit's beyond-first upgrade (mirrors play + salvage)
   if (unit.upgrades.length >= 1 && state.rules.upgradePressureInfluence > 0) {
     runOps({ state, controller: other(seat), actorSeat: seat }, [{ op: 'influence', n: state.rules.upgradePressureInfluence }])
-    log(state, other(seat), `upgrade pressure: ${state.sides[other(seat)].name} gains ${state.rules.upgradePressureInfluence} influence`)
+    log(state, other(seat), `upgrade pressure: ${state.sides[other(seat)].name} gains ${state.rules.upgradePressureInfluence} Hope`)
   }
   carrier.upgrades = carrier.upgrades.filter(id => id !== up.id)
   up.attachedTo = unit.id
@@ -501,7 +501,7 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     // upgrade pressure (v1.2): beyond-first upgrade → opponent gains influence
     if (carrier.upgrades.length >= 1 && state.rules.upgradePressureInfluence > 0) {
       runOps({ state, controller: other(seat), actorSeat: seat }, [{ op: 'influence', n: state.rules.upgradePressureInfluence }])
-      log(state, other(seat), `upgrade pressure: ${state.sides[other(seat)].name} gains ${state.rules.upgradePressureInfluence} influence`)
+      log(state, other(seat), `upgrade pressure: ${state.sides[other(seat)].name} gains ${state.rules.upgradePressureInfluence} Hope`)
     }
     state.upgrades[action.card] = { id: action.card, slug: def.slug, owner: seat, attachedTo: carrier.id }
     carrier.upgrades.push(action.card)
@@ -587,7 +587,7 @@ function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat, exha
   // #107 (Last Stand): every march exacts influence — once per active pact, stacking across the round
   for (const ls of state.lastStands) if (ls.seat === seat && ls.moveInfluence !== 0) {
     addInfluence(state, seat, -ls.moveInfluence)
-    log(state, seat, `${state.sides[seat].name} cedes ${ls.moveInfluence} influence for the last stand's march`)
+    log(state, seat, `${state.sides[seat].name} cedes ${ls.moveInfluence} Hope for the last stand's march`)
   }
   stateBasedCleanup(state, seat)
   if (state.winner !== null) return
@@ -681,7 +681,7 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
   for (const tax of state.attackTaxes) {
     if (tax.seat !== seat) continue
     addInfluence(state, seat, -tax.n * units.length)
-    log(state, seat, `the rage collects: ${state.sides[seat].name} cedes ${tax.n * units.length} influence for ${units.length} attacker${units.length > 1 ? 's' : ''}`)
+    log(state, seat, `the rage collects: ${state.sides[seat].name} cedes ${tax.n * units.length} Hope for ${units.length} attacker${units.length > 1 ? 's' : ''}`)
   }
 
   // commit: exhaust, declaration triggers

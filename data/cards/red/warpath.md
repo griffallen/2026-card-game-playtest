@@ -7,7 +7,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"buff","t":{"side":"friendly"},"p":1,"dur":"round","per":{"count":"influence","half":true}},{"op":"damage","t":"selfBase","n":1,"per":{"count":"influence"},"cond":{"influenceAtLeast":1}},{"op":"influence","n":-1,"cond":{"influenceAtMost":-1}}]}
 ---
-X is your current Influence. Each of your units gets +Power this round equal to half of X, rounded down. If X is positive, you lose X life. If X is negative, your opponent gains 1 Influence. At 0 Influence, nothing happens.
+X is your current Hope. Each of your units gets +Power this round equal to half of X, rounded down. If X is positive, you lose X life. If X is negative, your opponent gains 1 Hope. At 0 Hope, nothing happens.
 
 ## Design notes
 

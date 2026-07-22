@@ -7,7 +7,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"ready","side":"friendly"},{"op":"lastStand","moveInfluence":4,"attackLife":4,"endLife":8,"endInfluence":8}]}
 ---
-Ready each of your units. They don't exhaust this round. For each of your units that moves, lose 4 Influence. For each of your units that attacks, lose 4 Life. At the end of the round, lose 8 Life and lose 8 Influence.
+Ready each of your units. They don't exhaust this round. For each of your units that moves, lose 4 Hope. For each of your units that attacks, lose 4 Life. At the end of the round, lose 8 Life and lose 8 Hope.
 
 ## Design notes
 

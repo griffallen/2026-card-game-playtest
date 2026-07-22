@@ -7,7 +7,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"xSurge","t":"chosen0"}]}
 ---
-Pay any number of resources. Lose X Influence: one of your units gets +X Power and Breakthrough this round.
+Pay any number of resources. Lose X Hope: one of your units gets +X Power and Breakthrough this round.
 
 ## Design notes
 

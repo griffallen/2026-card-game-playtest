@@ -103,7 +103,7 @@ export function BaseSheet({ name, life, mine, handCount, deckCount, discardCount
         {stat('Cards in hand', `🂠 ${handCount}`)}
         {stat('Cards left in deck', `≣ ${deckCount}`)}
         {stat('Discard pile', `✕ ${discardCount}`)}
-        {stat('Influence position', influence > 0 ? `+${influence}` : influence, influence < 0)}
+        {stat('🕊️ Hope position', influence > 0 ? `+${influence}` : influence, influence < 0)}
         {stat('Guards that can intercept', `🛡 ${guards}`)}
         {stat('Enemy units at the gates', `⚔ ${invaders}`, invaders > 0)}
       </div>

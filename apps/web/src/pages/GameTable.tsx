@@ -238,7 +238,7 @@ export function GameTable() {
               ? 'Under attack — intercept with a ready defender, or let it through.'
               : 'Your action.'
         : view.outOfRound[seat]
-          ? 'You claimed the initiative — resting until next round.'
+          ? 'You regrouped — resting until next round.'
           : `Waiting for ${names[view.actorSeat]}…`
 
   return (
@@ -248,7 +248,7 @@ export function GameTable() {
         <Link to="/" className="text-dim hover:text-body">← Lobby</Link>
         <span className="font-display text-parchment">{meta?.gameName}</span>
         <span className="text-xs text-dim">Round {view.round} · {phaseLabel}</span>
-        <span className="text-xs text-goldbright/80" title="holds the initiative — acts first each round">⚑ {names[view.initiative]}</span>
+        <span className="text-xs text-goldbright/80" title="holds the Regroup marker — acts first each round">🥇 {names[view.initiative]}</span>
         {spectators > 0 && <span className="text-xs text-dim">👁 {spectators}</span>}
         <span className={`ml-auto text-xs ${connected ? 'text-dim' : 'text-[#e5a99f]'}`}>{connected ? '' : 'reconnecting…'}</span>
         {spectating && <span className="rounded bg-raised px-2 py-0.5 text-xs text-dim">spectating</span>}
@@ -372,8 +372,8 @@ export function GameTable() {
                 <button className="btn !py-1 text-xs" onClick={() => sendAction({ type: 'pass' })}>Pass</button>
               )}
               {myWindow && view.phase === 'loop' && actions.some(a => a.type === 'claimInitiative') && (
-                <button className="btn !py-1 text-xs" title="take the initiative and rest — you act first next round"
-                  onClick={() => sendAction({ type: 'claimInitiative' })}>Claim initiative ⚑</button>
+                <button className="btn !py-1 text-xs" title="take the 🥇 Regroup marker and rest — you act first next round"
+                  onClick={() => sendAction({ type: 'claimInitiative' })}>Regroup 🥇</button>
               )}
               {!spectating && view.winner === null && (
                 confirming === 'undo'
@@ -522,11 +522,11 @@ export function GameTable() {
       {view.winner !== null && !overlayDismissed && (
         <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4">
           <div className="panel max-w-md p-8 text-center">
-            <div className="text-4xl">{view.winReason === 'influence' ? '☯' : view.winReason === 'concede' ? '🏳' : '⚔'}</div>
+            <div className="text-4xl">{view.winReason === 'influence' ? '🕊️' : view.winReason === 'concede' ? '🏳' : '⚔'}</div>
             <h2 className="mt-3 font-display text-2xl font-bold text-parchment">{names[view.winner]} is victorious</h2>
             <p className="mt-2 text-sm text-dim">
               {view.winReason === 'life' && 'Their opponent’s life was reduced to nothing.'}
-              {view.winReason === 'influence' && 'The influence of their cause became undeniable.'}
+              {view.winReason === 'influence' && 'The hope of their cause became undeniable.'}
               {view.winReason === 'concede' && 'Their opponent yielded the field.'}
             </p>
             <div className="mt-6 flex justify-center gap-2">

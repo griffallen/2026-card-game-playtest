@@ -13,9 +13,9 @@ Everything you need to sit down and play, the game as it stands today. Want to t
 You win the instant either of these happens (checked after every single change):
 
 - **Life:** your opponent’s Life hits **0**.
-- **Influence:** the shared track reaches **+20 on your side**. One number sits between you; pulling it to your end wins — even if you’re behind on Life.
+- **Hope:** the shared track reaches **+20 on your side**. One number sits between you; pulling it to your end wins — even if you’re behind on Life.
 
-**If outcomes happen together:** if a single event would drop both players to 0 Life at once, the player who took the action wins. If one blow would both reduce Life to 0 *and* reach the Influence finish line, the Life victory wins.
+**If outcomes happen together:** if a single event would drop both players to 0 Life at once, the player who took the action wins. If one blow would both reduce Life to 0 *and* reach the Hope finish line, the Life victory wins.
 
 ## The setup
 
@@ -42,7 +42,7 @@ Every card has a **cost**, paid with **resources**, and may have colored **pips*
 - Each deck is **48+ cards**, at most **4 copies** of any card.
 - Draw **7**. Don’t like your hand? **Mulligan** as many times as you like — each redraw gives you one fewer card (down to the 2 you must bank).
 - Then **bank 2 cards** from your hand face-up as your starting resources (you pick which — a real choice).
-- A coin flip decides who holds the **initiative** first. Then round 1 begins — straight into the action (see below).
+- A coin flip gives one player the **🥇 Regroup marker**. That player takes the first turn of round 1. Then the action begins (see below).
 
 ### 3 · Resources and playing cards
 
@@ -77,17 +77,17 @@ The game runs in **rounds**. A round has two parts — a quick automatic **start
 
 ### 1 · Start of the round
 
-From **round 2 onward**, upkeep runs **one player at a time** — the **initiative holder first**, all the way through, then the opponent. Readying and drawing happen on their own; **banking is a decision**:
+From **round 2 onward**, upkeep runs **one player at a time** — the player holding the **🥇 Regroup marker first**, all the way through, then the opponent. Readying and drawing happen on their own; **banking is a decision**:
 
 - **Ready** all your cards (units and resources untap).
-- **Draw 2** cards. (Drawing from an empty deck costs you 1 Life and 1 Influence per missing card — slow decks have a clock.)
+- **Draw 2** cards. (Drawing from an empty deck costs you 1 Life and 1 Hope per missing card — slow decks have a clock.)
 - You may **bank one card** from hand as a new resource, or skip.
 
-Order matters here. The holder banks **first — and blind**, before the opponent has drawn or banked a thing. The opponent banks **second, having already seen** what the holder laid down, and can answer it. First to the initiative, first to commit.
+Order matters here. The holder banks **first — and blind**, before the opponent has drawn or banked a thing. The opponent banks **second, having already seen** what the holder laid down, and can answer it. First to the Regroup marker, first to commit.
 
 > **The exact order, step by step.**
 >
-> **Initiative holder, in full:** ready → draw 2 → bank one or skip. This bank is **blind** — the opponent hasn’t drawn or banked yet.
+> **Regroup-marker holder, in full:** ready → draw 2 → bank one or skip. This bank is **blind** — the opponent hasn’t drawn or banked yet.
 >
 > **Then the opponent, in full:** ready → draw 2 → bank one or skip — now **seeing** the resource the holder just banked, and free to answer it.
 
@@ -97,15 +97,15 @@ Order matters here. The holder banks **first — and blind**, before the opponen
 
 ### 2 · The action loop — taking turns
 
-The **initiative holder takes the first turn**, then you **alternate turns**. On your turn you take exactly**one** action:
+The player holding the **🥇 Regroup marker takes the first turn**, then you **alternate turns**. On your turn you take exactly**one** action:
 
-- **Play a card** · **Move a unit** · **Attack** · **Use an ability** (a Sneak, or a Ranged volley) · **Salvage an orphaned upgrade** · **Claim the initiative** · **Pass**.
+- **Play a card** · **Move a unit** · **Attack** · **Use an ability** (a Sneak, or a Ranged volley) · **Salvage an orphaned upgrade** · **Regroup** · **Pass**.
 
 There’s no cap on how many turns you take in a round — the limit is your resources and your ready units.**Passing is soft:** if your opponent takes a turn after you passed, you’re back in. **Two passes in a row end the round**, and the next round begins.
 
-> **The initiative.**
+> **Regroup.**
 >
-> Whoever holds the initiative takes the **first turn** of each round. **Claiming the initiative** is itself a turn: you take the token and are **done for the rest of this round**. Your opponent then keeps taking turns —**one after another, alone** — until they pass, and that **single** pass ends the round (the "two passes in a row" rule needs two players still in it). Your reward: the token **stays with you** and hands you the **first turn next round**. It’s a tempo trade — bow out early to guarantee the opening move next round. Only **one claim per round**; if nobody claims, the initiative carries over to whoever already held it.
+> Whoever holds the **🥇 Regroup marker** takes the **first turn** of each round. **Regrouping** is itself a turn: you take the marker and are **done for the rest of this round**. Your opponent then keeps taking turns —**one after another, alone** — until they pass, and that **single** pass ends the round (the "two passes in a row" rule needs two players still in it). Your reward: the token **stays with you** and hands you the **first turn next round**. It’s a tempo trade — bow out early to guarantee the opening move next round. Only **one player can Regroup each round**; if nobody regroups, the marker stays with its current holder.
 
 ## Moving
 
@@ -141,9 +141,9 @@ An attack is **one action**, and you can swing with a whole squad at once. The f
 >
 > A lone unit attacks the base from the enemy Home. Any ready defender may block it. If nobody blocks, the attacker deals its full Power to the base’s Life.
 
-## Influence
+## 🕊️ Hope
 
-Influence is **one shared track** you fight over — gain some and the marker slides toward your **+20**. It’s **earned by events**, never just by sitting there: a guard is paid when it **defends** — blocking *or* being the one attacked — a champion when it **kills**, and some cards pay out when **played**. Get it to +20 on your side and you win, even while losing the fight for Life.
+Hope is **one shared track** you fight over — gain some and the marker slides toward your **+20**. It’s **earned by events**, never just by sitting there: a guard is paid when it **defends** — blocking *or* being the one attacked — a champion when it **kills**, and some cards pay out when **played**. Get it to +20 on your side and you win, even while losing the fight for Life.
 
 ## Keywords
 
@@ -158,7 +158,7 @@ The shorthand you’ll see on cards. Tap any card in the [Cards](https://booherb
 | 🏰 Guard | The bodyguard. When a single unit attacks one of yours, only a READY Guard may step in front of the target — one Guard, taking the whole hit. Two Guards can’t gang a lone attacker, and an exhausted Guard can’t block at all. (Attacks on your base are different: anyone may block those.) A Guard never exhausts to block, in duels or gangs — it stays ready, so it can block now and still take its own turn. |
 | 🙈 Hidden | While this unit is ready, enemy actions can’t target it and enemy attacks can’t be declared at it. It can still block — blocking isn’t being targeted — but anything that exhausts it (attacking, blocking, a Sneak) reveals it until it readies again. Strike, vanish, repeat. One limit: Hidden beats choices, not consequences — effects that don’t choose (“all”, whole-zone damage, automatic picks) still reach it. |
 | 🗝️ Infiltrate | May be played into any zone — not just your Home. |
-| ⚖️ Tribune | A Tribune sways the shared Influence track just by taking the field or leaving it: +1 Influence to its controller every time it enters play — whether it is deployed from hand or returns from capture — and −1 every time it leaves play, whether it is defeated or captured. It keys off the event, not the reason, so over a Tribune’s whole life the swing nets to zero and cannot be farmed (a capture’s −1 and its release’s +1 cancel). Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and you gain 1 Influence per Tribune; hold the majority in your enemy’s Home zone and you gain 2 Influence per Tribune — the two stack, so holding both is worth 3 per Tribune. “Majority” means strictly more of your units than the opponent’s in that zone; a tie is not a majority. The middle finally has a constituency — and the boldest campaigns run in enemy territory: hold the crowd, sway the track. |
+| ⚖️ Tribune | A Tribune sways the shared Hope track just by taking the field or leaving it: +1 Hope to its controller every time it enters play — whether it is deployed from hand or returns from capture — and −1 every time it leaves play, whether it is defeated or captured. It keys off the event, not the reason, so over a Tribune’s whole life the swing nets to zero and cannot be farmed (a capture’s −1 and its release’s +1 cancel). Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and you gain 1 Hope per Tribune; hold the majority in your enemy’s Home zone and you gain 2 Hope per Tribune — the two stack, so holding both is worth 3 per Tribune. “Majority” means strictly more of your units than the opponent’s in that zone; a tie is not a majority. The middle finally has a constituency — and the boldest campaigns run in enemy territory: hold the crowd, sway the track. |
 | 🏹 Ranged N | An ability used as your turn: exhaust this unit to deal N damage to one enemy unit in any zone — the volley. It’s a chosen shot, so a ready Hidden unit refuses it, and a lethal volley counts as a kill. The unit’s regular attacks are ordinary in every way: same zone, blockable, bases included. Archers carry small blades and big bows. |
 | 💨 Rush | A static ability: this unit’s first move each round is free — that one move doesn’t exhaust it, so it can reposition and still fight. One free move per round, and it refreshes every round the unit stays in play; a second move the same round exhausts it like any unit. It grants no extra action and never lets the unit attack any sooner. |
 | 🩸 Scar | Gets +1 Power for each damage marked on it — no cap. A 3-Health unit with 2 damage gets +2. Every wound is fuel; the closer to death, the harder it hits. |
@@ -167,15 +167,15 @@ The shorthand you’ll see on cards. Tap any card in the [Cards](https://booherb
 
 ## Quick reference
 
-> - **Win:** enemy to 0 Life, or Influence to +20 your side.
+> - **Win:** enemy to 0 Life, or Hope to +20 your side.
 > - **Round vs turn:** a **round** is one full cycle; a **turn** is one action. A round is made of many turns.
 > - **Round 1:** no start step — straight into turns with your opening hand and 2 resources.
 > - **Every round after:** both players ready up, draw 2, bank up to 1 — then take turns until two passes in a row.
-> - **Your turn:** play a card, move (exhausts), attack, use an ability (Sneak or volley), salvage an upgrade, claim initiative, or pass.
+> - **Your turn:** play a card, move (exhausts), attack, use an ability (Sneak or volley), salvage an upgrade, Regroup, or pass.
 > - **Attack:** exhaust your attackers, name one target; the defender pairs blockers onto attackers (blocking exhausts — Guards block free); pairs trade blows at once; unblocked attackers hit the target, and the target strikes back — exhausted or not — its Power poured across the unblocked attackers (a gang splits it; a lone attacker eats it whole).
 > - **Costs:** pay with any resources; colored pips just have to be *present* in your bank.
 > - **Base:** attack it only from inside the enemy’s Home zone.
-> - **Claim initiative:** end your round now to take the first turn next round.
+> - **Regroup:** end your round now and take the 🥇 marker, so you take the first turn next round.
 
 Curious *why* the rules are the way they are — the assumptions, the balance data, the open questions? That’s the [Design Audit](https://booherbg.github.io/new-game-demo/#/audit).
 

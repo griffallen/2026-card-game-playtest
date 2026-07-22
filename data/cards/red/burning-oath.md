@@ -7,7 +7,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"influence","n":1}],"onKill":[{"op":"influence","n":1}],"statics":[{"s":"aura","scope":"attached","p":2},{"s":"aura","scope":"attached","kw":{"k":"breakthrough"}}]}
 ---
-Attached unit gets +2 Power and Breakthrough. When this attaches, gain 1 Influence. Then gain 1 Influence each time its bearer defeats a unit (a trade counts).
+Attached unit gets +2 Power and Breakthrough. When this attaches, gain 1 Hope. Then gain 1 Hope each time its bearer defeats a unit (a trade counts).
 
 ## Design notes
 

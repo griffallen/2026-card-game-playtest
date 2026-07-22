@@ -19,18 +19,18 @@ function V3Content() {
       <H>Winning</H>
       <div className="mt-2 flex flex-col gap-2">
         <Row icon="⚔" title="Life">Drop your opponent to 0 life (both start at 20).</Row>
-        <Row icon="☯" title="Influence">One shared tug-of-war track. Reach +20 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (Guards pay when they defend); purple profits from kills; red mostly ignores it.</Row>
+        <Row icon="🕊️" title="Hope">One shared tug-of-war track. Reach +20 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (Guards pay when they defend); purple profits from kills; red mostly ignores it.</Row>
       </div>
 
       <H>Your round</H>
       <div className="mt-2 flex flex-col gap-2">
-        <Row icon="🃏" title="Setup">Each player draws 7 and may <b>mulligan as often as they dare — redrawing one fewer card each time</b> — then <b>chooses 2 cards to bank</b> as starting resources, initiative-holder first. Banked cards are gone for good.</Row>
+        <Row icon="🃏" title="Setup">Each player draws 7 and may <b>mulligan as often as they dare — redrawing one fewer card each time</b> — then <b>chooses 2 cards to bank</b> as starting resources. A coin flip gives one player the 🥇 Regroup marker first. Banked cards are gone for good.</Row>
         <Row icon="1️⃣" title="Round 1 opens cold">There is <b>no start step in round 1</b> — no ready, no draw, no banking. Your opening hand and starting bank are the whole arsenal; the action loop opens immediately.</Row>
         <Row icon="🔄" title="Start of round (round 2 on)">Both players, in turn, ready all their cards, <b>draw 2</b>, and may <b>bank one card</b> face-up as a resource (permanent — each pays 1 toward costs, forever).</Row>
-        <Row icon="⏳" title="Empty deck">Every card you fail to draw costs you <b>1 life and 1 influence</b>. Slow decks own a real clock.</Row>
+        <Row icon="⏳" title="Empty deck">Every card you fail to draw costs you <b>1 life and 1 Hope</b>. Slow decks own a real clock.</Row>
         <Row icon="⬡" title="Pips and colors">Paying a cost is <b>colorblind</b> — exhaust any resources. A card's <b>pips</b> are a residency requirement instead: one red pip needs a red-providing card <i>living in your bank</i>, ready or spent. Multi-color cards provide every color they show.</Row>
-        <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, attack, <b>use a Sneak ability</b>, <b>salvage an orphaned upgrade</b>, or pass. <b>Two passes in a row end the round.</b> Passing is soft: if they act after you passed, you can act again.</Row>
-        <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
+        <Row icon="↔" title="Actions alternate">The player holding the <b>🥇 Regroup marker takes the first turn</b>, then you <b>take turns</b> — play a card, move, attack, <b>use a Sneak ability</b>, <b>salvage an orphaned upgrade</b>, Regroup, or pass. <b>Two passes in a row end the round.</b> Passing is soft: if they act after you passed, you can act again.</Row>
+        <Row icon="🥇" title="Regroup">Its own action: take the marker and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
         <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives one free move each round.</Row>
         <Row icon="⚔" title="Attack — the duel law">Exhaust <b>one or more ready units in a zone</b> and name one target. <b>Attack a unit alone and nobody may block</b> — except a ready <b>Guard</b>, who may step in front of the target and take the whole hit (one Guard only). <b>Attack a base</b> and the window is always open — <b>any ready unit may block</b>, however few attack; the base is everyone's to defend. <b>Attack in a gang</b> and the defense opens: the defender pairs ready units onto your attackers freely, and <b>blocking exhausts</b> (Guards block free). Pairs trade blows at once; gang damage pours in pair order. Unblocked attackers hit the declared target full-force — and the target <b>strikes back, even while exhausted</b>: its power is poured across the unblocked attackers (biggest first), felling as many as it can pay for, so a lone attacker eats it whole but a gang splits it. Certainty travels alone; numbers can be answered.</Row>
       </div>
@@ -76,7 +76,7 @@ function V3Content() {
           Go <i>wide</i> and force bad blocks — every blocker they commit exhausts, and <b>Breakthrough spills everything</b> through a chump block. Unblocked damage is full damage: make every pairing hurt.
         </Row>
         <Row icon="🟡" title="Playing Radiant (yellow)">
-          Guards block free — stand them where red must swing and <b>earn influence on every defense</b>. Capture removes the key threat while your grip holds; Shielded walls waste their best hit.
+          Guards block free — stand them where red must swing and <b>earn Hope on every defense</b>. Capture removes the key threat while your grip holds; Shielded walls waste their best hit.
         </Row>
         <Row icon="🟣" title="Playing the Veiled (purple)">
           The rhythm is <b>strike, vanish, repeat</b>: Hidden units can't be touched while ready, and a Sneak exhausts (reveals) you until you ready again. Pick the moment; profit from the kill.
@@ -93,19 +93,19 @@ function V2Content() {
       <H>Winning</H>
       <div className="mt-2 flex flex-col gap-2">
         <Row icon="⚔" title="Life">Drop your opponent to 0 life (both start at 20).</Row>
-        <Row icon="☯" title="Influence">One shared tug-of-war track. Reach +20 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (guards pay when they defend, Exemplar when it kills); red mostly ignores it. </Row>
+        <Row icon="🕊️" title="Hope">One shared tug-of-war track. Reach +20 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (guards pay when they defend, Exemplar when it kills); red mostly ignores it. </Row>
       </div>
 
       <H>Your round</H>
       <div className="mt-2 flex flex-col gap-2">
-        <Row icon="🃏" title="Setup">Each player draws 7 and may <b>mulligan as often as they dare — redrawing one fewer card each time</b> — then <b>chooses 2 cards to bank</b> as starting resources, initiative-holder first. Banked cards are gone for good.</Row>
-        <Row icon="⏳" title="Empty deck">Every card you fail to draw costs you <b>1 life and 1 influence</b>. Slow decks own a real clock.</Row>
+        <Row icon="🃏" title="Setup">Each player draws 7 and may <b>mulligan as often as they dare — redrawing one fewer card each time</b> — then <b>chooses 2 cards to bank</b> as starting resources. A coin flip gives one player the 🥇 Regroup marker first. Banked cards are gone for good.</Row>
+        <Row icon="⏳" title="Empty deck">Every card you fail to draw costs you <b>1 life and 1 Hope</b>. Slow decks own a real clock.</Row>
         <Row icon="🔄" title="Start of round">Both players, in turn, ready all their cards, <b>draw 2</b>, and may <b>bank one card</b> face-up as a resource (permanent — each pays 1 toward costs, forever). Then the action loop opens.</Row>
-        <Row icon="↔" title="Actions alternate">The <b>initiative-holder takes the first turn</b>, then you <b>take turns</b> — play a card, move, or attack, one action each. <b>Two passes in a row end the round.</b> Passing is soft: if they take a turn after you passed, you can act again.</Row>
-        <Row icon="⚑" title="Claim initiative">Its own action: take the token and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
+        <Row icon="↔" title="Actions alternate">The player holding the <b>🥇 Regroup marker takes the first turn</b>, then you <b>take turns</b> — play a card, move, or attack, one action each. <b>Two passes in a row end the round.</b> Passing is soft: if they take a turn after you passed, you can act again.</Row>
+        <Row icon="🥇" title="Regroup">Its own action: take the marker and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
         <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives a unit one free move each round.</Row>
         <Row icon="⚔" title="Attack">Pick <b>one or more ready units in the same zone</b> — they strike together as one combined hit. Then the defender chooses: <b>intercept</b> (throw a ready unit in front — free if it's a Guard) or let it through. In a multi-attack, the counter lands on the <b>highest-power attacker</b>. You can only strike the enemy <b>base</b> from inside <i>their</i> Home zone. Massing attackers is the answer to armor — armor is subtracted once from the whole hit.</Row>
-        <Row icon="↑" title="Upgrade pressure">A classic-only tax: whenever a unit gains its <b>second (or later) upgrade</b>, your opponent gains 1 Influence. Greed is noticed.</Row>
+        <Row icon="↑" title="Upgrade pressure">A classic-only tax: whenever a unit gains its <b>second (or later) upgrade</b>, your opponent gains 1 Hope. Greed is noticed.</Row>
       </div>
 
       <H>Reading the board</H>

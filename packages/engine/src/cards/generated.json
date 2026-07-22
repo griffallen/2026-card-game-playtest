@@ -18,7 +18,7 @@
   "type": "action",
   "cost": 0,
   "xCost": true,
-  "text": "Pay any number of resources. Lose X Influence: one of your units gets +X Power and Breakthrough this round.",
+  "text": "Pay any number of resources. Lose X Hope: one of your units gets +X Power and Breakthrough this round.",
   "pips": [
    "red",
    "red"
@@ -153,7 +153,7 @@
   "color": "red",
   "type": "action",
   "cost": 0,
-  "text": "X is your current Influence. Each of your units gets +Power this round equal to half of X, rounded down. If X is positive, you lose X life. If X is negative, your opponent gains 1 Influence. At 0 Influence, nothing happens.",
+  "text": "X is your current Hope. Each of your units gets +Power this round equal to half of X, rounded down. If X is positive, you lose X life. If X is negative, your opponent gains 1 Hope. At 0 Hope, nothing happens.",
   "pips": [
    "red"
   ],
@@ -342,7 +342,7 @@
   "cost": 2,
   "power": 4,
   "health": 1,
-  "text": "Rush. Breakthrough. When this unit dies, gain 1 Influence — and 1 more if it died defeating a unit (a trade counts).",
+  "text": "Rush. Breakthrough. When this unit dies, gain 1 Hope — and 1 more if it died defeating a unit (a trade counts).",
   "kw": [
    {
     "k": "rush"
@@ -445,7 +445,7 @@
   "color": "red",
   "type": "upgrade",
   "cost": 3,
-  "text": "Attached unit gets +1 Power and +1 Health and Breakthrough. If you have Influence 0 or less, this unit gets +2 Power and +2 Health instead.",
+  "text": "Attached unit gets +1 Power and +1 Health and Breakthrough. If you have Hope 0 or less, this unit gets +2 Power and +2 Health instead.",
   "pips": [
    "red",
    "red"
@@ -500,7 +500,7 @@
   "cost": 3,
   "power": 3,
   "health": 3,
-  "text": "When this attacks a unit, it also deals 1 damage to another unit of your choice in the same zone. If that unit dies, gain +1 influence.",
+  "text": "When this attacks a unit, it also deals 1 damage to another unit of your choice in the same zone. If that unit dies, gain +1 Hope.",
   "pips": [
    "red",
    "red"
@@ -644,7 +644,7 @@
   "color": "red",
   "type": "upgrade",
   "cost": 4,
-  "text": "Attached unit gets +2 Power and Breakthrough. When this attaches, gain 1 Influence. Then gain 1 Influence each time its bearer defeats a unit (a trade counts).",
+  "text": "Attached unit gets +2 Power and Breakthrough. When this attaches, gain 1 Hope. Then gain 1 Hope each time its bearer defeats a unit (a trade counts).",
   "pips": [
    "red",
    "red"
@@ -756,7 +756,7 @@
   "cost": 5,
   "power": 6,
   "health": 6,
-  "text": "When this attacks, deal 2 damage to each other unit in its zone, yours included. When this defeats a unit, gain 1 Influence.",
+  "text": "When this attacks, deal 2 damage to each other unit in its zone, yours included. When this defeats a unit, gain 1 Hope.",
   "pips": [
    "red",
    "red"
@@ -970,7 +970,7 @@
   "color": "red",
   "type": "action",
   "cost": 6,
-  "text": "Double the Power of all your units this round and next round. For each unit of yours that attacks, lose 2 Influence.",
+  "text": "Double the Power of all your units this round and next round. For each unit of yours that attacks, lose 2 Hope.",
   "pips": [
    "red",
    "red",
@@ -1021,7 +1021,7 @@
   "color": "red",
   "type": "action",
   "cost": 8,
-  "text": "Ready each of your units. They don't exhaust this round. For each of your units that moves, lose 4 Influence. For each of your units that attacks, lose 4 Life. At the end of the round, lose 8 Life and lose 8 Influence.",
+  "text": "Ready each of your units. They don't exhaust this round. For each of your units that moves, lose 4 Hope. For each of your units that attacks, lose 4 Life. At the end of the round, lose 8 Life and lose 8 Hope.",
   "pips": [
    "red",
    "red",
@@ -1150,7 +1150,7 @@
   "cost": 1,
   "power": 1,
   "health": 1,
-  "text": "Guard. When this unit dies, gain 1 Influence.",
+  "text": "Guard. When this unit dies, gain 1 Hope.",
   "kw": [
    {
     "k": "guard"
@@ -1200,7 +1200,7 @@
    },
    {
     "label": "Overwhelm",
-    "text": "Exhaust any enemy unit — requires 8 or more Influence.",
+    "text": "Exhaust any enemy unit — requires 8 or more Hope.",
     "cond": {
      "influenceAtLeast": 8
     },
@@ -1223,7 +1223,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 2,
-  "text": "Choose one — exhaust an enemy unit with 4 or less Power; exhaust an enemy unit that costs 4 or less; or, if you have 8 or more Influence, exhaust any enemy unit.",
+  "text": "Choose one — exhaust an enemy unit with 4 or less Power; exhaust an enemy unit that costs 4 or less; or, if you have 8 or more Hope, exhaust any enemy unit.",
   "pips": [
    "yellow"
   ],
@@ -1357,7 +1357,7 @@
   "cost": 2,
   "power": 1,
   "health": 1,
-  "text": "Guard. Shielded. When this unit defends, gain 1 Influence.",
+  "text": "Guard. Shielded. When this unit defends, gain 1 Hope.",
   "kw": [
    {
     "k": "guard"
@@ -1386,7 +1386,7 @@
   "cost": 3,
   "power": 2,
   "health": 2,
-  "text": "Guard. Armor 1. When this unit defends, gain 1 Influence.",
+  "text": "Guard. Armor 1. When this unit defends, gain 1 Hope.",
   "kw": [
    {
     "k": "guard"
@@ -1451,7 +1451,7 @@
   "cost": 3,
   "power": 2,
   "health": 4,
-  "text": "Guard. When this defends, gain 2 Influence.",
+  "text": "Guard. When this defends, gain 2 Hope.",
   "kw": [
    {
     "k": "guard"
@@ -1478,7 +1478,7 @@
   "cost": 3,
   "power": 4,
   "health": 1,
-  "text": "When this defeats a unit, gain 2 Influence.",
+  "text": "When this defeats a unit, gain 2 Hope.",
   "pips": [
    "yellow",
    "yellow"
@@ -1511,7 +1511,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 3,
-  "text": "Target unit you control captures target damaged enemy unit or unit with 2 or less Health. Gain 1 Influence at the beginning of each round where the target unit is still captured.",
+  "text": "Target unit you control captures target damaged enemy unit or unit with 2 or less Health. Gain 1 Hope at the beginning of each round where the target unit is still captured.",
   "pips": [
    "yellow"
   ],
@@ -1547,7 +1547,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 3,
-  "text": "Give a friendly unit a Shield. If your Influence is below 0, gain 2 Influence.",
+  "text": "Give a friendly unit a Shield. If your Hope is below 0, gain 2 Hope.",
   "pips": [
    "yellow",
    "yellow"
@@ -1736,7 +1736,7 @@
   "cost": 4,
   "power": 4,
   "health": 4,
-  "text": "When this unit defeats a unit, gain 1 Influence.",
+  "text": "When this unit defeats a unit, gain 1 Hope.",
   "pips": [
    "yellow",
    "yellow"
@@ -1791,7 +1791,7 @@
   "cost": 4,
   "power": 1,
   "health": 4,
-  "text": "Guard. Tribune. When this unit defeats a unit, gain 2 Influence.",
+  "text": "Guard. Tribune. When this unit defeats a unit, gain 2 Hope.",
   "kw": [
    {
     "k": "guard"
@@ -2015,7 +2015,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 5,
-  "text": "Gain 1 Influence. Then exhaust every enemy unit whose cost is no more than your current Influence. If your Influence is below 1, gain 1 Influence for each enemy unit in your Home zone.",
+  "text": "Gain 1 Hope. Then exhaust every enemy unit whose cost is no more than your current Hope. If your Hope is below 1, gain 1 Hope for each enemy unit in your Home zone.",
   "pips": [
    "yellow",
    "yellow"
@@ -2047,7 +2047,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 5,
-  "text": "Target unit gets Armor 3, permanently. Gain 1 Influence.",
+  "text": "Target unit gets Armor 3, permanently. Gain 1 Hope.",
   "pips": [
    "yellow",
    "yellow"
@@ -2072,7 +2072,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 5,
-  "text": "Heal 4 damage from your base. Gain 1 Influence.",
+  "text": "Heal 4 damage from your base. Gain 1 Hope.",
   "pips": [
    "yellow",
    "yellow"
@@ -2121,7 +2121,7 @@
   "cost": 6,
   "power": 2,
   "health": 4,
-  "text": "Guard. Armor 1. Can't attack. When this defends, gain 1 Influence.",
+  "text": "Guard. Armor 1. Can't attack. When this defends, gain 1 Hope.",
   "kw": [
    {
     "k": "guard"
@@ -2160,7 +2160,7 @@
   "cost": 6,
   "power": 1,
   "health": 6,
-  "text": "Tribune. Other friendly units get +1 Power while your Influence is positive.",
+  "text": "Tribune. Other friendly units get +1 Power while your Hope is positive.",
   "kw": [
    {
     "k": "tribune"
@@ -2359,7 +2359,7 @@
   "cost": 7,
   "power": 7,
   "health": 7,
-  "text": "When this attacks, gain 1 Influence.",
+  "text": "When this attacks, gain 1 Hope.",
   "pips": [
    "yellow",
    "yellow",
@@ -2465,7 +2465,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 7,
-  "text": "Choose a zone: exhaust all enemy units there. Gain 1 Influence for each enemy unit exhausted, and gain 2 Life.",
+  "text": "Choose a zone: exhaust all enemy units there. Gain 1 Hope for each enemy unit exhausted, and gain 2 Life.",
   "pips": [
    "yellow",
    "yellow",
@@ -2586,7 +2586,7 @@
   "cost": 8,
   "power": 4,
   "health": 8,
-  "text": "Guard. Shielded. For each unit that attacks this unit, gain 1 Influence.",
+  "text": "Guard. Shielded. For each unit that attacks this unit, gain 1 Hope.",
   "kw": [
    {
     "k": "guard"
@@ -2664,7 +2664,7 @@
   "cost": 1,
   "power": 2,
   "health": 1,
-  "text": "When this defeats a unit, gain 1 Influence.",
+  "text": "When this defeats a unit, gain 1 Hope.",
   "pips": [
    "purple"
   ],
@@ -3088,7 +3088,7 @@
   "color": "purple",
   "type": "action",
   "cost": 4,
-  "text": "Destroy target unit. You lose Life equal to its remaining Health, and its owner gains Influence equal to half its printed cost, rounded up.",
+  "text": "Destroy target unit. You lose Life equal to its remaining Health, and its owner gains Hope equal to half its printed cost, rounded up.",
   "pips": [
    "purple"
   ],
@@ -3282,7 +3282,7 @@
   "cost": 5,
   "power": 4,
   "health": 4,
-  "text": "Hidden. When this enters play, draw a card. Sneak — gain 2 Influence.",
+  "text": "Hidden. When this enters play, draw a card. Sneak — gain 2 Hope.",
   "kw": [
    {
     "k": "hidden"
@@ -3408,7 +3408,7 @@
   "cost": 6,
   "power": 2,
   "health": 6,
-  "text": "Tribune. When this enters play, draw a card and gain 1 Influence. Sneak - draw 2 cards, then put a card from your hand on the bottom of your deck.",
+  "text": "Tribune. When this enters play, draw a card and gain 1 Hope. Sneak - draw 2 cards, then put a card from your hand on the bottom of your deck.",
   "kw": [
    {
     "k": "tribune"
@@ -3551,7 +3551,7 @@
   "color": "purple",
   "type": "action",
   "cost": 7,
-  "text": "Deal 7 damage to every unit. Gain 1 Influence for each unit defeated this way. If you gained less than 7 Influence, your opponent loses 7 Life.",
+  "text": "Deal 7 damage to every unit. Gain 1 Hope for each unit defeated this way. If you gained less than 7 Hope, your opponent loses 7 Life.",
   "pips": [
    "purple",
    "purple",
@@ -3587,7 +3587,7 @@
   "cost": 7,
   "power": 5,
   "health": 6,
-  "text": "Hidden. Infiltrate. Sneak — deal 4 damage to target enemy unit in this zone and gain 1 Influence.",
+  "text": "Hidden. Infiltrate. Sneak — deal 4 damage to target enemy unit in this zone and gain 1 Hope.",
   "kw": [
    {
     "k": "hidden"

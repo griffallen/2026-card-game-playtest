@@ -10,7 +10,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"aura","scope":"otherFriendly","p":1,"cond":{"influenceAtLeast":1}}]}
 ---
-Tribune. Other friendly units get +1 Power while your Influence is positive.
+Tribune. Other friendly units get +1 Power while your Hope is positive.
 
 ## Design notes
 

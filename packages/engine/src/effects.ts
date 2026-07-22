@@ -258,7 +258,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
       case 'attackTax': {
         // PR #39 (Unchained Rage): the fury has a price — each attacking unit cedes influence
         state.attackTaxes.push({ seat: controller, n: op.n, rounds: op.rounds })
-        log(state, controller, `${state.sides[controller].name}'s rage is unchained — each attacking unit will cede ${op.n} influence for ${op.rounds} rounds`)
+        log(state, controller, `${state.sides[controller].name}'s rage is unchained — each attacking unit will cede ${op.n} Hope for ${op.rounds} rounds`)
         break
       }
       case 'doom': {
@@ -374,7 +374,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         }
         if (felled > 0) {
           addInfluence(state, controller, felled * op.influencePerKill)
-          log(state, controller, `the reckoning claims ${felled} ${felled === 1 ? 'soul' : 'souls'} — ${state.sides[controller].name} gains ${felled * op.influencePerKill} influence (${influenceFor(state, controller)})`)
+          log(state, controller, `the reckoning claims ${felled} ${felled === 1 ? 'soul' : 'souls'} — ${state.sides[controller].name} gains ${felled * op.influencePerKill} Hope (${influenceFor(state, controller)})`)
         }
         // "gained less than killThreshold Influence" == "fewer than killThreshold units fell" (each
         // kill = +1). shortfallLife burns the opponent's FACE through the standard damageBase — the
@@ -463,7 +463,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         const n = op.per ? op.n * perCount(ctx, op.per) : op.n   // PR #70/#71: scale by attacker/unit count
         if (n === 0) break                                       // per counted zero — a no-op, not a "gains 0" line
         addInfluence(state, controller, n)
-        log(state, controller, `${state.sides[controller].name} ${n >= 0 ? 'gains' : 'cedes'} ${Math.abs(n)} influence (${influenceFor(state, controller)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
+        log(state, controller, `${state.sides[controller].name} ${n >= 0 ? 'gains' : 'cedes'} ${Math.abs(n)} Hope (${influenceFor(state, controller)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
         break
       }
       case 'influenceOwner': {
@@ -474,7 +474,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         const n = op.per ? op.n * perCount(ctx, op.per) : op.n
         if (n === 0) break                                       // per counted zero (e.g. an X-cost target) — a no-op
         addInfluence(state, u.owner, n)
-        log(state, u.owner, `${state.sides[u.owner].name} ${n >= 0 ? 'gains' : 'cedes'} ${Math.abs(n)} influence (${influenceFor(state, u.owner)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
+        log(state, u.owner, `${state.sides[u.owner].name} ${n >= 0 ? 'gains' : 'cedes'} ${Math.abs(n)} Hope (${influenceFor(state, u.owner)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
         break
       }
       case 'buff': {
@@ -594,7 +594,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         addInfluence(state, controller, -x)
         u.mods.push({ p: x, round: true })
         u.mods.push({ kw: { k: 'breakthrough' }, round: true })
-        log(state, controller, `${state.sides[controller].name} cedes ${x} influence — ${name(state, u.id)} gets +${x} power and breakthrough this round`)
+        log(state, controller, `${state.sides[controller].name} cedes ${x} Hope — ${name(state, u.id)} gets +${x} power and breakthrough this round`)
         break
       }
       case 'splashReap': {   // PR #46: the skewer — declared victim takes n; a kill reaps influence
@@ -605,7 +605,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         const dead = state.units[v.id] && state.units[v.id].damage >= effHealth(state, state.units[v.id])
         if (dead && op.influence > 0) {
           addInfluence(state, controller, op.influence)
-          log(state, controller, `the skewer reaps: ${state.sides[controller].name} gains ${op.influence} influence`)
+          log(state, controller, `the skewer reaps: ${state.sides[controller].name} gains ${op.influence} Hope`)
         }
         break
       }

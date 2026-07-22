@@ -126,7 +126,7 @@ export function Simulate() {
               <thead className="sticky top-0 bg-surface">
                 <tr className="text-left uppercase tracking-wider text-dim">
                   <th className="px-3 py-1.5">Seed</th><th className="px-3 py-1.5">First</th><th className="px-3 py-1.5">Winner</th>
-                  <th className="px-3 py-1.5">By</th><th className="px-3 py-1.5">Rounds</th><th className="px-3 py-1.5">Influence range</th>
+                  <th className="px-3 py-1.5">By</th><th className="px-3 py-1.5">Rounds</th><th className="px-3 py-1.5">Hope range</th>
                   <th className="px-3 py-1.5"></th>
                 </tr>
               </thead>

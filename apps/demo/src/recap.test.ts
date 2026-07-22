@@ -29,7 +29,7 @@ function makeState(defs: Record<string, { name: string; power: number }>, unitId
 }
 
 const evs = (...msgs: string[]) => msgs.map(msg => ({ msg }))
-const isCombat = (m: string) => /damage|destroyed|falls|influence|freed|captur/i.test(m)
+const isCombat = (m: string) => /damage|destroyed|falls|hope|influence|freed|captur/i.test(m)
 
 describe('composeCombatRecap', () => {
   it('narrates a lone duel where the attacker falls (the complaint case)', () => {
@@ -100,11 +100,11 @@ describe('composeCombatRecap', () => {
       'Radiant Citadel takes 3 damage from Berserker',
       'Berserker takes 5 damage from Radiant Citadel',
       'Berserker is destroyed',
-      'Crimson gains 2 influence',
+      'Crimson gains 2 Hope',
     ), isCombat)
     expect(out).toEqual([
       'Berserker (3) ↔ Radiant Citadel (5): dealt 3, took 5 — Berserker falls',
-      'Crimson gains 2 influence',
+      'Crimson gains 2 Hope',
     ])
   })
 

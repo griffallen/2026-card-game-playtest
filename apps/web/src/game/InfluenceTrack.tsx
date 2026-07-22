@@ -1,5 +1,5 @@
 /**
- * The shared influence tug-of-war, seat-relative: right = toward you.
+ * The shared Hope tug-of-war, seat-relative: right = toward you.
  * Thresholds can differ per side (Radiant Citadel), so each end is labeled.
  */
 export function InfluenceTrack({ influence, mine, theirs, myName, theirName }: {
@@ -14,7 +14,7 @@ export function InfluenceTrack({ influence, mine, theirs, myName, theirName }: {
   return (
     <div className="panel p-3">
       <div className="flex items-baseline justify-between text-[10px] uppercase tracking-widest text-dim">
-        <span>Influence</span>
+        <span>🕊️ Hope</span>
         <span className={`font-display text-base normal-case tracking-normal ${influence > 0 ? 'text-goldbright' : influence < 0 ? 'text-[#e5a99f]' : 'text-body'}`}>
           {influence > 0 ? `+${influence}` : influence}
         </span>

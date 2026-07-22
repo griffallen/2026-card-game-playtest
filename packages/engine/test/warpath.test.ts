@@ -161,7 +161,7 @@ describe('Warpath (#107): the real compiled card', () => {
     expect(def.onPlay).toEqual(WARPATH_OPS)
     expect(def.text).toContain('half of X')
     expect(def.text).toContain('lose X life')
-    expect(def.text).toContain('opponent gains 1 Influence')
+    expect(def.text).toContain('opponent gains 1 Hope')
     expect(validateCardSet(CARD_SET)).toEqual([])
   })
 

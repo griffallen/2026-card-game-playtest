@@ -26,7 +26,7 @@ function runStartStepAuto(state: GameState, seat: Seat) {
     const holder = state.units[c.by]
     if (!c.income || !holder || holder.owner !== seat) continue
     addInfluence(state, seat, c.income)
-    log(state, seat, `the warrant on ${state.cardSet[c.unit.slug]?.name ?? cid} pays ${c.income} influence`)
+    log(state, seat, `the warrant on ${state.cardSet[c.unit.slug]?.name ?? cid} pays ${c.income} Hope`)
   }
   stateBasedCleanup(state, seat)
   if (state.winner !== null) return
@@ -44,7 +44,7 @@ function runStartStepAuto(state: GameState, seat: Seat) {
 
 /** Begin a round: initiative's start step runs, then pauses at their bank choice. */
 export function startRound(state: GameState) {
-  log(state, null, `— Round ${state.round} · ${state.sides[state.initiative].name} has the initiative —`)
+  log(state, null, `— Round ${state.round} · ${state.sides[state.initiative].name} holds the 🥇 Regroup marker —`)
   // decision 71 (v3): round 1 has no start step — opening hand + setup resources, straight to the loop
   if (state.round === 1 && !state.rules.firstRoundStartStep) {
     state.phase = 'loop'
@@ -105,7 +105,7 @@ export function endRound(state: GameState, actorSeat: Seat) {
     }
     if (ls.endInfluence !== 0) {
       addInfluence(state, ls.seat, -ls.endInfluence)
-      log(state, ls.seat, `${state.sides[ls.seat].name} pays the last stand's toll: ${ls.endInfluence} influence`)
+      log(state, ls.seat, `${state.sides[ls.seat].name} pays the last stand's toll: ${ls.endInfluence} Hope`)
     }
   }
   stateBasedCleanup(state, actorSeat)
@@ -140,7 +140,7 @@ export function endRound(state: GameState, actorSeat: Seat) {
       if (majority(seat, homeZone(other(seat)))) gain += 2 * tribunes   // the enemy's Home: +2 each
       if (gain === 0) continue
       addInfluence(state, seat, gain)
-      log(state, seat, `${state.sides[seat].name}'s ${tribunes} tribune${tribunes > 1 ? 's' : ''} press ${tribunes > 1 ? 'their' : 'its'} advantage (+${gain} influence)`)
+      log(state, seat, `${state.sides[seat].name}'s ${tribunes} tribune${tribunes > 1 ? 's' : ''} press ${tribunes > 1 ? 'their' : 'its'} advantage (+${gain} Hope)`)
     }
   }
   stateBasedCleanup(state, actorSeat)

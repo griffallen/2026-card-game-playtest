@@ -11,7 +11,7 @@ art: /cards/whisper-blade.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onKill":[{"op":"influence","n":1}]}
 ---
-When this defeats a unit, gain 1 Influence.
+When this defeats a unit, gain 1 Hope.
 
 ## Design notes
 

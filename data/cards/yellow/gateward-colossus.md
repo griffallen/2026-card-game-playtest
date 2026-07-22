@@ -10,7 +10,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onDefend":[{"op":"influence","n":1}]}
 ---
-Guard. Armor 1. Can't attack. When this defends, gain 1 Influence.
+Guard. Armor 1. Can't attack. When this defends, gain 1 Hope.
 
 ## Design notes
 
