@@ -8,6 +8,13 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.10.6 — 2026-07-22
+patch — **#145 Spark Hound cost 1 → 2** (Griff; card work, agent auto-shipped). "This was
+supposed to cost 2 resources — missed during an edit." Stat-only correction: cost 1 → **2**;
+pips (1 red), stats (2/1), and keywords (Rush, Guard) all unchanged. Regenerated INDEX.md +
+`generated.json`; `cards:check` current, 493 tests green. A re-tuning invalidates old sim
+numbers for this card by design. Deployed — gate passed. `46dcb47`.
+
 ## v0.10.5 — 2026-07-22
 patch — **#144 card-text clarity: "base" not "Home", clearer durations** (PR #144 by Griff,
 "other items found by Sol"; card work, agent auto-shipped). Text-only reword of four card
