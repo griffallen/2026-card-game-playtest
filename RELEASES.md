@@ -8,6 +8,17 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.10.5 — 2026-07-22
+patch — **#144 card-text clarity: "base" not "Home", clearer durations** (PR #144 by Griff,
+"other items found by Sol"; card work, agent auto-shipped). Text-only reword of four card
+descriptions to match the #143 rulebook terminology — **the effect JSON is byte-for-byte
+unchanged, so the game plays identically**. Blood Rush / Devout Intervention / Detain: "your
+Home" → "your base" (the ops target `selfBase`, so "base" is the accurate word — damage/heal
+land on the base, not the whole zone); Unchained Rage: "for the next 2 rounds" → "this round
+and next round," and "influence" → "Influence." INDEX.md and `generated.json` regenerated to
+match. `cards:check` current (120 cards valid, generated files current), 493 tests green.
+Deployed — gate passed. `acdb7a7`.
+
 ## v0.10.4 — 2026-07-22
 patch — **#143 rulebook clarity pass** (PR #143 by Griff, "worked with a partner to clarify
 some rules"). Prose-only reorganization of the demo rulebook: the board/cards/setup sections
