@@ -15,12 +15,12 @@
 | [Cinder Initiate](red/cinder-initiate.md) | — | 1 | unit | 2/1 | rush | canon | Rush. |
 | [Devastating Strike](red/devastating-strike.md) | — | 1 | action | — |  | canon | Deal 2 damage to target unit — 3 instead if it's already damaged. |
 | [Searing Bolt](red/searing-bolt.md) | — | 1 | action | — |  | canon | Deal 2 damage to any target. |
-| [Spark Hound](red/spark-hound.md) | — | 1 | unit | 2/1 | rush, guard | canon | Rush. Guard. When this attacks, it gets +1 Power this round. |
 | [Berserker](red/berserker.md) | — | 2 | unit | 1/4 | rush, scar | canon | Rush. Scar. |
 | [Blood Rush](red/blood-rush.md) | — | 2 | action | — |  | canon | Remove all damage from a unit you control; deal that much damage to your base. |
 | [Cataclysmic Charge](red/cataclysmic-charge.md) | — | 2 | action | — |  | canon | Target unit gets +3 Power and Breakthrough this round. |
 | [Flameblade Raider](red/flameblade-raider.md) | — | 2 | unit | 4/1 | rush, breakthrough | canon | Rush. Breakthrough. When this unit dies, gain 1 Influence — and 1 more if it died defeating a unit (a trade counts). |
 | [Pillage](red/pillage.md) | — | 2 | action | — |  | canon | Destroy target enemy upgrade. |
+| [Spark Hound](red/spark-hound.md) | — | 2 | unit | 2/1 | rush, guard | canon | Rush. Guard. When this attacks, it gets +1 Power this round. |
 | [Bloodfrenzy](red/bloodfrenzy.md) | — | 3 | upgrade | — |  | canon | Attached unit gets +1 Power and +1 Health and Breakthrough. If you have Influence 0 or less, this unit gets +2 Power and +2 Health instead. |
 | [Collateral Damage](red/collateral-damage.md) | — | 3 | action | — |  | canon | Deal 2 damage to two different target units. |
 | [Fiery Impaler](red/fiery-impaler.md) | — | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to another unit of your choice in the same zone. If that unit dies, gain +1 influence. |

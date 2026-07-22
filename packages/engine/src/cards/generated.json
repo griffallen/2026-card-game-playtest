@@ -234,37 +234,6 @@
   "designerNote": "2026-07-11 (designer, issue #4): 2 → 3 damage at unchanged cost 2. This runs ABOVE the\nsession-006 burn grammar (face-capable burn = cost) — designer's call on his ratify pass;\nflagged on the thread in case cost 3 was intended.\n\n2026-07-12 (designer, PR #34): 2-mana-deal-3 → 1-mana-deal-2 — \"need a cheaper card but lower\ndamage.\" Effects synced to the new text; still conforms to the red burn grammar (face-capable = cost+1).",
   "artUrl": "/cards/searing-bolt.jpg"
  },
- "spark-hound": {
-  "onAttack": [
-   {
-    "op": "buff",
-    "t": "self",
-    "p": 1,
-    "dur": "round"
-   }
-  ],
-  "slug": "spark-hound",
-  "name": "Spark Hound",
-  "color": "red",
-  "type": "unit",
-  "cost": 1,
-  "power": 2,
-  "health": 1,
-  "text": "Rush. Guard. When this attacks, it gets +1 Power this round.",
-  "kw": [
-   {
-    "k": "rush"
-   },
-   {
-    "k": "guard"
-   }
-  ],
-  "pips": [
-   "red"
-  ],
-  "designerNote": "2026-07-12 (designer, PR #31): gains Guard — \"they look like guard dogs.\" Note for the record:\nred's charter forbids Guard (\"red doesn't defend\"); the designer's PR makes Spark Hound the first\nsworn exception, and the charter now records it. A 1-cost 2/1 that blocks free and bites back.",
-  "artUrl": "/cards/spark-hound.jpg"
- },
  "berserker": {
   "slug": "berserker",
   "name": "Berserker",
@@ -411,6 +380,37 @@
   ],
   "designerNote": "Session 006: 4 mana → 2. Utility removal was priced like a threat; yellow runs seven upgrades and red needs a real answer at a price it can pay mid-assault.",
   "artUrl": "/cards/pillage.jpg"
+ },
+ "spark-hound": {
+  "onAttack": [
+   {
+    "op": "buff",
+    "t": "self",
+    "p": 1,
+    "dur": "round"
+   }
+  ],
+  "slug": "spark-hound",
+  "name": "Spark Hound",
+  "color": "red",
+  "type": "unit",
+  "cost": 2,
+  "power": 2,
+  "health": 1,
+  "text": "Rush. Guard. When this attacks, it gets +1 Power this round.",
+  "kw": [
+   {
+    "k": "rush"
+   },
+   {
+    "k": "guard"
+   }
+  ],
+  "pips": [
+   "red"
+  ],
+  "designerNote": "2026-07-12 (designer, PR #31): gains Guard — \"they look like guard dogs.\" Note for the record:\nred's charter forbids Guard (\"red doesn't defend\"); the designer's PR makes Spark Hound the first\nsworn exception, and the charter now records it. A 1-cost 2/1 that blocks free and bites back.\n\n2026-07-22 (#145, Griff): cost 1 → 2 — \"supposed to cost 2 resources, missed during an edit.\" A\n2-cost 2/1 free-blocking Rush unit; pips and stats unchanged.",
+  "artUrl": "/cards/spark-hound.jpg"
  },
  "bloodfrenzy": {
   "statics": [

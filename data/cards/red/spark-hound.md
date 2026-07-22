@@ -1,7 +1,7 @@
 ---
 name: Spark Hound
 type: unit
-cost: 1
+cost: 2
 power: 2
 health: 1
 keywords: rush, guard
@@ -17,3 +17,6 @@ Rush. Guard. When this attacks, it gets +1 Power this round.
 2026-07-12 (designer, PR #31): gains Guard — "they look like guard dogs." Note for the record:
 red's charter forbids Guard ("red doesn't defend"); the designer's PR makes Spark Hound the first
 sworn exception, and the charter now records it. A 1-cost 2/1 that blocks free and bites back.
+
+2026-07-22 (#145, Griff): cost 1 → 2 — "supposed to cost 2 resources, missed during an edit." A
+2-cost 2/1 free-blocking Rush unit; pips and stats unchanged.
