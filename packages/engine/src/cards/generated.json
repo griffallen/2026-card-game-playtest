@@ -311,7 +311,7 @@
   "color": "red",
   "type": "action",
   "cost": 2,
-  "text": "Remove all damage from a unit you control; deal that much damage to your Home.",
+  "text": "Remove all damage from a unit you control; deal that much damage to your base.",
   "pips": [
    "red"
   ],
@@ -970,7 +970,7 @@
   "color": "red",
   "type": "action",
   "cost": 6,
-  "text": "Double the Power of all your units for the next 2 rounds. For each unit of yours that attacks, lose 2 influence.",
+  "text": "Double the Power of all your units this round and next round. For each unit of yours that attacks, lose 2 Influence.",
   "pips": [
    "red",
    "red",
@@ -1680,7 +1680,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 4,
-  "text": "Prevent all damage to your Home from the next attack this round. Also, prevent all damage to your next blocking unit this round (it still deals its damage back).",
+  "text": "Prevent all damage to your base from the next attack this round. Also, prevent all damage to your next blocking unit this round (it still deals its damage back).",
   "pips": [
    "yellow",
    "yellow"
@@ -2421,7 +2421,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 7,
-  "text": "Target unit you control captures target enemy unit. Your Home heals 3.",
+  "text": "Target unit you control captures target enemy unit. Heal 3 damage from your base.",
   "pips": [
    "yellow",
    "yellow"

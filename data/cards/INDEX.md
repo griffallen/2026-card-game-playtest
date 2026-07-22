@@ -17,7 +17,7 @@
 | [Searing Bolt](red/searing-bolt.md) | — | 1 | action | — |  | canon | Deal 2 damage to any target. |
 | [Spark Hound](red/spark-hound.md) | — | 1 | unit | 2/1 | rush, guard | canon | Rush. Guard. When this attacks, it gets +1 Power this round. |
 | [Berserker](red/berserker.md) | — | 2 | unit | 1/4 | rush, scar | canon | Rush. Scar. |
-| [Blood Rush](red/blood-rush.md) | — | 2 | action | — |  | canon | Remove all damage from a unit you control; deal that much damage to your Home. |
+| [Blood Rush](red/blood-rush.md) | — | 2 | action | — |  | canon | Remove all damage from a unit you control; deal that much damage to your base. |
 | [Cataclysmic Charge](red/cataclysmic-charge.md) | — | 2 | action | — |  | canon | Target unit gets +3 Power and Breakthrough this round. |
 | [Flameblade Raider](red/flameblade-raider.md) | — | 2 | unit | 4/1 | rush, breakthrough | canon | Rush. Breakthrough. When this unit dies, gain 1 Influence — and 1 more if it died defeating a unit (a trade counts). |
 | [Pillage](red/pillage.md) | — | 2 | action | — |  | canon | Destroy target enemy upgrade. |
@@ -40,7 +40,7 @@
 | [Earthshaker](red/earthshaker.md) | — | 6 | unit | 4/7 | breakthrough, scar | canon | Breakthrough. Scar. |
 | [Raging Inferno](red/raging-inferno.md) | — | 6 | action | — |  | canon | Deal 6 damage to target unit or base. |
 | [Relentless Assault](red/relentless-assault.md) | — | 6 | action | — |  | canon | Ready all your units. |
-| [Unchained Rage](red/unchained-rage.md) | — | 6 | action | — |  | canon | Double the Power of all your units for the next 2 rounds. For each unit of yours that attacks, lose 2 influence. |
+| [Unchained Rage](red/unchained-rage.md) | — | 6 | action | — |  | canon | Double the Power of all your units this round and next round. For each unit of yours that attacks, lose 2 Influence. |
 | [Apocalypse Engine](red/apocalypse-engine.md) | — | 7 | unit | 8/7 | breakthrough | canon | Breakthrough. |
 | [Last Stand](red/last-stand.md) | — | 8 | action | — |  | canon | Ready each of your units. They don't exhaust this round. For each of your units that moves, lose 4 Influence. For each of your units that attacks, lose 4 Life. At the end of the round, lose 8 Life and lose 8 Influence. |
 | [Worldrender](red/worldrender.md) | — | 8 | unit | 4/8 | rush, breakthrough, scar | canon | Rush. Breakthrough. Scar.  While this is in combat with an enemy unit, ignore that unit's Shield and Armor — this unit's full damage lands. |
@@ -68,7 +68,7 @@
 | [Subjugate](yellow/subjugate.md) | — | 3 | upgrade | — |  | canon | Attach to an enemy unit. While attached, it gets −2 Power for each pip in its cost. |
 | [Unwavering Faith](yellow/unwavering-faith.md) | — | 3 | action | — |  | canon | Heal 3 damage from target unit. |
 | [Absolution](yellow/absolution.md) | — | 4 | action | — |  | canon | Remove all negative effects from target unit you control. Free all your captured units. |
-| [Devout Intervention](yellow/devout-intervention.md) | — | 4 | action | — |  | canon | Prevent all damage to your Home from the next attack this round. Also, prevent all damage to your next blocking unit this round (it still deals its damage back). |
+| [Devout Intervention](yellow/devout-intervention.md) | — | 4 | action | — |  | canon | Prevent all damage to your base from the next attack this round. Also, prevent all damage to your next blocking unit this round (it still deals its damage back). |
 | [Disarming Order](yellow/disarming-order.md) | — | 4 | action | — |  | canon | Target unit can't attack this round. Draw a card. |
 | [Exemplar Knight](yellow/exemplar-knight.md) | — | 4 | unit | 4/4 |  | canon | When this unit defeats a unit, gain 1 Influence. |
 | [Fortress Keeper](yellow/fortress-keeper.md) | — | 4 | unit | 2/3 | cantAttack, tribune | canon | This can't attack. Tribune. Other friendly units in this zone have Guard. |
@@ -92,7 +92,7 @@
 | [Archon of Order](yellow/archon-of-order.md) | — | 7 | unit | 3/4 | capture | canon | When this enters play, it captures target enemy unit. |
 | [Champion of the Faith](yellow/champion-of-the-faith.md) | — | 7 | unit | 7/7 |  | canon | When this attacks, gain 1 Influence. |
 | [Command Edict](yellow/command-edict.md) | — | 7 | action | — |  | canon | Your units get Armor 1, permanently. |
-| [Detain](yellow/detain.md) | — | 7 | action | — |  | canon | Target unit you control captures target enemy unit. Your Home heals 3. |
+| [Detain](yellow/detain.md) | — | 7 | action | — |  | canon | Target unit you control captures target enemy unit. Heal 3 damage from your base. |
 | [Prison of Light](yellow/prison-of-light.md) | — | 7 | action | — |  | canon | Choose a zone: exhaust all enemy units there. Gain 1 Influence for each enemy unit exhausted, and gain 2 Life. |
 | [Radiant Citadel](yellow/radiant-citadel.md) | — | 7 | unit | 1/4 | guard, tribune, cantAttack, armor 2 | canon | This can't attack. When it enters play, if it's the only Radiant Citadel you own in play, it raises two 0/1 copies of itself in your Home — ready, with Guard and Tribune, unable to attack. Copies vanish when they die. |
 | [Supreme Sentence](yellow/supreme-sentence.md) | — | 7 | action | — |  | canon | Up to two target enemy units anywhere are exhausted and take 3 damage each. |

@@ -7,7 +7,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"targets":[{"t":"unit","side":"friendly"},{"t":"unit","side":"enemy"}],"onPlay":[{"op":"capture","t":"chosen1","by":"chosen0"},{"op":"heal","t":"selfBase","n":3}]}
 ---
-Target unit you control captures target enemy unit. Your Home heals 3.
+Target unit you control captures target enemy unit. Heal 3 damage from your base.
 
 ## Design notes
 

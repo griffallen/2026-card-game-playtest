@@ -7,7 +7,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"onPlay":[{"op":"wardHome"},{"op":"wardBlocker"}]}
 ---
-Prevent all damage to your Home from the next attack this round. Also, prevent all damage to your next blocking unit this round (it still deals its damage back).
+Prevent all damage to your base from the next attack this round. Also, prevent all damage to your next blocking unit this round (it still deals its damage back).
 
 ## Design notes
 
