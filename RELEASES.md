@@ -8,6 +8,17 @@ See [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 Release tracking began 2026-07-15 (#92); earlier demo builds predate the ledger.
 
+## v0.10.4 — 2026-07-22
+patch — **#143 rulebook clarity pass** (PR #143 by Griff, "worked with a partner to clarify
+some rules"). Prose-only reorganization of the demo rulebook: the board/cards/setup sections
+fold into one numbered **The setup** (1 · board & cards · 2 · start the game · 3 · resources &
+pips), a **ready/exhaust** definition and a worked **cost-vs-pips** example are added, combat
+gains a **three-step summary** plus **duel / gang / base-attack** examples, and the "Life wins
+on a simultaneous both-finish-line blow" rule moves from Influence up to **Winning**. No engine
+or card change; `RULES_VERSION` unchanged. Cross-checked every added claim against the resolver
+(duel law, gang pairing, base-block, pips presence-check) — all match, no Guard-gate ghost.
+`rules:doc:check` current, demo typecheck clean, 493 tests green. Deployed — gate passed. `b436179`.
+
 ## v0.10.3 — 2026-07-21
 patch — **#141 Phantom Duelist reworded for clarity** (#141; card work, agent auto-shipped).
 Griff saw the Duelist take damage blocking and thought the dodge was broken; verified in the
