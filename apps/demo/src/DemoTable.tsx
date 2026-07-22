@@ -694,8 +694,8 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
     // Safety rail: warn when a play would cede enough influence to hand the opponent the win
     const def = DEMO_CARDS[state.cardOf[cardId]]
     const cede = (def.onPlay ?? []).reduce((n, op) => (op.op === 'influence' && op.n < 0 ? n + op.n : n), 0)
-    const influenceMineNow = seat === 0 ? state.influence : -state.influence
-    if (!confirmedLethal && cede < 0 && influenceMineNow + cede <= -view.thresholds[foe]) {
+    const hopeMineNow = state.hope[seat]
+    if (!confirmedLethal && cede < 0 && hopeMineNow + cede <= -view.thresholds[seat]) {
       setLethalPlay({ card: cardId, cede: -cede })
       return
     }
@@ -832,7 +832,6 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
   const my = view.sides[seat]
   const their = view.sides[foe]
   const names: [string, string] = [config.nameA, config.nameB]
-  const influenceMine = seat === 0 ? view.influence : -view.influence
   const selectedHand = selection?.kind === 'hand' ? selection.id : null
   const targetingCard = selection?.kind === 'targeting' ? DEMO_CARDS[state.cardOf[selection.card]] : null
 
@@ -1524,13 +1523,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
             <p className="mt-2 border-t hairline pt-1.5 text-[11.5px] text-dim">tip: right-click or long-press any card or unit to inspect it — a plain tap selects/targets. ♥ life, ⬢ resources, ✕ discard open on tap.</p>
           </div>
 
-          <InfluenceTrack
-            influence={influenceMine}
-            mine={view.thresholds[seat]}
-            theirs={view.thresholds[foe]}
-            myName={config.mode === 'hotseat' || config.mode === 'watch' ? names[seat] : 'You'}
-            theirName={names[foe]}
-          />
+          <InfluenceTrack hope={view.hope} thresholds={view.thresholds} names={names} />
 
           <div className="panel flex min-h-0 flex-1 flex-col p-0 max-lg:min-h-[200px]">
             <div className="border-b hairline px-3 py-1.5 text-[11.5px] uppercase tracking-widest text-dim">Chronicle</div>
@@ -1589,7 +1582,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
             resourcesTotal={side.resources.length}
             guards={home.filter(u => u.owner === s && u.keywords.some(k => k.startsWith('guard'))).length}
             invaders={home.filter(u => u.owner !== s).length}
-            influence={s === 0 ? view.influence : -view.influence}
+            influence={view.hope[s]}
             onClose={() => setInspect(null)}
           />
         )
@@ -1652,7 +1645,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       {view.winner !== null && !overlayDismissed && (
         <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4">
           <div className="panel max-w-md p-8 text-center">
-            <div className="text-4xl">{view.winReason === 'influence' ? '🕊️' : view.winReason === 'concede' ? '🏳' : '⚔'}</div>
+            <div className="text-4xl">{view.winReason === 'hope' ? '🕊️' : view.winReason === 'concede' ? '🏳' : '⚔'}</div>
             <h2 className="mt-3 font-display text-2xl font-bold text-parchment">{names[view.winner]} is victorious</h2>
             <p className="mt-2 text-sm text-dim">Round {view.round} · {view.winReason} · seed {config.seed}</p>
             <div className="mt-6 flex justify-center gap-2">

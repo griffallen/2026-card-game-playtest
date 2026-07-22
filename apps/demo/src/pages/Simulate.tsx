@@ -126,7 +126,7 @@ export function Simulate() {
               <thead className="sticky top-0 bg-surface">
                 <tr className="text-left uppercase tracking-wider text-dim">
                   <th className="px-3 py-1.5">Seed</th><th className="px-3 py-1.5">First</th><th className="px-3 py-1.5">Winner</th>
-                  <th className="px-3 py-1.5">By</th><th className="px-3 py-1.5">Rounds</th><th className="px-3 py-1.5">Hope range</th>
+                  <th className="px-3 py-1.5">By</th><th className="px-3 py-1.5">Rounds</th><th className="px-3 py-1.5">Hope ranges (Seat 1 / Seat 2)</th>
                   <th className="px-3 py-1.5"></th>
                 </tr>
               </thead>
@@ -138,7 +138,7 @@ export function Simulate() {
                     <td className="px-3 py-1">{(r.firstDeck === 'red') === (r.winner === 0) ? '🔴 red' : '🟡 yellow'}</td>
                     <td className="px-3 py-1">{r.winReason}</td>
                     <td className="px-3 py-1">{r.rounds}</td>
-                    <td className="px-3 py-1 text-dim">{r.minInfluence}…{r.maxInfluence > 0 ? `+${r.maxInfluence}` : r.maxInfluence}</td>
+                    <td className="px-3 py-1 text-dim">{r.minHope[0]}…{r.maxHope[0] > 0 ? `+${r.maxHope[0]}` : r.maxHope[0]} / {r.minHope[1]}…{r.maxHope[1] > 0 ? `+${r.maxHope[1]}` : r.maxHope[1]}</td>
                     <td className="px-3 py-1">
                       <Link
                         className="text-goldbright hover:underline"

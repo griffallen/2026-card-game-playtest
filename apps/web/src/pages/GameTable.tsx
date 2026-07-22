@@ -114,7 +114,6 @@ export function GameTable() {
   const zonesTopToBottom: ZoneId[] = seat === 0 ? [2, 1, 0] : [0, 1, 2]
   const my = view.sides[seat]
   const their = view.sides[foe]
-  const influenceMine = seat === 0 ? view.influence : -view.influence
   const names: [string, string] = meta?.names ?? [view.sides[0].name, view.sides[1].name]
 
   const isHighlighted = (ref: TargetRef) => highlights.some(h => sameRef(h, ref))
@@ -438,13 +437,7 @@ export function GameTable() {
             <p className="mt-2 border-t hairline pt-1.5 text-[10px] text-dim">tip: tap any unit, card, ♥ life, ⬢ resources, or ✕ discard to inspect it</p>
           </div>
 
-          <InfluenceTrack
-            influence={influenceMine}
-            mine={view.thresholds[seat]}
-            theirs={view.thresholds[foe]}
-            myName={spectating ? names[0] : 'You'}
-            theirName={spectating ? names[1] : names[foe]}
-          />
+          <InfluenceTrack hope={view.hope} thresholds={view.thresholds} names={names} />
 
           <div className="panel flex min-h-0 flex-1 flex-col p-0 max-lg:min-h-[200px]">
             <div className="border-b hairline px-3 py-1.5 text-[10px] uppercase tracking-widest text-dim">Chronicle</div>
@@ -487,7 +480,7 @@ export function GameTable() {
             resourcesTotal={side.resources.length}
             guards={home.filter(u => u.owner === s && u.keywords.some(k => k.startsWith('guard'))).length}
             invaders={home.filter(u => u.owner !== s).length}
-            influence={s === 0 ? view.influence : -view.influence}
+            influence={view.hope[s]}
             onClose={() => setInspect(null)}
           />
         )
@@ -522,11 +515,11 @@ export function GameTable() {
       {view.winner !== null && !overlayDismissed && (
         <div className="fixed inset-0 z-40 grid place-items-center bg-black/70 p-4">
           <div className="panel max-w-md p-8 text-center">
-            <div className="text-4xl">{view.winReason === 'influence' ? '🕊️' : view.winReason === 'concede' ? '🏳' : '⚔'}</div>
+            <div className="text-4xl">{view.winReason === 'hope' ? '🕊️' : view.winReason === 'concede' ? '🏳' : '⚔'}</div>
             <h2 className="mt-3 font-display text-2xl font-bold text-parchment">{names[view.winner]} is victorious</h2>
             <p className="mt-2 text-sm text-dim">
               {view.winReason === 'life' && 'Their opponent’s life was reduced to nothing.'}
-              {view.winReason === 'influence' && 'The hope of their cause became undeniable.'}
+              {view.winReason === 'hope' && 'The hope of their cause became undeniable.'}
               {view.winReason === 'concede' && 'Their opponent yielded the field.'}
             </p>
             <div className="mt-6 flex justify-center gap-2">

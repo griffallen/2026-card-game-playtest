@@ -41,7 +41,7 @@ export function Lobby() {
   }
 
   const reasonBadge = (g: GameRow) =>
-    g.winReason === 'life' ? '⚔ life' : g.winReason === 'influence' ? '🕊️ Hope' : g.winReason ?? ''
+    g.winReason === 'life' ? '⚔ life' : g.winReason === 'hope' ? '🕊️ Hope' : g.winReason ?? ''
 
   return (
     <div className="mx-auto max-w-5xl p-4">

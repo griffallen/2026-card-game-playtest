@@ -72,7 +72,8 @@ export function viewFor(state: GameState, seat: Seat | null): PlayerView {
           ],
         }
       : null,
-    influence: state.influence,
+    hope: state.hope,
+    influence: state.hope[0] - state.hope[1],
     thresholds: thresholds(state),
     sides: [sideView(state, 0), sideView(state, 1)],
     zones: ZONES.map(z => ({

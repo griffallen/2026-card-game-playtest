@@ -21,7 +21,7 @@ const KEYWORDS: [string, string, string][] = [
   ['guard', 'Guard', 'The bodyguard. When a single unit attacks one of yours, only a READY Guard may step in front of the target — one Guard, taking the whole hit. Two Guards can’t gang a lone attacker, and an exhausted Guard can’t block at all. (Attacks on your base are different: anyone may block those.) A Guard never exhausts to block, in duels or gangs — it stays ready, so it can block now and still take its own turn.'],
   ['hidden', 'Hidden', 'While this unit is ready, enemy actions can’t target it and enemy attacks can’t be declared at it. It can still block — blocking isn’t being targeted — but anything that exhausts it (attacking, blocking, a Sneak) reveals it until it readies again. Strike, vanish, repeat. One limit: Hidden beats choices, not consequences — effects that don’t choose (“all”, whole-zone damage, automatic picks) still reach it.'],
   ['infiltrate', 'Infiltrate', 'May be played into any zone — not just your Home.'],
-  ['tribune', 'Tribune', 'A Tribune sways the shared Hope track just by taking the field or leaving it: +1 Hope to its controller every time it enters play — whether it is deployed from hand or returns from capture — and −1 every time it leaves play, whether it is defeated or captured. It keys off the event, not the reason, so over a Tribune’s whole life the swing nets to zero and cannot be farmed (a capture’s −1 and its release’s +1 cancel). Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and you gain 1 Hope per Tribune; hold the majority in your enemy’s Home zone and you gain 2 Hope per Tribune — the two stack, so holding both is worth 3 per Tribune. “Majority” means strictly more of your units than the opponent’s in that zone; a tie is not a majority. The middle finally has a constituency — and the boldest campaigns run in enemy territory: hold the crowd, sway the track.'],
+  ['tribune', 'Tribune', 'A Tribune changes its controller’s Hope just by taking the field or leaving it: +1 Hope every time it enters play — whether it is deployed from hand or returns from capture — and −1 every time it leaves play, whether it is defeated or captured. It keys off the event, not the reason, so over a Tribune’s whole life the change nets to zero and cannot be farmed (a capture’s −1 and its release’s +1 cancel). Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and you gain 1 Hope per Tribune; hold the majority in your enemy’s Home zone and you gain 2 Hope per Tribune — the two stack, so holding both is worth 3 per Tribune. “Majority” means strictly more of your units than the opponent’s in that zone; a tie is not a majority.'],
   ['ranged', 'Ranged N', 'An ability used as your turn: exhaust this unit to deal N damage to one enemy unit in any zone — the volley. It’s a chosen shot, so a ready Hidden unit refuses it, and a lethal volley counts as a kill. The unit’s regular attacks are ordinary in every way: same zone, blockable, bases included. Archers carry small blades and big bows.'],
   ['rush', 'Rush', 'A static ability: this unit’s first move each round is free — that one move doesn’t exhaust it, so it can reposition and still fight. One free move per round, and it refreshes every round the unit stays in play; a second move the same round exhausts it like any unit. It grants no extra action and never lets the unit attack any sooner.'],
   ['scar', 'Scar', 'Gets +1 Power for each damage marked on it — no cap. A 3-Health unit with 2 damage gets +2. Every wound is fuel; the closer to death, the harder it hits.'],
@@ -44,12 +44,11 @@ export function Rules() {
       <P>You win the instant either of these happens (checked after every single change):</P>
       <ul className="ml-5 list-disc">
         <LI><B>Life:</B> your opponent’s Life hits <B>0</B>.</LI>
-        <LI><B>Hope:</B> the shared track reaches <B>+20 on your side</B>. One number sits between you; pulling it to your end wins — even if you’re behind on Life.</LI>
+        <LI><B>🕊️ Hope:</B> your own Hope reaches <B>+12</B>, or your opponent’s reaches <B>−12</B>. Each player has a separate Hope track.</LI>
       </ul>
       <P>
         <B>If outcomes happen together:</B> if a single event would drop both players to 0 Life at once, the player who
-        took the action wins. If one blow would both reduce Life to 0 <i>and</i> reach the Hope finish line, the
-        Life victory wins.
+        took the action wins. If both players would win at once, the player whose action triggered the result wins.
       </P>
 
       <H2 id="setup">The setup</H2>
@@ -60,7 +59,7 @@ export function Rules() {
       </Card>
       <ul className="ml-5 mt-3 list-disc">
         <LI><B>Adjacent</B> zones are the ones touching on the line. The two Home zones are <B>not</B> adjacent to each other — you have to cross Neutral.</LI>
-        <LI>Your <B>base</B> is you. It lives in your Home zone; damage to it is Life damage. An enemy can only attack your base from <B>inside your Home zone</B>.</LI>
+        <LI>Your <B>base</B> is you. It starts at <B>24 Life</B>, lives in your Home zone, and takes Life damage. An enemy can only attack it from <B>inside your Home zone</B>.</LI>
         <LI>Off to the side you keep your <B>deck</B> (face down), <B>hand</B> (hidden), <B>resource row</B> (face up), and <B>discard</B> (face up).</LI>
       </ul>
 
@@ -132,7 +131,7 @@ export function Rules() {
       <P>From <B>round 2 onward</B>, upkeep runs <B>one player at a time</B> — the player holding the <B>🥇 Regroup marker first</B>, all the way through, then the opponent. Readying and drawing happen on their own; <B>banking is a decision</B>:</P>
       <ul className="ml-5 list-disc">
         <LI><B>Ready</B> all your cards (units and resources untap).</LI>
-        <LI><B>Draw 2</B> cards. (Drawing from an empty deck costs you 1 Life and 1 Hope per missing card — slow decks have a clock.)</LI>
+        <LI><B>Draw 2</B> cards. (Drawing from an empty deck costs you 1 Life and 1 of <i>your</i> Hope per missing card — slow decks have a clock.)</LI>
         <LI>You may <B>bank one card</B> from hand as a new resource, or skip.</LI>
       </ul>
       <P>
@@ -230,9 +229,9 @@ export function Rules() {
 
       <H2 id="hope">🕊️ Hope</H2>
       <P>
-        Hope is <B>one shared track</B> you fight over — gain some and the marker slides toward your <B>+20</B>. It’s <B>earned by
+        Each player has a <B>separate Hope track</B>, from <B>−12 to +12</B>. Your card effects change <B>your</B> Hope by default. Reach <B>+12</B> to win; fall to <B>−12</B> and you lose. Hope is <B>earned by
         events</B>, never just by sitting there: a guard is paid when it <B>defends</B> — blocking <i>or</i> being the one attacked — a champion when it <B>kills</B>, and some cards pay
-        out when <B>played</B>. Get it to +20 on your side and you win, even while losing the fight for Life.
+        out when <B>played</B>.
       </P>
 
       <H2 id="keywords">Keywords</H2>
@@ -253,7 +252,7 @@ export function Rules() {
       <H2 id="quick">Quick reference</H2>
       <Card>
         <ul className="ml-5 list-disc">
-          <LI><B>Win:</B> enemy to 0 Life, or Hope to +20 your side.</LI>
+          <LI><B>Win:</B> enemy to 0 Life, your Hope to +12, or their Hope to −12.</LI>
           <LI><B>Round vs turn:</B> a <B>round</B> is one full cycle; a <B>turn</B> is one action. A round is made of many turns.</LI>
           <LI><B>Round 1:</B> no start step — straight into turns with your opening hand and 2 resources.</LI>
           <LI><B>Every round after:</B> both players ready up, draw 2, bank up to 1 — then take turns until two passes in a row.</LI>

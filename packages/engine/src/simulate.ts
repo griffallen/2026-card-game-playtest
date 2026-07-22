@@ -38,8 +38,8 @@ export function simulateGame(seed: number, deckA: string[], deckB: string[], opt
   })
   let policyRng = policyRngInit(seed)
   let actions = 0
-  let minInfluence = 0
-  let maxInfluence = 0
+  const minHope: [number, number] = [0, 0]
+  const maxHope: [number, number] = [0, 0]
 
   while (state.winner === null) {
     if (++actions > MAX_ACTIONS) {
@@ -52,8 +52,10 @@ export function simulateGame(seed: number, deckA: string[], deckB: string[], opt
     ;[choice, policyRng] = policies[state.actorSeat](state, state.actorSeat, policyRng)
     state = applyAction(state, choice, state.actorSeat).state
     assertConservation(state)
-    minInfluence = Math.min(minInfluence, state.influence)
-    maxInfluence = Math.max(maxInfluence, state.influence)
+    minHope[0] = Math.min(minHope[0], state.hope[0])
+    minHope[1] = Math.min(minHope[1], state.hope[1])
+    maxHope[0] = Math.max(maxHope[0], state.hope[0])
+    maxHope[1] = Math.max(maxHope[1], state.hope[1])
   }
 
   return {
@@ -61,8 +63,8 @@ export function simulateGame(seed: number, deckA: string[], deckB: string[], opt
     winReason: state.winReason ?? 'unknown',
     rounds: state.round,
     actions,
-    minInfluence: minInfluence === 0 ? 0 : minInfluence,
-    maxInfluence: maxInfluence === 0 ? 0 : maxInfluence,
+    minHope,
+    maxHope,
   }
 }
 

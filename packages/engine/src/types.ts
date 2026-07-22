@@ -240,7 +240,7 @@ export type CardSet = Record<string, CardDef>
 // ─── Rules parameters ────────────────────────────────────────────────────────
 export interface RulesConfig {
   startingLife: number
-  influenceWinThreshold: number
+  hopeWinThreshold: number
   startingHandSize: number
   startingResources: number
   /** true: players choose their starting banks in a Setup phase (decision 31); false: auto-bank last drawn */
@@ -423,7 +423,10 @@ export interface GameState {
   pendingSplash: {
     seat: Seat; zone: ZoneId; leftover: number; pierced: boolean; contributors: string[]
   } | null
-  influence: number                   // + toward seat 0
+  /** Independent Hope scores, one per player. Values may exceed the win/loss band; checkWin ends the game. */
+  hope: [number, number]
+  /** @deprecated Shared-track compatibility for old replays and test fixtures. New code reads `hope`. */
+  influence: number
   sides: [SideState, SideState]
   units: Record<string, UnitInstance>
   upgrades: Record<string, UpgradeInstance>
@@ -447,7 +450,7 @@ export interface GameState {
    *  replay-derived. Never cleared (the peek is a historical fact); viewFor filters it to `seat`. */
   reveals: RevealEntry[]
   winner: Seat | null
-  winReason: 'life' | 'influence' | 'concede' | null
+  winReason: 'life' | 'hope' | 'concede' | null
   log: LogLine[]
   nextId: number
 }
@@ -524,7 +527,9 @@ export interface PlayerView {
     leftover: number
     targets: ({ kind: 'unit'; id: string } | { kind: 'base'; seat: Seat })[]
   } | null
-  influence: number                    // + toward seat 0 (client flips for display)
+  hope: [number, number]               // independent Hope scores, in seat order
+  /** @deprecated Compatibility projection: Hope[0] − Hope[1]. */
+  influence: number
   thresholds: [number, number]         // win threshold per seat (statics applied)
   sides: [SideView, SideView]
   zones: { units: UnitView[]; orphans: OrphanView[] }[]   // absolute order: [seat0 home, neutral, seat1 home]
@@ -541,6 +546,6 @@ export interface SimResult {
   winReason: string
   rounds: number
   actions: number
-  minInfluence: number
-  maxInfluence: number
+  minHope: [number, number]
+  maxHope: [number, number]
 }

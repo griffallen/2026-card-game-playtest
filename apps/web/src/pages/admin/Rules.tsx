@@ -5,7 +5,7 @@ interface Version { id: string; name: string; config: Record<string, number | bo
 
 const LABELS: Record<string, string> = {
   startingLife: 'Starting life (and healing cap)',
-  influenceWinThreshold: 'Influence needed to win',
+  hopeWinThreshold: 'Hope needed to win',
   startingHandSize: 'Opening hand size',
   startingResources: 'Resources banked at setup',
   drawPerRound: 'Cards drawn per round',

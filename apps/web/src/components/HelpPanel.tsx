@@ -18,8 +18,8 @@ function V3Content() {
     <>
       <H>Winning</H>
       <div className="mt-2 flex flex-col gap-2">
-        <Row icon="⚔" title="Life">Drop your opponent to 0 life (both start at 20).</Row>
-        <Row icon="🕊️" title="Hope">One shared tug-of-war track. Reach +20 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (Guards pay when they defend); purple profits from kills; red mostly ignores it.</Row>
+        <Row icon="⚔" title="Life">Drop your opponent to 0 life (both start at 24).</Row>
+        <Row icon="🕊️" title="Hope">Each player has their own track. Reach +12 Hope to win; fall to −12 and lose. <b>Effects change their owner’s Hope by default.</b></Row>
       </div>
 
       <H>Your round</H>
@@ -92,8 +92,8 @@ function V2Content() {
     <>
       <H>Winning</H>
       <div className="mt-2 flex flex-col gap-2">
-        <Row icon="⚔" title="Life">Drop your opponent to 0 life (both start at 20).</Row>
-        <Row icon="🕊️" title="Hope">One shared tug-of-war track. Reach +20 on your side and you win — even while losing on life. <b>Yellow earns it from events</b> (guards pay when they defend, Exemplar when it kills); red mostly ignores it. </Row>
+        <Row icon="⚔" title="Life">Drop your opponent to 0 life (both start at 24).</Row>
+        <Row icon="🕊️" title="Hope">Each player has their own track. Reach +12 Hope to win; fall to −12 and lose. <b>Effects change their owner’s Hope by default.</b></Row>
       </div>
 
       <H>Your round</H>
@@ -105,7 +105,7 @@ function V2Content() {
         <Row icon="🥇" title="Regroup">Its own action: take the marker and <b>rest for the remainder of this round</b> — but you act <i>first next round</i>. Once per round.</Row>
         <Row icon="🥾" title="Move">A unit may march one adjacent zone (Home ↔ Neutral ↔ their Home) as an action — this exhausts it. Units enter play <b>ready</b>; <b>Rush</b> gives a unit one free move each round.</Row>
         <Row icon="⚔" title="Attack">Pick <b>one or more ready units in the same zone</b> — they strike together as one combined hit. Then the defender chooses: <b>intercept</b> (throw a ready unit in front — free if it's a Guard) or let it through. In a multi-attack, the counter lands on the <b>highest-power attacker</b>. You can only strike the enemy <b>base</b> from inside <i>their</i> Home zone. Massing attackers is the answer to armor — armor is subtracted once from the whole hit.</Row>
-        <Row icon="↑" title="Upgrade pressure">A classic-only tax: whenever a unit gains its <b>second (or later) upgrade</b>, your opponent gains 1 Hope. Greed is noticed.</Row>
+        <Row icon="↑" title="Upgrade pressure">A classic-only tax: whenever a unit gains its <b>second (or later) upgrade</b>, its owner gains 1 Hope.</Row>
       </div>
 
       <H>Reading the board</H>

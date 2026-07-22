@@ -93,6 +93,7 @@ export function createGame(opts: CreateGameOpts): GameState {
     pendingChoices: [],
     chooseOpener: null,
     pendingSplash: null,
+    hope: [0, 0],
     influence: 0,
     sides,
     units: {},
@@ -112,7 +113,7 @@ export function createGame(opts: CreateGameOpts): GameState {
     log: [],
     nextId,
   }
-  log(state, null, `${sides[0].name} vs ${sides[1].name} — ${sides[first as Seat].name} takes the initiative`)
+  log(state, null, `${sides[0].name} vs ${sides[1].name} — ${sides[first as Seat].name} takes the 🥇 Regroup marker`)
   if (rules.chooseStartingResources) {
     log(state, null, `Setup: each player banks ${rules.startingResources} starting resources, ${sides[first as Seat].name} first`)
   } else {

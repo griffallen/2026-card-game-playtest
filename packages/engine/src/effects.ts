@@ -467,14 +467,14 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'influenceOwner': {
-        // #122 (Assassin's Contract): the gain goes to the CHOSEN target's OWNER, not the controller —
-        // destroy an enemy unit and the enemy's Influence rises. Owner read live, before the destroy.
+        // Hope effects currently default to the card/unit owner (the controller). Future card work
+        // can introduce an explicit target seat; this legacy op intentionally follows that default.
         const u = resolveUnitTarget(ctx, op.t)
         if (!u) break
         const n = op.per ? op.n * perCount(ctx, op.per) : op.n
         if (n === 0) break                                       // per counted zero (e.g. an X-cost target) — a no-op
-        addInfluence(state, u.owner, n)
-        log(state, u.owner, `${state.sides[u.owner].name} ${n >= 0 ? 'gains' : 'cedes'} ${Math.abs(n)} Hope (${influenceFor(state, u.owner)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
+        addInfluence(state, controller, n)
+        log(state, controller, `${state.sides[controller].name} ${n >= 0 ? 'gains' : 'cedes'} ${Math.abs(n)} Hope (${influenceFor(state, controller)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
         break
       }
       case 'buff': {

@@ -18,17 +18,30 @@ export function log(state: GameState, seat: Seat | null, msg: string) {
   if (state.log.length > 300) state.log.splice(0, state.log.length - 300)
 }
 
-/** Influence from a seat's perspective (+ = toward that seat's win). */
-export function influenceFor(state: GameState, seat: Seat): number {
-  const v = seat === 0 ? state.influence : -state.influence
+/** A seat's independent Hope score. */
+export function hopeFor(state: GameState, seat: Seat): number {
+  // Old recorded fixtures represent Hope as one signed value. Promote that value only while both
+  // new tracks are untouched; live games always use the independent `hope` tuple.
+  if (state.hope[0] === 0 && state.hope[1] === 0 && state.influence !== 0) {
+    if (state.influence > 0) state.hope[0] = state.influence
+    else state.hope[1] = -state.influence
+  }
+  const v = state.hope[seat]
   return v === 0 ? 0 : v // normalize -0
 }
 
-export function addInfluence(state: GameState, seat: Seat, n: number) {
+/** Change one player's Hope. Effects default to their controller/owner when they call this helper. */
+export function addHope(state: GameState, seat: Seat, n: number) {
   if (n === 0) return
-  // decision 104: influence is uncapped — never clamped to the win band. Only checkWin ends the game.
-  state.influence += seat === 0 ? n : -n
+  // Hope is uncapped — only checkWin ends the game.
+  state.hope[seat] += n
+  state.influence = state.hope[0] - state.hope[1]
 }
+
+/** @deprecated Use hopeFor. Retained while existing card data uses `influence` operation names. */
+export const influenceFor = hopeFor
+/** @deprecated Use addHope. Retained while existing card data uses `influence` operation names. */
+export const addInfluence = addHope
 
 /** Units sorted by instance id for deterministic iteration. */
 export function unitsOf(state: GameState, seat?: Seat): UnitInstance[] {
@@ -235,15 +248,9 @@ export function tribuneLeave(state: GameState, unit: UnitInstance) {
   log(state, unit.owner, `${defOf(state, unit.id).name} yields the floor (Tribune: −1 Hope)`)
 }
 
-/** Win thresholds per seat, with oppThreshold statics applied (a seat's own statics raise the OPPONENT's bar). */
+/** Fixed Hope bands. Every player wins at +12 and loses at -12. */
 export function thresholds(state: GameState): [number, number] {
-  const t: [number, number] = [state.rules.influenceWinThreshold, state.rules.influenceWinThreshold]
-  for (const u of unitsOf(state)) {
-    for (const st of defOf(state, u.id).statics ?? []) {
-      if (st.s === 'oppThreshold') t[other(u.owner)] += st.n
-    }
-  }
-  return t
+  return [state.rules.hopeWinThreshold, state.rules.hopeWinThreshold]
 }
 
 export function isSick(state: GameState, unit: UnitInstance): boolean {
@@ -266,29 +273,19 @@ export function draw(state: GameState, seat: Seat, n: number) {
   }
 }
 
-/** Life check then influence check, per game-rules §1.12. */
+/** Check Life and independent Hope. If both players would win at once, the acting player wins. */
 export function checkWin(state: GameState, actorSeat: Seat) {
   if (state.winner !== null) return
-  const dead0 = state.sides[0].life <= 0
-  const dead1 = state.sides[1].life <= 0
-  if (dead0 || dead1) {
-    let w: Seat
-    if (dead0 && dead1) {
-      const tb = state.rules.simultaneousLifeTiebreak
-      w = tb === 'active' ? state.initiative : actorSeat
-    } else w = dead0 ? 1 : 0
-    state.winner = w
-    state.winReason = 'life'
-    log(state, w, `${state.sides[w].name} wins — opponent's life reached 0`)
-    return
-  }
   const [t0, t1] = thresholds(state)
-  if (state.influence >= t0 || -state.influence >= t1) {
-    const w: Seat = state.influence >= t0 ? 0 : 1
-    state.winner = w
-    state.winReason = 'influence'
-    log(state, w, `${state.sides[w].name} wins — Hope reached ${Math.abs(state.influence)}`)
-  }
+  const loss = [state.sides[0].life <= 0 || state.hope[0] <= -t0, state.sides[1].life <= 0 || state.hope[1] <= -t1] as const
+  const hopeWin = [state.hope[0] >= t0, state.hope[1] >= t1] as const
+  const wins = [hopeWin[0] || loss[1], hopeWin[1] || loss[0]] as const
+  if (!wins[0] && !wins[1]) return
+  const w: Seat = wins[0] && wins[1] ? actorSeat : wins[0] ? 0 : 1
+  state.winner = w
+  state.winReason = hopeWin[w] || state.hope[other(w)] <= -thresholds(state)[other(w)] ? 'hope' : 'life'
+  const reason = state.winReason === 'hope' ? `Hope reached ${state.hope[w] >= thresholds(state)[w] ? state.hope[w] : state.hope[other(w)]}` : "opponent's life reached 0"
+  log(state, w, `${state.sides[w].name} wins — ${reason}`)
 }
 
 /** Sim-mode invariant: every card instance lives in exactly one place. */

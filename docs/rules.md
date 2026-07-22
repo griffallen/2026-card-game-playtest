@@ -4,7 +4,7 @@
 
 # How to Play
 
-*Rules version **3.4.0** — the same number as the engine package, bumped on every combat-behaviour change (issue #119).*
+*Rules version **4.0.0** — the same number as the engine package, bumped on every combat-behaviour change (issue #119).*
 
 Everything you need to sit down and play, the game as it stands today. Want to try it while you read? The [Play](https://booherbg.github.io/new-game-demo/#/play) tab runs the full rules in your browser, and every card’s exact text is in the [Cards](https://booherbg.github.io/new-game-demo/#/cards) tab.
 
@@ -13,9 +13,9 @@ Everything you need to sit down and play, the game as it stands today. Want to t
 You win the instant either of these happens (checked after every single change):
 
 - **Life:** your opponent’s Life hits **0**.
-- **Hope:** the shared track reaches **+20 on your side**. One number sits between you; pulling it to your end wins — even if you’re behind on Life.
+- **🕊️ Hope:** your own Hope reaches **+12**, or your opponent’s reaches **−12**. Each player has a separate Hope track.
 
-**If outcomes happen together:** if a single event would drop both players to 0 Life at once, the player who took the action wins. If one blow would both reduce Life to 0 *and* reach the Hope finish line, the Life victory wins.
+**If outcomes happen together:** if a single event would drop both players to 0 Life at once, the player who took the action wins. If both players would win at once, the player whose action triggered the result wins.
 
 ## The setup
 
@@ -28,7 +28,7 @@ Three zones sit in a line. Units march one step at a time between them:
 > ```
 
 - **Adjacent** zones are the ones touching on the line. The two Home zones are **not** adjacent to each other — you have to cross Neutral.
-- Your **base** is you. It lives in your Home zone; damage to it is Life damage. An enemy can only attack your base from **inside your Home zone**.
+- Your **base** is you. It starts at **24 Life**, lives in your Home zone, and takes Life damage. An enemy can only attack it from **inside your Home zone**.
 - Off to the side you keep your **deck** (face down), **hand** (hidden), **resource row** (face up), and **discard** (face up).
 
 - **Units** have **Power** (damage they deal) and **Health**. They stay on the board, hold zones, and fight.
@@ -80,7 +80,7 @@ The game runs in **rounds**. A round has two parts — a quick automatic **start
 From **round 2 onward**, upkeep runs **one player at a time** — the player holding the **🥇 Regroup marker first**, all the way through, then the opponent. Readying and drawing happen on their own; **banking is a decision**:
 
 - **Ready** all your cards (units and resources untap).
-- **Draw 2** cards. (Drawing from an empty deck costs you 1 Life and 1 Hope per missing card — slow decks have a clock.)
+- **Draw 2** cards. (Drawing from an empty deck costs you 1 Life and 1 of *your* Hope per missing card — slow decks have a clock.)
 - You may **bank one card** from hand as a new resource, or skip.
 
 Order matters here. The holder banks **first — and blind**, before the opponent has drawn or banked a thing. The opponent banks **second, having already seen** what the holder laid down, and can answer it. First to the Regroup marker, first to commit.
@@ -143,7 +143,7 @@ An attack is **one action**, and you can swing with a whole squad at once. The f
 
 ## 🕊️ Hope
 
-Hope is **one shared track** you fight over — gain some and the marker slides toward your **+20**. It’s **earned by events**, never just by sitting there: a guard is paid when it **defends** — blocking *or* being the one attacked — a champion when it **kills**, and some cards pay out when **played**. Get it to +20 on your side and you win, even while losing the fight for Life.
+Each player has a **separate Hope track**, from **−12 to +12**. Your card effects change **your** Hope by default. Reach **+12** to win; fall to **−12** and you lose. Hope is **earned by events**, never just by sitting there: a guard is paid when it **defends** — blocking *or* being the one attacked — a champion when it **kills**, and some cards pay out when **played**.
 
 ## Keywords
 
@@ -158,7 +158,7 @@ The shorthand you’ll see on cards. Tap any card in the [Cards](https://booherb
 | 🏰 Guard | The bodyguard. When a single unit attacks one of yours, only a READY Guard may step in front of the target — one Guard, taking the whole hit. Two Guards can’t gang a lone attacker, and an exhausted Guard can’t block at all. (Attacks on your base are different: anyone may block those.) A Guard never exhausts to block, in duels or gangs — it stays ready, so it can block now and still take its own turn. |
 | 🙈 Hidden | While this unit is ready, enemy actions can’t target it and enemy attacks can’t be declared at it. It can still block — blocking isn’t being targeted — but anything that exhausts it (attacking, blocking, a Sneak) reveals it until it readies again. Strike, vanish, repeat. One limit: Hidden beats choices, not consequences — effects that don’t choose (“all”, whole-zone damage, automatic picks) still reach it. |
 | 🗝️ Infiltrate | May be played into any zone — not just your Home. |
-| ⚖️ Tribune | A Tribune sways the shared Hope track just by taking the field or leaving it: +1 Hope to its controller every time it enters play — whether it is deployed from hand or returns from capture — and −1 every time it leaves play, whether it is defeated or captured. It keys off the event, not the reason, so over a Tribune’s whole life the swing nets to zero and cannot be farmed (a capture’s −1 and its release’s +1 cancel). Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and you gain 1 Hope per Tribune; hold the majority in your enemy’s Home zone and you gain 2 Hope per Tribune — the two stack, so holding both is worth 3 per Tribune. “Majority” means strictly more of your units than the opponent’s in that zone; a tie is not a majority. The middle finally has a constituency — and the boldest campaigns run in enemy territory: hold the crowd, sway the track. |
+| ⚖️ Tribune | A Tribune changes its controller’s Hope just by taking the field or leaving it: +1 Hope every time it enters play — whether it is deployed from hand or returns from capture — and −1 every time it leaves play, whether it is defeated or captured. It keys off the event, not the reason, so over a Tribune’s whole life the change nets to zero and cannot be farmed (a capture’s −1 and its release’s +1 cancel). Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and you gain 1 Hope per Tribune; hold the majority in your enemy’s Home zone and you gain 2 Hope per Tribune — the two stack, so holding both is worth 3 per Tribune. “Majority” means strictly more of your units than the opponent’s in that zone; a tie is not a majority. |
 | 🏹 Ranged N | An ability used as your turn: exhaust this unit to deal N damage to one enemy unit in any zone — the volley. It’s a chosen shot, so a ready Hidden unit refuses it, and a lethal volley counts as a kill. The unit’s regular attacks are ordinary in every way: same zone, blockable, bases included. Archers carry small blades and big bows. |
 | 💨 Rush | A static ability: this unit’s first move each round is free — that one move doesn’t exhaust it, so it can reposition and still fight. One free move per round, and it refreshes every round the unit stays in play; a second move the same round exhausts it like any unit. It grants no extra action and never lets the unit attack any sooner. |
 | 🩸 Scar | Gets +1 Power for each damage marked on it — no cap. A 3-Health unit with 2 damage gets +2. Every wound is fuel; the closer to death, the harder it hits. |
@@ -167,7 +167,7 @@ The shorthand you’ll see on cards. Tap any card in the [Cards](https://booherb
 
 ## Quick reference
 
-> - **Win:** enemy to 0 Life, or Hope to +20 your side.
+> - **Win:** enemy to 0 Life, your Hope to +12, or their Hope to −12.
 > - **Round vs turn:** a **round** is one full cycle; a **turn** is one action. A round is made of many turns.
 > - **Round 1:** no start step — straight into turns with your opening hand and 2 resources.
 > - **Every round after:** both players ready up, draw 2, bank up to 1 — then take turns until two passes in a row.
@@ -186,8 +186,8 @@ If a number in the prose above disagrees with this table, the table is right and
 
 | Rule | Value | Engine key |
 |---|---|---|
-| Starting Life | `20` | `startingLife` |
-| Influence needed to win (either direction) | `20` | `influenceWinThreshold` |
+| Starting Life | `24` | `startingLife` |
+| Influence needed to win (either direction) | `undefined` | `influenceWinThreshold` |
 | Opening hand | `7` | `startingHandSize` |
 | Cards banked at setup | `2` | `startingResources` |
 | Cards drawn at the start of each round | `2` | `drawPerRound` |

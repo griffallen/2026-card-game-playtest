@@ -12,12 +12,12 @@ import type { RulesConfig } from './types.ts'
  * Influence swing on every enter/leave of play — a new engine primitive on top of the unchanged
  * majority payout).
  */
-export const RULES_VERSION = '3.4.0'
+export const RULES_VERSION = '4.0.0'
 
 /** Legacy v2.3 preset, kept for A/B replay. Current rules: docs/rules.md (generated). */
 export const DEFAULT_RULES: RulesConfig = {
   startingLife: 20,
-  influenceWinThreshold: 20,
+  hopeWinThreshold: 20,
   startingHandSize: 7,
   startingResources: 2,
   chooseStartingResources: true,
@@ -51,6 +51,8 @@ export const DEFAULT_RULES: RulesConfig = {
 /** The v3 preset — what the demo runs, and what docs/rules.md documents. */
 export const V3_RULES: RulesConfig = {
   ...DEFAULT_RULES,
+  startingLife: 24,
+  hopeWinThreshold: 12,
   combatModel: 'blockerPairing',
   singleAttackerDuels: true,    // decision 98 (issue #50, designer: "flip it") — duels are canon
   pipModel: 'presence',
@@ -67,5 +69,7 @@ export function normalizeRules(partial: (Partial<RulesConfig> & Record<string, u
     if (old in p && !(nu in p)) p[nu] = p[old]
     delete p[old]
   }
+  if ('influenceWinThreshold' in p && !('hopeWinThreshold' in p)) p.hopeWinThreshold = p.influenceWinThreshold
+  delete p.influenceWinThreshold
   return { ...DEFAULT_RULES, ...(p as Partial<RulesConfig>) }
 }

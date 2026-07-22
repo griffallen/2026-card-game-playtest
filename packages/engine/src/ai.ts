@@ -443,7 +443,7 @@ export function heuristicPolicy(state: GameState, seat: Seat, rngState: number):
   if (best.type === 'play') {
     const def = defOf(state, best.card)
     const cede = (def.onPlay ?? []).reduce((n, op) => (op.op === 'influence' && op.n < 0 ? n + op.n : n), 0)
-    if (cede < 0 && influenceFor(state, seat) + cede <= -state.rules.influenceWinThreshold + 1) {
+    if (cede < 0 && influenceFor(state, seat) + cede <= -state.rules.hopeWinThreshold + 1) {
       return [{ type: 'pass' }, s]
     }
   }

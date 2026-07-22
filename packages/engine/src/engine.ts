@@ -346,8 +346,8 @@ function attachOrphan(state: GameState, action: Extract<GameAction, { type: 'att
   }
   // upgrade pressure applies to salvage too — the greed tax doesn't care how the second upgrade arrived (#23 sweep)
   if (unit.upgrades.length >= 1 && state.rules.upgradePressureInfluence > 0) {
-    runOps({ state, controller: other(seat), actorSeat: seat }, [{ op: 'influence', n: state.rules.upgradePressureInfluence }])
-    log(state, other(seat), `upgrade pressure: ${state.sides[other(seat)].name} gains ${state.rules.upgradePressureInfluence} Hope`)
+    runOps({ state, controller: seat, actorSeat: seat }, [{ op: 'influence', n: state.rules.upgradePressureInfluence }])
+    log(state, seat, `upgrade pressure: ${state.sides[seat].name} gains ${state.rules.upgradePressureInfluence} Hope`)
   }
   up.owner = seat
   up.attachedTo = unit.id
@@ -377,8 +377,8 @@ function passUpgrade(state: GameState, action: Extract<GameAction, { type: 'pass
   payCost(state, seat, cost)
   // upgrade pressure applies to the receiving unit's beyond-first upgrade (mirrors play + salvage)
   if (unit.upgrades.length >= 1 && state.rules.upgradePressureInfluence > 0) {
-    runOps({ state, controller: other(seat), actorSeat: seat }, [{ op: 'influence', n: state.rules.upgradePressureInfluence }])
-    log(state, other(seat), `upgrade pressure: ${state.sides[other(seat)].name} gains ${state.rules.upgradePressureInfluence} Hope`)
+    runOps({ state, controller: seat, actorSeat: seat }, [{ op: 'influence', n: state.rules.upgradePressureInfluence }])
+    log(state, seat, `upgrade pressure: ${state.sides[seat].name} gains ${state.rules.upgradePressureInfluence} Hope`)
   }
   carrier.upgrades = carrier.upgrades.filter(id => id !== up.id)
   up.attachedTo = unit.id
@@ -500,8 +500,8 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
     side.hand.splice(idx, 1)
     // upgrade pressure (v1.2): beyond-first upgrade → opponent gains influence
     if (carrier.upgrades.length >= 1 && state.rules.upgradePressureInfluence > 0) {
-      runOps({ state, controller: other(seat), actorSeat: seat }, [{ op: 'influence', n: state.rules.upgradePressureInfluence }])
-      log(state, other(seat), `upgrade pressure: ${state.sides[other(seat)].name} gains ${state.rules.upgradePressureInfluence} Hope`)
+      runOps({ state, controller: seat, actorSeat: seat }, [{ op: 'influence', n: state.rules.upgradePressureInfluence }])
+      log(state, seat, `upgrade pressure: ${state.sides[seat].name} gains ${state.rules.upgradePressureInfluence} Hope`)
     }
     state.upgrades[action.card] = { id: action.card, slug: def.slug, owner: seat, attachedTo: carrier.id }
     carrier.upgrades.push(action.card)
