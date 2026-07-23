@@ -5,9 +5,9 @@ cost: 7
 pips: yellow, yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"buff","t":{"side":"friendly"},"armor":1,"dur":"perm"}]}
+effects: {"onPlay":[{"op":"ready","side":"friendly","remember":"readiedUnits"},{"op":"damage","t":"enemyBase","n":1,"per":{"count":"readiedUnits"}},{"op":"influenceOpponent","n":1,"per":{"count":"readiedUnits"}}]}
 ---
-Your units get Armor 1, permanently.
+Ready all your units. Your opponent loses Life and Hope equal to the number of units readied this way.
 
 ## Design notes
 

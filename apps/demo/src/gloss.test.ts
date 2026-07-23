@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { CARD_SET } from '@newgame/engine'
+import type { Op, Static } from '@newgame/engine'
 import { KEYWORDS, glossFor, iconFor, shortGlossFor } from '@ui/game/gloss.ts'
 
 /** Issue #114: the keyword gloss is the one place a keyword is explained AND given its symbol.
@@ -7,9 +8,26 @@ import { KEYWORDS, glossFor, iconFor, shortGlossFor } from '@ui/game/gloss.ts'
  *  a card carrying a keyword no surface explains, and a gloss left behind for a keyword the
  *  game no longer has (reach, flying, overextend, untargetable, imprisoned). */
 
-const keywordsOnCards = [...new Set(
-  Object.values(CARD_SET).flatMap(def => (def.kw ?? []).map(k => k.k)),
-)].sort()
+function liveKeywords(): string[] {
+  const found = new Set<string>()
+  const visitOps = (ops: Op[]) => {
+    for (const op of ops) {
+      if (op.op === 'grant') found.add(op.kw.k)
+      if (op.op === 'grantTrigger') visitOps(op.ops)
+      if (op.op === 'createCopies') for (const kw of op.kw ?? []) found.add(kw.k)
+    }
+  }
+  for (const def of Object.values(CARD_SET)) {
+    for (const kw of def.kw ?? []) found.add(kw.k)
+    for (const stat of (def.statics ?? []) as Static[]) if (stat.s === 'aura' && stat.kw) found.add(stat.kw.k)
+    for (const ops of [def.onPlay, def.onEnterZone, def.onAttack, def.onAttackBase, def.onDefend, def.onKill, def.onDeath, def.onHostDeath]) {
+      if (ops) visitOps(ops)
+    }
+  }
+  return [...found].sort()
+}
+
+const keywordsOnCards = liveKeywords()
 
 describe('the keyword gloss covers exactly the live keyword set', () => {
   it('explains and illustrates every keyword printed on a card', () => {

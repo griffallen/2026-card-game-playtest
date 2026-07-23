@@ -525,13 +525,18 @@ function playCard(state: GameState, action: Extract<GameAction, { type: 'play' }
   side.hand.splice(idx, 1)
 
   if (def.type === 'unit') {
-    // v3 Infiltrate: deploy-time zone choice; everyone else deploys home
+    // Infiltrate deploys anywhere; printed Sentries deploy only into Neutral.
     let zone = homeZone(seat)
+    const sentry = (def.kw ?? []).some(k => k.k === 'sentry')
     if (action.zone !== undefined) {
-      if (!(def.kw ?? []).some(k => k.k === 'infiltrate')) fail('bad-zone', `${def.name} lacks Infiltrate — it deploys to your Home`)
       if (![0, 1, 2].includes(action.zone)) fail('bad-zone', 'no such zone')
+      if (!(def.kw ?? []).some(k => k.k === 'infiltrate') && !sentry)
+        fail('bad-zone', `${def.name} lacks Infiltrate — it deploys to your Home`)
       zone = action.zone
     }
+    // Printed Sentries deploy only into Neutral. An effect may grant Sentry anywhere later.
+    if (sentry && zone !== 1)
+      fail('bad-zone', `${def.name} is a Sentry — it deploys only into the Neutral zone`)
     state.units[action.card] = {
       id: action.card, slug: def.slug, owner: seat, zone,
       damage: 0, exhausted: false, enteredRound: state.round, movedThisRound: false,
@@ -564,9 +569,12 @@ function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat, exha
   const unit = state.units[unitId] ?? fail('no-unit', 'no such unit')
   if (unit.owner !== seat) fail('not-yours', 'not your unit')
   if (unit.exhausted) fail('exhausted', 'exhausted units cannot move')
+  if (hasKw(state, unit, 'sentry')) fail('sentry', 'Sentries cannot make normal moves')
   if (isSick(state, unit)) fail('sick', 'this unit just arrived this round')
   if (to === unit.zone) fail('bad-move', 'already there')
   if (!adjacent(unit.zone, to)) fail('bad-move', 'can only move to an adjacent zone')
+  if (unitsInZone(state, unit.zone, other(seat)).some(s => !s.exhausted && hasKw(state, s, 'sentry') && to === homeZone(s.owner)))
+    fail('sentry', 'a ready Sentry bars movement toward its controller’s Home')
   const def = defOf(state, unitId)
   // #104 (Lawbringer): resolve the chosen entry-arrest against the destination's enemies BEFORE the
   // march commits (a bad choice rolls the whole move back). Enemies in `to` are the same before and
@@ -607,7 +615,9 @@ export function interceptCandidates(state: GameState, pa: NonNullable<GameState[
     : pa.target.kind === 'base' ? homeZone(pa.target.seat) : undefined
   if (zone === undefined) return []
   return unitsInZone(state, zone, defender).filter(u =>
-    !u.exhausted && !(pa.target.kind === 'unit' && u.id === pa.target.id))
+    !u.exhausted
+    && (!hasKw(state, u, 'sentry') || hasKw(state, u, 'guard'))
+    && !(pa.target.kind === 'unit' && u.id === pa.target.id))
 }
 
 /** Declare a multi-unit attack (decision 42): validate the group, exhaust, fire onAttack, open the intercept window. */
@@ -623,6 +633,7 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
     if (u.exhausted) fail('exhausted', 'exhausted units cannot attack')
     if (isSick(state, u)) fail('sick', 'this unit just arrived this round')
     if (hasKw(state, u, 'cantAttack')) fail('cant-attack', 'this unit cannot attack')
+    if (hasKw(state, u, 'sentry')) fail('sentry', 'Sentries cannot attack')
   }
   const zone = units[0].zone
   if (units.some(u => u.zone !== zone)) fail('bad-attack', 'attackers must share a zone')
@@ -640,6 +651,8 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
     if (action.target.seat === seat) fail('bad-target', 'cannot attack your own base')
     if (legacyRanged && units.some(u => hasKw(state, u, 'ranged'))) fail('bad-target', 'ranged units cannot target bases')
     if (zone !== homeZone(action.target.seat)) fail('bad-target', "you must stand in the enemy's home zone to strike their base")
+    if (unitsInZone(state, homeZone(action.target.seat), action.target.seat).some(u => !u.exhausted && hasKw(state, u, 'sentry')))
+      fail('sentry', 'a ready Sentry protects this base')
   } else if (action.target.kind === 'unit') {
     const defender = state.units[action.target.id] ?? fail('no-unit', 'no such defender')
     if (defender.owner === seat) fail('bad-target', 'cannot attack your own unit')
@@ -749,7 +762,7 @@ function applyInterceptPhase(state: GameState, action: GameAction, seat: Seat) {
   if (action.type === 'intercept') {
     const u = state.units[action.unit] ?? fail('no-unit', 'no such unit')
     if (!interceptCandidates(state, pa).some(c => c.id === u.id)) fail('bad-intercept', 'that unit cannot intercept this attack')
-    if (state.rules.interceptExhausts && !hasKw(state, u, 'guard') && !hasLastStand(state, seat)) u.exhausted = true  // #107 (Last Stand): the pact keeps interceptors ready
+    if (state.rules.interceptExhausts && !hasKw(state, u, 'guard') && !hasKw(state, u, 'sentry') && !hasLastStand(state, seat)) u.exhausted = true  // #107 (Last Stand): the pact keeps interceptors ready
     log(state, seat, `${defOf(state, u.id).name} intercepts${hasKw(state, u, 'guard') ? ' (guard — stays ready)' : ''}`)
     resolveAttack(state, u.id)
   } else if (action.type === 'declineIntercept') {
@@ -796,7 +809,7 @@ function applyBlockPhase(state: GameState, action: GameAction, seat: Seat) {
   for (const { blocker } of action.pairs) {
     const b = state.units[blocker]!
     // #107 (Last Stand): the pact keeps this seat's blockers ready too
-    if (state.rules.blockingExhausts && !hasKw(state, b, 'guard') && !hasLastStand(state, seat)) b.exhausted = true
+    if (state.rules.blockingExhausts && !hasKw(state, b, 'guard') && !hasKw(state, b, 'sentry') && !hasLastStand(state, seat)) b.exhausted = true
     log(state, seat, `${defOf(state, b.id).name} blocks${hasKw(state, b, 'guard') ? ' (guard — stays ready)' : ''}`)
   }
   // #88 (Devout Intervention, Ward 2): the seat's NEXT blocker is shielded for this fight — stamp
@@ -961,14 +974,8 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   for (const [u, n, src, pierce] of unitHits) if (state.units[u.id]) damageUnit(state, u, n, src, pierce)
   // decision 74: "a kill is a kill" — deaths haven't cleaned up yet, so lethality is the test
   const felled = (id: string) => { const u = state.units[id]; return !!u && u.damage >= effHealth(state, u) }
-  // decision 87: the declaration counts — an unblocked base attack fires "attacks a base"
-  // even if every point of damage is prevented (or the attacker's power is zero)
-  if (pa.target.kind === 'base') {
-    for (const p of plans) if (!p.blockers.length && state.units[p.a.id]) {
-      fireTrigger({ state, attackTarget: pa.target, actorSeat: seat }, p.a, 'onAttackBase')
-    }
-  }
   const toTarget = unblockedTotal + targetSpill
+  let baseDamage = 0
   // #128 (Breakthrough splash + chain, amends decision 102): the breakthrough leftover that breaks
   // PAST a defeated declared target no longer auto-pours into the base. It's handed to a chain the
   // DEFENDER steers (beginSplashChain, below). These carry it out of the resolve.
@@ -978,7 +985,7 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
   let contributors: string[] = []
   if (toTarget > 0) {
     if (pa.target.kind === 'base') {
-      damageBase(state, pa.target.seat, toTarget, unblockedNames.join(', ') || 'breakthrough', true)
+      baseDamage = damageBase(state, pa.target.seat, toTarget, unblockedNames.join(', ') || 'breakthrough', true)
     } else if (targetUnit && state.units[targetUnit.id]) {
       chainZone = targetUnit.zone            // capture before the target may be destroyed by cleanup
       // Non-breakthrough damage is absorbed by the target first (it has nowhere else to go — decision
@@ -1020,6 +1027,12 @@ function resolveBlockedAttack(state: GameState, pairs: { blocker: string; onto: 
           .filter(p => (p.spilled || (!p.blockers.length && hasKw(state, p.a, 'breakthrough'))) && state.units[p.a.id])
           .map(p => p.a.id)
       }
+    }
+  }
+  // Base triggers resolve after prevention so effects can read the actual Life damage dealt.
+  if (pa.target.kind === 'base') {
+    for (const p of plans) if (!p.blockers.length && state.units[p.a.id]) {
+      fireTrigger({ state, attackTarget: pa.target, actorSeat: seat, baseDamage }, p.a, 'onAttackBase')
     }
   }
   // decision 74: attackers credit the blockers they fell; blockers credit the attacker they fell;
@@ -1153,8 +1166,8 @@ function resolveAttack(state: GameState, interceptorId: string | null) {
 
   if (finalRef.kind === 'base') {
     if (alive.length) {
-      damageBase(state, finalRef.seat, combined, alive.map(u => defOf(state, u.id).name).join(', '), true)
-      for (const u of alive) if (state.units[u.id]) fireTrigger({ state, attackTarget: finalRef, actorSeat: seat }, u, 'onAttackBase')
+      const baseDamage = damageBase(state, finalRef.seat, combined, alive.map(u => defOf(state, u.id).name).join(', '), true)
+      for (const u of alive) if (state.units[u.id]) fireTrigger({ state, attackTarget: finalRef, actorSeat: seat, baseDamage }, u, 'onAttackBase')
     }
   } else if (finalUnitId && state.units[finalUnitId]) {
     const defender = state.units[finalUnitId]

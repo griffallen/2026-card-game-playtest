@@ -537,12 +537,11 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       return selection.targets.map(id => ({ kind: 'unit', id }) as TargetRef)
     }
     if (selection.kind === 'infiltrate') {
-      // #121 (Infiltrate): the deployable zones — the seat's Home (its play carries no `zone`) plus
-      // every `zone` variant among the legal plays. Derived, never hardcoded.
-      const refs: TargetRef[] = [{ kind: 'zone', zone: homeZone(seat) }]
+      // Deployment zones are derived from legal plays. Ordinary/Infiltrate units have a Home play
+      // without a zone; printed Sentries have only their required Neutral-zone play.
+      const refs: TargetRef[] = []
       for (const p of playActionsFor(selection.card)) {
-        if (p.zone === undefined) continue
-        const ref: TargetRef = { kind: 'zone', zone: p.zone }
+        const ref: TargetRef = { kind: 'zone', zone: p.zone ?? homeZone(seat) }
         if (!refs.some(r => sameRef(r, ref))) refs.push(ref)
       }
       return refs
@@ -1159,7 +1158,12 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       })()}
       {selection?.kind === 'infiltrate' && (
         <div className="flex flex-wrap items-center gap-1.5 text-xs text-goldbright">
-          <span>✦ <b>{DEMO_CARDS[state.cardOf[selection.card]]?.name}</b> can Infiltrate — tap a glowing zone to deploy it there (your Home, or forward into contested ground).</span>
+          <span>{(() => {
+            const def = DEMO_CARDS[state.cardOf[selection.card]]
+            return (def?.kw ?? []).some(k => k.k === 'sentry')
+              ? <>🛡️ <b>{def?.name}</b> is a Sentry — tap Neutral to deploy it there.</>
+              : <>✦ <b>{def?.name}</b> can Infiltrate — tap a glowing zone to deploy it there (your Home, or forward into contested ground).</>
+          })()}</span>
           <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
         </div>
       )}

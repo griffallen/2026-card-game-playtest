@@ -4,12 +4,13 @@ type: unit
 cost: 5
 power: 3
 health: 3
+keywords: armor 3, steadfast 1
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onDefend":[{"op":"buff","t":"self","p":1,"dur":"round","per":{"count":"attackers"}}]}
+effects: {}
 ---
-When this unit is attacked, it gains +1 Power for each attacker, this round.
+Armor 3. Steadfast 1.
 
 ## Design notes
 

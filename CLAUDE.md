@@ -81,9 +81,14 @@ touching the flow. In brief:
   `apps/demo/src/pages/Rules.tsx` is a truth claim to a player and nothing machine-checks it
   (this is how #106's "Guard gate" ghost — a rule the engine never had — reached the book), so
   that gets a human read.
-- **Approval / lifecycle** (independent of scope): `backlog` (noted) → *(scope tag, no
-  `queued`)* = **scoped but unapproved** → `queued` = **approved + ready** → `building` →
-  `shipped` + close. A `major` can be fully scoped and never approved (never gets `queued`).
+- **Branch-local experimentation:** on any branch other than `main`, the agent may implement,
+  test, and demo any scoped change — including a `major` — without a `queued` label or release
+  approval. This is how designs become playable prototypes. The approval gate applies when a
+  change is proposed for `main` or a public release, not while it is being explored locally.
+- **Approval / lifecycle** (independent of scope, for `main` and releases): `backlog` (noted)
+  → *(scope tag, no `queued`)* = **scoped but unapproved** → `queued` = **approved + ready** →
+  `building` → `shipped` + close. A `major` can be fully scoped and never approved (never gets
+  `queued`).
 - **`queued` vs `build-now`:** `queued` = approved + parked in the ready pool; `build-now`
   = **cut a release of the whole `queued` set** (batched — only ready work ships; hold a
   feature out by not queuing it). Authority by highest scope in the batch: minors-only →
@@ -104,8 +109,9 @@ audit, and ship on your own authority, following the routing and build-workflow 
 the console** — then keep moving on everything else so nothing blocks on a person being in the
 chair. Do not stop to ask the user in the chair "which first?" / "should I proceed?" / "is this
 right?"; pick the obvious order and go. The one thing still reserved for a human is *firing a
-`major` release* (Blaine only) and the handful of genuinely human-owned design calls Griff or
-Blaine must make — and those are raised on GitHub, never used as a reason to idle the console.
+`major` release* (Blaine only); local feature branches may still implement and test major
+changes freely. The handful of genuinely human-owned design calls Griff or Blaine must make are
+raised on GitHub, never used as a reason to idle the console.
 Blaine at the keyboard is a collaborator when he engages, never a gate you wait behind.
 
 **Start:** read the handoff prompt, then check the designer's inbox — the full sweep lives in `/watch` (`.claude/skills/watch/SKILL.md`) — for card PRs or intent issues from Griff (triage: respond on the thread, review card PRs per `data/cards/README.md`, fold accepted changes into the canon). Briefly state where the project stands, then get to work — don't wait for confirmation.

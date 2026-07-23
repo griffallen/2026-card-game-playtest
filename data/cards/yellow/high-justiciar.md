@@ -8,9 +8,9 @@ keywords: guard, tribune
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onKill":[{"op":"influence","n":2}]}
+effects: {"onDefend":[{"op":"buff","t":"self","p":1,"dur":"round","cond":{"influenceAtLeast":1}},{"op":"setPower","t":"self","n":1,"per":{"count":"attackers"},"dur":"round","cond":{"influenceAtMost":0}}]}
 ---
-Guard. Tribune. When this unit defeats a unit, gain 2 Hope.
+Guard. Tribune. When this unit defends, it gets +1 Power this round if your Hope is positive; otherwise, its Power becomes the number of attackers.
 
 ## Design notes
 

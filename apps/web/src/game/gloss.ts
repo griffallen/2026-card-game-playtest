@@ -81,8 +81,18 @@ export const KEYWORDS: Record<string, KeywordInfo> = {
   },
   tribune: {
     icon: '⚖️',
-    short: 'enters/leaves play → ±1 Hope (nets to zero). Round end: +1 per Tribune for a Neutral majority, +2 each for an enemy-Home majority (stacks)',
-    gloss: 'A Tribune changes its controller\'s Hope just by taking or leaving the field: +1 Hope every time it enters play (deployed, or returned from capture), and −1 every time it leaves (defeated OR captured). It keys off the event, not the reason, so over a Tribune\'s whole life it nets to zero and cannot be farmed — a capture (−1) and its later release (+1) cancel. Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and you gain +1 Hope per Tribune; hold the majority in your enemy\'s Home zone and you gain +2 per Tribune — the two stack (both majorities = +3 each). "Majority" means strictly more of your units than the opponent\'s in that zone; a tie is not a majority.',
+    short: 'enters/leaves play → ±1 Life (nets to zero). Round end: +1 Life per Tribune for a Neutral majority, +2 each for an enemy-Home majority (stacks)',
+    gloss: 'A Tribune changes its controller\'s Life just by taking or leaving the field: gain 1 Life every time it enters play (deployed, or returned from capture), and lose 1 Life every time it leaves (defeated OR captured). It keys off the event, not the reason, so over a Tribune\'s whole life it nets to zero and cannot be farmed — a capture (−1 Life) and its later release (+1 Life) cancel. Separately, at the end of each round, count your Tribunes: hold the majority in the Neutral zone and gain 1 Life per Tribune; hold the majority in your enemy\'s Home zone and gain 2 Life per Tribune — the two stack (both majorities = +3 Life each). "Majority" means strictly more of your units than the opponent\'s in that zone; a tie is not a majority.',
+  },
+  sentry: {
+    icon: '🛑',
+    short: 'a ready Sentry holds a zone: it cannot attack or normally move, and enemies there cannot advance toward its controller’s Home',
+    gloss: 'Printed Sentries deploy only to Neutral. A Sentry cannot attack or take a normal move, but it may block without exhausting. While it is ready, enemy units in its zone cannot make a normal move toward its controller’s Home; they may retreat instead. A ready Sentry in its controller’s Home also prevents attacks on that base. Card effects may move Sentries, and cards may grant Sentry in any zone. It does not intercept a lone attack unless it also has Guard.',
+  },
+  steadfast: {
+    icon: '✦',
+    short: 'the first time it defends each round, its controller gains that much Hope',
+    gloss: 'The first time this unit defends each round — by blocking or by being attacked — its controller gains the listed Hope. Defending again that round does not pay again.',
   },
 }
 

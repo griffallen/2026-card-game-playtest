@@ -8,9 +8,9 @@ keywords: capture
 pips: yellow, yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"capture","t":"chosen0"}]}
+effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"capture","t":"chosen0"}],"onDeath":[{"op":"releaseCaptivesHomeWounded"}]}
 ---
-When this enters play, it captures target enemy unit.
+When this enters play, it captures target enemy unit. When this unit dies, each unit it captured returns to its owner's Home with 1 Health remaining.
 
 ## Design notes
 

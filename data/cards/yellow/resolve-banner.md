@@ -5,9 +5,9 @@ cost: 4
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"aura","scope":"friendlyInZone","p":1},{"s":"aura","scope":"attached","h":1,"armor":1}],"attach":{"side":"friendly","pass":2,"salvage":"freeFriendly"}}
+effects: {"statics":[{"s":"aura","scope":"attached","h":2,"armor":1}],"onDefend":[{"op":"heal","t":"selfBase","n":1}]}
 ---
-Attach to unit. This unit gains +1 Health and +1 Armor. Other friendly units in this zone get +1 Power. If this becomes unattached, it can be picked up for 0 resources by a friendly unit. This can't be picked up by an opponent. This upgrade can be passed to a friendly unit in the same zone for 2 resources as an action, any number of times.
+Whenever this unit defends, its controller gains 1 Life. This unit gains +2 Health and +1 Armor.
 
 ## Design notes
 

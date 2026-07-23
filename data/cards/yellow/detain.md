@@ -1,13 +1,13 @@
 ---
 name: Detain
 type: action
-cost: 7
+cost: 3
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"friendly"},{"t":"unit","side":"enemy"}],"onPlay":[{"op":"capture","t":"chosen1","by":"chosen0"},{"op":"heal","t":"selfBase","n":3}]}
+effects: {"targets":[{"t":"unit","side":"enemy"},{"t":"zone","differentFromFirst":true}],"onPlay":[{"op":"move","t":"chosen0","to":"chosenZone"}]}
 ---
-Target unit you control captures target enemy unit. Heal 3 damage from your base.
+Move target enemy unit to another zone.
 
 ## Design notes
 

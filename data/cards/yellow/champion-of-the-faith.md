@@ -4,13 +4,13 @@ type: unit
 cost: 7
 power: 7
 health: 7
-influenceTrigger: onAttack
+keywords: steadfast 2, tribune
 pips: yellow, yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onAttack":[{"op":"influence","n":1}]}
+effects: {}
 ---
-When this attacks, gain 1 Hope.
+Steadfast 2. Tribune.
 
 ## Design notes
 

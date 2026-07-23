@@ -1,14 +1,16 @@
 ---
 name: Radiant Wall
-type: action
-cost: 5
-influenceTrigger: onPlay
+type: unit
+cost: 1
+power: 0
+health: 1
+keywords: sentry, armor 1
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"buff","t":"chosen0","armor":3,"dur":"perm"},{"op":"influence","n":1}]}
+effects: {}
 ---
-Target unit gets Armor 3, permanently. Gain 1 Hope.
+Sentry. Armor 1.
 
 ## Design notes
 

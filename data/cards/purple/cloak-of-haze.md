@@ -8,7 +8,7 @@ art: /cards/cloak-of-haze.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"aura","scope":"attached","kw":{"k":"hidden"}}]}
 ---
-Attached unit has Hidden.
+This unit has Hidden.
 
 ## Design notes
 

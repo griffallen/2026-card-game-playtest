@@ -23,6 +23,7 @@ const OP_ALLOWLIST: Record<string, string> = {
   // #122/#135: was Obscure's op until Griff's #122 rework swapped it for the pick-from-hand
   // discard (chooseFromHand). Kept for future use, deliberately NOT culled (issue #135).
   preventBase: 'Obscure retired it for chooseFromHand (#122); kept for future, not culled (#135)',
+  createCopies: 'Radiant Citadel retired its copy text in the Sentry rework; retained for replay compatibility.',
 }
 const KEYWORD_ALLOWLIST: Record<string, string> = {}
 
@@ -35,20 +36,25 @@ function usedVocabulary(cards: CardDef[]): { keywords: Set<string>; ops: Set<str
   const keywords = new Set<string>()
   const ops = new Set<string>()
   const opLists = (d: CardDef): Op[][] =>
-    [d.onPlay, d.onEnterZone, d.onAttack, d.onAttackBase, d.onDefend, d.onKill, d.onDeath,
+    [d.onPlay, d.onEnterZone, d.onAttack, d.onAttackBase, d.onDefend, d.onDamage, d.onKill, d.onDeath,
      d.onHostDeath, d.startOfRound?.ops, d.endOfRound?.ops, d.sneak?.ops, d.activated?.ops,
      ...(d.modes ?? []).map(m => m.ops)].filter(Boolean) as Op[][]
   const targetLists = (d: CardDef): TargetSpec[][] =>
     [d.targets, d.sneak?.targets, d.activated?.targets,
      ...(d.modes ?? []).map(m => m.targets)].filter(Boolean) as TargetSpec[][]
 
-  for (const d of cards) {
-    for (const k of d.kw ?? []) keywords.add(k.k)
-    for (const list of opLists(d)) for (const op of list) {
+  const visitOps = (list: Op[]) => {
+    for (const op of list) {
       ops.add(op.op)
       if (op.op === 'grant') keywords.add(op.kw.k)
+      if (op.op === 'grantTrigger') visitOps(op.ops)
       if (op.op === 'createCopies') for (const k of op.kw ?? []) keywords.add(k.k)
     }
+  }
+
+  for (const d of cards) {
+    for (const k of d.kw ?? []) keywords.add(k.k)
+    for (const list of opLists(d)) visitOps(list)
     for (const st of (d.statics ?? []) as Static[]) if (st.s === 'aura' && st.kw) keywords.add(st.kw.k)
     for (const list of targetLists(d)) for (const t of list) if (t.withKw) keywords.add(t.withKw)
   }

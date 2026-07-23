@@ -1,13 +1,13 @@
 ---
 name: Sentence
-type: action
-cost: 6
+type: upgrade
+cost: 4
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"friendly"},{"t":"unit","side":"enemy"}],"onPlay":[{"op":"capture","t":"chosen1","by":"chosen0"},{"op":"draw","n":1}]}
+effects: {"attach":{"side":"enemy"},"statics":[{"s":"aura","scope":"attached","setPower":0}],"onHostDeath":[{"op":"damageSourceOwner","n":1,"per":{"count":"sourceCost"}}]}
 ---
-Target unit you control captures target enemy unit. Draw a card.
+This unit's Power is 0. When it dies, its controller loses Life equal to its cost.
 
 ## Design notes
 

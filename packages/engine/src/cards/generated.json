@@ -445,7 +445,7 @@
   "color": "red",
   "type": "upgrade",
   "cost": 3,
-  "text": "Attached unit gets +1 Power and +1 Health and Breakthrough. If you have Hope 0 or less, this unit gets +2 Power and +2 Health instead.",
+  "text": "This unit gets +1 Power and +1 Health and Breakthrough. If you have Hope 0 or less, it gets +2 Power and +2 Health instead.",
   "pips": [
    "red",
    "red"
@@ -644,7 +644,7 @@
   "color": "red",
   "type": "upgrade",
   "cost": 4,
-  "text": "Attached unit gets +2 Power and Breakthrough. When this attaches, gain 1 Hope. Then gain 1 Hope each time its bearer defeats a unit (a trade counts).",
+  "text": "This unit gets +2 Power and Breakthrough. When this attaches, gain 1 Hope. Then gain 1 Hope each time its bearer defeats a unit (a trade counts).",
   "pips": [
    "red",
    "red"
@@ -1072,9 +1072,8 @@
     }
    },
    {
-    "op": "damage",
-    "t": "enemyBase",
-    "n": 2,
+    "op": "influence",
+    "n": 1,
     "per": {
      "count": "deathsThisRound",
      "side": "enemy"
@@ -1086,7 +1085,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 0,
-  "text": "For each friendly unit that has died or dies this round, gain 2 Life. For each enemy unit that has died or dies this round, your opponent loses 2 Life.",
+  "text": "For each friendly unit that has died this round, gain 2 Life. For each enemy unit that has died this round, gain 1 Hope.",
   "pips": [
    "yellow",
    "yellow"
@@ -1099,7 +1098,7 @@
    {
     "s": "aura",
     "scope": "attached",
-    "armor": 1
+    "armor": 2
    }
   ],
   "slug": "iron-discipline",
@@ -1107,7 +1106,7 @@
   "color": "yellow",
   "type": "upgrade",
   "cost": 1,
-  "text": "Attach to unit. This unit gets Armor 1.",
+  "text": "This unit gets Armor 2.",
   "pips": [
    "yellow"
   ],
@@ -1124,17 +1123,56 @@
     }
    }
   ],
+  "onPlay": [
+   {
+    "op": "heal",
+    "t": "selfBase",
+    "n": 1,
+    "per": {
+     "count": "units",
+     "f": {
+      "side": "all",
+      "zone": "all"
+     }
+    }
+   }
+  ],
   "slug": "oath-of-order",
   "name": "Oath of Order",
   "color": "yellow",
   "type": "upgrade",
   "cost": 1,
-  "text": "Attach to unit. This unit gains Guard.",
+  "text": "Gain 1 Life for each unit in play. This unit gains Guard.",
   "pips": [
    "yellow"
   ],
   "designerNote": "2026-07-13 (designer, PR #52 — yellow rebalance pass, issue #50): the +1 Power rider is cut; Guard alone for 1. Notable under the proposed #50 rework, where Guard becomes the only bodyguard.",
   "artUrl": "/cards/oath-of-order.jpg"
+ },
+ "radiant-wall": {
+  "slug": "radiant-wall",
+  "name": "Radiant Wall",
+  "color": "yellow",
+  "type": "unit",
+  "cost": 1,
+  "power": 0,
+  "health": 1,
+  "text": "Sentry. Armor 1.",
+  "kw": [
+   {
+    "k": "sentry"
+   },
+   {
+    "k": "armor",
+    "n": 1
+   }
+  ],
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
+  "designerNote": "Session 006: 4 → 5 mana (armor ladder — see Radiant Aegis).",
+  "artUrl": "/cards/radiant-wall.jpg"
  },
  "vanguard-sentinel": {
   "onDeath": [
@@ -1292,12 +1330,14 @@
     "s": "aura",
     "scope": "attached",
     "armor": 1
-   }
-  ],
-  "onPlay": [
+   },
    {
-    "op": "draw",
-    "n": 1
+    "s": "aura",
+    "scope": "attached",
+    "kw": {
+     "k": "steadfast",
+     "n": 1
+    }
    }
   ],
   "slug": "disciplined-mind",
@@ -1305,7 +1345,7 @@
   "color": "yellow",
   "type": "upgrade",
   "cost": 2,
-  "text": "Attach to unit. This unit gets Armor 1. Draw a card.",
+  "text": "This unit gets Armor 1 and Steadfast 1.",
   "pips": [
    "yellow"
   ],
@@ -1315,20 +1355,18 @@
  "hold-the-line": {
   "targets": [
    {
-    "t": "zone"
+    "t": "unit",
+    "side": "friendly"
    }
   ],
   "onPlay": [
    {
     "op": "grant",
-    "t": {
-     "side": "friendly",
-     "zone": "chosenZone"
-    },
+    "t": "chosen0",
     "kw": {
-     "k": "guard"
+     "k": "sentry"
     },
-    "dur": "perm"
+    "dur": "round"
    }
   ],
   "slug": "hold-the-line",
@@ -1336,7 +1374,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 2,
-  "text": "Choose a zone. Your units there gain Guard.",
+  "text": "This round, target unit gains Sentry.",
   "pips": [
    "yellow"
   ],
@@ -1409,7 +1447,7 @@
     "s": "aura",
     "scope": "attached",
     "kw": {
-     "k": "guard"
+     "k": "sentry"
     }
    },
    {
@@ -1418,24 +1456,49 @@
     "armor": 1
    }
   ],
-  "onPlay": [
-   {
-    "op": "influence",
-    "n": 1
-   }
-  ],
   "slug": "chain-of-law",
   "name": "Chain of Law",
   "color": "yellow",
   "type": "upgrade",
   "cost": 3,
-  "text": "Attached unit has Guard and Armor 1.",
+  "text": "This unit gains Sentry and Armor 1.",
   "pips": [
    "yellow",
    "yellow"
   ],
   "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Untargetable is purple's (as Hidden) now; the chain deputizes instead — Guard + Armor 1, and in v3 orphaned chains are salvageable (decision 67).\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/chain-of-law.jpg"
+ },
+ "detain": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "enemy"
+   },
+   {
+    "t": "zone",
+    "differentFromFirst": true
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "move",
+    "t": "chosen0",
+    "to": "chosenZone"
+   }
+  ],
+  "slug": "detain",
+  "name": "Detain",
+  "color": "yellow",
+  "type": "action",
+  "cost": 3,
+  "text": "Move target enemy unit to another zone.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
+  "designerNote": "Session 006, prison ladder: Detain 6 = the stabilizer — lock the threat away and bind the wound it left. Was a plain imprison+1 at 6 mana, strictly worse than the cheaper rungs.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 6: order restored — the arrest, the healing, the standing.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): cost 6 → 7 — moves in step with Imprisonment Chamber; Chamber+heal spacing preserved. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.",
+  "artUrl": "/cards/detain.jpg"
  },
  "justicar-enforcer": {
   "onDefend": [
@@ -1556,13 +1619,6 @@
   "artUrl": "/cards/radiant-aegis.jpg"
  },
  "sanctified-bastion": {
-  "statics": [
-   {
-    "s": "aura",
-    "scope": "friendlyInZone",
-    "armor": 1
-   }
-  ],
   "slug": "sanctified-bastion",
   "name": "Sanctified Bastion",
   "color": "yellow",
@@ -1570,10 +1626,10 @@
   "cost": 3,
   "power": 1,
   "health": 4,
-  "text": "This can't attack. Tribune. Other friendly units in this zone have Armor 1.",
+  "text": "Sentry. Tribune.",
   "kw": [
    {
-    "k": "cantAttack"
+    "k": "sentry"
    },
    {
     "k": "tribune"
@@ -1597,12 +1653,18 @@
     "pPerHostPip": -2
    }
   ],
+  "onHostDeath": [
+   {
+    "op": "influence",
+    "n": 1
+   }
+  ],
   "slug": "subjugate",
   "name": "Subjugate",
   "color": "yellow",
   "type": "upgrade",
   "cost": 3,
-  "text": "Attach to an enemy unit. While attached, it gets −2 Power for each pip in its cost.",
+  "text": "While attached, this unit gets −2 Power for each pip in its cost. When this unit dies, this upgrade's owner gains 1 Hope.",
   "pips": [
    "yellow",
    "yellow"
@@ -1622,6 +1684,18 @@
     "op": "heal",
     "t": "chosen0",
     "n": 3
+   },
+   {
+    "op": "heal",
+    "t": "selfBase",
+    "n": 3
+   },
+   {
+    "op": "influence",
+    "n": 2,
+    "cond": {
+     "influenceAtMost": 0
+    }
    }
   ],
   "slug": "unwavering-faith",
@@ -1629,7 +1703,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 3,
-  "text": "Heal 3 damage from target unit.",
+  "text": "Heal 3 damage from target unit. Gain 3 Life. If your Hope is less than 1, gain 2 Hope.",
   "pips": [
    "yellow",
    "yellow"
@@ -1707,6 +1781,14 @@
    {
     "op": "draw",
     "n": 1
+   },
+   {
+    "op": "heal",
+    "t": "selfBase",
+    "n": 4,
+    "cond": {
+     "selfLifeLessThanOpponent": true
+    }
    }
   ],
   "slug": "disarming-order",
@@ -1714,7 +1796,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 4,
-  "text": "Target unit can't attack this round. Draw a card.",
+  "text": "Target unit can't attack this round. Draw a card. If you have less Life than your opponent, gain 4 Life.",
   "pips": [
    "yellow",
    "yellow"
@@ -1778,10 +1860,27 @@
   "artUrl": "/cards/fortress-keeper.jpg"
  },
  "high-justiciar": {
-  "onKill": [
+  "onDefend": [
    {
-    "op": "influence",
-    "n": 2
+    "op": "buff",
+    "t": "self",
+    "p": 1,
+    "dur": "round",
+    "cond": {
+     "influenceAtLeast": 1
+    }
+   },
+   {
+    "op": "setPower",
+    "t": "self",
+    "n": 1,
+    "per": {
+     "count": "attackers"
+    },
+    "dur": "round",
+    "cond": {
+     "influenceAtMost": 0
+    }
    }
   ],
   "slug": "high-justiciar",
@@ -1791,7 +1890,7 @@
   "cost": 4,
   "power": 1,
   "health": 4,
-  "text": "Guard. Tribune. When this unit defeats a unit, gain 2 Hope.",
+  "text": "Guard. Tribune. When this unit defends, it gets +1 Power this round if your Hope is positive; otherwise, its Power becomes the number of attackers.",
   "kw": [
    {
     "k": "guard"
@@ -1846,6 +1945,36 @@
     "t": "chosen0",
     "p": 3,
     "dur": "round"
+   },
+   {
+    "op": "grantTrigger",
+    "t": "chosen0",
+    "key": "onAttackBase",
+    "ops": [
+     {
+      "op": "healFromBaseDamage"
+     }
+    ],
+    "dur": "round"
+   },
+   {
+    "op": "grantTrigger",
+    "t": "chosen0",
+    "key": "onKill",
+    "ops": [
+     {
+      "op": "influence",
+      "n": 1
+     }
+    ],
+    "dur": "round"
+   },
+   {
+    "op": "influence",
+    "n": 3,
+    "cond": {
+     "influenceAtMost": -1
+    }
    }
   ],
   "slug": "light-of-authority",
@@ -1853,7 +1982,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 4,
-  "text": "Target unit gets +3 Power this round.",
+  "text": "This round, target unit gets +3 Power. Whenever it deals damage to a base, gain Life equal to that damage. Whenever it defeats an opponent, gain 1 Hope. If your Hope is less than 0, gain 3 Hope.",
   "pips": [
    "yellow",
    "yellow"
@@ -1865,33 +1994,63 @@
   "statics": [
    {
     "s": "aura",
-    "scope": "friendlyInZone",
-    "p": 1
-   },
-   {
-    "s": "aura",
     "scope": "attached",
-    "h": 1,
+    "h": 2,
     "armor": 1
    }
   ],
-  "attach": {
-   "side": "friendly",
-   "pass": 2,
-   "salvage": "freeFriendly"
-  },
+  "onDefend": [
+   {
+    "op": "heal",
+    "t": "selfBase",
+    "n": 1
+   }
+  ],
   "slug": "resolve-banner",
   "name": "Resolve Banner",
   "color": "yellow",
   "type": "upgrade",
   "cost": 4,
-  "text": "Attach to unit. This unit gains +1 Health and +1 Armor. Other friendly units in this zone get +1 Power. If this becomes unattached, it can be picked up for 0 resources by a friendly unit. This can't be picked up by an opponent. This upgrade can be passed to a friendly unit in the same zone for 2 resources as an action, any number of times.",
+  "text": "Whenever this unit defends, its controller gains 1 Life. This unit gains +2 Health and +1 Armor.",
   "pips": [
    "yellow",
    "yellow"
   ],
   "designerNote": "Session 006: 6 → 4 mana (red gets the same aura board-wide ON a 5/5 body for 6 — Warlord Garok).\n\n#86 (Griff, ratified): the banner grew from a bare +Power aura into a movable rallying standard. It now buffs its bearer (+1 Health, +1 Armor) on top of the zone aura, and — the new part — can march: an attached banner can be **passed** to another friendly unit in the same zone for 2 resources, as an action, any number of times per round (tempo self-regulates the loop). When its bearer falls, the banner lies where it dropped and only a friendly unit may take it back up, for free — an opponent can't claim it. The +1 Health is real stock: a unit standing only because of the banner falls the instant it leaves (passed away, or lost with its bearer). First mover engine work: upgrade-granted Health, per-card salvage rules, and the pass-as-action primitive (`passUpgrade`).",
   "artUrl": "/cards/resolve-banner.jpg"
+ },
+ "sentence": {
+  "attach": {
+   "side": "enemy"
+  },
+  "statics": [
+   {
+    "s": "aura",
+    "scope": "attached",
+    "setPower": 0
+   }
+  ],
+  "onHostDeath": [
+   {
+    "op": "damageSourceOwner",
+    "n": 1,
+    "per": {
+     "count": "sourceCost"
+    }
+   }
+  ],
+  "slug": "sentence",
+  "name": "Sentence",
+  "color": "yellow",
+  "type": "upgrade",
+  "cost": 4,
+  "text": "This unit's Power is 0. When it dies, its controller loses Life equal to its cost.",
+  "pips": [
+   "yellow",
+   "yellow"
+  ],
+  "designerNote": "Session 006, prison ladder: Sentence 4 = imprison that replaces itself. The old 10+ rider duplicated what imprisonment already does.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 4: the full sentence — any prisoner, plus the paperwork (draw).\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): 4 → 5: capture-anything plus a draw was priced under voluntary release; death-only (decision 92) made it premium removal. ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): cost 5 → 6 — moves in step with Imprisonment Chamber so the capture rung holds across the pool. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.",
+  "artUrl": "/cards/sentence.jpg"
  },
  "censer-of-purity": {
   "activated": {
@@ -1918,8 +2077,11 @@
   "cost": 5,
   "power": 0,
   "health": 6,
-  "text": "Tribune. As an action, move any amount of damage from one friendly unit onto this unit — up to what this unit can take without its Health falling below 0. Doing so exhausts the Censer.",
+  "text": "Sentry. Tribune. As an action, move any amount of damage from one friendly unit onto this unit — up to what this unit can take without its Health falling below 0. Doing so exhausts the Censer.",
   "kw": [
+   {
+    "k": "sentry"
+   },
    {
     "k": "tribune"
    }
@@ -1932,6 +2094,17 @@
   "artUrl": "/cards/censer-of-purity.jpg"
  },
  "custodian-of-law": {
+  "onDeath": [
+   {
+    "op": "draw",
+    "n": 1
+   },
+   {
+    "op": "heal",
+    "t": "selfBase",
+    "n": 3
+   }
+  ],
   "slug": "custodian-of-law",
   "name": "Custodian of Law",
   "color": "yellow",
@@ -1939,7 +2112,7 @@
   "cost": 5,
   "power": 2,
   "health": 5,
-  "text": "Guard. Tribune.",
+  "text": "Guard. Tribune. When this unit dies, draw a card and gain 3 Life.",
   "kw": [
    {
     "k": "guard"
@@ -1956,17 +2129,6 @@
   "artUrl": "/cards/custodian-of-law.jpg"
  },
  "dawnspear-paladin": {
-  "onDefend": [
-   {
-    "op": "buff",
-    "t": "self",
-    "p": 1,
-    "dur": "round",
-    "per": {
-     "count": "attackers"
-    }
-   }
-  ],
   "slug": "dawnspear-paladin",
   "name": "Dawnspear Paladin",
   "color": "yellow",
@@ -1974,7 +2136,17 @@
   "cost": 5,
   "power": 3,
   "health": 3,
-  "text": "When this unit is attacked, it gains +1 Power for each attacker, this round.",
+  "text": "Armor 3. Steadfast 1.",
+  "kw": [
+   {
+    "k": "armor",
+    "n": 3
+   },
+   {
+    "k": "steadfast",
+    "n": 1
+   }
+  ],
   "pips": [
    "yellow",
    "yellow"
@@ -1991,21 +2163,24 @@
    {
     "op": "exhaust",
     "t": {
-     "side": "enemy",
-     "maxCostInfluence": true
+     "side": "enemy"
+    },
+    "cond": {
+     "influenceAtLeast": 1
     }
    },
    {
-    "op": "influence",
+    "op": "heal",
+    "t": "selfBase",
     "n": 1,
     "cond": {
-     "influenceAtMost": 0
+     "influenceAtMost": -1
     },
     "per": {
      "count": "units",
      "f": {
       "side": "enemy",
-      "zone": "controllerHome"
+      "zone": "all"
      }
     }
    }
@@ -2015,7 +2190,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 5,
-  "text": "Gain 1 Hope. Then exhaust every enemy unit whose cost is no more than your current Hope. If your Hope is below 1, gain 1 Hope for each enemy unit in your Home zone.",
+  "text": "Gain 1 Hope. Then exhaust all enemy units if your Hope is positive. If your Hope is negative, gain 1 Life for each enemy unit.",
   "pips": [
    "yellow",
    "yellow"
@@ -2023,7 +2198,7 @@
   "designerNote": "2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Mass judgment: the small are stilled everywhere.\n\n2026-07-15 (#89, Griff ratified): the flat \"≤3 Power, +2 Influence\" becomes a scaling verdict. The +1 lands FIRST, then the exhaust reads your *new* Influence as a live cost cap — at 3 Influence you gain 1 to reach 4 and still every enemy costing ≤4; the further ahead you are, the wider the judgment sweeps. The old flat +2 is gone; instead a catch-up clause: if you're still under 1 Influence after the gain, the verdict pays 1 per enemy standing in your Home — the deeper the invasion, the harder the comeback. Two new primitives: `maxCostInfluence` (an exhaust filter tied to the controller's live Influence) and a filter `zone: controllerHome` (the caster's own Home), feeding decision-103 per-op scaling on a `cond`-gated Influence gain.",
   "artUrl": "/cards/radiant-judgment.jpg"
  },
- "radiant-wall": {
+ "sanctify": {
   "targets": [
    {
     "t": "unit",
@@ -2032,39 +2207,18 @@
   ],
   "onPlay": [
    {
-    "op": "buff",
-    "t": "chosen0",
-    "armor": 3,
-    "dur": "perm"
+    "op": "grant",
+    "t": {
+     "side": "friendly"
+    },
+    "kw": {
+     "k": "tribune"
+    },
+    "dur": "round"
    },
    {
-    "op": "influence",
-    "n": 1
-   }
-  ],
-  "slug": "radiant-wall",
-  "name": "Radiant Wall",
-  "color": "yellow",
-  "type": "action",
-  "cost": 5,
-  "text": "Target unit gets Armor 3, permanently. Gain 1 Hope.",
-  "pips": [
-   "yellow",
-   "yellow"
-  ],
-  "designerNote": "Session 006: 4 → 5 mana (armor ladder — see Radiant Aegis).",
-  "artUrl": "/cards/radiant-wall.jpg"
- },
- "sanctify": {
-  "onPlay": [
-   {
-    "op": "heal",
-    "t": "selfBase",
-    "n": 4
-   },
-   {
-    "op": "influence",
-    "n": 1
+    "op": "clearDamage",
+    "t": "chosen0"
    }
   ],
   "slug": "sanctify",
@@ -2072,7 +2226,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 5,
-  "text": "Heal 4 damage from your base. Gain 1 Hope.",
+  "text": "This round, your units gain Tribune. Heal all damage on one friendly unit.",
   "pips": [
    "yellow",
    "yellow"
@@ -2085,14 +2239,26 @@
    {
     "s": "aura",
     "scope": "attached",
+    "p": 2,
     "armor": 2
    },
    {
     "s": "aura",
     "scope": "attached",
     "kw": {
-     "k": "guard"
+     "k": "steadfast",
+     "n": 2
     }
+   }
+  ],
+  "onPlay": [
+   {
+    "op": "grant",
+    "t": "self",
+    "kw": {
+     "k": "shielded"
+    },
+    "dur": "perm"
    }
   ],
   "slug": "unshakable-wall",
@@ -2100,7 +2266,7 @@
   "color": "yellow",
   "type": "upgrade",
   "cost": 5,
-  "text": "Attach to unit. This unit gets +2 Armor and Guard.",
+  "text": "This unit gains a Shield, Steadfast 2, +2 Armor, and +2 Power.",
   "pips": [
    "yellow",
    "yellow"
@@ -2108,12 +2274,6 @@
   "artUrl": "/cards/unshakable-wall.jpg"
  },
  "gateward-colossus": {
-  "onDefend": [
-   {
-    "op": "influence",
-    "n": 1
-   }
-  ],
   "slug": "gateward-colossus",
   "name": "Gateward Colossus",
   "color": "yellow",
@@ -2121,17 +2281,18 @@
   "cost": 6,
   "power": 2,
   "health": 4,
-  "text": "Guard. Armor 1. Can't attack. When this defends, gain 1 Hope.",
+  "text": "Sentry. Armor 1. Steadfast 1.",
   "kw": [
    {
-    "k": "guard"
+    "k": "sentry"
    },
    {
     "k": "armor",
     "n": 1
    },
    {
-    "k": "cantAttack"
+    "k": "steadfast",
+    "n": 1
    }
   ],
   "pips": [
@@ -2250,7 +2411,14 @@
      "side": "friendly"
     },
     "p": 1,
-    "dur": "perm"
+    "dur": "round",
+    "per": {
+     "count": "units",
+     "f": {
+      "side": "enemy",
+      "zone": "all"
+     }
+    }
    },
    {
     "op": "grant",
@@ -2260,7 +2428,7 @@
     "kw": {
      "k": "guard"
     },
-    "dur": "perm"
+    "dur": "round"
    }
   ],
   "slug": "mobilize-the-faithful",
@@ -2268,48 +2436,13 @@
   "color": "yellow",
   "type": "action",
   "cost": 6,
-  "text": "Your units get +1 Power and gain Guard, permanently.",
+  "text": "This round, your units gain Guard and +1 Power for each enemy unit.",
   "pips": [
    "yellow",
    "yellow"
   ],
   "designerNote": "Session 006: 4 → 6 mana. A permanent board-wide pump plus mass Guard was priced like a trick; it is a haymaker (red's Warpath gives +1 for one round at 2).\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.",
   "artUrl": "/cards/mobilize-the-faithful.jpg"
- },
- "sentence": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "friendly"
-   },
-   {
-    "t": "unit",
-    "side": "enemy"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "capture",
-    "t": "chosen1",
-    "by": "chosen0"
-   },
-   {
-    "op": "draw",
-    "n": 1
-   }
-  ],
-  "slug": "sentence",
-  "name": "Sentence",
-  "color": "yellow",
-  "type": "action",
-  "cost": 6,
-  "text": "Target unit you control captures target enemy unit. Draw a card.",
-  "pips": [
-   "yellow",
-   "yellow"
-  ],
-  "designerNote": "Session 006, prison ladder: Sentence 4 = imprison that replaces itself. The old 10+ rider duplicated what imprisonment already does.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 4: the full sentence — any prisoner, plus the paperwork (draw).\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): 4 → 5: capture-anything plus a draw was priced under voluntary release; death-only (decision 92) made it premium removal. ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): cost 5 → 6 — moves in step with Imprisonment Chamber so the capture rung holds across the pool. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.",
-  "artUrl": "/cards/sentence.jpg"
  },
  "archon-of-order": {
   "targets": [
@@ -2324,6 +2457,11 @@
     "t": "chosen0"
    }
   ],
+  "onDeath": [
+   {
+    "op": "releaseCaptivesHomeWounded"
+   }
+  ],
   "slug": "archon-of-order",
   "name": "Archon of Order",
   "color": "yellow",
@@ -2331,7 +2469,7 @@
   "cost": 7,
   "power": 3,
   "health": 4,
-  "text": "When this enters play, it captures target enemy unit.",
+  "text": "When this enters play, it captures target enemy unit. When this unit dies, each unit it captured returns to its owner's Home with 1 Health remaining.",
   "kw": [
    {
     "k": "capture"
@@ -2346,12 +2484,6 @@
   "artUrl": "/cards/archon-of-order.jpg"
  },
  "champion-of-the-faith": {
-  "onAttack": [
-   {
-    "op": "influence",
-    "n": 1
-   }
-  ],
   "slug": "champion-of-the-faith",
   "name": "Champion of the Faith",
   "color": "yellow",
@@ -2359,7 +2491,16 @@
   "cost": 7,
   "power": 7,
   "health": 7,
-  "text": "When this attacks, gain 1 Hope.",
+  "text": "Steadfast 2. Tribune.",
+  "kw": [
+   {
+    "k": "steadfast",
+    "n": 2
+   },
+   {
+    "k": "tribune"
+   }
+  ],
   "pips": [
    "yellow",
    "yellow",
@@ -2371,12 +2512,24 @@
  "command-edict": {
   "onPlay": [
    {
-    "op": "buff",
-    "t": {
-     "side": "friendly"
-    },
-    "armor": 1,
-    "dur": "perm"
+    "op": "ready",
+    "side": "friendly",
+    "remember": "readiedUnits"
+   },
+   {
+    "op": "damage",
+    "t": "enemyBase",
+    "n": 1,
+    "per": {
+     "count": "readiedUnits"
+    }
+   },
+   {
+    "op": "influenceOpponent",
+    "n": 1,
+    "per": {
+     "count": "readiedUnits"
+    }
    }
   ],
   "slug": "command-edict",
@@ -2384,7 +2537,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 7,
-  "text": "Your units get Armor 1, permanently.",
+  "text": "Ready all your units. Your opponent loses Life and Hope equal to the number of units readied this way.",
   "pips": [
    "yellow",
    "yellow",
@@ -2392,42 +2545,6 @@
   ],
   "designerNote": "Session 006 redesign: was +2 Armor for one round at 7 — a fog effect priced like a finisher. Now the fortress decree: permanent board-wide Armor 1.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat +2 rider is cut — under death-only capture (decision 92) and the duel law, the effect alone carries the cost. ⚑ ratify/veto.",
   "artUrl": "/cards/command-edict.jpg"
- },
- "detain": {
-  "targets": [
-   {
-    "t": "unit",
-    "side": "friendly"
-   },
-   {
-    "t": "unit",
-    "side": "enemy"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "capture",
-    "t": "chosen1",
-    "by": "chosen0"
-   },
-   {
-    "op": "heal",
-    "t": "selfBase",
-    "n": 3
-   }
-  ],
-  "slug": "detain",
-  "name": "Detain",
-  "color": "yellow",
-  "type": "action",
-  "cost": 7,
-  "text": "Target unit you control captures target enemy unit. Heal 3 damage from your base.",
-  "pips": [
-   "yellow",
-   "yellow"
-  ],
-  "designerNote": "Session 006, prison ladder: Detain 6 = the stabilizer — lock the threat away and bind the wound it left. Was a plain imprison+1 at 6 mana, strictly worse than the cheaper rungs.\n\n2026-07-11 (v3 churn pass 3): prison dies (#9), Capture succeeds it. Rung 6: order restored — the arrest, the healing, the standing.\n2026-07-13 (agent pass, issue #55 — designer commission: \"take a crack at modifying all Yellow cards\"): the flat 'Gain 1 Influence' rider is cut (your Iron Plating direction, applied wholesale — influence should be earned at moments, not stapled to spells; this slows yellow's influence clock directly). ⚑ ratify/veto.\n\n2026-07-15 (#91 balance pass — Griff: \"do all the card cuts\"): cost 6 → 7 — moves in step with Imprisonment Chamber; Chamber+heal spacing preserved. Full pass: griffs-yellow 69.7% → 56.0% vs griffs-red (N=300). ⚑ ratify/veto.",
-  "artUrl": "/cards/detain.jpg"
  },
  "prison-of-light": {
   "targets": [
@@ -2441,23 +2558,23 @@
     "t": {
      "side": "enemy",
      "zone": "chosenZone"
-    }
+    },
+    "remember": "newlyExhaustedEnemies"
    },
    {
     "op": "influence",
     "n": 1,
     "per": {
-     "count": "units",
-     "f": {
-      "side": "enemy",
-      "zone": "chosenZone"
-     }
+     "count": "newlyExhaustedEnemies"
     }
    },
    {
     "op": "heal",
     "t": "selfBase",
-    "n": 2
+    "n": 2,
+    "per": {
+     "count": "newlyExhaustedEnemies"
+    }
    }
   ],
   "slug": "prison-of-light",
@@ -2465,7 +2582,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 7,
-  "text": "Choose a zone: exhaust all enemy units there. Gain 1 Hope for each enemy unit exhausted, and gain 2 Life.",
+  "text": "Choose a zone: exhaust all enemy units there. Gain 1 Hope and 2 Life for each enemy unit newly exhausted this way.",
   "pips": [
    "yellow",
    "yellow",
@@ -2475,24 +2592,9 @@
   "artUrl": "/cards/prison-of-light.jpg"
  },
  "radiant-citadel": {
-  "onPlay": [
+  "onDamage": [
    {
-    "op": "createCopies",
-    "n": 2,
-    "p": 0,
-    "h": 1,
-    "kw": [
-     {
-      "k": "guard"
-     },
-     {
-      "k": "tribune"
-     },
-     {
-      "k": "cantAttack"
-     }
-    ],
-    "ifOnlyCopy": true
+    "op": "healFromDamageTaken"
    }
   ],
   "slug": "radiant-citadel",
@@ -2502,20 +2604,21 @@
   "cost": 7,
   "power": 1,
   "health": 4,
-  "text": "This can't attack. When it enters play, if it's the only Radiant Citadel you own in play, it raises two 0/1 copies of itself in your Home — ready, with Guard and Tribune, unable to attack. Copies vanish when they die.",
+  "text": "Guard. Sentry. Armor 2. Steadfast 1. Whenever this unit takes damage, gain Life equal to the damage dealt.",
   "kw": [
    {
     "k": "guard"
    },
    {
-    "k": "tribune"
-   },
-   {
-    "k": "cantAttack"
+    "k": "sentry"
    },
    {
     "k": "armor",
     "n": 2
+   },
+   {
+    "k": "steadfast",
+    "n": 1
    }
   ],
   "pips": [
@@ -2543,7 +2646,10 @@
    {
     "op": "damage",
     "t": "chosen0",
-    "n": 3
+    "n": 1,
+    "per": {
+     "count": "positiveHope"
+    }
    },
    {
     "op": "exhaust",
@@ -2552,7 +2658,17 @@
    {
     "op": "damage",
     "t": "chosen1",
-    "n": 3
+    "n": 1,
+    "per": {
+     "count": "positiveHope"
+    }
+   },
+   {
+    "op": "influence",
+    "n": 7,
+    "cond": {
+     "influenceAtMost": 0
+    }
    }
   ],
   "slug": "supreme-sentence",
@@ -2560,7 +2676,7 @@
   "color": "yellow",
   "type": "action",
   "cost": 7,
-  "text": "Up to two target enemy units anywhere are exhausted and take 3 damage each.",
+  "text": "Up to two target enemy units anywhere are exhausted and take damage equal to your Hope. If your Hope is less than 1, gain 7 Hope.",
   "pips": [
    "yellow",
    "yellow",
@@ -2570,13 +2686,11 @@
   "artUrl": "/cards/supreme-sentence.jpg"
  },
  "light-s-vanguard": {
-  "onDefend": [
+  "onDeath": [
    {
-    "op": "influence",
-    "n": 1,
-    "per": {
-     "count": "attackers"
-    }
+    "op": "heal",
+    "t": "selfBase",
+    "n": 8
    }
   ],
   "slug": "light-s-vanguard",
@@ -2586,13 +2700,21 @@
   "cost": 8,
   "power": 4,
   "health": 8,
-  "text": "Guard. Shielded. For each unit that attacks this unit, gain 1 Hope.",
+  "text": "Guard. Shielded. Armor 2. Steadfast 2. When this unit dies, gain 8 Life.",
   "kw": [
    {
     "k": "guard"
    },
    {
     "k": "shielded"
+   },
+   {
+    "k": "armor",
+    "n": 2
+   },
+   {
+    "k": "steadfast",
+    "n": 2
    }
   ],
   "pips": [
@@ -2686,7 +2808,7 @@
   "color": "purple",
   "type": "upgrade",
   "cost": 2,
-  "text": "Attached unit has Hidden.",
+  "text": "This unit has Hidden.",
   "pips": [
    "purple"
   ],
@@ -3022,7 +3144,7 @@
   "color": "purple",
   "type": "upgrade",
   "cost": 3,
-  "text": "Attach to any unit — it gets −2 Power. When it dies, draw 2 cards.",
+  "text": "Any unit gets −2 Power. When it dies, draw 2 cards.",
   "pips": [
    "purple",
    "purple"

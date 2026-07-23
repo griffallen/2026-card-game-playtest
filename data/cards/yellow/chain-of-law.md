@@ -5,9 +5,9 @@ cost: 3
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"aura","scope":"attached","kw":{"k":"guard"}},{"s":"aura","scope":"attached","armor":1}],"onPlay":[{"op":"influence","n":1}]}
+effects: {"statics":[{"s":"aura","scope":"attached","kw":{"k":"sentry"}},{"s":"aura","scope":"attached","armor":1}]}
 ---
-Attached unit has Guard and Armor 1.
+This unit gains Sentry and Armor 1.
 
 ## Design notes
 

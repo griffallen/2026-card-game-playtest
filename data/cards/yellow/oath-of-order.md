@@ -5,9 +5,9 @@ cost: 1
 pips: yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"aura","scope":"attached","kw":{"k":"guard"}}]}
+effects: {"statics":[{"s":"aura","scope":"attached","kw":{"k":"guard"}}],"onPlay":[{"op":"heal","t":"selfBase","n":1,"per":{"count":"units","f":{"side":"all","zone":"all"}}}]}
 ---
-Attach to unit. This unit gains Guard.
+Gain 1 Life for each unit in play. This unit gains Guard.
 
 ## Design notes
 

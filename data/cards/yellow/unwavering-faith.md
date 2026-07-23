@@ -5,9 +5,9 @@ cost: 3
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"any"}],"onPlay":[{"op":"heal","t":"chosen0","n":3}]}
+effects: {"targets":[{"t":"unit","side":"any"}],"onPlay":[{"op":"heal","t":"chosen0","n":3},{"op":"heal","t":"selfBase","n":3},{"op":"influence","n":2,"cond":{"influenceAtMost":0}}]}
 ---
-Heal 3 damage from target unit.
+Heal 3 damage from target unit. Gain 3 Life. If your Hope is less than 1, gain 2 Hope.
 
 ## Design notes
 

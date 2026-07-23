@@ -4,13 +4,13 @@ type: unit
 cost: 3
 power: 1
 health: 4
-keywords: cantAttack, tribune
+keywords: sentry, tribune
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"aura","scope":"friendlyInZone","armor":1}]}
+effects: {}
 ---
-This can't attack. Tribune. Other friendly units in this zone have Armor 1.
+Sentry. Tribune.
 
 ## Design notes
 

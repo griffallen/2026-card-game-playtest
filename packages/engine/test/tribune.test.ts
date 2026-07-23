@@ -43,7 +43,7 @@ function v3game(): GameState {
   while (s.phase === 'bank') s = applyAction(s, { type: 'skipResource' }, s.actorSeat).state
   return s
 }
-const inf = (s: GameState, seat: Seat) => (seat === 0 ? s.influence : -s.influence)
+const inf = (s: GameState, seat: Seat) => s.sides[seat].life
 const act = (s: GameState, a: GameAction) => applyAction(s, a, s.actorSeat).state
 /** Play a card FROM HAND as the current actor (fuels the cost first). */
 function playFromHand(s: GameState, seat: Seat, slug: string, targets?: { kind: 'unit'; id: string }[]): GameState {

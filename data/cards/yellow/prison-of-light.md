@@ -5,9 +5,9 @@ cost: 7
 pips: yellow, yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"zone"}],"onPlay":[{"op":"exhaust","t":{"side":"enemy","zone":"chosenZone"}},{"op":"influence","n":1,"per":{"count":"units","f":{"side":"enemy","zone":"chosenZone"}}},{"op":"heal","t":"selfBase","n":2}]}
+effects: {"targets":[{"t":"zone"}],"onPlay":[{"op":"exhaust","t":{"side":"enemy","zone":"chosenZone"},"remember":"newlyExhaustedEnemies"},{"op":"influence","n":1,"per":{"count":"newlyExhaustedEnemies"}},{"op":"heal","t":"selfBase","n":2,"per":{"count":"newlyExhaustedEnemies"}}]}
 ---
-Choose a zone: exhaust all enemy units there. Gain 1 Hope for each enemy unit exhausted, and gain 2 Life.
+Choose a zone: exhaust all enemy units there. Gain 1 Hope and 2 Life for each enemy unit newly exhausted this way.
 
 ## Design notes
 

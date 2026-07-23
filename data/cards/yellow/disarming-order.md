@@ -5,9 +5,9 @@ cost: 4
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"grant","t":"chosen0","kw":{"k":"cantAttack"},"dur":"round"},{"op":"draw","n":1}]}
+effects: {"targets":[{"t":"unit","side":"enemy"}],"onPlay":[{"op":"grant","t":"chosen0","kw":{"k":"cantAttack"},"dur":"round"},{"op":"draw","n":1},{"op":"heal","t":"selfBase","n":4,"cond":{"selfLifeLessThanOpponent":true}}]}
 ---
-Target unit can't attack this round. Draw a card.
+Target unit can't attack this round. Draw a card. If you have less Life than your opponent, gain 4 Life.
 
 ## Design notes
 

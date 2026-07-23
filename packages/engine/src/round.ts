@@ -120,10 +120,9 @@ export function endRound(state: GameState, actorSeat: Seat) {
   state.attackTaxes = state.attackTaxes.filter(t => t.rounds > 0)
   state.preventBase = [0, 0]
 
-  // Tribune (#104 rework, Griff; renamed from Politician in #125 — decision 115): at round end, per
-  // seat, count P = your tribunes. Hold the majority of units in the Neutral zone → gain +1 × P; hold
-  // the majority in your ENEMY's Home → gain +2 × P. Both can apply (a seat with both majorities gains
-  // +3 × P). "Majority" = strictly MORE of your units than the opponent's in that zone — a tie is
+  // Tribune: at round end, per seat, count P = your tribunes. Hold the majority of units in the
+  // Neutral zone → gain +1 Life × P; hold the majority in your ENEMY's Home → gain +2 Life × P.
+  // Both can apply (a seat with both majorities gains +3 Life × P). "Majority" = strictly MORE of your units than the opponent's in that zone — a tie is
   // never a majority (superseding decision 88's single flat +1). This round-end payout is UNCHANGED by
   // #125; only the keyword's NAME changed (and it gained the separate enter/leave ±1 swing).
   // ⚑ LITERAL reading (flagged for Griff to confirm): P is your TOTAL tribunes wherever they stand —
@@ -139,8 +138,8 @@ export function endRound(state: GameState, actorSeat: Seat) {
       if (majority(seat, 1)) gain += tribunes                          // the Neutral zone: +1 each
       if (majority(seat, homeZone(other(seat)))) gain += 2 * tribunes   // the enemy's Home: +2 each
       if (gain === 0) continue
-      addInfluence(state, seat, gain)
-      log(state, seat, `${state.sides[seat].name}'s ${tribunes} tribune${tribunes > 1 ? 's' : ''} press ${tribunes > 1 ? 'their' : 'its'} advantage (+${gain} Hope)`)
+      state.sides[seat].life += gain
+      log(state, seat, `${state.sides[seat].name}'s ${tribunes} tribune${tribunes > 1 ? 's' : ''} press ${tribunes > 1 ? 'their' : 'its'} advantage (+${gain} Life)`)
     }
   }
   stateBasedCleanup(state, actorSeat)

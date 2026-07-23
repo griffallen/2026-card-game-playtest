@@ -4,13 +4,13 @@ type: unit
 cost: 7
 power: 1
 health: 4
-keywords: guard, tribune, cantAttack, armor 2
+keywords: guard, sentry, armor 2, steadfast 1
 pips: yellow, yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"createCopies","n":2,"p":0,"h":1,"kw":[{"k":"guard"},{"k":"tribune"},{"k":"cantAttack"}],"ifOnlyCopy":true}]}
+effects: {"onDamage":[{"op":"healFromDamageTaken"}]}
 ---
-This can't attack. When it enters play, if it's the only Radiant Citadel you own in play, it raises two 0/1 copies of itself in your Home — ready, with Guard and Tribune, unable to attack. Copies vanish when they die.
+Guard. Sentry. Armor 2. Steadfast 1. Whenever this unit takes damage, gain Life equal to the damage dealt.
 
 ## Design notes
 

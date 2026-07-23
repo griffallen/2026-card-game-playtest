@@ -5,9 +5,9 @@ cost: 3
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"attach":{"side":"enemy"},"statics":[{"s":"aura","scope":"attached","pPerHostPip":-2}]}
+effects: {"attach":{"side":"enemy"},"statics":[{"s":"aura","scope":"attached","pPerHostPip":-2}],"onHostDeath":[{"op":"influence","n":1}]}
 ---
-Attach to an enemy unit. While attached, it gets −2 Power for each pip in its cost.
+While attached, this unit gets −2 Power for each pip in its cost. When this unit dies, this upgrade's owner gains 1 Hope.
 
 ## Design notes
 

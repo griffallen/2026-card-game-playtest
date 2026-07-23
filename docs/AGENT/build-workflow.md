@@ -10,7 +10,8 @@ Ruled in #92 (Blaine + Fable, 2026-07-15). Three ideas carry it:
 2. **Scope and approval are different questions** — how *big* a change is (`patch`/`minor`/
    `major`) is independent of whether it's *approved to build* (`queued`). A major can be
    fully scoped and never approved.
-3. **The scope decides who fires it** — patch flows on its own; minor/major wait for a human.
+3. **Branch work is not a release** — any scoped change may be implemented and playtested on a
+   non-`main` branch. Human approval governs merging and public release, not local prototyping.
 
 ## Two axes
 
@@ -27,7 +28,7 @@ old balance sims stay valid: re-tuning a card legitimately invalidates old sims,
 | `docs` | **nothing changes** — the words catch up to behaviour the engine already runs | **agent, automatically** (see below) |
 | `patch` | one self-contained fix — a stat/cost tweak, card wiring, copy fix, bugfix-with-test | **agent, automatically** |
 | `minor` | a batch worth shipping together (several cards/nerfs or a small feature) | **Blaine or Griff** (`build-now`) |
-| `major` | **the game does something different** — a new/changed/removed mechanic, a new engine primitive, a rules change | **Blaine only** (`build-now`) |
+| `major` | **the game does something different** — a new/changed/removed mechanic, a new engine primitive, a rules change | **Freely on non-`main` branches; Blaine only for `main`/public release** (`build-now`) |
 
 **Card work is never `major`.** Tweaking stats, costs, pips or statuses, adding or dropping
 cards, and balancing are the designer's own lane — they must never block on Blaine. The line is
@@ -39,14 +40,15 @@ whether **the engine has to learn something new**, and the build already answers
 > that's an engine change → `major`.
 
 So a brand-new card built from existing mechanics is Griff's to make freely. A card that needs a
-new primitive stops for Blaine — and the failing check tells you which, no judgement call.
+new primitive is a `major`, but it can still be built and playtested freely on a non-`main`
+branch; it stops for Blaine only before merge or public release.
 
 **Axis 2 — Lifecycle / approval** (where it is):
 
 | State | Meaning |
 |-------|---------|
 | `backlog` | Noted, not yet scoped. |
-| *(scope tag, no `queued`)* | **Scoped but unapproved** — where a `major` sits while Blaine weighs its scoping brief. |
+| *(scope tag, no `queued`)* | **Scoped but unapproved for `main`/release.** It may still be implemented and tested on a non-`main` branch. |
 | `queued` | **Approved and ready to build.** May park here, waiting to batch or for the right moment. |
 | `building` | Transient — shipping right now. |
 | `shipped` | Terminal (+ close); cross-refs its `RELEASES.md` line. |
@@ -84,9 +86,10 @@ else — `DECISIONS.md`, `RELEASES.md`, the charters, README, CLAUDE.md — the 
 - **minor** — agent/human scope-tags `minor` and posts the **scoping brief** → a **human adds
   `queued`** to approve → queued items accrue → **`build-now`** cuts a release of the queued set
   (Blaine or Griff, if no `major` is queued).
-- **major** — scope-tags `major` + scoping brief → **Blaine adds `queued`** to approve → the
-  next release including it is **Blaine's to fire**. A major too complicated to be worth it
-  simply never gets `queued` — scoped and on record, but unbuilt.
+- **major** — scope-tags `major` + scoping brief → it may be **implemented, audited, and
+  playtested freely on a non-`main` branch**. **Blaine adds `queued`** only to approve its merge
+  or public release; the next release including it is Blaine's to fire. A major that never gets
+  `queued` remains a local prototype or a scoped, unbuilt idea.
 
 ## The trigger — `build-now` cuts a release
 

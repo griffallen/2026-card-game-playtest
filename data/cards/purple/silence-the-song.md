@@ -8,7 +8,7 @@ art: /cards/silence-the-song.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"attach":{"side":"any"},"statics":[{"s":"aura","scope":"attached","p":-2}],"onHostDeath":[{"op":"draw","n":2}]}
 ---
-Attach to any unit — it gets −2 Power. When it dies, draw 2 cards.
+Any unit gets −2 Power. When it dies, draw 2 cards.
 
 ## Design notes
 

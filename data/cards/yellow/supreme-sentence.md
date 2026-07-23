@@ -5,9 +5,9 @@ cost: 7
 pips: yellow, yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"enemy","count":2,"upTo":true}],"onPlay":[{"op":"exhaust","t":"chosen0"},{"op":"damage","t":"chosen0","n":3},{"op":"exhaust","t":"chosen1"},{"op":"damage","t":"chosen1","n":3}]}
+effects: {"targets":[{"t":"unit","side":"enemy","count":2,"upTo":true}],"onPlay":[{"op":"exhaust","t":"chosen0"},{"op":"damage","t":"chosen0","n":1,"per":{"count":"positiveHope"}},{"op":"exhaust","t":"chosen1"},{"op":"damage","t":"chosen1","n":1,"per":{"count":"positiveHope"}},{"op":"influence","n":7,"cond":{"influenceAtMost":0}}]}
 ---
-Up to two target enemy units anywhere are exhausted and take 3 damage each.
+Up to two target enemy units anywhere are exhausted and take damage equal to your Hope. If your Hope is less than 1, gain 7 Hope.
 
 ## Design notes
 

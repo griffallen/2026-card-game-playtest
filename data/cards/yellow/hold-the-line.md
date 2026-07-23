@@ -5,9 +5,9 @@ cost: 2
 pips: yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"zone"}],"onPlay":[{"op":"grant","t":{"side":"friendly","zone":"chosenZone"},"kw":{"k":"guard"},"dur":"perm"}]}
+effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"grant","t":"chosen0","kw":{"k":"sentry"},"dur":"round"}]}
 ---
-Choose a zone. Your units there gain Guard.
+This round, target unit gains Sentry.
 
 ## Design notes
 

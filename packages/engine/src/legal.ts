@@ -132,6 +132,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
       continue
     }
     const infiltrates = def.type === 'unit' && (def.kw ?? []).some(k => k.k === 'infiltrate')
+    const sentry = def.type === 'unit' && (def.kw ?? []).some(k => k.k === 'sentry')
     if (def.modes) {  // v3 modal cards: each mode enumerates with its own targets
       def.modes.forEach((mode, mi) => {
         if (!condHolds(state, seat, mode.cond)) return   // #87: a gated mode is not offered until its condition holds
@@ -152,8 +153,10 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
       continue
     }
     for (const targets of enumerateTargets(state, seat, card)) {
-      out.push(targets.length ? { type: 'play', card, targets } : { type: 'play', card })
-      if (infiltrates) for (const z of ZONES) {
+      if (!sentry) out.push(targets.length ? { type: 'play', card, targets } : { type: 'play', card })
+      if (sentry) {
+        out.push(targets.length ? { type: 'play', card, targets, zone: 1 } : { type: 'play', card, zone: 1 })
+      } else if (infiltrates) for (const z of ZONES) {
         if (z === homeZone(seat)) continue   // the default deploy, already emitted
         out.push(targets.length ? { type: 'play', card, targets, zone: z } : { type: 'play', card, zone: z })
       }
@@ -162,13 +165,17 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
 
   // moves — both players act in their own windows now (decision 40; no active-player gate)
   for (const unit of unitsOf(state, seat)) {
-    if (unit.exhausted || isSick(state, unit)) continue
+    if (unit.exhausted || isSick(state, unit) || hasKw(state, unit, 'sentry')) continue
     const zones = ZONES.filter(z => adjacent(z, unit.zone))
     // #104 (Lawbringer): a unit that arrests a CHOSEN enemy on entry expands each destination into
     // one move per eligible enemy waiting there (a plain move when none) — the same choose-which-not-
     // whether rule as its play, now against the destination zone.
     const chooses = choosesEntryExhaust(defOf(state, unit.id))
     for (const to of zones) {
+      // A ready enemy Sentry holds this zone's approach to its controller's Home. Card effects
+      // can still move a unit; this only removes the ordinary move action.
+      if (unitsInZone(state, unit.zone, other(seat)).some(s =>
+        !s.exhausted && hasKw(state, s, 'sentry') && to === homeZone(s.owner))) continue
       const picks = chooses ? entryExhaustTargets(state, seat, to) : []
       if (picks.length) for (const p of picks) out.push({ type: 'move', unit: unit.id, to, exhaust: p.id })
       else out.push({ type: 'move', unit: unit.id, to })
@@ -261,7 +268,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
   }
 
   // attacks (decision 42): each ready unit alone, plus one full-group per (zone, shared target). No guard-forcing.
-  const attackers = unitsOf(state, seat).filter(u => !u.exhausted && !isSick(state, u) && !hasKw(state, u, 'cantAttack'))
+  const attackers = unitsOf(state, seat).filter(u => !u.exhausted && !isSick(state, u) && !hasKw(state, u, 'cantAttack') && !hasKw(state, u, 'sentry'))
   // PR #46 (splashReap): a chosen-splash attacker declares its victim with the attack — one
   // action variant per victim combination (decision 24: everything is declared up front)
   const withSplash = (a: Extract<GameAction, { type: 'attack' }>): GameAction[] => {
@@ -317,7 +324,8 @@ function attackTargets(state: GameState, attacker: UnitInstance): TargetRef[] {
   }
 
   // base: standing in the enemy home zone; the v2.3 ranged ban applies only there (decision 80)
-  if (!ranged && attacker.zone === homeZone(enemy)) {
+  if (!ranged && attacker.zone === homeZone(enemy)
+    && !unitsInZone(state, homeZone(enemy), enemy).some(u => !u.exhausted && hasKw(state, u, 'sentry'))) {
     out.push({ kind: 'base', seat: enemy })
   }
   return out
@@ -350,12 +358,18 @@ function multiCombos(state: GameState, spec: TargetSpec, candidates: TargetRef[]
 /** Decision 72 (adjacentToFirst): every zone ref must hug the first chosen unit's zone.
  *  (Applied whenever any spec carries the flag — no card mixes constrained and free zone targets.) */
 function passesAdjacency(state: GameState, specs: TargetSpec[], combo: TargetRef[]): boolean {
-  if (!specs.some(s => s.adjacentToFirst)) return true
+  if (!specs.some(s => s.adjacentToFirst || s.differentFromFirst)) return true
   const first = combo.find(r => r.kind === 'unit')
   if (!first || first.kind !== 'unit') return false
   const u = state.units[first.id]
   if (!u) return false
-  return combo.every(r => r.kind !== 'zone' || adjacent(r.zone, u.zone))
+  return combo.every((r, i) => {
+    if (r.kind !== 'zone') return true
+    const spec = specs[i]
+    if (spec?.adjacentToFirst && !adjacent(r.zone, u.zone)) return false
+    if (spec?.differentFromFirst && r.zone === u.zone) return false
+    return true
+  })
 }
 
 function enumerateTargetSpecs(state: GameState, seat: Seat, specs: TargetSpec[]): TargetRef[][] {
@@ -451,4 +465,3 @@ function candidatesFor(state: GameState, seat: Seat, spec: TargetSpec): TargetRe
   }
   return out
 }
-

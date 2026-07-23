@@ -24,7 +24,7 @@ export const KEYWORD_NAMES = [
   // decision 88 (#29): a majority in Neutral / the enemy Home sways the influence track at round end.
   // #125 (decision 115): renamed Politician → Tribune, and the keyword now also swings Influence ±1
   // on every enter/leave of play (cause-blind, net-zero over a life).
-  'tribune',
+  'tribune', 'sentry', 'steadfast',
 ] as const
 export type KeywordName = (typeof KEYWORD_NAMES)[number]
 export interface KeywordSpec { k: KeywordName; n?: number }
@@ -34,6 +34,7 @@ export interface Cond {
   influenceAtLeast?: number   // controller's perspective
   influenceAtMost?: number
   selfLifeAtMost?: number
+  selfLifeLessThanOpponent?: boolean
 }
 
 /** Ops resolve against: play-time chosen targets, the effect's own card, or a filter. */
@@ -84,11 +85,17 @@ export type PerCount =
    *  lands before the ops run), so excluding it keeps an empty board a clean no-op, not self-bleed. */
   | { count: 'exhaustedEnemyUnits' }
   | { count: 'allExhaustedUnits' }
+  | { count: 'positiveHope' }
+  | { count: 'readiedUnits' }
+  | { count: 'newlyExhaustedEnemies' }
+  | { count: 'sourceCost' }
 
 export type Op =
   | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number | 'linked'; bonusIfDamaged?: number; per?: PerCount; cond?: Cond }  // 'linked' = the amount from the previous linking op (v3, spec §3)  // autoSplash: strongest other enemy unit in the attack target's zone  // per (#85): scale n by a live count (e.g. enemy deaths this round)  // cond (#107 Warpath): the hit fires only while the controller's state holds — Warpath's self-life price is paid only while ahead on Influence
   | { op: 'damageFilter'; f: UnitFilter; n: number; creditsKills?: boolean }  // creditsKills (#107 Crimson Behemoth): the source unit's onKill fires for every unit this AoE fells — friend or foe (decision 74: lethality is the test)
-  | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number; per?: PerCount }  // chosen may be unitOrBase; per scales n (PR #71)
+  | { op: 'heal'; t: 'chosen0' | 'selfBase'; n: number; per?: PerCount; cond?: Cond }  // chosen may be unitOrBase; per scales n (PR #71)
+  | { op: 'healFromBaseDamage' }  // onAttackBase only: restore controller Life by actual base damage
+  | { op: 'healFromDamageTaken' } // onDamage only: restore controller Life by actual damage this unit took
   | { op: 'draw'; n?: number; upTo?: number }  // exactly one of n / upTo. n: draw that many (ignores hand size). upTo (#122 Eclipse): draw until the hand holds upTo cards, measured LIVE at resolution — never discards down; both paths eat decision 33's empty-deck penalty
   | { op: 'lockPlays'; who: 'opponent' | 'controller' }        // #122 (Eclipse): lock a seat out of playing cards from hand this round (opponent = other(controller)); the single gate is getLegalActions, board actions untouched
   | { op: 'discardRandom'; who: 'opponent' | 'controller'; n?: number }  // #122 (Eclipse): seeded RANDOM discard, resolved inline (n default 1) — pulls from state.rngState (the shuffle's PRNG) so replays stay bit-identical; an empty/short hand is a silent no-op (no decision-33 penalty)
@@ -103,13 +110,16 @@ export type Op =
    *  bottom 1" is two separate ops (two entries). */
   | { op: 'chooseFromHand'; who?: 'controller' | 'each'; to: 'discard' | 'deckBottom'; n?: number }
   | { op: 'influence'; n: number; per?: PerCount; cond?: Cond; ifKilled?: boolean }   // + toward controller; per scales n (PR #70/#71); cond gates the gain (#79 Radiant Aegis); ifKilled (#107 Flameblade Raider): onDeath-only — the gain fires only if this unit felled a unit in the same combat it died in (a trade counts)
+  | { op: 'influenceOpponent'; n: number; per?: PerCount }  // opponent loses Hope
   | { op: 'influenceOwner'; t: 'chosen0' | 'chosen1'; n: number; per?: PerCount }   // #122 (Assassin's Contract): grant the CHOSEN target's OWNER (not the controller) influence, n scaled by `per` (targetCostHalf). Kill an enemy unit and the ENEMY's Influence rises; kill your own and you gain. Owner read live, before any same-action destroy.
   | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'round' | 'perm'; cond?: Cond; per?: PerCount }  // per (#104 Dawnspear Paladin): scale the granted p/h/armor by a live count (e.g. +1 Power PER attacker, onDefend)
+  | { op: 'setPower'; t: OpTarget; n: number; per?: PerCount; dur: 'round' | 'perm' }
   | { op: 'double'; t: OpTarget | UnitFilter; rounds?: number }  // v3 (Unchained Rage): filter-wide, multi-round
   | { op: 'grant'; t: OpTarget | UnitFilter; kw: KeywordSpec; dur: 'round' | 'perm' }
+  | { op: 'grantTrigger'; t: OpTarget; key: 'onAttackBase' | 'onKill'; ops: Op[]; dur: 'round' | 'perm' }
   | { op: 'destroy'; t: OpTarget; mustBeDamaged?: boolean }
   | { op: 'destroyUpgrade' }                                      // target: chosen upgrade
-  | { op: 'ready'; side: 'friendly'; t?: 'chosen0' }             // with t: readies only that chosen unit (Final Onslaught)
+  | { op: 'ready'; side: 'friendly'; t?: 'chosen0'; remember?: 'readiedUnits' }  // with t: readies only that chosen unit (Final Onslaught)
   | { op: 'extraAction' }                                         // the same player immediately takes another action (decision 43)
   | { op: 'preventBase'; n: number }
   | { op: 'wardHome' }        // #88 (Devout Intervention): arm a one-shot ward — the next DAMAGING attack on the controller's Home is fully prevented; spends only on real prevention (a feint leaves it armed), and never blocks direct-damage spells
@@ -118,9 +128,11 @@ export type Op =
   | { op: 'clearDamage'; t: OpTarget }
   | { op: 'countBuff'; t: OpTarget; per: { color?: Color; side: 'all' | 'friendly' | 'enemy'; zone: 'ofTarget'; other?: boolean }; p: number; dur: 'round' | 'perm' }  // v3 (Reckless mode B): +p per matching unit                            // v3 (Blood Rush): remove ALL damage; the amount becomes the linked value
   | { op: 'capture'; t: OpTarget; by?: 'chosen0'; income?: number }  // v3: take the enemy unit under the source unit — or a chosen warden; income = influence per round while held (PR #53)
-  | { op: 'exhaust'; t: OpTarget | 'auto' | UnitFilter; auto?: AutoPick }  // v3 yellow: order a unit to stand down. #104 (Lawbringer): t:'auto' + auto:{scope:'enteredZone'} arrests the strongest READY enemy in the zone the source just entered — the deterministic single-target auto-pick that backs onEnterZone triggers
+  | { op: 'exhaust'; t: OpTarget | 'auto' | UnitFilter; auto?: AutoPick; cond?: Cond; remember?: 'newlyExhaustedEnemies' }  // v3 yellow: order a unit to stand down. #104 (Lawbringer): t:'auto' + auto:{scope:'enteredZone'} arrests the strongest READY enemy in the zone the source just entered — the deterministic single-target auto-pick that backs onEnterZone triggers
   | { op: 'freeCaptives' }                                        // v3 yellow: your captured units return, READY (decision 73)
   | { op: 'move'; t: OpTarget; to: 'chosenZone' }                 // decision 72: relocate the unit — exhausted or not, exhausting nothing
+  | { op: 'damageSourceOwner'; n: number; per?: PerCount }        // an upgrade's dead host controller loses Life
+  | { op: 'releaseCaptivesHomeWounded' }                           // release this dying unit's captives to their owners' Homes at 1 remaining Health
   | { op: 'attackTax'; n: number; rounds: number }                // PR #39 (Unchained Rage): each of your attacking units cedes n influence
   | { op: 'doom'; t: 'chosen0' }                                  // PR #38 (Final Onslaught): after the extra action, the unit and its attack's victims die
   | { op: 'xSurge'; t: 'chosen0' }                                // issue #45 (Reckless Abandon): lose X influence; +X power and Breakthrough this round
@@ -135,7 +147,7 @@ export type Static =
    *  computed live so a salvaged upgrade (decision 67) re-fits its new host.
    *  h (#86, Resolve Banner): flat Health granted to the affected unit — the first upgrade-granted
    *  Health. Read live through effHealth, so detaching the upgrade recomputes lethality at once. */
-  | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; pPerHostPip?: number; armor?: number; h?: number; kw?: KeywordSpec; cond?: Cond }
+  | { s: 'aura'; scope: 'otherFriendly' | 'friendlyInZone' | 'enemyInZone' | 'attached'; p?: number; setPower?: number; pPerHostPip?: number; armor?: number; h?: number; kw?: KeywordSpec; cond?: Cond }
   | { s: 'oppThreshold'; n: number }      // opponent's win threshold raised by n
 
 /** What a play action must supply as chosen targets, in order. */
@@ -156,6 +168,7 @@ export interface TargetSpec {
   upTo?: boolean            // v3 (Volcanic Slam): 1..count targets acceptable instead of exactly count
   sameZone?: boolean        // v3 (Volcanic Slam): all unit targets of this spec share one zone
   adjacentToFirst?: boolean // decision 72 (Reckless Charge): this zone must sit adjacent to the first chosen unit's zone
+  differentFromFirst?: boolean // this zone must differ from the first chosen unit's current zone
 }
 
 // ─── Card definitions ────────────────────────────────────────────────────────
@@ -223,6 +236,7 @@ export interface CardDef {
   onAttack?: Op[]
   onAttackBase?: Op[]
   onDefend?: Op[]
+  onDamage?: Op[]            // fires after this unit takes actual (post-Armor/Shield) damage
   onKill?: Op[]
   onDeath?: Op[]             // PR #54: fires as the unit dies (controller = owner)
   /** #122 (Silence the Song): fires when the HOST unit this upgrade is attached to DIES — the ops
@@ -296,6 +310,7 @@ export interface RulesConfig {
 // ─── In-play state ───────────────────────────────────────────────────────────
 export interface Mod {
   p?: number
+  setPower?: number
   h?: number
   armor?: number
   kw?: KeywordSpec
@@ -303,6 +318,7 @@ export interface Mod {
   round?: boolean            // expires at end of round
   rounds?: number            // v3: expires after this many round-ends (2 = survives one, dies at the second)
   cond?: Cond                // active only while condition holds (checked against owner)
+  triggers?: { key: 'onAttackBase' | 'onKill'; ops: Op[] }[]
 }
 
 export interface UnitInstance {
@@ -323,6 +339,8 @@ export interface UnitInstance {
   overextendedBy: number
   /** v3 Shielded: entered with a shield token; first damage instance is prevented and this flips */
   shielded: boolean
+  /** Steadfast pays once per round, even when a unit defends more than once. */
+  steadfastDefendedRound?: number
   /** #69 (createCopies): minted by an effect, never a deck card. Present = the unit vanishes on
    *  death (no discard). p/h/kw, when set, replace the printed body/keyword line. */
   created?: { p?: number; h?: number; kw?: KeywordSpec[] }

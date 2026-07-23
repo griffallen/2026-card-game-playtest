@@ -5,9 +5,9 @@ cost: 1
 pips: yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"aura","scope":"attached","armor":1}]}
+effects: {"statics":[{"s":"aura","scope":"attached","armor":2}]}
 ---
-Attach to unit. This unit gets Armor 1.
+This unit gets Armor 2.
 
 ## Design notes
 

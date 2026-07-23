@@ -7,7 +7,7 @@ status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"statics":[{"s":"aura","scope":"attached","p":1,"h":1,"cond":{"influenceAtLeast":1}},{"s":"aura","scope":"attached","p":2,"h":2,"cond":{"influenceAtMost":0}},{"s":"aura","scope":"attached","kw":{"k":"breakthrough"}}]}
 ---
-Attached unit gets +1 Power and +1 Health and Breakthrough. If you have Hope 0 or less, this unit gets +2 Power and +2 Health instead.
+This unit gets +1 Power and +1 Health and Breakthrough. If you have Hope 0 or less, it gets +2 Power and +2 Health instead.
 
 ## Design notes
 

@@ -6,9 +6,9 @@ influenceTrigger: onPlay
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"influence","n":1},{"op":"exhaust","t":{"side":"enemy","maxCostInfluence":true}},{"op":"influence","n":1,"cond":{"influenceAtMost":0},"per":{"count":"units","f":{"side":"enemy","zone":"controllerHome"}}}]}
+effects: {"onPlay":[{"op":"influence","n":1},{"op":"exhaust","t":{"side":"enemy"},"cond":{"influenceAtLeast":1}},{"op":"heal","t":"selfBase","n":1,"cond":{"influenceAtMost":-1},"per":{"count":"units","f":{"side":"enemy","zone":"all"}}}]}
 ---
-Gain 1 Hope. Then exhaust every enemy unit whose cost is no more than your current Hope. If your Hope is below 1, gain 1 Hope for each enemy unit in your Home zone.
+Gain 1 Hope. Then exhaust all enemy units if your Hope is positive. If your Hope is negative, gain 1 Life for each enemy unit.
 
 ## Design notes
 

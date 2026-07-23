@@ -7,8 +7,10 @@ health: 5
 keywords: guard, tribune
 pips: yellow, yellow
 status: canon
+# effects is agent-maintained: ask for changes in the PR, do not hand-edit
+effects: {"onDeath":[{"op":"draw","n":1},{"op":"heal","t":"selfBase","n":3}]}
 ---
-Guard. Tribune.
+Guard. Tribune. When this unit dies, draw a card and gain 3 Life.
 
 ## Design notes
 

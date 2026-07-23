@@ -6,14 +6,14 @@ import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 // enforced from the single KEYWORD_NAMES source in types.ts. KEYWORDS + OPS are exported so
 // vocabulary-coverage.test.ts can prove every live word is reachable by a real card (issue #135).
 export const KEYWORDS = new Set<string>(KEYWORD_NAMES)
-export const OPS = new Set(['damage', 'damageFilter', 'heal', 'draw', 'chooseFromHand', 'influence', 'influenceOwner', 'buff', 'double', 'grant', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand', 'reckoning', 'lockPlays', 'discardRandom', 'revealHand'])
+export const OPS = new Set(['damage', 'damageFilter', 'heal', 'healFromBaseDamage', 'healFromDamageTaken', 'draw', 'chooseFromHand', 'influence', 'influenceOpponent', 'influenceOwner', 'buff', 'setPower', 'double', 'grant', 'grantTrigger', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'damageSourceOwner', 'releaseCaptivesHomeWounded', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand', 'reckoning', 'lockPlays', 'discardRandom', 'revealHand'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
 const STATICS = new Set(['aura', 'oppThreshold'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
 const TARGET_KINDS = new Set(['unit', 'unitOrBase', 'zone', 'upgrade'])
-const COND_KEYS = new Set(['influenceAtLeast', 'influenceAtMost', 'selfLifeAtMost'])
+const COND_KEYS = new Set(['influenceAtLeast', 'influenceAtMost', 'selfLifeAtMost', 'selfLifeLessThanOpponent'])
 const BASE_COUNTS = new Set(['handSize', 'discardUnitsBoth'])   // #122: powerFromCount/healthFromCount values
-const TRIGGER_KEYS = ['onPlay', 'onEnterZone', 'onAttack', 'onAttackBase', 'onDefend', 'onKill', 'onDeath'] as const
+const TRIGGER_KEYS = ['onPlay', 'onEnterZone', 'onAttack', 'onAttackBase', 'onDefend', 'onDamage', 'onKill', 'onDeath'] as const
 
 const isInt = (v: unknown, lo = -99, hi = 99) => Number.isInteger(v) && (v as number) >= lo && (v as number) <= hi
 
@@ -189,7 +189,7 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       if (h !== undefined && typeof h !== 'boolean') err("per:{count:'influence'} half must be true/false")
     } else if (p.count === 'targetRemainingHealth' || p.count === 'targetCostHalf') {   // #122 (Assassin's Contract): read the chosen0 target
       if (chosenSlots < 1) err(`per:{count:'${p.count}'} reads the chosen target but the card declares no targets`)
-    } else if (p.count === 'exhaustedEnemyUnits' || p.count === 'allExhaustedUnits') {
+    } else if (p.count === 'exhaustedEnemyUnits' || p.count === 'allExhaustedUnits' || p.count === 'positiveHope' || p.count === 'readiedUnits' || p.count === 'newlyExhaustedEnemies' || p.count === 'sourceCost') {
       // #122 (The Unseen Court): global board counts — no target, side, or filter to validate
     } else err(`bad per count ${String(p.count)}`)
   }
@@ -220,9 +220,13 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
           if (op.auto.choose !== undefined && typeof op.auto.choose !== 'boolean') err('auto exhaust choose must be true/false')
         }
       } else checkTargetRef(op.t)
+      for (const k of Object.keys(op.cond ?? {})) if (!COND_KEYS.has(k)) err(`unknown condition ${k}`)
+      if (op.remember !== undefined && op.remember !== 'newlyExhaustedEnemies') err('bad exhaust remember')
       break
     case 'damageFilter': checkTargetRef(op.f); if (!isInt(op.n, 0)) err('bad n'); break
-    case 'heal': if (op.t !== 'selfBase') checkTargetRef(op.t); if (!isInt(op.n, 0)) err('bad n'); checkPer(op.per); break
+    case 'heal': if (op.t !== 'selfBase') checkTargetRef(op.t); if (!isInt(op.n, 0)) err('bad n'); checkPer(op.per); for (const k of Object.keys(op.cond ?? {})) if (!COND_KEYS.has(k)) err(`unknown condition ${k}`); break
+    case 'healFromBaseDamage': if (where !== 'onAttackBase') err('healFromBaseDamage only fires onAttackBase'); break
+    case 'healFromDamageTaken': if (where !== 'onDamage') err('healFromDamageTaken only fires onDamage'); break
     case 'draw':   // #122 (Eclipse): exactly one of n / upTo. n: 1-10 as before; upTo: fill-to target 1-12
       if ((op.n === undefined) === (op.upTo === undefined)) err('draw needs exactly one of n / upTo')
       else if (op.n !== undefined) { if (!isInt(op.n, 1, 10)) err('bad draw count') }
@@ -252,6 +256,10 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
         else if (where !== 'onDeath') err('ifKilled only fires in onDeath (it credits a unit that dies dealing a lethal blow)')
       }
       break
+    case 'influenceOpponent':
+      if (!isInt(op.n, 1, 20)) err('bad opponent Hope loss')
+      checkPer(op.per)
+      break
     case 'influenceOwner':   // #122 (Assassin's Contract): grant a chosen target's OWNER influence
       checkTargetRef(op.t)   // must reference a chosen unit target (chosen0/chosen1)
       if (!isInt(op.n, -20, 20) || op.n === 0) err('bad influence amount')
@@ -266,11 +274,21 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       checkPer(op.per)   // #104 (Dawnspear Paladin): +stat PER attacker on defense (attackers → onDefend only)
       break
     }
+    case 'setPower':
+      checkTargetRef(op.t); if (!isInt(op.n, 0, 99)) err('bad setPower value'); checkPer(op.per)
+      if (!['round', 'perm'].includes(op.dur)) err('setPower needs dur round|perm')
+      break
     case 'double': checkTargetRef(op.t); break
     case 'grant':
       checkTargetRef(op.t)
       if (!KEYWORDS.has(op.kw?.k)) err(`unknown granted keyword ${op.kw?.k}`)
       if (!['round', 'perm'].includes(op.dur)) err('grant needs dur round|perm')
+      break
+    case 'grantTrigger':
+      checkTargetRef(op.t)
+      if (!['onAttackBase', 'onKill'].includes(op.key)) err('bad grantTrigger key')
+      if (!['round', 'perm'].includes(op.dur)) err('grantTrigger needs dur round|perm')
+      for (const nested of op.ops) errors.push(...validateOp(slug, nested, def, chosenSlots, op.key))
       break
     case 'destroy': checkTargetRef(op.t); break
     case 'destroyUpgrade':
@@ -280,7 +298,10 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       if (op.side !== 'friendly') err('ready supports side friendly')
       if (op.t !== undefined && op.t !== 'chosen0') err('ready target must be chosen0')
       if (op.t === 'chosen0' && chosenSlots < 1) err('ready chosen0 but the card declares no targets')
+      if (op.remember !== undefined && op.remember !== 'readiedUnits') err('bad ready remember')
       break
+    case 'damageSourceOwner': if (!isInt(op.n, 1, 99)) err('bad source-owner damage'); checkPer(op.per); break
+    case 'releaseCaptivesHomeWounded': if (where !== 'onDeath') err('releaseCaptivesHomeWounded only fires onDeath'); break
     case 'extraAction': break
     case 'preventBase': if (!isInt(op.n, 1, 30)) err('bad preventBase'); break
     case 'removeNegative': checkTargetRef(op.t); break
@@ -303,7 +324,8 @@ function validateStatic(slug: string, st: Static): string[] {
   if (!STATICS.has(st.s)) { errors.push(`${slug}: unknown static ${(st as { s: string }).s}`); return errors }
   if (st.s === 'aura') {
     if (!AURA_SCOPES.has(st.scope)) errors.push(`${slug}: bad aura scope ${st.scope}`)
-    if (st.p === undefined && st.pPerHostPip === undefined && st.armor === undefined && st.h === undefined && !st.kw) errors.push(`${slug}: aura grants nothing`)
+    if (st.p === undefined && st.setPower === undefined && st.pPerHostPip === undefined && st.armor === undefined && st.h === undefined && !st.kw) errors.push(`${slug}: aura grants nothing`)
+    if (st.setPower !== undefined && !isInt(st.setPower, 0, 99)) errors.push(`${slug}: bad aura setPower ${st.setPower}`)
     if (st.h !== undefined && !isInt(st.h, -20, 20)) errors.push(`${slug}: bad aura h ${st.h}`)
     if (st.pPerHostPip !== undefined) {   // #80 (Subjugate): host-pip scaling reads the carrier — attached scope only
       if (st.scope !== 'attached') errors.push(`${slug}: pPerHostPip needs scope attached (got ${st.scope})`)

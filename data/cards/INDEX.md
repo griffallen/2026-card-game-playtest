@@ -21,14 +21,14 @@
 | [Flameblade Raider](red/flameblade-raider.md) | — | 2 | unit | 4/1 | rush, breakthrough | canon | Rush. Breakthrough. When this unit dies, gain 1 Hope — and 1 more if it died defeating a unit (a trade counts). |
 | [Pillage](red/pillage.md) | — | 2 | action | — |  | canon | Destroy target enemy upgrade. |
 | [Spark Hound](red/spark-hound.md) | — | 2 | unit | 2/1 | rush, guard | canon | Rush. Guard. When this attacks, it gets +1 Power this round. |
-| [Bloodfrenzy](red/bloodfrenzy.md) | — | 3 | upgrade | — |  | canon | Attached unit gets +1 Power and +1 Health and Breakthrough. If you have Hope 0 or less, this unit gets +2 Power and +2 Health instead. |
+| [Bloodfrenzy](red/bloodfrenzy.md) | — | 3 | upgrade | — |  | canon | This unit gets +1 Power and +1 Health and Breakthrough. If you have Hope 0 or less, it gets +2 Power and +2 Health instead. |
 | [Collateral Damage](red/collateral-damage.md) | — | 3 | action | — |  | canon | Deal 2 damage to two different target units. |
 | [Fiery Impaler](red/fiery-impaler.md) | — | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to another unit of your choice in the same zone. If that unit dies, gain +1 Hope. |
 | [Rageforged Brute](red/rageforged-brute.md) | — | 3 | unit | 4/4 | breakthrough | canon | Breakthrough. |
 | [Volcanic Slam](red/volcanic-slam.md) | — | 3 | action | — |  | canon | Deal 3 damage to up to two units in the same zone. |
 | [Warcry Leader](red/warcry-leader.md) | — | 3 | unit | 4/3 |  | canon | Other friendly units have Rush. |
 | [Blaze Juggernaut](red/blaze-juggernaut.md) | — | 4 | unit | 5/5 | rush, breakthrough | canon | Rush. Breakthrough. |
-| [Burning Oath](red/burning-oath.md) | — | 4 | upgrade | — |  | canon | Attached unit gets +2 Power and Breakthrough. When this attaches, gain 1 Hope. Then gain 1 Hope each time its bearer defeats a unit (a trade counts). |
+| [Burning Oath](red/burning-oath.md) | — | 4 | upgrade | — |  | canon | This unit gets +2 Power and Breakthrough. When this attaches, gain 1 Hope. Then gain 1 Hope each time its bearer defeats a unit (a trade counts). |
 | [Execution Swing](red/execution-swing.md) | — | 4 | action | — |  | canon | Destroy target damaged unit. |
 | [Inferno Titan](red/inferno-titan.md) | — | 4 | unit | 4/6 | breakthrough, scar | canon | Breakthrough. Scar. |
 | [Rupture](red/rupture.md) | — | 4 | action | — |  | canon | Deal 4 damage to target unit or base. |
@@ -49,54 +49,54 @@
 
 | Card | Code | Cost | Type | P/H | Keywords | Status | Text |
 |---|---|---|---|---|---|---|---|
-| [Aura of Resolve](yellow/aura-of-resolve.md) | — | 0 | action | — |  | canon | For each friendly unit that has died or dies this round, gain 2 Life. For each enemy unit that has died or dies this round, your opponent loses 2 Life. |
-| [Iron Plating](yellow/iron-discipline.md) | — | 1 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. |
-| [Oath of Order](yellow/oath-of-order.md) | — | 1 | upgrade | — |  | canon | Attach to unit. This unit gains Guard. |
+| [Aura of Resolve](yellow/aura-of-resolve.md) | — | 0 | action | — |  | canon | For each friendly unit that has died this round, gain 2 Life. For each enemy unit that has died this round, gain 1 Hope. |
+| [Iron Plating](yellow/iron-discipline.md) | — | 1 | upgrade | — |  | canon | This unit gets Armor 2. |
+| [Oath of Order](yellow/oath-of-order.md) | — | 1 | upgrade | — |  | canon | Gain 1 Life for each unit in play. This unit gains Guard. |
+| [Radiant Wall](yellow/radiant-wall.md) | — | 1 | unit | 0/1 | sentry, armor 1 | canon | Sentry. Armor 1. |
 | [Vanguard Sentinel](yellow/vanguard-sentinel.md) | — | 1 | unit | 1/1 | guard | canon | Guard. When this unit dies, gain 1 Hope. |
 | [Binding Light](yellow/binding-light.md) | — | 2 | action | — |  | canon | Choose one — exhaust an enemy unit with 4 or less Power; exhaust an enemy unit that costs 4 or less; or, if you have 8 or more Hope, exhaust any enemy unit. |
 | [Containment Priest](yellow/containment-priest.md) | — | 2 | unit | 2/2 | capture | canon | When this enters play, choose one: capture target enemy unit with 2 or less Power, or exhaust a damaged enemy unit. |
-| [Disciplined Mind](yellow/disciplined-mind.md) | — | 2 | upgrade | — |  | canon | Attach to unit. This unit gets Armor 1. Draw a card. |
-| [Hold the Line](yellow/hold-the-line.md) | — | 2 | action | — |  | canon | Choose a zone. Your units there gain Guard. |
+| [Disciplined Mind](yellow/disciplined-mind.md) | — | 2 | upgrade | — |  | canon | This unit gets Armor 1 and Steadfast 1. |
+| [Hold the Line](yellow/hold-the-line.md) | — | 2 | action | — |  | canon | This round, target unit gains Sentry. |
 | [Sunguard Defender](yellow/sunguard-defender.md) | — | 2 | unit | 1/1 | guard, shielded | canon | Guard. Shielded. When this unit defends, gain 1 Hope. |
 | [Bulwark Protector](yellow/bulwark-protector.md) | — | 3 | unit | 2/2 | guard, armor 1 | canon | Guard. Armor 1. When this unit defends, gain 1 Hope. |
-| [Chain of Law](yellow/chain-of-law.md) | — | 3 | upgrade | — |  | canon | Attached unit has Guard and Armor 1. |
+| [Chain of Law](yellow/chain-of-law.md) | — | 3 | upgrade | — |  | canon | This unit gains Sentry and Armor 1. |
+| [Detain](yellow/detain.md) | — | 3 | action | — |  | canon | Move target enemy unit to another zone. |
 | [Justicar Enforcer](yellow/justicar-enforcer.md) | — | 3 | unit | 2/4 | guard | canon | Guard. When this defends, gain 2 Hope. |
 | [Noble Purifier](yellow/noble-purifier.md) | — | 3 | unit | 4/1 |  | canon | When this defeats a unit, gain 2 Hope. |
 | [Prison Warrant](yellow/prison-warrant.md) | — | 3 | action | — |  | canon | Target unit you control captures target damaged enemy unit or unit with 2 or less Health. Gain 1 Hope at the beginning of each round where the target unit is still captured. |
 | [Radiant Aegis](yellow/radiant-aegis.md) | — | 3 | action | — |  | canon | Give a friendly unit a Shield. If your Hope is below 0, gain 2 Hope. |
-| [Sanctified Bastion](yellow/sanctified-bastion.md) | — | 3 | unit | 1/4 | cantAttack, tribune | canon | This can't attack. Tribune. Other friendly units in this zone have Armor 1. |
-| [Subjugate](yellow/subjugate.md) | — | 3 | upgrade | — |  | canon | Attach to an enemy unit. While attached, it gets −2 Power for each pip in its cost. |
-| [Unwavering Faith](yellow/unwavering-faith.md) | — | 3 | action | — |  | canon | Heal 3 damage from target unit. |
+| [Sanctified Bastion](yellow/sanctified-bastion.md) | — | 3 | unit | 1/4 | sentry, tribune | canon | Sentry. Tribune. |
+| [Subjugate](yellow/subjugate.md) | — | 3 | upgrade | — |  | canon | While attached, this unit gets −2 Power for each pip in its cost. When this unit dies, this upgrade's owner gains 1 Hope. |
+| [Unwavering Faith](yellow/unwavering-faith.md) | — | 3 | action | — |  | canon | Heal 3 damage from target unit. Gain 3 Life. If your Hope is less than 1, gain 2 Hope. |
 | [Absolution](yellow/absolution.md) | — | 4 | action | — |  | canon | Remove all negative effects from target unit you control. Free all your captured units. |
 | [Devout Intervention](yellow/devout-intervention.md) | — | 4 | action | — |  | canon | Prevent all damage to your base from the next attack this round. Also, prevent all damage to your next blocking unit this round (it still deals its damage back). |
-| [Disarming Order](yellow/disarming-order.md) | — | 4 | action | — |  | canon | Target unit can't attack this round. Draw a card. |
+| [Disarming Order](yellow/disarming-order.md) | — | 4 | action | — |  | canon | Target unit can't attack this round. Draw a card. If you have less Life than your opponent, gain 4 Life. |
 | [Exemplar Knight](yellow/exemplar-knight.md) | — | 4 | unit | 4/4 |  | canon | When this unit defeats a unit, gain 1 Hope. |
 | [Fortress Keeper](yellow/fortress-keeper.md) | — | 4 | unit | 2/3 | cantAttack, tribune | canon | This can't attack. Tribune. Other friendly units in this zone have Guard. |
-| [High Justiciar](yellow/high-justiciar.md) | — | 4 | unit | 1/4 | guard, tribune | canon | Guard. Tribune. When this unit defeats a unit, gain 2 Hope. |
+| [High Justiciar](yellow/high-justiciar.md) | — | 4 | unit | 1/4 | guard, tribune | canon | Guard. Tribune. When this unit defends, it gets +1 Power this round if your Hope is positive; otherwise, its Power becomes the number of attackers. |
 | [Lawbringer](yellow/lawbringer.md) | — | 4 | unit | 2/3 |  | canon | Whenever this enters a zone, exhaust an enemy unit of your choice in the same zone. |
-| [Light of Authority](yellow/light-of-authority.md) | — | 4 | action | — |  | canon | Target unit gets +3 Power this round. |
-| [Resolve Banner](yellow/resolve-banner.md) | — | 4 | upgrade | — |  | canon | Attach to unit. This unit gains +1 Health and +1 Armor. Other friendly units in this zone get +1 Power. If this becomes unattached, it can be picked up for 0 resources by a friendly unit. This can't be picked up by an opponent. This upgrade can be passed to a friendly unit in the same zone for 2 resources as an action, any number of times. |
-| [Censer of Purity](yellow/censer-of-purity.md) | — | 5 | unit | 0/6 | tribune | canon | Tribune. As an action, move any amount of damage from one friendly unit onto this unit — up to what this unit can take without its Health falling below 0. Doing so exhausts the Censer. |
-| [Custodian of Law](yellow/custodian-of-law.md) | — | 5 | unit | 2/5 | guard, tribune | canon | Guard. Tribune. |
-| [Dawnspear Paladin](yellow/dawnspear-paladin.md) | — | 5 | unit | 3/3 |  | canon | When this unit is attacked, it gains +1 Power for each attacker, this round. |
-| [Radiant Judgment](yellow/radiant-judgment.md) | — | 5 | action | — |  | canon | Gain 1 Hope. Then exhaust every enemy unit whose cost is no more than your current Hope. If your Hope is below 1, gain 1 Hope for each enemy unit in your Home zone. |
-| [Radiant Wall](yellow/radiant-wall.md) | — | 5 | action | — |  | canon | Target unit gets Armor 3, permanently. Gain 1 Hope. |
-| [Sanctify](yellow/sanctify.md) | — | 5 | action | — |  | canon | Heal 4 damage from your base. Gain 1 Hope. |
-| [Unshakable Wall](yellow/unshakable-wall.md) | — | 5 | upgrade | — |  | canon | Attach to unit. This unit gets +2 Armor and Guard. |
-| [Gateward Colossus](yellow/gateward-colossus.md) | — | 6 | unit | 2/4 | guard, armor 1, cantAttack | canon | Guard. Armor 1. Can't attack. When this defends, gain 1 Hope. |
+| [Light of Authority](yellow/light-of-authority.md) | — | 4 | action | — |  | canon | This round, target unit gets +3 Power. Whenever it deals damage to a base, gain Life equal to that damage. Whenever it defeats an opponent, gain 1 Hope. If your Hope is less than 0, gain 3 Hope. |
+| [Resolve Banner](yellow/resolve-banner.md) | — | 4 | upgrade | — |  | canon | Whenever this unit defends, its controller gains 1 Life. This unit gains +2 Health and +1 Armor. |
+| [Sentence](yellow/sentence.md) | — | 4 | upgrade | — |  | canon | This unit's Power is 0. When it dies, its controller loses Life equal to its cost. |
+| [Censer of Purity](yellow/censer-of-purity.md) | — | 5 | unit | 0/6 | sentry, tribune | canon | Sentry. Tribune. As an action, move any amount of damage from one friendly unit onto this unit — up to what this unit can take without its Health falling below 0. Doing so exhausts the Censer. |
+| [Custodian of Law](yellow/custodian-of-law.md) | — | 5 | unit | 2/5 | guard, tribune | canon | Guard. Tribune. When this unit dies, draw a card and gain 3 Life. |
+| [Dawnspear Paladin](yellow/dawnspear-paladin.md) | — | 5 | unit | 3/3 | armor 3, steadfast 1 | canon | Armor 3. Steadfast 1. |
+| [Radiant Judgment](yellow/radiant-judgment.md) | — | 5 | action | — |  | canon | Gain 1 Hope. Then exhaust all enemy units if your Hope is positive. If your Hope is negative, gain 1 Life for each enemy unit. |
+| [Sanctify](yellow/sanctify.md) | — | 5 | action | — |  | canon | This round, your units gain Tribune. Heal all damage on one friendly unit. |
+| [Unshakable Wall](yellow/unshakable-wall.md) | — | 5 | upgrade | — |  | canon | This unit gains a Shield, Steadfast 2, +2 Armor, and +2 Power. |
+| [Gateward Colossus](yellow/gateward-colossus.md) | — | 6 | unit | 2/4 | sentry, armor 1, steadfast 1 | canon | Sentry. Armor 1. Steadfast 1. |
 | [Hierophant](yellow/hierophant.md) | — | 6 | unit | 1/6 | tribune | canon | Tribune. Other friendly units get +1 Power while your Hope is positive. |
 | [Imprisonment Chamber](yellow/imprisonment-chamber.md) | — | 6 | action | — |  | canon | Target unit you control captures target enemy unit. |
 | [Inquisitor](yellow/inquisitor.md) | — | 6 | unit | 3/4 | capture | canon | When this enters play, it captures target enemy unit with 4 or less Power, Cost, or remaining Health. |
-| [Mobilize the Faithful](yellow/mobilize-the-faithful.md) | — | 6 | action | — |  | canon | Your units get +1 Power and gain Guard, permanently. |
-| [Sentence](yellow/sentence.md) | — | 6 | action | — |  | canon | Target unit you control captures target enemy unit. Draw a card. |
-| [Archon of Order](yellow/archon-of-order.md) | — | 7 | unit | 3/4 | capture | canon | When this enters play, it captures target enemy unit. |
-| [Champion of the Faith](yellow/champion-of-the-faith.md) | — | 7 | unit | 7/7 |  | canon | When this attacks, gain 1 Hope. |
-| [Command Edict](yellow/command-edict.md) | — | 7 | action | — |  | canon | Your units get Armor 1, permanently. |
-| [Detain](yellow/detain.md) | — | 7 | action | — |  | canon | Target unit you control captures target enemy unit. Heal 3 damage from your base. |
-| [Prison of Light](yellow/prison-of-light.md) | — | 7 | action | — |  | canon | Choose a zone: exhaust all enemy units there. Gain 1 Hope for each enemy unit exhausted, and gain 2 Life. |
-| [Radiant Citadel](yellow/radiant-citadel.md) | — | 7 | unit | 1/4 | guard, tribune, cantAttack, armor 2 | canon | This can't attack. When it enters play, if it's the only Radiant Citadel you own in play, it raises two 0/1 copies of itself in your Home — ready, with Guard and Tribune, unable to attack. Copies vanish when they die. |
-| [Supreme Sentence](yellow/supreme-sentence.md) | — | 7 | action | — |  | canon | Up to two target enemy units anywhere are exhausted and take 3 damage each. |
-| [Light's Vanguard](yellow/light-s-vanguard.md) | — | 8 | unit | 4/8 | guard, shielded | canon | Guard. Shielded. For each unit that attacks this unit, gain 1 Hope. |
+| [Mobilize the Faithful](yellow/mobilize-the-faithful.md) | — | 6 | action | — |  | canon | This round, your units gain Guard and +1 Power for each enemy unit. |
+| [Archon of Order](yellow/archon-of-order.md) | — | 7 | unit | 3/4 | capture | canon | When this enters play, it captures target enemy unit. When this unit dies, each unit it captured returns to its owner's Home with 1 Health remaining. |
+| [Champion of the Faith](yellow/champion-of-the-faith.md) | — | 7 | unit | 7/7 | steadfast 2, tribune | canon | Steadfast 2. Tribune. |
+| [Command Edict](yellow/command-edict.md) | — | 7 | action | — |  | canon | Ready all your units. Your opponent loses Life and Hope equal to the number of units readied this way. |
+| [Prison of Light](yellow/prison-of-light.md) | — | 7 | action | — |  | canon | Choose a zone: exhaust all enemy units there. Gain 1 Hope and 2 Life for each enemy unit newly exhausted this way. |
+| [Radiant Citadel](yellow/radiant-citadel.md) | — | 7 | unit | 1/4 | guard, sentry, armor 2, steadfast 1 | canon | Guard. Sentry. Armor 2. Steadfast 1. Whenever this unit takes damage, gain Life equal to the damage dealt. |
+| [Supreme Sentence](yellow/supreme-sentence.md) | — | 7 | action | — |  | canon | Up to two target enemy units anywhere are exhausted and take damage equal to your Hope. If your Hope is less than 1, gain 7 Hope. |
+| [Light's Vanguard](yellow/light-s-vanguard.md) | — | 8 | unit | 4/8 | guard, shielded, armor 2, steadfast 2 | canon | Guard. Shielded. Armor 2. Steadfast 2. When this unit dies, gain 8 Life. |
 
 ## Purple (36)
 
@@ -105,7 +105,7 @@
 | [Glimpse](purple/glimpse.md) | — | 1 | action | — |  | canon | Draw 3 cards, then discard 1 card from your hand and put 1 card from your hand on the bottom of your deck. |
 | [Veil Adept](purple/veil-adept.md) | — | 1 | unit | 1/1 | hidden | canon | Hidden. |
 | [Whisper Blade](purple/whisper-blade.md) | — | 1 | unit | 2/1 |  | canon | When this defeats a unit, gain 1 Hope. |
-| [Cloak of Haze](purple/cloak-of-haze.md) | — | 2 | upgrade | — |  | canon | Attached unit has Hidden. |
+| [Cloak of Haze](purple/cloak-of-haze.md) | — | 2 | upgrade | — |  | canon | This unit has Hidden. |
 | [Crippling Dart](purple/crippling-dart.md) | — | 2 | action | — |  | canon | Deal 2 damage to target enemy unit. It gets -1 Power permanently. |
 | [Mist Stalker](purple/mist-stalker.md) | — | 2 | unit | 1/1 | infiltrate | canon | Infiltrate. When this enters play, draw a card, then put a card from your hand on the bottom of your deck. |
 | [Pacify](purple/pacify.md) | — | 2 | action | — |  | canon | Target enemy unit can't attack this round. |
@@ -117,7 +117,7 @@
 | [Gloom Piercer](purple/gloom-piercer.md) | — | 3 | unit | 3/2 | infiltrate | canon | Infiltrate. |
 | [Nightweaver](purple/nightweaver.md) | — | 3 | unit | 3/3 |  | canon | When this enters play, target enemy unit gets -1 Power permanently. |
 | [Obscure](purple/obscure.md) | — | 3 | action | — |  | canon | Draw 2 cards, then both you and your opponent discard a card. |
-| [Silence the Song](purple/silence-the-song.md) | — | 3 | upgrade | — |  | canon | Attach to any unit — it gets −2 Power. When it dies, draw 2 cards. |
+| [Silence the Song](purple/silence-the-song.md) | — | 3 | upgrade | — |  | canon | Any unit gets −2 Power. When it dies, draw 2 cards. |
 | [Veil Assassin](purple/veil-assassin.md) | — | 3 | unit | 3/1 | hidden, infiltrate | canon | Hidden. Infiltrate. |
 | [Assassin's Contract](purple/assassin-s-contract.md) | — | 4 | action | — |  | canon | Destroy target unit. You lose Life equal to its remaining Health, and its owner gains Hope equal to half its printed cost, rounded up. |
 | [Blackout](purple/blackout.md) | — | 4 | action | — |  | canon | Choose a zone. Enemy units there can't attack this round. |

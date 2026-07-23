@@ -4,7 +4,7 @@ import type {
 import { EngineError, adjacent, homeZone } from './types.ts'
 import {
   addInfluence, checkWin, condHolds, defOf, draw, effArmor, effHealth, effPower,
-  idNum, influenceFor, log, moveDamageCap, other, tribuneEnter, tribuneLeave, unitsInZone, unitsOf,
+  hasKw, idNum, influenceFor, kwOf, log, moveDamageCap, other, tribuneEnter, tribuneLeave, unitsInZone, unitsOf,
 } from './helpers.ts'
 import { rngInt } from './rng.ts'
 
@@ -20,6 +20,16 @@ export interface FxCtx {
   targets?: TargetRef[]
   /** during combat: the attack target */
   attackTarget?: TargetRef
+  /** Actual Life damage the current attacker dealt to a base, after prevention. */
+  baseDamage?: number
+  /** Actual post-prevention damage the current source unit took. */
+  damageTaken?: number
+  /** Number of units made ready by an earlier op in this resolution. */
+  readiedUnits?: number
+  /** Number of enemy units newly exhausted by an earlier op in this resolution. */
+  newlyExhaustedEnemies?: number
+  /** Owner of a dying source unit (needed by host-death upgrade effects). */
+  sourceOwner?: Seat
   /** during an onDefend trigger: how many units attack the defending unit (PR #70, `per:{count:'attackers'}`) */
   attackerCount?: number
   /** zone just entered, for onEnterZone */
@@ -112,6 +122,10 @@ function perCount(ctx: FxCtx, per: PerCount | undefined): number {
   if (per.count === 'allExhaustedUnits') {
     return unitsOf(ctx.state).filter(u => u.exhausted && u.id !== ctx.sourceUnit).length
   }
+  if (per.count === 'positiveHope') return Math.max(0, influenceFor(ctx.state, ctx.controller))
+  if (per.count === 'readiedUnits') return ctx.readiedUnits ?? 0
+  if (per.count === 'newlyExhaustedEnemies') return ctx.newlyExhaustedEnemies ?? 0
+  if (per.count === 'sourceCost') return ctx.sourceUnit ? defOf(ctx.state, ctx.sourceUnit).cost : 0
   return filterUnits(ctx, per.f).length
 }
 
@@ -154,9 +168,10 @@ export function damageUnit(state: GameState, unit: UnitInstance, n: number, sour
   if (dealt <= 0) { log(state, unit.owner, `${name(state, unit.id)} shrugs off the damage (armor)`); return }
   unit.damage += dealt
   log(state, unit.owner, `${name(state, unit.id)} takes ${dealt} damage${source ? ` from ${source}` : ''}`)
+  if (dealt > 0 && state.units[unit.id]) fireTrigger({ state, actorSeat: unit.owner, damageTaken: dealt }, unit, 'onDamage')
 }
 
-export function damageBase(state: GameState, seat: Seat, n: number, source: string, fromAttack = false) {
+export function damageBase(state: GameState, seat: Seat, n: number, source: string, fromAttack = false): number {
   let dmg = n
   // #88 (Devout Intervention, Ward 1): the next DAMAGING attack on this Home is fully warded and
   // the ward is spent. Only real prevention consumes it — a feint (fully blocked, no base damage)
@@ -164,7 +179,7 @@ export function damageBase(state: GameState, seat: Seat, n: number, source: stri
   if (fromAttack && dmg > 0 && state.homeWard[seat]) {
     state.homeWard[seat] = false
     log(state, seat, `${state.sides[seat].name}'s ward turns the assault from the gates`)
-    return
+    return 0
   }
   if (state.preventBase[seat] > 0) {
     const absorbed = Math.min(state.preventBase[seat], dmg)
@@ -172,9 +187,10 @@ export function damageBase(state: GameState, seat: Seat, n: number, source: stri
     dmg -= absorbed
     log(state, seat, `${state.sides[seat].name} prevents ${absorbed} base damage`)
   }
-  if (dmg <= 0) return
+  if (dmg <= 0) return 0
   state.sides[seat].life -= dmg
   log(state, seat, `${state.sides[seat].name} takes ${dmg} damage${source ? ` from ${source}` : ''} (${state.sides[seat].life} life)`)  // decision 104: life may read negative
+  return dmg
 }
 
 /** #104 (Lawbringer): the deterministic enemy an auto-scoped, zone-bound op arrests — the strongest
@@ -223,6 +239,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'exhaust': {
+        if (!condHolds(state, controller, op.cond)) break
         // #104 (Lawbringer): t:'auto' arrests one enemy in the source's (entered) zone. With
         // auto.choose the entering player picked which (carried in ctx.entryExhaust, validated at the
         // action boundary); without it, the deterministic strongest-ready auto-pick.
@@ -239,7 +256,9 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         } else {
           targets = filterUnits(ctx, op.t)
         }
+        const newlyExhausted = targets.filter(u => !u.exhausted)
         for (const u of targets) { u.exhausted = true; log(state, u.owner, `${name(state, u.id)} is ordered down`) }
+        if (op.remember === 'newlyExhaustedEnemies') ctx.newlyExhaustedEnemies = newlyExhausted.filter(u => u.owner !== controller).length
         break
       }
       case 'move': {
@@ -309,6 +328,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'heal': {
+        if (!condHolds(state, controller, op.cond)) break
         const n = op.per ? op.n * perCount(ctx, op.per) : op.n   // PR #71: scale by unit count
         if (op.t === 'selfBase') {
           const side = state.sides[controller]
@@ -326,6 +346,22 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
             u.damage -= healed
             if (healed > 0) log(state, u.owner, `${name(state, u.id)} heals ${healed}`)
           }
+        }
+        break
+      }
+      case 'healFromBaseDamage': {
+        const n = ctx.baseDamage ?? 0
+        if (n > 0) {
+          state.sides[controller].life += n
+          log(state, controller, `${state.sides[controller].name} gains ${n} Life from the assault (${state.sides[controller].life} life)`)
+        }
+        break
+      }
+      case 'healFromDamageTaken': {
+        const n = ctx.damageTaken ?? 0
+        if (n > 0) {
+          state.sides[controller].life += n
+          log(state, controller, `${state.sides[controller].name} gains ${n} Life from the damage endured (${state.sides[controller].life} life)`)
         }
         break
       }
@@ -466,6 +502,14 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         log(state, controller, `${state.sides[controller].name} ${n >= 0 ? 'gains' : 'cedes'} ${Math.abs(n)} Hope (${influenceFor(state, controller)})` + (ctx.srcLabel ? ` — ${ctx.srcLabel}` : ''))
         break
       }
+      case 'influenceOpponent': {
+        const n = op.per ? op.n * perCount(ctx, op.per) : op.n
+        if (n === 0) break
+        const victim = other(controller)
+        addInfluence(state, victim, -n)
+        log(state, victim, `${state.sides[victim].name} loses ${n} Hope (${influenceFor(state, victim)})`)
+        break
+      }
       case 'influenceOwner': {
         // Hope effects currently default to the card/unit owner (the controller). Future card work
         // can introduce an explicit target seat; this legacy op intentionally follows that default.
@@ -493,6 +537,14 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
           const bits = [p ? `${p > 0 ? '+' : ''}${p} power` : '', h ? `${h > 0 ? '+' : ''}${h} health` : '', armor ? `+${armor} armor` : ''].filter(Boolean).join(', ')
           log(state, u.owner, `${name(state, u.id)} gets ${bits}${op.dur === 'round' ? ' this round' : ''}`)
         }
+        break
+      }
+      case 'setPower': {
+        const u = resolveUnitTarget(ctx, op.t)
+        if (!u) break
+        const n = op.per ? op.n * perCount(ctx, op.per) : op.n
+        u.mods.push({ setPower: n, round: op.dur === 'round' })
+        log(state, u.owner, `${name(state, u.id)}'s Power becomes ${n}${op.dur === 'round' ? ' this round' : ''}`)
         break
       }
       case 'double': {
@@ -533,6 +585,14 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         }
         break
       }
+      case 'grantTrigger': {
+        const u = resolveUnitTarget(ctx, op.t)
+        if (u) {
+          u.mods.push({ triggers: [{ key: op.key, ops: op.ops }], round: op.dur === 'round' })
+          log(state, u.owner, `${name(state, u.id)} gains a ${op.key} trigger${op.dur === 'round' ? ' this round' : ''}`)
+        }
+        break
+      }
       case 'destroy': {
         const u = resolveUnitTarget(ctx, op.t)
         if (u) destroyUnit(state, u, 'destroyed')
@@ -553,10 +613,14 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
       case 'ready': {
         if (op.t) {
           const u = resolveUnitTarget(ctx, op.t)
+          const wasExhausted = !!u?.exhausted
           if (u && u.owner === controller) { u.exhausted = false; log(state, u.owner, `${name(state, u.id)} readies`) }
+          if (op.remember === 'readiedUnits') ctx.readiedUnits = wasExhausted ? 1 : 0
           break
         }
+        const readied = unitsOf(state, controller).filter(u => u.exhausted).length
         for (const u of unitsOf(state, controller)) u.exhausted = false
+        if (op.remember === 'readiedUnits') ctx.readiedUnits = readied
         log(state, controller, `${state.sides[controller].name}'s units ready for another assault`)
         break
       }
@@ -667,6 +731,27 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         log(state, ctx.controller, `${name(state, srcU.id)} captures ${name(state, t.id)}${op.income ? ` — the warrant pays ${op.income}/round while held` : ''}`)
         break
       }
+      case 'damageSourceOwner': {
+        const n = op.per ? op.n * perCount(ctx, op.per) : op.n
+        const victim = ctx.sourceOwner ?? controller
+        if (n > 0) damageBase(state, victim, n, ctx.srcLabel ?? '')
+        break
+      }
+      case 'releaseCaptivesHomeWounded': {
+        if (!ctx.sourceUnit) break
+        for (const [cid, c] of Object.entries(state.captives)) {
+          if (c.by !== ctx.sourceUnit) continue
+          c.unit.zone = homeZone(c.unit.owner)
+          c.unit.damage = Math.max(0, effHealth(state, c.unit) - 1)
+          c.unit.exhausted = false
+          c.unit.enteredRound = state.round
+          state.units[cid] = c.unit
+          delete state.captives[cid]
+          log(state, c.unit.owner, `${name(state, cid)} returns home wounded as ${ctx.srcLabel ?? 'its captor'} falls`)
+          tribuneEnter(state, c.unit)
+        }
+        break
+      }
     }
     stateBasedCleanup(state, ctx.actorSeat)
   }
@@ -686,7 +771,7 @@ export function shedUpgrades(state: GameState, unit: UnitInstance, taken = false
     // gear orphans; the host is already off the field, so a bare `draw` reads the caster cleanly.
     if (!taken) {
       const hostDeathOps = defOf(state, upId).onHostDeath
-      if (hostDeathOps?.length) runOps({ state, controller: up.owner, sourceUnit: unit.id, actorSeat: up.owner }, hostDeathOps)
+      if (hostDeathOps?.length) runOps({ state, controller: up.owner, sourceUnit: unit.id, sourceOwner: unit.owner, actorSeat: up.owner }, hostDeathOps)
     }
     // #122 (Wither): a curse marked consumedOnHostDeath does NOT orphan when its HOST dies — it is
     // discarded with the body (a rot curse shouldn't outlive its victim and jump to a fresh one).
@@ -768,8 +853,16 @@ export function stateBasedCleanup(state: GameState, actorSeat: Seat) {
 export function fireTrigger(
   ctx: Omit<FxCtx, 'controller' | 'sourceUnit'>,
   unit: UnitInstance,
-  key: 'onPlay' | 'onEnterZone' | 'onAttack' | 'onAttackBase' | 'onDefend' | 'onKill',
+  key: 'onPlay' | 'onEnterZone' | 'onAttack' | 'onAttackBase' | 'onDefend' | 'onDamage' | 'onKill',
 ) {
+  // Steadfast is a keyword trigger: this unit earns Hope only on its first defense each round.
+  if (key === 'onDefend' && hasKw(ctx.state, unit, 'steadfast') && unit.steadfastDefendedRound !== ctx.state.round) {
+    const value = kwOf(ctx.state, unit, 'steadfast')
+    const n = typeof value === 'number' ? value : 1
+    unit.steadfastDefendedRound = ctx.state.round
+    addInfluence(ctx.state, unit.owner, n)
+    log(ctx.state, unit.owner, `${name(ctx.state, unit.id)} stands steadfast (+${n} Hope)`)
+  }
   // #107 (Flameblade Raider): mark the killer the instant it fells a unit — before any cleanup fires
   // onDeath — so a trade (it dies dealing the lethal blow) reads as a kill. True even when the unit
   // itself carries no onKill op (the combat code still fires onKill for every killer). Window advance
@@ -781,4 +874,7 @@ export function fireTrigger(
   }
   run(defOf(ctx.state, unit.id)[key], unit.id, unit.owner)
   for (const upId of unit.upgrades) run(defOf(ctx.state, upId)[key], unit.id, unit.owner)
+  for (const mod of unit.mods) {
+    for (const trigger of mod.triggers ?? []) if (trigger.key === key) run(trigger.ops, unit.id, unit.owner)
+  }
 }

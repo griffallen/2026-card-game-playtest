@@ -4,14 +4,13 @@ type: unit
 cost: 8
 power: 4
 health: 8
-keywords: guard, shielded
-influenceTrigger: onDefend
+keywords: guard, shielded, armor 2, steadfast 2
 pips: yellow, yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onDefend":[{"op":"influence","n":1,"per":{"count":"attackers"}}]}
+effects: {"onDeath":[{"op":"heal","t":"selfBase","n":8}]}
 ---
-Guard. Shielded. For each unit that attacks this unit, gain 1 Hope.
+Guard. Shielded. Armor 2. Steadfast 2. When this unit dies, gain 8 Life.
 
 ## Design notes
 

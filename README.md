@@ -44,7 +44,7 @@ Every idea starts the same way: say it in an [issue](../../issues/new), plain wo
 
 - **A quick fix** — a number, a button, a bug. The agent just ships it and leaves you a note when it's live.
 - **A batch of small things** — clearly right, not urgent. They gather in a queue; when you or Blaine say "go," the whole batch ships together.
-- **A big change** — a new mechanic, smarter AI, a rules change. Before building anything, the agent writes you a short brief: what it'll take, what it might break, whether it's worth it. You read it and decide. Blaine pulls the final trigger on these.
+- **A big change** — a new mechanic, smarter AI, a rules change. The agent writes a short brief, then can build it on a separate branch for local playtesting. Blaine's approval is needed only to merge or publicly release that major change.
 
 You never need to know the size in advance — just say the idea. The agent keeps you posted on the thread from there.
 
@@ -67,11 +67,12 @@ The two-player online prototype (accounts, remote play over websockets, spectato
 hall for cards/decks/rules) lives in `apps/server` + `apps/web`; deploy notes in
 `README-DEPLOY.md`.
 
-**How builds ship.** Work is labelled by size, and the size sets who ships it: a **`patch`**
-(one self-contained fix) the agent ships on sight; a **`minor`** batch fires when Blaine or
-Griff drop **`build-now`**; a **`major`** (a rules/engine change) waits for Blaine only. The
-lifecycle is `backlog` → a tier → `building` → `shipped`, logged in [`RELEASES.md`](RELEASES.md).
-Full spec: [`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
+**How builds ship.** Work is labelled by size. Any change, including a **`major`** rules/engine
+change, can be built and tested freely on a non-`main` branch. Merging to `main` or publishing a
+major still requires Blaine's release approval; a **`patch`** ships on sight and a **`minor`**
+batch fires when Blaine or Griff drop **`build-now`**. The lifecycle is `backlog` → a tier →
+`building` → `shipped`, logged in [`RELEASES.md`](RELEASES.md). Full spec:
+[`docs/AGENT/build-workflow.md`](docs/AGENT/build-workflow.md).
 
 ## What's in here
 

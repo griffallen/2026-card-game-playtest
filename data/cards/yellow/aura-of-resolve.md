@@ -5,9 +5,9 @@ cost: 0
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"heal","t":"selfBase","n":2,"per":{"count":"deathsThisRound","side":"friendly"}},{"op":"damage","t":"enemyBase","n":2,"per":{"count":"deathsThisRound","side":"enemy"}}]}
+effects: {"onPlay":[{"op":"heal","t":"selfBase","n":2,"per":{"count":"deathsThisRound","side":"friendly"}},{"op":"influence","n":1,"per":{"count":"deathsThisRound","side":"enemy"}}]}
 ---
-For each friendly unit that has died or dies this round, gain 2 Life. For each enemy unit that has died or dies this round, your opponent loses 2 Life.
+For each friendly unit that has died this round, gain 2 Life. For each enemy unit that has died this round, gain 1 Hope.
 
 ## Design notes
 

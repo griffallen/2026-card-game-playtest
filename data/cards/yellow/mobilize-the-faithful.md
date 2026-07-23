@@ -5,9 +5,9 @@ cost: 6
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"buff","t":{"side":"friendly"},"p":1,"dur":"perm"},{"op":"grant","t":{"side":"friendly"},"kw":{"k":"guard"},"dur":"perm"}]}
+effects: {"onPlay":[{"op":"buff","t":{"side":"friendly"},"p":1,"dur":"round","per":{"count":"units","f":{"side":"enemy","zone":"all"}}},{"op":"grant","t":{"side":"friendly"},"kw":{"k":"guard"},"dur":"round"}]}
 ---
-Your units get +1 Power and gain Guard, permanently.
+This round, your units gain Guard and +1 Power for each enemy unit.
 
 ## Design notes
 

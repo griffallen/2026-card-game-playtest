@@ -5,12 +5,12 @@ cost: 5
 power: 0
 health: 6
 pips: yellow, yellow
-keywords: tribune
+keywords: sentry, tribune
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"activated":{"amount":"moveDamage","targets":[{"t":"unit","side":"friendly","mustBeDamaged":true}],"ops":[{"op":"moveDamage","from":"chosen0","to":"self"}]}}
 ---
-Tribune. As an action, move any amount of damage from one friendly unit onto this unit — up to what this unit can take without its Health falling below 0. Doing so exhausts the Censer.
+Sentry. Tribune. As an action, move any amount of damage from one friendly unit onto this unit — up to what this unit can take without its Health falling below 0. Doing so exhausts the Censer.
 
 ## Design notes
 

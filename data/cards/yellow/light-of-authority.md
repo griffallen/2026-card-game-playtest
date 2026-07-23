@@ -5,9 +5,9 @@ cost: 4
 pips: yellow, yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"buff","t":"chosen0","p":3,"dur":"round"}]}
+effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"buff","t":"chosen0","p":3,"dur":"round"},{"op":"grantTrigger","t":"chosen0","key":"onAttackBase","ops":[{"op":"healFromBaseDamage"}],"dur":"round"},{"op":"grantTrigger","t":"chosen0","key":"onKill","ops":[{"op":"influence","n":1}],"dur":"round"},{"op":"influence","n":3,"cond":{"influenceAtMost":-1}}]}
 ---
-Target unit gets +3 Power this round.
+This round, target unit gets +3 Power. Whenever it deals damage to a base, gain Life equal to that damage. Whenever it defeats an opponent, gain 1 Hope. If your Hope is less than 0, gain 3 Hope.
 
 ## Design notes
 

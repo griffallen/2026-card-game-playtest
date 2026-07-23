@@ -5,9 +5,9 @@ cost: 2
 pips: yellow
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"aura","scope":"attached","armor":1}],"onPlay":[{"op":"draw","n":1}]}
+effects: {"statics":[{"s":"aura","scope":"attached","armor":1},{"s":"aura","scope":"attached","kw":{"k":"steadfast","n":1}}]}
 ---
-Attach to unit. This unit gets Armor 1. Draw a card.
+This unit gets Armor 1 and Steadfast 1.
 
 ## Design notes
 

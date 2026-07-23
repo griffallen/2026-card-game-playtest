@@ -90,10 +90,11 @@ export function condHolds(state: GameState, owner: Seat, cond: Cond | undefined)
   if (cond.influenceAtLeast !== undefined && inf < cond.influenceAtLeast) return false
   if (cond.influenceAtMost !== undefined && inf > cond.influenceAtMost) return false
   if (cond.selfLifeAtMost !== undefined && state.sides[owner].life > cond.selfLifeAtMost) return false
+  if (cond.selfLifeLessThanOpponent && state.sides[owner].life >= state.sides[other(owner)].life) return false
   return true
 }
 
-interface AuraGrant { p: number; armor: number; h: number; kws: { k: KeywordName; n?: number }[] }
+interface AuraGrant { p: number; setPower?: number; armor: number; h: number; kws: { k: KeywordName; n?: number }[] }
 
 /** Collect aura contributions applying to `unit` from all in-play sources. */
 function aurasFor(state: GameState, unit: UnitInstance): AuraGrant {
@@ -108,6 +109,7 @@ function aurasFor(state: GameState, unit: UnitInstance): AuraGrant {
     else if (st.scope === 'enemyInZone') hit = !friendly && unit.zone === anchor.zone
     if (!hit) return
     acc.p += st.p ?? 0
+    if (st.setPower !== undefined) acc.setPower = st.setPower
     acc.armor += st.armor ?? 0
     acc.h += st.h ?? 0
     if (st.kw) acc.kws.push(st.kw)
@@ -133,6 +135,7 @@ function upgradeGrants(state: GameState, unit: UnitInstance): AuraGrant {
         // treatment of upgrade-granted auras (condHolds against the anchor/wearer owner).
         if (!condHolds(state, unit.owner, st.cond)) continue
         acc.p += st.p ?? 0
+        if (st.setPower !== undefined) acc.setPower = st.setPower
         // #80 (Subjugate): ±1 power per pip in the CARRIER's cost — read live, so a salvaged
         // upgrade (decision 67) re-fits its new host; pips never change, so while attached
         // the value is permanent without any snapshot state.
@@ -175,10 +178,12 @@ export function effPower(state: GameState, unit: UnitInstance): number {
   // downstream (mods, upgrades, auras, scar, the double multiply) composes on top unchanged.
   const base = unit.created?.p ?? (def.powerFromCount != null ? baseCount(state, unit, def.powerFromCount) : def.power ?? 0)
   const mods = activeMods(state, unit)
+  const modSet = [...mods].reverse().find(m => m.setPower !== undefined)?.setPower
   const add = mods.reduce((s, m) => s + (m.p ?? 0), 0)
   const up = upgradeGrants(state, unit)
   const aura = aurasFor(state, unit)
-  let p = base + add + up.p + aura.p
+  let p = aura.setPower ?? up.setPower ?? modSet ?? base
+  p += add + up.p + aura.p
   // v3 Scar (decision 94, supersedes 70): +1 per damage marked — no cap, the wound is the fuel
   if (hasKw(state, unit, 'scar')) p += unit.damage
   if (mods.some(m => m.double)) p *= 2
@@ -229,23 +234,17 @@ export function kwOf(state: GameState, unit: UnitInstance, k: KeywordName): numb
 
 export const hasKw = (state: GameState, unit: UnitInstance, k: KeywordName) => kwOf(state, unit, k) !== false
 
-/** #125 (decision 115): the Tribune influence swing. A unit carrying `tribune` sways the shared
- *  Influence track by ±1 as it enters or leaves play — CAUSE-BLIND: it keys off the enter/leave
- *  EVENT, never the reason. `tribuneEnter` (+1 to the controller) fires on EVERY entry — deploy,
- *  created copy, or return-from-capture; `tribuneLeave` (−1) on EVERY exit — defeat or capture.
- *  Symmetric by construction, so over a Tribune's whole life the swing nets to zero and cannot be
- *  farmed (a capture's −1 and its release's +1 cancel). Two functions, called at each event site —
- *  never inlined — so the swing has exactly one home per direction. Call `tribuneLeave` BEFORE the
- *  unit is removed from `state.units` (so its keyword still reads); `tribuneEnter` AFTER it is added. */
+/** A Tribune turns public standing into endurance: its controller gains 1 Life when it enters play
+ * and loses 1 Life when it leaves. Capture is a leave; release is an entry. */
 export function tribuneEnter(state: GameState, unit: UnitInstance) {
   if (!hasKw(state, unit, 'tribune')) return
-  addInfluence(state, unit.owner, 1)
-  log(state, unit.owner, `${defOf(state, unit.id).name} takes the floor (Tribune: +1 Hope)`)
+  state.sides[unit.owner].life += 1
+  log(state, unit.owner, `${defOf(state, unit.id).name} takes the floor (Tribune: +1 Life)`)
 }
 export function tribuneLeave(state: GameState, unit: UnitInstance) {
   if (!hasKw(state, unit, 'tribune')) return
-  addInfluence(state, unit.owner, -1)
-  log(state, unit.owner, `${defOf(state, unit.id).name} yields the floor (Tribune: −1 Hope)`)
+  state.sides[unit.owner].life -= 1
+  log(state, unit.owner, `${defOf(state, unit.id).name} yields the floor (Tribune: −1 Life)`)
 }
 
 /** Fixed Hope bands. Every player wins at +12 and loses at -12. */

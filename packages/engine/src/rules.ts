@@ -8,9 +8,9 @@ import type { RulesConfig } from './types.ts'
  * 3.1.0 = decision 105 (a gang's retaliation is divided, not dealt in full); 3.2.0 = issue #118
  * (Shield/Ward stops Breakthrough spill); 3.3.0 = issue #128 (Breakthrough splash + chain — the
  * leftover redirects to a defender-chosen legal target, chaining on defeats; amends decision 102);
- * 3.4.0 = issue #125 / decision 115 (Politician renamed to Tribune, plus the cause-blind +/-1
- * Influence swing on every enter/leave of play — a new engine primitive on top of the unchanged
- * majority payout).
+ * 3.4.0 = issue #125 / decision 115 (Politician renamed to Tribune). 4.0.0 moves to 24 Life and
+ * independent ±12 Hope, then gives Tribune a cause-blind ±1 Life swing on enter/leave and its
+ * territorial end-of-round payout.
  */
 export const RULES_VERSION = '4.0.0'
 
