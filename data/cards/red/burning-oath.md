@@ -5,9 +5,9 @@ cost: 4
 pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"influence","n":1}],"onKill":[{"op":"influence","n":1}],"statics":[{"s":"aura","scope":"attached","p":2},{"s":"aura","scope":"attached","kw":{"k":"breakthrough"}}]}
+effects: {"onAttack":[{"op":"buff","t":"attackTarget","p":-2,"dur":"combat"}],"onDefend":[{"op":"buff","t":"attackTarget","p":-2,"dur":"combat"}],"statics":[{"s":"aura","scope":"attached","p":2},{"s":"aura","scope":"attached","kw":{"k":"breakthrough"}}]}
 ---
-This unit gets +2 Power and Breakthrough. When this attaches, gain 1 Hope. Then gain 1 Hope each time its bearer defeats a unit (a trade counts).
+This unit gets +2 Power and Breakthrough. A unit attacking or defending this unit gets −2 Power for that combat.
 
 ## Design notes
 

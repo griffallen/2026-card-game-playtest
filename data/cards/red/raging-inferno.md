@@ -5,9 +5,9 @@ cost: 6
 pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unitOrBase","side":"any","baseSide":"enemy"}],"onPlay":[{"op":"damage","t":"chosen0","n":6}]}
+effects: {"targets":[{"t":"unitOrBase","side":"any","baseSide":"enemy"}],"onPlay":[{"op":"damage","t":"chosen0","n":6}],"onDiscard":[{"op":"returnSourceToHand"}]}
 ---
-Deal 6 damage to target unit or base.
+Deal 6 damage to target unit or base. If this card is discarded, immediately return it to your hand.
 
 ## Design notes
 

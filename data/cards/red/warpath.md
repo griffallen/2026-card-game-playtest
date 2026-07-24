@@ -2,12 +2,12 @@
 name: Warpath
 type: action
 cost: 0
-pips: red
+pips: red, red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"buff","t":{"side":"friendly"},"p":1,"dur":"round","per":{"count":"influence","half":true}},{"op":"damage","t":"selfBase","n":1,"per":{"count":"influence"},"cond":{"influenceAtLeast":1}},{"op":"influence","n":-1,"cond":{"influenceAtMost":-1}}]}
+effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"ready","side":"friendly","t":"chosen0"},{"op":"influence","n":-1,"per":{"count":"targetPower"}},{"op":"damage","t":"selfBase","n":1,"per":{"count":"opponentPositiveHope"}}]}
 ---
-X is your current Hope. Each of your units gets +Power this round equal to half of X, rounded down. If X is positive, you lose X life. If X is negative, your opponent gains 1 Hope. At 0 Hope, nothing happens.
+Ready a unit. Lose Hope equal to its Power. If your opponent has positive Hope, lose Life equal to their Hope.
 
 ## Design notes
 

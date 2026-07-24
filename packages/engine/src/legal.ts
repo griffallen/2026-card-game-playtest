@@ -194,7 +194,11 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
       const sides: Seat[] = spec.side === 'friendly' ? [seat] : spec.side === 'any' ? [seat, other(seat)] : [other(seat)]
       for (const sd of sides) for (const t of unitsInZone(state, u.zone, sd)) {
         if (t.owner !== seat && !t.exhausted && hasKw(state, t, 'hidden')) continue
-        out.push({ type: 'activate', unit: u.id, targets: [{ kind: 'unit', id: t.id }] })
+        if (def.name === 'Apocalypse Engine') {
+          if (t.id === u.id) continue
+          const cap = Math.max(0, effHealth(state, u) - u.damage)
+          for (let x = 1; x <= cap; x++) out.push({ type: 'activate', unit: u.id, targets: [{ kind: 'unit', id: t.id }], x })
+        } else out.push({ type: 'activate', unit: u.id, targets: [{ kind: 'unit', id: t.id }] })
       }
       if (spec.t === 'unitOrBase' && u.zone === homeZone(other(seat))) {
         out.push({ type: 'activate', unit: u.id, targets: [{ kind: 'base', seat: other(seat) }] })
@@ -388,7 +392,10 @@ function enumerateTargetSpecs(state: GameState, seat: Seat, specs: TargetSpec[])
     for (const a of acc) for (const c of choices) next.push([...a, ...c])
     acc = next
   }
-  return acc.filter(c => passesAdjacency(state, specs, c))
+  return acc.filter(c => {
+    const ids = c.filter((r): r is { kind: 'unit'; id: string } => r.kind === 'unit').map(r => r.id)
+    return new Set(ids).size === ids.length && passesAdjacency(state, specs, c)
+  })
 }
 
 function enumerateTargets(state: GameState, seat: Seat, card: string): TargetRef[][] {
@@ -456,6 +463,7 @@ function candidatesFor(state: GameState, seat: Seat, spec: TargetSpec): TargetRe
     if (spec.damagedOrMaxHealth !== undefined && u.damage <= 0 && effHealth(state, u) > spec.damagedOrMaxHealth) continue
     if (spec.withKw && !hasKw(state, u, spec.withKw)) continue
     if (spec.mustBeDamaged && u.damage <= 0) continue
+    if (spec.mustBeExhausted && !u.exhausted) continue
     if (u.owner !== seat && !u.exhausted && hasKw(state, u, 'hidden')) continue   // v3 (decision 59)
     out.push({ kind: 'unit', id: u.id })
   }

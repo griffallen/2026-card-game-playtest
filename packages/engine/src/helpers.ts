@@ -91,6 +91,7 @@ export function condHolds(state: GameState, owner: Seat, cond: Cond | undefined)
   if (cond.influenceAtMost !== undefined && inf > cond.influenceAtMost) return false
   if (cond.selfLifeAtMost !== undefined && state.sides[owner].life > cond.selfLifeAtMost) return false
   if (cond.selfLifeLessThanOpponent && state.sides[owner].life >= state.sides[other(owner)].life) return false
+  if (cond.eitherHopeAtMost !== undefined && hopeFor(state, owner) > cond.eitherHopeAtMost && hopeFor(state, other(owner)) > cond.eitherHopeAtMost) return false
   return true
 }
 

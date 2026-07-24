@@ -7,9 +7,9 @@ health: 3
 pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onAttack":[{"op":"splashReap","n":1,"influence":1}]}
+effects: {"onAttack":[{"op":"splashReap","n":1,"opponentInfluence":1}]}
 ---
-When this attacks a unit, it also deals 1 damage to another unit of your choice in the same zone. If that unit dies, gain +1 Hope.
+When this attacks a unit, it also deals 1 damage to another unit of your choice in the same zone. If that unit dies, your opponent loses 1 Hope.
 
 ## Design notes
 

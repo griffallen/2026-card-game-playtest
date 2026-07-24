@@ -5,13 +5,12 @@ cost: 2
 power: 4
 health: 1
 keywords: rush, breakthrough
-influenceTrigger: onDeath
 pips: red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onDeath":[{"op":"influence","n":1},{"op":"influence","n":1,"ifKilled":true}]}
+effects: {"onDeath":[{"op":"influence","n":-1}],"onKill":[{"op":"influenceOpponent","n":1}]}
 ---
-Rush. Breakthrough. When this unit dies, gain 1 Hope — and 1 more if it died defeating a unit (a trade counts).
+Rush. Breakthrough. When this unit dies, lose 1 Hope. When this unit defeats a unit, your opponent loses 1 Hope.
 
 ## Design notes
 

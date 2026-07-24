@@ -37,6 +37,7 @@ type Selection =
   | { kind: 'x'; card: string }               // X-cost cards: declaring X before targeting (#45)
   | { kind: 'splash'; ids: string[]; target: TargetRef; picks: { by: string; unit: string }[] }  // PR #46: skewer victims declared with the attack
   | { kind: 'sneaking'; unit: string }        // v3 Sneak: choosing the ability's target
+  | { kind: 'sneak-x'; unit: string; target: TargetRef } // Sneak with a declared X (Apocalypse Engine)
   | { kind: 'censer'; unit: string }          // #104 (Censer of Purity): choosing the friendly unit to draw wounds from
   | { kind: 'censer-amount'; unit: string; target: TargetRef }  // #104: choosing how much damage moves (the amount picker)
   | { kind: 'orphan'; id: string }            // v3 salvage: choosing which unit picks the orphan up
@@ -604,7 +605,9 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
       return
     }
     if (selection.kind === 'sneaking') {
-      apply({ type: 'activate', unit: selection.unit, targets: [ref] }, seat)
+      const needsX = activateActionsFor(selection.unit).some(a => a.x !== undefined)
+      if (needsX) setSelection({ kind: 'sneak-x', unit: selection.unit, target: ref })
+      else apply({ type: 'activate', unit: selection.unit, targets: [ref] }, seat)
       return
     }
     if (selection.kind === 'censer' && ref.kind === 'unit') {
@@ -1129,6 +1132,19 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
             {max === lethalAt && lethalAt > 0 && (
               <span className="w-full text-[11px] text-[#e5a99f]">☠ Moving {lethalAt} takes {unitName(selection.unit)} to 0 Health — a full martyr's sacrifice.</span>
             )}
+          </div>
+        )
+      })()}
+      {selection?.kind === 'sneak-x' && (() => {
+        const xs = [...new Set(activateActionsFor(selection.unit)
+          .filter(a => { const r = (a.targets ?? [])[0]; return !!r && sameRef(r, selection.target) })
+          .map(a => a.x).filter((n): n is number => n !== undefined))].sort((a, b) => a - b)
+        return (
+          <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            <span className="text-goldbright">Choose X for <b>{unitName(selection.unit)}</b>'s Sneak. It loses X Life and takes X damage; <b>{refName(selection.target)}</b> takes X damage.</span>
+            {xs.map(x => <button key={x} className="btn btn-primary !px-2.5 !py-1 text-xs"
+              onClick={() => apply({ type: 'activate', unit: selection.unit, targets: [selection.target], x }, seat)}>{x}</button>)}
+            <button className="btn !px-2 !py-0.5 text-[11.5px]" onClick={() => setSelection(null)}>cancel</button>
           </div>
         )
       })()}

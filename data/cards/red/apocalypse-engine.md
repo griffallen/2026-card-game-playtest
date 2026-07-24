@@ -4,11 +4,13 @@ type: unit
 cost: 7
 power: 8
 health: 7
-keywords: breakthrough
+keywords: breakthrough, sneak
 pips: red, red, red
 status: canon
+# effects is agent-maintained: ask for changes in the PR, do not hand-edit
+effects: {"sneak":{"targets":[{"t":"unit","side":"any"}],"ops":[{"op":"damage","t":"selfBase","n":1,"per":{"count":"declaredX"}},{"op":"damage","t":"self","n":1,"per":{"count":"declaredX"}},{"op":"damage","t":"chosen0","n":1,"per":{"count":"declaredX"}}]}}
 ---
-Breakthrough.
+Breakthrough. Sneak — Choose X up to this unit's remaining Health. Lose X Life and deal X damage to this unit and another unit in its zone.
 
 ## Design notes
 

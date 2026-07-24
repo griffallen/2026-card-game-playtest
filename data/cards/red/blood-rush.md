@@ -5,9 +5,9 @@ cost: 2
 pips: red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"clearDamage","t":"chosen0"},{"op":"damage","t":"selfBase","n":"linked"}]}
+effects: {"modes":[{"label":"Take the wound","targets":[{"t":"unit","side":"friendly"}],"ops":[{"op":"clearDamage","t":"chosen0"},{"op":"damage","t":"selfBase","n":"linked"}]},{"label":"Spread the wound","targets":[{"t":"unit","side":"friendly"},{"t":"unit","side":"any"}],"ops":[{"op":"clearDamage","t":"chosen0"},{"op":"damage","t":"selfBase","n":"linked"},{"op":"damage","t":"chosen1","n":"linked"}]}]}
 ---
-Remove all damage from a unit you control; deal that much damage to your base.
+Remove all damage from a unit you control; deal that much damage to your base. You may also deal that much damage to another unit.
 
 ## Design notes
 

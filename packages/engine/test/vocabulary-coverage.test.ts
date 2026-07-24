@@ -36,7 +36,7 @@ function usedVocabulary(cards: CardDef[]): { keywords: Set<string>; ops: Set<str
   const keywords = new Set<string>()
   const ops = new Set<string>()
   const opLists = (d: CardDef): Op[][] =>
-    [d.onPlay, d.onEnterZone, d.onAttack, d.onAttackBase, d.onDefend, d.onDamage, d.onKill, d.onDeath,
+    [d.onPlay, d.onEnterZone, d.onAttack, d.onAttackBase, d.onDefend, d.onDamage, d.onKill, d.onDeath, d.onDiscard,
      d.onHostDeath, d.startOfRound?.ops, d.endOfRound?.ops, d.sneak?.ops, d.activated?.ops,
      ...(d.modes ?? []).map(m => m.ops)].filter(Boolean) as Op[][]
   const targetLists = (d: CardDef): TargetSpec[][] =>

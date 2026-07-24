@@ -6,14 +6,14 @@ import type { CardDef, CardSet, Op, Static, TargetSpec } from './types.ts'
 // enforced from the single KEYWORD_NAMES source in types.ts. KEYWORDS + OPS are exported so
 // vocabulary-coverage.test.ts can prove every live word is reachable by a real card (issue #135).
 export const KEYWORDS = new Set<string>(KEYWORD_NAMES)
-export const OPS = new Set(['damage', 'damageFilter', 'heal', 'healFromBaseDamage', 'healFromDamageTaken', 'draw', 'chooseFromHand', 'influence', 'influenceOpponent', 'influenceOwner', 'buff', 'setPower', 'double', 'grant', 'grantTrigger', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'damageSourceOwner', 'releaseCaptivesHomeWounded', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand', 'reckoning', 'lockPlays', 'discardRandom', 'revealHand'])
+export const OPS = new Set(['damage', 'damageFilter', 'heal', 'healFromBaseDamage', 'healFromDamageTaken', 'draw', 'chooseFromHand', 'influence', 'influenceOpponent', 'influenceOwner', 'buff', 'setPower', 'double', 'grant', 'grantTrigger', 'destroy', 'destroyUpgrade', 'ready', 'extraAction', 'preventBase', 'wardHome', 'wardBlocker', 'removeNegative', 'capture', 'clearDamage', 'countBuff', 'exhaust', 'freeCaptives', 'move', 'damageSourceOwner', 'releaseCaptivesHomeWounded', 'attackTax', 'doom', 'xSurge', 'splashReap', 'createCopies', 'moveDamage', 'lastStand', 'reckoning', 'lockPlays', 'discardRandom', 'revealHand', 'returnSourceToHand'])
 const OP_TARGETS = new Set(['chosen0', 'chosen1', 'self', 'attached', 'attackTarget', 'autoSplash', 'enemyBase', 'selfBase', 'auto'])
 const STATICS = new Set(['aura', 'oppThreshold'])
 const AURA_SCOPES = new Set(['otherFriendly', 'friendlyInZone', 'enemyInZone', 'attached'])
 const TARGET_KINDS = new Set(['unit', 'unitOrBase', 'zone', 'upgrade'])
-const COND_KEYS = new Set(['influenceAtLeast', 'influenceAtMost', 'selfLifeAtMost', 'selfLifeLessThanOpponent'])
+const COND_KEYS = new Set(['influenceAtLeast', 'influenceAtMost', 'selfLifeAtMost', 'selfLifeLessThanOpponent', 'eitherHopeAtMost'])
 const BASE_COUNTS = new Set(['handSize', 'discardUnitsBoth'])   // #122: powerFromCount/healthFromCount values
-const TRIGGER_KEYS = ['onPlay', 'onEnterZone', 'onAttack', 'onAttackBase', 'onDefend', 'onDamage', 'onKill', 'onDeath'] as const
+const TRIGGER_KEYS = ['onPlay', 'onEnterZone', 'onAttack', 'onAttackBase', 'onDefend', 'onDamage', 'onKill', 'onDeath', 'onDiscard'] as const
 
 const isInt = (v: unknown, lo = -99, hi = 99) => Number.isInteger(v) && (v as number) >= lo && (v as number) <= hi
 
@@ -86,7 +86,7 @@ export function validateCardSet(cards: CardSet): string[] {
     for (const key of TRIGGER_KEYS) {
       const ops = def[key]
       if (!ops) continue
-      if (def.type === 'action' && key !== 'onPlay') err(slug, `actions cannot have ${key}`)
+      if (def.type === 'action' && key !== 'onPlay' && key !== 'onDiscard') err(slug, `actions cannot have ${key}`)
       for (const op of ops) errors.push(...validateOp(slug, op, def, chosenSlots, key))
     }
     // #122 (Silence the Song): the host-death trigger — upgrade-only, no chosen targets
@@ -134,7 +134,7 @@ export function validateCardSet(cards: CardSet): string[] {
 function validateTargetSpec(slug: string, t: TargetSpec): string[] {
   const errors: string[] = []
   if (!TARGET_KINDS.has(t.t)) errors.push(`${slug}: unknown target kind ${t.t}`)
-  if (t.count !== undefined && !isInt(t.count, 1, 4)) errors.push(`${slug}: bad target count`)
+  if (t.count !== undefined && !isInt(t.count, 1, 12)) errors.push(`${slug}: bad target count`)
   if (t.maxPower !== undefined && !isInt(t.maxPower, 0, 99)) errors.push(`${slug}: bad maxPower`)
   if (t.maxCost !== undefined && !isInt(t.maxCost, 0, 30)) errors.push(`${slug}: bad maxCost`)
   if (t.anyOf !== undefined) {   // #104 (Inquisitor): OR of caps — at least one, each in range
@@ -161,7 +161,7 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       if (t === 'chosen1' && chosenSlots < 2) err('references chosen1 but the card declares fewer than 2 targets')
       if ((t === 'self' || t === 'attached') && def.type === 'action') err(`${t} is meaningless on an action`)
       if (t === 'attackTarget' || t === 'autoSplash') {
-        if (where !== 'onAttack' && where !== 'onAttackBase') err(`${t} only makes sense in attack triggers`)
+        if (where !== 'onAttack' && where !== 'onAttackBase' && where !== 'onDefend') err(`${t} only makes sense in combat triggers`)
       }
     } else if (t && typeof t === 'object') {
       const f = t as { side?: string; zone?: string }
@@ -189,7 +189,9 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       if (h !== undefined && typeof h !== 'boolean') err("per:{count:'influence'} half must be true/false")
     } else if (p.count === 'targetRemainingHealth' || p.count === 'targetCostHalf') {   // #122 (Assassin's Contract): read the chosen0 target
       if (chosenSlots < 1) err(`per:{count:'${p.count}'} reads the chosen target but the card declares no targets`)
-    } else if (p.count === 'exhaustedEnemyUnits' || p.count === 'allExhaustedUnits' || p.count === 'positiveHope' || p.count === 'readiedUnits' || p.count === 'newlyExhaustedEnemies' || p.count === 'sourceCost') {
+    } else if (p.count === 'targetPower') {
+      if (chosenSlots < 1) err("per:{count:'targetPower'} reads the chosen target but the card declares no targets")
+    } else if (p.count === 'exhaustedEnemyUnits' || p.count === 'allExhaustedUnits' || p.count === 'positiveHope' || p.count === 'opponentPositiveHope' || p.count === 'readiedUnits' || p.count === 'newlyExhaustedEnemies' || p.count === 'sourceCost' || p.count === 'declaredX') {
       // #122 (The Unseen Court): global board counts — no target, side, or filter to validate
     } else err(`bad per count ${String(p.count)}`)
   }
@@ -269,7 +271,7 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       checkTargetRef(op.t)
       if (op.p === undefined && op.h === undefined && op.armor === undefined) err('buff changes nothing')
       for (const v of [op.p, op.h, op.armor]) if (v !== undefined && !isInt(v)) err('bad buff value')
-      if (!['round', 'perm'].includes(op.dur)) err('buff needs dur round|perm')
+      if (!['round', 'perm', 'combat'].includes(op.dur)) err('buff needs dur round|perm|combat')
       for (const k of Object.keys(op.cond ?? {})) if (!COND_KEYS.has(k)) err(`unknown condition ${k}`)
       checkPer(op.per)   // #104 (Dawnspear Paladin): +stat PER attacker on defense (attackers → onDefend only)
       break
@@ -296,9 +298,13 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       break
     case 'ready':
       if (op.side !== 'friendly') err('ready supports side friendly')
-      if (op.t !== undefined && op.t !== 'chosen0') err('ready target must be chosen0')
+      if (op.t !== undefined && op.t !== 'chosen0' && op.t !== 'chosenAll') err('ready target must be chosen0|chosenAll')
       if (op.t === 'chosen0' && chosenSlots < 1) err('ready chosen0 but the card declares no targets')
+      if (op.t === 'chosenAll' && chosenSlots < 1) err('ready chosenAll but the card declares no targets')
       if (op.remember !== undefined && op.remember !== 'readiedUnits') err('bad ready remember')
+      break
+    case 'returnSourceToHand':
+      if (where !== 'onDiscard') err('returnSourceToHand only fires onDiscard')
       break
     case 'damageSourceOwner': if (!isInt(op.n, 1, 99)) err('bad source-owner damage'); checkPer(op.per); break
     case 'releaseCaptivesHomeWounded': if (where !== 'onDeath') err('releaseCaptivesHomeWounded only fires onDeath'); break

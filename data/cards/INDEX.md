@@ -10,40 +10,40 @@
 |---|---|---|---|---|---|---|---|
 | [Reckless Abandon](red/reckless-abandon.md) | — | 0 | action | — |  | canon | Pay any number of resources. Lose X Hope: one of your units gets +X Power and Breakthrough this round. |
 | [Reckless Charge](red/reckless-charge.md) | — | 0 | action | — |  | canon | Choose one — move one of your units one zone, even if exhausted (this doesn't exhaust it); OR target unit gets +1 Power this round for each other red unit in its zone (either side's). |
-| [Smash Through](red/smash-through.md) | — | 0 | action | — |  | canon | Target unit with Rush gains Breakthrough this round. |
-| [Warpath](red/warpath.md) | — | 0 | action | — |  | canon | X is your current Hope. Each of your units gets +Power this round equal to half of X, rounded down. If X is positive, you lose X life. If X is negative, your opponent gains 1 Hope. At 0 Hope, nothing happens. |
+| [Smash Through](red/smash-through.md) | — | 0 | action | — |  | canon | Target unit with Rush gains Breakthrough this round. Choose one — lose 3 Life; or deal 3 damage to another unit you control. |
+| [Warpath](red/warpath.md) | — | 0 | action | — |  | canon | Ready a unit. Lose Hope equal to its Power. If your opponent has positive Hope, lose Life equal to their Hope. |
 | [Cinder Initiate](red/cinder-initiate.md) | — | 1 | unit | 2/1 | rush | canon | Rush. |
 | [Devastating Strike](red/devastating-strike.md) | — | 1 | action | — |  | canon | Deal 2 damage to target unit — 3 instead if it's already damaged. |
 | [Searing Bolt](red/searing-bolt.md) | — | 1 | action | — |  | canon | Deal 2 damage to any target. |
 | [Berserker](red/berserker.md) | — | 2 | unit | 1/4 | rush, scar | canon | Rush. Scar. |
-| [Blood Rush](red/blood-rush.md) | — | 2 | action | — |  | canon | Remove all damage from a unit you control; deal that much damage to your base. |
+| [Blood Rush](red/blood-rush.md) | — | 2 | action | — |  | canon | Remove all damage from a unit you control; deal that much damage to your base. You may also deal that much damage to another unit. |
 | [Cataclysmic Charge](red/cataclysmic-charge.md) | — | 2 | action | — |  | canon | Target unit gets +3 Power and Breakthrough this round. |
-| [Flameblade Raider](red/flameblade-raider.md) | — | 2 | unit | 4/1 | rush, breakthrough | canon | Rush. Breakthrough. When this unit dies, gain 1 Hope — and 1 more if it died defeating a unit (a trade counts). |
+| [Flameblade Raider](red/flameblade-raider.md) | — | 2 | unit | 4/1 | rush, breakthrough | canon | Rush. Breakthrough. When this unit dies, lose 1 Hope. When this unit defeats a unit, your opponent loses 1 Hope. |
 | [Pillage](red/pillage.md) | — | 2 | action | — |  | canon | Destroy target enemy upgrade. |
 | [Spark Hound](red/spark-hound.md) | — | 2 | unit | 2/1 | rush, guard | canon | Rush. Guard. When this attacks, it gets +1 Power this round. |
-| [Bloodfrenzy](red/bloodfrenzy.md) | — | 3 | upgrade | — |  | canon | This unit gets +1 Power and +1 Health and Breakthrough. If you have Hope 0 or less, it gets +2 Power and +2 Health instead. |
+| [Bloodfrenzy](red/bloodfrenzy.md) | — | 3 | upgrade | — |  | canon | This unit gets +1 Power and +1 Health and Breakthrough. It gets an additional +1 Power and +1 Health if either player has 0 or less Hope. |
 | [Collateral Damage](red/collateral-damage.md) | — | 3 | action | — |  | canon | Deal 2 damage to two different target units. |
-| [Fiery Impaler](red/fiery-impaler.md) | — | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to another unit of your choice in the same zone. If that unit dies, gain +1 Hope. |
+| [Fiery Impaler](red/fiery-impaler.md) | — | 3 | unit | 3/3 |  | canon | When this attacks a unit, it also deals 1 damage to another unit of your choice in the same zone. If that unit dies, your opponent loses 1 Hope. |
 | [Rageforged Brute](red/rageforged-brute.md) | — | 3 | unit | 4/4 | breakthrough | canon | Breakthrough. |
 | [Volcanic Slam](red/volcanic-slam.md) | — | 3 | action | — |  | canon | Deal 3 damage to up to two units in the same zone. |
 | [Warcry Leader](red/warcry-leader.md) | — | 3 | unit | 4/3 |  | canon | Other friendly units have Rush. |
 | [Blaze Juggernaut](red/blaze-juggernaut.md) | — | 4 | unit | 5/5 | rush, breakthrough | canon | Rush. Breakthrough. |
-| [Burning Oath](red/burning-oath.md) | — | 4 | upgrade | — |  | canon | This unit gets +2 Power and Breakthrough. When this attaches, gain 1 Hope. Then gain 1 Hope each time its bearer defeats a unit (a trade counts). |
+| [Burning Oath](red/burning-oath.md) | — | 4 | upgrade | — |  | canon | This unit gets +2 Power and Breakthrough. A unit attacking or defending this unit gets −2 Power for that combat. |
 | [Execution Swing](red/execution-swing.md) | — | 4 | action | — |  | canon | Destroy target damaged unit. |
 | [Inferno Titan](red/inferno-titan.md) | — | 4 | unit | 4/6 | breakthrough, scar | canon | Breakthrough. Scar. |
-| [Rupture](red/rupture.md) | — | 4 | action | — |  | canon | Deal 4 damage to target unit or base. |
-| [Crimson Behemoth](red/crimson-behemoth.md) | — | 5 | unit | 6/6 |  | canon | When this attacks, deal 2 damage to each other unit in its zone, yours included. When this defeats a unit, gain 1 Hope. |
+| [Rupture](red/rupture.md) | — | 4 | action | — |  | canon | Deal 4 damage to target unit or base. Your opponent loses 2 Hope. |
+| [Crimson Behemoth](red/crimson-behemoth.md) | — | 5 | unit | 6/6 |  | canon | When this attacks, deal 2 damage to each other unit in its zone, yours included. When this defeats a unit, your opponent loses 1 Hope. |
 | [Final Onslaught](red/final-onslaught.md) | — | 5 | action | — |  | canon | Ready one of your units and take an action with it. Then deal it damage equal to its remaining Health — it dies — and deal that much damage to each other unit in its zone, yours included. |
-| [Scorching Howl](red/scorching-howl.md) | — | 5 | action | — |  | canon | Deal 3 damage to all units. |
+| [Scorching Howl](red/scorching-howl.md) | — | 5 | action | — |  | canon | Deal 3 damage to all units. Each player loses 3 Life. |
 | [Warlord Garok](red/warlord-garok.md) | — | 5 | unit | 5/5 | rush | canon | Rush. Your other units have +1 Power. |
 | [Burn the Frontline](red/burn-the-frontline.md) | — | 6 | action | — |  | canon | Choose a zone. Deal 6 damage to every unit there — yours included. |
 | [Earthshaker](red/earthshaker.md) | — | 6 | unit | 4/7 | breakthrough, scar | canon | Breakthrough. Scar. |
-| [Raging Inferno](red/raging-inferno.md) | — | 6 | action | — |  | canon | Deal 6 damage to target unit or base. |
-| [Relentless Assault](red/relentless-assault.md) | — | 6 | action | — |  | canon | Ready all your units. |
+| [Raging Inferno](red/raging-inferno.md) | — | 6 | action | — |  | canon | Deal 6 damage to target unit or base. If this card is discarded, immediately return it to your hand. |
+| [Relentless Assault](red/relentless-assault.md) | — | 6 | action | — |  | canon | Ready any number of your exhausted units. Lose 1 Life for each unit readied. |
 | [Unchained Rage](red/unchained-rage.md) | — | 6 | action | — |  | canon | Double the Power of all your units this round and next round. For each unit of yours that attacks, lose 2 Hope. |
-| [Apocalypse Engine](red/apocalypse-engine.md) | — | 7 | unit | 8/7 | breakthrough | canon | Breakthrough. |
+| [Apocalypse Engine](red/apocalypse-engine.md) | — | 7 | unit | 8/7 | breakthrough, sneak | canon | Breakthrough. Sneak — Choose X up to this unit's remaining Health. Lose X Life and deal X damage to this unit and another unit in its zone. |
 | [Last Stand](red/last-stand.md) | — | 8 | action | — |  | canon | Ready each of your units. They don't exhaust this round. For each of your units that moves, lose 4 Hope. For each of your units that attacks, lose 4 Life. At the end of the round, lose 8 Life and lose 8 Hope. |
-| [Worldrender](red/worldrender.md) | — | 8 | unit | 4/8 | rush, breakthrough, scar | canon | Rush. Breakthrough. Scar.  While this is in combat with an enemy unit, ignore that unit's Shield and Armor — this unit's full damage lands. |
+| [Worldrender](red/worldrender.md) | — | 8 | unit | 4/8 | rush, breakthrough, scar | canon | Rush. Breakthrough. Scar. At the start of each round, lose 1 Life, lose 1 Hope, and deal 1 damage to this unit. |
 
 ## Yellow (48)
 

@@ -35,6 +35,8 @@ export interface Cond {
   influenceAtMost?: number
   selfLifeAtMost?: number
   selfLifeLessThanOpponent?: boolean
+  /** Either player's Hope is zero or below. */
+  eitherHopeAtMost?: number
 }
 
 /** Ops resolve against: play-time chosen targets, the effect's own card, or a filter. */
@@ -89,6 +91,9 @@ export type PerCount =
   | { count: 'readiedUnits' }
   | { count: 'newlyExhaustedEnemies' }
   | { count: 'sourceCost' }
+  | { count: 'targetPower' }
+  | { count: 'opponentPositiveHope' }
+  | { count: 'declaredX' }
 
 export type Op =
   | { op: 'damage'; t: OpTarget | 'enemyBase' | 'selfBase' | 'autoSplash'; n: number | 'linked'; bonusIfDamaged?: number; per?: PerCount; cond?: Cond }  // 'linked' = the amount from the previous linking op (v3, spec §3)  // autoSplash: strongest other enemy unit in the attack target's zone  // per (#85): scale n by a live count (e.g. enemy deaths this round)  // cond (#107 Warpath): the hit fires only while the controller's state holds — Warpath's self-life price is paid only while ahead on Influence
@@ -112,14 +117,14 @@ export type Op =
   | { op: 'influence'; n: number; per?: PerCount; cond?: Cond; ifKilled?: boolean }   // + toward controller; per scales n (PR #70/#71); cond gates the gain (#79 Radiant Aegis); ifKilled (#107 Flameblade Raider): onDeath-only — the gain fires only if this unit felled a unit in the same combat it died in (a trade counts)
   | { op: 'influenceOpponent'; n: number; per?: PerCount }  // opponent loses Hope
   | { op: 'influenceOwner'; t: 'chosen0' | 'chosen1'; n: number; per?: PerCount }   // #122 (Assassin's Contract): grant the CHOSEN target's OWNER (not the controller) influence, n scaled by `per` (targetCostHalf). Kill an enemy unit and the ENEMY's Influence rises; kill your own and you gain. Owner read live, before any same-action destroy.
-  | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'round' | 'perm'; cond?: Cond; per?: PerCount }  // per (#104 Dawnspear Paladin): scale the granted p/h/armor by a live count (e.g. +1 Power PER attacker, onDefend)
+  | { op: 'buff'; t: OpTarget | UnitFilter; p?: number; h?: number; armor?: number; dur: 'round' | 'perm' | 'combat'; cond?: Cond; per?: PerCount }  // per (#104 Dawnspear Paladin): scale the granted p/h/armor by a live count (e.g. +1 Power PER attacker, onDefend)
   | { op: 'setPower'; t: OpTarget; n: number; per?: PerCount; dur: 'round' | 'perm' }
   | { op: 'double'; t: OpTarget | UnitFilter; rounds?: number }  // v3 (Unchained Rage): filter-wide, multi-round
   | { op: 'grant'; t: OpTarget | UnitFilter; kw: KeywordSpec; dur: 'round' | 'perm' }
   | { op: 'grantTrigger'; t: OpTarget; key: 'onAttackBase' | 'onKill'; ops: Op[]; dur: 'round' | 'perm' }
   | { op: 'destroy'; t: OpTarget; mustBeDamaged?: boolean }
   | { op: 'destroyUpgrade' }                                      // target: chosen upgrade
-  | { op: 'ready'; side: 'friendly'; t?: 'chosen0'; remember?: 'readiedUnits' }  // with t: readies only that chosen unit (Final Onslaught)
+  | { op: 'ready'; side: 'friendly'; t?: 'chosen0' | 'chosenAll'; remember?: 'readiedUnits' }  // with t: readies chosen unit(s)
   | { op: 'extraAction' }                                         // the same player immediately takes another action (decision 43)
   | { op: 'preventBase'; n: number }
   | { op: 'wardHome' }        // #88 (Devout Intervention): arm a one-shot ward — the next DAMAGING attack on the controller's Home is fully prevented; spends only on real prevention (a feint leaves it armed), and never blocks direct-damage spells
@@ -136,7 +141,8 @@ export type Op =
   | { op: 'attackTax'; n: number; rounds: number }                // PR #39 (Unchained Rage): each of your attacking units cedes n influence
   | { op: 'doom'; t: 'chosen0' }                                  // PR #38 (Final Onslaught): after the extra action, the unit and its attack's victims die
   | { op: 'xSurge'; t: 'chosen0' }                                // issue #45 (Reckless Abandon): lose X influence; +X power and Breakthrough this round
-  | { op: 'splashReap'; n: number; influence: number }            // PR #46 (Fiery Impaler): on attack, n damage to the declared splash victim; +influence if it dies
+  | { op: 'splashReap'; n: number; influence?: number; opponentInfluence?: number }            // on attack, n damage to the declared splash victim; optional Hope swing if it dies
+  | { op: 'returnSourceToHand' }
   | { op: 'createCopies'; n: number; p?: number; h?: number; kw?: KeywordSpec[]; ifOnlyCopy?: boolean }  // #69 (Radiant Citadel): summon n ready copies of the source unit's card in the controller's Home. p/h/kw shape the copies' body (omitted = the printed card). ifOnlyCopy: fires only while the controller owns exactly one copy — the recursion fuse. Created units are not deck cards; they vanish when they die.
   | { op: 'moveDamage'; from: OpTarget; to: OpTarget }  // #104 (Censer of Purity): lift the chosen amount (ctx.amount) of damage off `from` and onto `to`, capped at min(from's damage, to's remaining Health — it cannot fall below 0). A transfer of existing wounds, not a fresh hit: armor and shields never touch it. Reaching exactly 0 Health kills `to` via the normal op-tail lethality path.
   | { op: 'lastStand'; moveInfluence: number; attackLife: number; endLife: number; endInfluence: number }  // #107 (Last Stand): register a round-scoped pact for the controller — their units don't exhaust from acting this round; each MOVE cedes `moveInfluence`, each attacking unit costs `attackLife` Life, and at end of round the controller loses `endLife` Life and `endInfluence` Influence. Everything stacks (a second cast bills independently); cleared at the round boundary.
@@ -163,6 +169,7 @@ export interface TargetSpec {
   anyOf?: { maxPower?: number; maxCost?: number; maxRemainingHealth?: number }
   withKw?: KeywordName
   mustBeDamaged?: boolean
+  mustBeExhausted?: boolean
   damagedOrMaxHealth?: number  // PR #53 (Prison Warrant): legal if damaged OR effective health ≤ n
   count?: number            // distinct targets sharing this spec (Collateral Damage: 2)
   upTo?: boolean            // v3 (Volcanic Slam): 1..count targets acceptable instead of exactly count
@@ -239,6 +246,7 @@ export interface CardDef {
   onDamage?: Op[]            // fires after this unit takes actual (post-Armor/Shield) damage
   onKill?: Op[]
   onDeath?: Op[]             // PR #54: fires as the unit dies (controller = owner)
+  onDiscard?: Op[]           // action card discarded from hand
   /** #122 (Silence the Song): fires when the HOST unit this upgrade is attached to DIES — the ops
    *  run for the UPGRADE's owner (the caster who played it), NOT the host's owner. Upgrade-only, no
    *  chosen targets (there is no action payload at a host's death). */
@@ -316,6 +324,7 @@ export interface Mod {
   kw?: KeywordSpec
   double?: boolean
   round?: boolean            // expires at end of round
+  combat?: boolean           // expires after the current combat resolves
   rounds?: number            // v3: expires after this many round-ends (2 = survives one, dies at the second)
   cond?: Cond                // active only while condition holds (checked against owner)
   triggers?: { key: 'onAttackBase' | 'onKill'; ops: Op[] }[]
@@ -486,7 +495,7 @@ export type GameAction =
   | { type: 'resource'; card: string }       // bank phase: resource a card
   | { type: 'skipResource' }                 // bank phase: end your start step
   | { type: 'play'; card: string; targets?: TargetRef[]; zone?: ZoneId; mode?: number; x?: number; exhaust?: string }  // zone: v3 Infiltrate; mode: v3 modal cards; x: declared X cost (issue #45); exhaust (#104 Lawbringer): the enemy unit id to arrest in the zone this unit enters (its Home)
-  | { type: 'activate'; unit: string; targets?: TargetRef[]; amount?: number }   // v3 Sneak (decision 60) / Ranged volley (decision 80); #104 Censer: amount = damage points to move
+  | { type: 'activate'; unit: string; targets?: TargetRef[]; amount?: number; x?: number }   // Sneak / Ranged; amount = move damage, x = declared Sneak value
   | { type: 'releaseCaptive'; unit: string }                              // RETIRED (decision 92): kept for replay compat; always rejected
   | { type: 'block'; pairs: { blocker: string; onto: string }[]; retaliationOrder?: string[] }  // v3 combat: defender pairs blockers (empty = let it through); pour order = pair order. #84: retaliationOrder aims the target's DIVIDED strike-back — ordered attacker ids; absent → highest-power-first
   | { type: 'attachOrphan'; upgrade: string; unit: string }               // v3 (decision 67): salvage an orphaned upgrade at full cost+pips

@@ -87,21 +87,60 @@
   "artUrl": "/cards/reckless-charge.jpg"
  },
  "smash-through": {
-  "targets": [
+  "modes": [
    {
-    "t": "unit",
-    "side": "friendly",
-    "withKw": "rush"
-   }
-  ],
-  "onPlay": [
+    "label": "Blood price",
+    "targets": [
+     {
+      "t": "unit",
+      "side": "friendly",
+      "withKw": "rush"
+     }
+    ],
+    "ops": [
+     {
+      "op": "grant",
+      "t": "chosen0",
+      "kw": {
+       "k": "breakthrough"
+      },
+      "dur": "round"
+     },
+     {
+      "op": "damage",
+      "t": "selfBase",
+      "n": 3
+     }
+    ]
+   },
    {
-    "op": "grant",
-    "t": "chosen0",
-    "kw": {
-     "k": "breakthrough"
-    },
-    "dur": "round"
+    "label": "Sacrifice",
+    "targets": [
+     {
+      "t": "unit",
+      "side": "friendly",
+      "withKw": "rush"
+     },
+     {
+      "t": "unit",
+      "side": "friendly"
+     }
+    ],
+    "ops": [
+     {
+      "op": "grant",
+      "t": "chosen0",
+      "kw": {
+       "k": "breakthrough"
+      },
+      "dur": "round"
+     },
+     {
+      "op": "damage",
+      "t": "chosen1",
+      "n": 3
+     }
+    ]
    }
   ],
   "slug": "smash-through",
@@ -109,24 +148,30 @@
   "color": "red",
   "type": "action",
   "cost": 0,
-  "text": "Target unit with Rush gains Breakthrough this round.",
+  "text": "Target unit with Rush gains Breakthrough this round. Choose one — lose 3 Life; or deal 3 damage to another unit you control.",
   "pips": [
    "red"
   ],
   "artUrl": "/cards/smash-through.jpg"
  },
  "warpath": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly"
+   }
+  ],
   "onPlay": [
    {
-    "op": "buff",
-    "t": {
-     "side": "friendly"
-    },
-    "p": 1,
-    "dur": "round",
+    "op": "ready",
+    "side": "friendly",
+    "t": "chosen0"
+   },
+   {
+    "op": "influence",
+    "n": -1,
     "per": {
-     "count": "influence",
-     "half": true
+     "count": "targetPower"
     }
    },
    {
@@ -134,17 +179,7 @@
     "t": "selfBase",
     "n": 1,
     "per": {
-     "count": "influence"
-    },
-    "cond": {
-     "influenceAtLeast": 1
-    }
-   },
-   {
-    "op": "influence",
-    "n": -1,
-    "cond": {
-     "influenceAtMost": -1
+     "count": "opponentPositiveHope"
     }
    }
   ],
@@ -153,8 +188,10 @@
   "color": "red",
   "type": "action",
   "cost": 0,
-  "text": "X is your current Hope. Each of your units gets +Power this round equal to half of X, rounded down. If X is positive, you lose X life. If X is negative, your opponent gains 1 Hope. At 0 Hope, nothing happens.",
+  "text": "Ready a unit. Lose Hope equal to its Power. If your opponent has positive Hope, lose Life equal to their Hope.",
   "pips": [
+   "red",
+   "red",
    "red"
   ],
   "designerNote": "Session 006 redesign: was \"all friendly units gain Rush\" permanently — dead text under decision 41 (see Reckless Charge). Rebuilt as the go-wide pump: 2 mana, +1 Power to the whole board for the round. Last Stand (+2 and a blood price) is its big sibling.\n\n2026-07-16 (#107 balance pass — Griff's red influence-economy rework, locked in session 013): Warpath now spends the Influence track as fuel. Cost 2 → 0. The board pump scales to HALF your Influence magnitude, rounded down (+3 to the whole board at Influence 6), and the price flips with the sign — ahead on the track you pay the FULL magnitude in life; behind, your opponent gains 1 Influence instead (no life paid). At Influence 0 it is a clean no-op. Half-Power / full-Life is Griff's own tuning: his raw #107 text was full-X Power, and he halved the bump on-thread to pull the ceiling down (+3 not +6 at Influence 6) while keeping the full-life sting so being ahead still hurts to fire. The buff reads |Influence| (a positive pump whether ahead or behind); only the sign chooses the price. Rounding is floor — half, rounded down (the engine's standard; +5 Influence → +2 to the board). New engine plumbing: a per:{count:'influence',half?} count (live |Influence|, optionally halved) and a cond on the damage op (the self-life price fires only while ahead). ⚑ ratify/veto.",
@@ -258,21 +295,55 @@
   "artUrl": "/cards/berserker.jpg"
  },
  "blood-rush": {
-  "targets": [
+  "modes": [
    {
-    "t": "unit",
-    "side": "friendly"
-   }
-  ],
-  "onPlay": [
-   {
-    "op": "clearDamage",
-    "t": "chosen0"
+    "label": "Take the wound",
+    "targets": [
+     {
+      "t": "unit",
+      "side": "friendly"
+     }
+    ],
+    "ops": [
+     {
+      "op": "clearDamage",
+      "t": "chosen0"
+     },
+     {
+      "op": "damage",
+      "t": "selfBase",
+      "n": "linked"
+     }
+    ]
    },
    {
-    "op": "damage",
-    "t": "selfBase",
-    "n": "linked"
+    "label": "Spread the wound",
+    "targets": [
+     {
+      "t": "unit",
+      "side": "friendly"
+     },
+     {
+      "t": "unit",
+      "side": "any"
+     }
+    ],
+    "ops": [
+     {
+      "op": "clearDamage",
+      "t": "chosen0"
+     },
+     {
+      "op": "damage",
+      "t": "selfBase",
+      "n": "linked"
+     },
+     {
+      "op": "damage",
+      "t": "chosen1",
+      "n": "linked"
+     }
+    ]
    }
   ],
   "slug": "blood-rush",
@@ -280,7 +351,7 @@
   "color": "red",
   "type": "action",
   "cost": 2,
-  "text": "Remove all damage from a unit you control; deal that much damage to your base.",
+  "text": "Remove all damage from a unit you control; deal that much damage to your base. You may also deal that much damage to another unit.",
   "pips": [
    "red"
   ],
@@ -327,12 +398,13 @@
   "onDeath": [
    {
     "op": "influence",
-    "n": 1
-   },
+    "n": -1
+   }
+  ],
+  "onKill": [
    {
-    "op": "influence",
-    "n": 1,
-    "ifKilled": true
+    "op": "influenceOpponent",
+    "n": 1
    }
   ],
   "slug": "flameblade-raider",
@@ -342,7 +414,7 @@
   "cost": 2,
   "power": 4,
   "health": 1,
-  "text": "Rush. Breakthrough. When this unit dies, gain 1 Hope — and 1 more if it died defeating a unit (a trade counts).",
+  "text": "Rush. Breakthrough. When this unit dies, lose 1 Hope. When this unit defeats a unit, your opponent loses 1 Hope.",
   "kw": [
    {
     "k": "rush"
@@ -418,18 +490,15 @@
     "s": "aura",
     "scope": "attached",
     "p": 1,
-    "h": 1,
-    "cond": {
-     "influenceAtLeast": 1
-    }
+    "h": 1
    },
    {
     "s": "aura",
     "scope": "attached",
-    "p": 2,
-    "h": 2,
+    "p": 1,
+    "h": 1,
     "cond": {
-     "influenceAtMost": 0
+     "eitherHopeAtMost": 0
     }
    },
    {
@@ -445,7 +514,7 @@
   "color": "red",
   "type": "upgrade",
   "cost": 3,
-  "text": "This unit gets +1 Power and +1 Health and Breakthrough. If you have Hope 0 or less, it gets +2 Power and +2 Health instead.",
+  "text": "This unit gets +1 Power and +1 Health and Breakthrough. It gets an additional +1 Power and +1 Health if either player has 0 or less Hope.",
   "pips": [
    "red",
    "red"
@@ -490,7 +559,7 @@
    {
     "op": "splashReap",
     "n": 1,
-    "influence": 1
+    "opponentInfluence": 1
    }
   ],
   "slug": "fiery-impaler",
@@ -500,7 +569,7 @@
   "cost": 3,
   "power": 3,
   "health": 3,
-  "text": "When this attacks a unit, it also deals 1 damage to another unit of your choice in the same zone. If that unit dies, gain +1 Hope.",
+  "text": "When this attacks a unit, it also deals 1 damage to another unit of your choice in the same zone. If that unit dies, your opponent loses 1 Hope.",
   "pips": [
    "red",
    "red"
@@ -613,16 +682,20 @@
   "artUrl": "/cards/blaze-juggernaut.jpg"
  },
  "burning-oath": {
-  "onPlay": [
+  "onAttack": [
    {
-    "op": "influence",
-    "n": 1
+    "op": "buff",
+    "t": "attackTarget",
+    "p": -2,
+    "dur": "combat"
    }
   ],
-  "onKill": [
+  "onDefend": [
    {
-    "op": "influence",
-    "n": 1
+    "op": "buff",
+    "t": "attackTarget",
+    "p": -2,
+    "dur": "combat"
    }
   ],
   "statics": [
@@ -644,7 +717,7 @@
   "color": "red",
   "type": "upgrade",
   "cost": 4,
-  "text": "This unit gets +2 Power and Breakthrough. When this attaches, gain 1 Hope. Then gain 1 Hope each time its bearer defeats a unit (a trade counts).",
+  "text": "This unit gets +2 Power and Breakthrough. A unit attacking or defending this unit gets −2 Power for that combat.",
   "pips": [
    "red",
    "red"
@@ -716,6 +789,10 @@
     "op": "damage",
     "t": "chosen0",
     "n": 4
+   },
+   {
+    "op": "influenceOpponent",
+    "n": 2
    }
   ],
   "slug": "rupture",
@@ -723,7 +800,7 @@
   "color": "red",
   "type": "action",
   "cost": 4,
-  "text": "Deal 4 damage to target unit or base.",
+  "text": "Deal 4 damage to target unit or base. Your opponent loses 2 Hope.",
   "pips": [
    "red",
    "red"
@@ -745,7 +822,7 @@
   ],
   "onKill": [
    {
-    "op": "influence",
+    "op": "influenceOpponent",
     "n": 1
    }
   ],
@@ -756,7 +833,7 @@
   "cost": 5,
   "power": 6,
   "health": 6,
-  "text": "When this attacks, deal 2 damage to each other unit in its zone, yours included. When this defeats a unit, gain 1 Hope.",
+  "text": "When this attacks, deal 2 damage to each other unit in its zone, yours included. When this defeats a unit, your opponent loses 1 Hope.",
   "pips": [
    "red",
    "red"
@@ -807,6 +884,16 @@
      "side": "all"
     },
     "n": 3
+   },
+   {
+    "op": "damage",
+    "t": "selfBase",
+    "n": 3
+   },
+   {
+    "op": "damage",
+    "t": "enemyBase",
+    "n": 3
    }
   ],
   "slug": "scorching-howl",
@@ -814,7 +901,7 @@
   "color": "red",
   "type": "action",
   "cost": 5,
-  "text": "Deal 3 damage to all units.",
+  "text": "Deal 3 damage to all units. Each player loses 3 Life.",
   "pips": [
    "red",
    "red"
@@ -917,12 +1004,17 @@
     "n": 6
    }
   ],
+  "onDiscard": [
+   {
+    "op": "returnSourceToHand"
+   }
+  ],
   "slug": "raging-inferno",
   "name": "Raging Inferno",
   "color": "red",
   "type": "action",
   "cost": 6,
-  "text": "Deal 6 damage to target unit or base.",
+  "text": "Deal 6 damage to target unit or base. If this card is discarded, immediately return it to your hand.",
   "pips": [
    "red",
    "red"
@@ -931,10 +1023,29 @@
   "artUrl": "/cards/raging-inferno.jpg"
  },
  "relentless-assault": {
+  "targets": [
+   {
+    "t": "unit",
+    "side": "friendly",
+    "count": 12,
+    "upTo": true,
+    "mustBeExhausted": true
+   }
+  ],
   "onPlay": [
    {
     "op": "ready",
-    "side": "friendly"
+    "side": "friendly",
+    "t": "chosenAll",
+    "remember": "readiedUnits"
+   },
+   {
+    "op": "damage",
+    "t": "selfBase",
+    "n": 1,
+    "per": {
+     "count": "readiedUnits"
+    }
    }
   ],
   "slug": "relentless-assault",
@@ -942,7 +1053,7 @@
   "color": "red",
   "type": "action",
   "cost": 6,
-  "text": "Ready all your units.",
+  "text": "Ready any number of your exhausted units. Lose 1 Life for each unit readied.",
   "pips": [
    "red",
    "red"
@@ -981,6 +1092,40 @@
   "artUrl": "/cards/unchained-rage.jpg"
  },
  "apocalypse-engine": {
+  "sneak": {
+   "targets": [
+    {
+     "t": "unit",
+     "side": "any"
+    }
+   ],
+   "ops": [
+    {
+     "op": "damage",
+     "t": "selfBase",
+     "n": 1,
+     "per": {
+      "count": "declaredX"
+     }
+    },
+    {
+     "op": "damage",
+     "t": "self",
+     "n": 1,
+     "per": {
+      "count": "declaredX"
+     }
+    },
+    {
+     "op": "damage",
+     "t": "chosen0",
+     "n": 1,
+     "per": {
+      "count": "declaredX"
+     }
+    }
+   ]
+  },
   "slug": "apocalypse-engine",
   "name": "Apocalypse Engine",
   "color": "red",
@@ -988,10 +1133,13 @@
   "cost": 7,
   "power": 8,
   "health": 7,
-  "text": "Breakthrough.",
+  "text": "Breakthrough. Sneak — Choose X up to this unit's remaining Health. Lose X Life and deal X damage to this unit and another unit in its zone.",
   "kw": [
    {
     "k": "breakthrough"
+   },
+   {
+    "k": "sneak"
    }
   ],
   "pips": [
@@ -1032,7 +1180,24 @@
   "artUrl": "/cards/last-stand.jpg"
  },
  "worldrender": {
-  "piercesArmorShield": true,
+  "startOfRound": {
+   "ops": [
+    {
+     "op": "damage",
+     "t": "selfBase",
+     "n": 1
+    },
+    {
+     "op": "influence",
+     "n": -1
+    },
+    {
+     "op": "damage",
+     "t": "self",
+     "n": 1
+    }
+   ]
+  },
   "slug": "worldrender",
   "name": "Worldrender",
   "color": "red",
@@ -1040,7 +1205,7 @@
   "cost": 8,
   "power": 4,
   "health": 8,
-  "text": "Rush. Breakthrough. Scar.\n\nWhile this is in combat with an enemy unit, ignore that unit's Shield and Armor — this unit's full damage lands.",
+  "text": "Rush. Breakthrough. Scar. At the start of each round, lose 1 Life, lose 1 Hope, and deal 1 damage to this unit.",
   "kw": [
    {
     "k": "rush"

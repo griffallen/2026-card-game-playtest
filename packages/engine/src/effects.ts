@@ -13,6 +13,8 @@ export interface FxCtx {
   controller: Seat
   /** unit the effect belongs to (unit triggers), or the carrier for upgrade effects */
   sourceUnit?: string
+  /** A card resolving from discard rather than a board unit (for discard triggers). */
+  sourceCard?: string
   /** issue #64: name the card behind automatic ticks — start-of-round heals and influence
    *  logged bare read as invisible magic ("I figured they were playing actions to heal") */
   srcLabel?: string
@@ -126,6 +128,13 @@ function perCount(ctx: FxCtx, per: PerCount | undefined): number {
   if (per.count === 'readiedUnits') return ctx.readiedUnits ?? 0
   if (per.count === 'newlyExhaustedEnemies') return ctx.newlyExhaustedEnemies ?? 0
   if (per.count === 'sourceCost') return ctx.sourceUnit ? defOf(ctx.state, ctx.sourceUnit).cost : 0
+  if (per.count === 'targetPower') {
+    const ref = ctx.targets?.[0]
+    const u = ref?.kind === 'unit' ? ctx.state.units[ref.id] : undefined
+    return u ? effPower(ctx.state, u) : 0
+  }
+  if (per.count === 'opponentPositiveHope') return Math.max(0, influenceFor(ctx.state, other(ctx.controller)))
+  if (per.count === 'declaredX') return ctx.x ?? 0
   return filterUnits(ctx, per.f).length
 }
 
@@ -456,6 +465,8 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
           const [cardId] = hand.splice(idx, 1)
           state.sides[s].discard.push(cardId)
           log(state, s, `${state.sides[s].name} discards ${name(state, cardId)} at random`)
+          const def = defOf(state, cardId)
+          if (def.onDiscard?.length) runOps({ state, controller: s, sourceCard: cardId, actorSeat: s, srcLabel: def.name }, def.onDiscard)
         }
         break
       }
@@ -533,7 +544,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         const targets = typeof op.t === 'string' ? [resolveUnitTarget(ctx, op.t)].filter(Boolean) as UnitInstance[] : filterUnits(ctx, op.t)
         for (const u of targets) {
           if (!condHolds(state, controller, op.cond)) continue
-          u.mods.push({ p, h, armor, round: op.dur === 'round' })
+          u.mods.push({ p, h, armor, round: op.dur === 'round', combat: op.dur === 'combat' })
           const bits = [p ? `${p > 0 ? '+' : ''}${p} power` : '', h ? `${h > 0 ? '+' : ''}${h} health` : '', armor ? `+${armor} armor` : ''].filter(Boolean).join(', ')
           log(state, u.owner, `${name(state, u.id)} gets ${bits}${op.dur === 'round' ? ' this round' : ''}`)
         }
@@ -568,7 +579,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
           count++
         }
         if (count > 0) {
-          u.mods.push({ p: op.p * count, ...(op.dur === 'round' ? { round: true } : {}) })
+          u.mods.push({ p: op.p * count, ...(op.dur === 'round' ? { round: true } : {}), ...(op.dur === 'combat' ? { combat: true } : {}) })
           log(state, u.owner, `${name(state, u.id)} gets +${op.p * count} power (${count} in the pack)`)
         }
         break
@@ -611,6 +622,16 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         break
       }
       case 'ready': {
+        if (op.t === 'chosenAll') {
+          const picked = (ctx.targets ?? []).filter((t): t is { kind: 'unit'; id: string } => t.kind === 'unit')
+            .map(t => state.units[t.id]).filter((u): u is UnitInstance => !!u && u.owner === controller)
+          const unique = [...new Map(picked.map(u => [u.id, u])).values()]
+          const readied = unique.filter(u => u.exhausted).length
+          for (const u of unique) u.exhausted = false
+          if (op.remember === 'readiedUnits') ctx.readiedUnits = readied
+          if (readied) log(state, controller, `${state.sides[controller].name} regroups ${readied} unit${readied === 1 ? '' : 's'}`)
+          break
+        }
         if (op.t) {
           const u = resolveUnitTarget(ctx, op.t)
           const wasExhausted = !!u?.exhausted
@@ -667,10 +688,25 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         if (!v) break
         damageUnit(state, v, op.n, name(state, ctx.sourceUnit!))
         const dead = state.units[v.id] && state.units[v.id].damage >= effHealth(state, state.units[v.id])
-        if (dead && op.influence > 0) {
+        if (dead && (op.influence ?? 0) > 0) {
           addInfluence(state, controller, op.influence)
           log(state, controller, `the skewer reaps: ${state.sides[controller].name} gains ${op.influence} Hope`)
         }
+        if (dead && (op.opponentInfluence ?? 0) > 0) {
+          addInfluence(state, other(controller), -op.opponentInfluence!)
+          log(state, other(controller), `the skewer reaps: ${state.sides[other(controller)].name} loses ${op.opponentInfluence} Hope`)
+        }
+        break
+      }
+      case 'returnSourceToHand': {
+        const card = ctx.sourceCard
+        if (!card) break
+        const discard = state.sides[controller].discard
+        const at = discard.indexOf(card)
+        if (at < 0) break
+        discard.splice(at, 1)
+        state.sides[controller].hand.push(card)
+        log(state, controller, `${name(state, card)} returns to ${state.sides[controller].name}'s hand`)
         break
       }
       case 'createCopies': {

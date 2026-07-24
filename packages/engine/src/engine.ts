@@ -238,6 +238,8 @@ function applyChoosePhase(state: GameState, action: GameAction, seat: Seat) {
   } else {
     side.discard.push(action.card)
     log(state, seat, `${side.name} discards ${defOf(state, action.card).name}`)
+    const def = defOf(state, action.card)
+    if (def.onDiscard?.length) runOps({ state, controller: seat, sourceCard: action.card, actorSeat: seat, srcLabel: def.name }, def.onDiscard)
   }
   state.pendingChoices.shift()
   if (state.pendingChoices.length) {
@@ -311,9 +313,16 @@ function activateAbility(state: GameState, action: Extract<GameAction, { type: '
     }
     if (ref.kind === 'base' && unit.zone !== homeZone(other(seat))) fail('bad-zone', "Sneak reaches the enemy base only from their home zone")
   }
+  const x = action.x
+  if (def.name === 'Apocalypse Engine') {
+    const cap = Math.max(0, effHealth(state, unit) - unit.damage)
+    if (x === undefined || !Number.isInteger(x) || x < 1 || x > cap) fail('bad-x', `${def.name}: choose X between 1 and ${cap}`)
+    const ref = targets[0]
+    if (!ref || ref.kind !== 'unit' || ref.id === unit.id) fail('bad-targets', `${def.name} damages another unit`)
+  }
   if (!hasLastStand(state, seat)) unit.exhausted = true   // #107 (Last Stand): the pact waives the sneak exhaust
   log(state, seat, `${def.name} sneaks`)
-  runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat }, sneak.ops)
+  runOps({ state, controller: seat, sourceUnit: unit.id, targets, actorSeat: seat, x }, sneak.ops)
 }
 
 /** v3 (decision 67): salvage an orphaned upgrade onto your unit in its zone — full cost, pips included. */
@@ -463,6 +472,7 @@ function validateTargets(state: GameState, seat: Seat, specs: TargetSpec[], targ
         fail('bad-targets', `target must be damaged or have ${spec.damagedOrMaxHealth} or less health`)
       if (spec.withKw && !hasKw(state, u, spec.withKw)) fail('bad-targets', `target must have ${spec.withKw}`)
       if (spec.mustBeDamaged && u.damage <= 0) fail('bad-targets', 'target must be damaged')
+      if (spec.mustBeExhausted && !u.exhausted) fail('bad-targets', 'target must be exhausted')
       // v3 Hidden (decision 59): while READY it can't be targeted by enemy actions
       if (u.owner !== seat && !u.exhausted && hasKw(state, u, 'hidden')) fail('bad-targets', `${defOf(state, u.id).name} is hidden`)
     }
@@ -598,6 +608,7 @@ function moveUnit(state: GameState, unitId: string, to: ZoneId, seat: Seat, exha
     log(state, seat, `${state.sides[seat].name} cedes ${ls.moveInfluence} Hope for the last stand's march`)
   }
   stateBasedCleanup(state, seat)
+  for (const u of Object.values(state.units)) u.mods = u.mods.filter(m => !m.combat)
   if (state.winner !== null) return
   fireTrigger({ state, enteredZone: to, actorSeat: seat, entryExhaust }, unit, 'onEnterZone')
 }
@@ -715,6 +726,7 @@ function attackDeclare(state: GameState, action: Extract<GameAction, { type: 'at
     log(state, seat, `${state.sides[seat].name} loses ${toll} life for the last stand's charge (${state.sides[seat].life} life)`)
   }
   stateBasedCleanup(state, seat)
+  for (const u of Object.values(state.units)) u.mods = u.mods.filter(m => !m.combat)
   if (state.winner !== null) return
   for (const u of units) {
     if (!state.units[u.id]) continue

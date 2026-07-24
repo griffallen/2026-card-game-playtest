@@ -5,9 +5,9 @@ cost: 3
 pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"aura","scope":"attached","p":1,"h":1,"cond":{"influenceAtLeast":1}},{"s":"aura","scope":"attached","p":2,"h":2,"cond":{"influenceAtMost":0}},{"s":"aura","scope":"attached","kw":{"k":"breakthrough"}}]}
+effects: {"statics":[{"s":"aura","scope":"attached","p":1,"h":1},{"s":"aura","scope":"attached","p":1,"h":1,"cond":{"eitherHopeAtMost":0}},{"s":"aura","scope":"attached","kw":{"k":"breakthrough"}}]}
 ---
-This unit gets +1 Power and +1 Health and Breakthrough. If you have Hope 0 or less, it gets +2 Power and +2 Health instead.
+This unit gets +1 Power and +1 Health and Breakthrough. It gets an additional +1 Power and +1 Health if either player has 0 or less Hope.
 
 ## Design notes
 

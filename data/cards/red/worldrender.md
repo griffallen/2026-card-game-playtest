@@ -8,11 +8,9 @@ keywords: rush, breakthrough, scar
 pips: red, red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"piercesArmorShield":true}
+effects: {"startOfRound":{"ops":[{"op":"damage","t":"selfBase","n":1},{"op":"influence","n":-1},{"op":"damage","t":"self","n":1}]}}
 ---
-Rush. Breakthrough. Scar.
-
-While this is in combat with an enemy unit, ignore that unit's Shield and Armor — this unit's full damage lands.
+Rush. Breakthrough. Scar. At the start of each round, lose 1 Life, lose 1 Hope, and deal 1 damage to this unit.
 
 ## Design notes
 

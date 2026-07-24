@@ -5,9 +5,9 @@ cost: 6
 pips: red, red
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"ready","side":"friendly"}]}
+effects: {"targets":[{"t":"unit","side":"friendly","count":12,"upTo":true,"mustBeExhausted":true}],"onPlay":[{"op":"ready","side":"friendly","t":"chosenAll","remember":"readiedUnits"},{"op":"damage","t":"selfBase","n":1,"per":{"count":"readiedUnits"}}]}
 ---
-Ready all your units.
+Ready any number of your exhausted units. Lose 1 Life for each unit readied.
 
 ## Design notes
 
