@@ -689,7 +689,7 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
         damageUnit(state, v, op.n, name(state, ctx.sourceUnit!))
         const dead = state.units[v.id] && state.units[v.id].damage >= effHealth(state, state.units[v.id])
         if (dead && (op.influence ?? 0) > 0) {
-          addInfluence(state, controller, op.influence)
+          addInfluence(state, controller, op.influence!)
           log(state, controller, `the skewer reaps: ${state.sides[controller].name} gains ${op.influence} Hope`)
         }
         if (dead && (op.opponentInfluence ?? 0) > 0) {
