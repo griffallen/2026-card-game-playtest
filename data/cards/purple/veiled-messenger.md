@@ -4,14 +4,14 @@ type: unit
 cost: 2
 power: 1
 health: 3
-keywords: tribune
+keywords: sneak
 pips: purple
 status: canon
 art: /cards/veiled-messenger.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"draw","n":1}]}
+effects: {"onPlay":[{"op":"draw","n":1}],"sneak":{"unavailableInOwnHome":true,"ops":[{"op":"influenceOpponent","n":1}]}}
 ---
-Tribune. When this enters play, draw a card.
+When this enters play, draw a card. Sneak — your opponent loses 1 Hope. This ability can't be activated in your Home.
 
 ## Design notes
 
