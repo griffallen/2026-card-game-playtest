@@ -6,9 +6,9 @@ pips: purple
 status: canon
 art: /cards/cloak-of-haze.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"statics":[{"s":"aura","scope":"attached","kw":{"k":"hidden"}}]}
+effects: {"onPlay":[{"op":"damage","t":"selfBase","n":1},{"op":"damage","t":"enemyBase","n":1}],"statics":[{"s":"aura","scope":"attached","kw":{"k":"hidden"}}]}
 ---
-This unit has Hidden.
+This unit has Hidden. You and your opponent lose 1 Life.
 
 ## Design notes
 
