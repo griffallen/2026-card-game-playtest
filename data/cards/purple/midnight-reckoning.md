@@ -6,9 +6,9 @@ pips: purple, purple, purple
 status: canon
 art: /cards/midnight-reckoning.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"reckoning","n":7,"influencePerKill":1,"killThreshold":7,"shortfallLife":7}]}
+effects: {"onPlay":[{"op":"reckoning","n":7,"opponentInfluencePerKill":1},{"op":"damage","t":"enemyBase","n":7},{"op":"discardRandom","who":"opponent","n":1}]}
 ---
-Deal 7 damage to every unit. Gain 1 Hope for each unit defeated this way. If you gained less than 7 Hope, your opponent loses 7 Life.
+Deal 7 damage to all units. Your opponent loses 1 Hope for each unit killed. Your opponent loses 7 Life and discards a card.
 
 ## Design notes
 
