@@ -305,6 +305,8 @@ function activateAbility(state: GameState, action: Extract<GameAction, { type: '
     fail('no-sneak', `${def.name} has no ability to use`)
   }
   const targets = action.targets ?? []
+  if (sneak.unavailableInOwnHome && unit.zone === homeZone(seat))
+    fail('bad-zone', `${def.name} cannot use Sneak from your Home`)
   validateTargets(state, seat, sneak.targets ?? [], targets, `${def.name} (Sneak)`)
   for (const ref of targets) {
     if (ref.kind === 'unit') {
