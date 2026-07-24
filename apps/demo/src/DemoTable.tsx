@@ -1377,6 +1377,7 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
                       </div>
                     ))}
                     {view.zones[z].orphans.map(o => {
+                      const hoverPreview = preview.bind(DEMO_CARDS[o.slug])
                       const salvages = myWindow ? salvageActionsFor(o.id) : []
                       const active = selection?.kind === 'orphan' && selection.id === o.id
                       // #61 (Blaine): a gray orphan names its failing gate, not the whole rulebook
@@ -1396,6 +1397,8 @@ export function DemoTable({ config, onExit, initialState }: { config: DemoConfig
                           title={salvages.length
                             ? `${o.name} — tap to salvage it onto one of your units here (you pay its full cost and pips).`
                             : `${o.name} — an orphaned upgrade (either player may salvage it here, paying its full cost and pips). Grayed because ${whyNot}. Tap to read the card.`}
+                          onPointerMove={e => { if (e.pointerType === 'mouse') hoverPreview?.({ x: e.clientX, y: e.clientY }) }}
+                          onPointerLeave={() => hoverPreview?.(null)}
                           onClick={e => {
                             e.stopPropagation()
                             if (salvages.length) setSelection(active ? null : { kind: 'orphan', id: o.id })
