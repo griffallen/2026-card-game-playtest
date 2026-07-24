@@ -106,12 +106,13 @@ function perCount(ctx: FxCtx, per: PerCount | undefined): number {
     return per.half ? Math.floor(m / 2) : m
   }
   // #122 (Assassin's Contract): the chosen0 target, read live before a same-action destroy.
-  if (per.count === 'targetRemainingHealth' || per.count === 'targetCostHalf') {
+  if (per.count === 'targetRemainingHealth' || per.count === 'targetCostHalf' || per.count === 'targetPipCount') {
     const ref = ctx.targets?.[0]
     const u = ref?.kind === 'unit' ? ctx.state.units[ref.id] : undefined
     if (!u) return 0
     if (per.count === 'targetRemainingHealth') return Math.max(0, effHealth(ctx.state, u) - u.damage)
     const def = defOf(ctx.state, u.id)   // targetCostHalf: ceil(cost/2), X-cost → 0
+    if (per.count === 'targetPipCount') return def.pips?.length ?? 0
     return def.xCost ? 0 : Math.ceil(def.cost / 2)
   }
   // #122 (The Unseen Court): GLOBAL live Exhausted-unit counts off the whole board (not ctx.targets).
@@ -417,19 +418,23 @@ export function runOps(ctx: FxCtx, ops: Op[]) {
           damageUnit(state, u, op.n, ctx.srcLabel ?? '')
           if (state.units[u.id] && u.damage >= effHealth(state, u)) felled++
         }
-        if (felled > 0) {
+        if (felled > 0 && op.influencePerKill) {
           addInfluence(state, controller, felled * op.influencePerKill)
           log(state, controller, `the reckoning claims ${felled} ${felled === 1 ? 'soul' : 'souls'} — ${state.sides[controller].name} gains ${felled * op.influencePerKill} Hope (${influenceFor(state, controller)})`)
+        }
+        if (felled > 0 && op.opponentInfluencePerKill) {
+          addInfluence(state, other(controller), -felled * op.opponentInfluencePerKill)
+          log(state, controller, `the reckoning claims ${felled} ${felled === 1 ? 'soul' : 'souls'} — ${state.sides[other(controller)].name} loses ${felled * op.opponentInfluencePerKill} Hope (${influenceFor(state, other(controller))})`)
         }
         // "gained less than killThreshold Influence" == "fewer than killThreshold units fell" (each
         // kill = +1). shortfallLife burns the opponent's FACE through the standard damageBase — the
         // same spell-to-face path a `damage enemyBase` burn uses: it respects preventBase and does NOT
         // pierce (the ruled default). (homeWard is attack-only — fromAttack — so a spell burn never
         // touches it, exactly like every other burn.) The op-tail stateBasedCleanup fells the dead.
-        if (felled < op.killThreshold) {
+        if (op.killThreshold !== undefined && op.shortfallLife !== undefined && felled < op.killThreshold) {
           log(state, other(controller), `the reckoning is unsated (${felled} of ${op.killThreshold}) — ${state.sides[other(controller)].name} answers with ${op.shortfallLife} life`)
           damageBase(state, other(controller), op.shortfallLife, ctx.srcLabel ?? '')
-        } else {
+        } else if (op.killThreshold !== undefined) {
           log(state, controller, `the reckoning is sated — the field is bare enough`)
         }
         break
