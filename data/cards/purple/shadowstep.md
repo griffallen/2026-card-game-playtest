@@ -1,14 +1,14 @@
 ---
 name: Shadowstep
 type: action
-cost: 2
-pips: purple
+cost: 3
+pips: purple, purple
 status: canon
 art: /cards/shadowstep.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"targets":[{"t":"unit","side":"friendly"}],"onPlay":[{"op":"grant","t":"chosen0","kw":{"k":"hidden"},"dur":"round"},{"op":"draw","n":1}]}
+effects: {"targets":[{"t":"unit","side":"friendly"},{"t":"zone","differentFromFirst":true}],"onPlay":[{"op":"grant","t":"chosen0","kw":{"k":"hidden"},"dur":"round"},{"op":"move","t":"chosen0","to":"chosenZone"},{"op":"draw","n":1}]}
 ---
-Target friendly unit gains Hidden this round. Draw a card.
+Target friendly unit gains Hidden this round. Move it to any zone. Draw a card.
 
 ## Design notes
 
