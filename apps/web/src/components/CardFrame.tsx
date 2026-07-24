@@ -2,6 +2,7 @@ import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { ProceduralArt } from './ProceduralArt.tsx'
 import { SLEEVE_EDGE, SLEEVE_TAB, type Sleeve } from '../game/sleeves.ts'
 import { iconFor, shortGlossFor } from '../game/gloss.ts'
+import type { CardDef } from '@newgame/engine'
 
 /** Long-press (450ms, cancels on drag) that also swallows the click it would otherwise trigger.
  *  Right-click fires the same inspect path — the desktop mirror of the mobile long-press. */
@@ -54,8 +55,9 @@ export interface CardLike {
   /** printed keywords (issue #114) — each wears its locked symbol on the frame */
   kw?: { k: string; n?: number }[] | null
   /** Optional effect data lets an upgrade advertise the keywords it gives its wearer. */
-  statics?: { s: string; scope?: string; kw?: { k: string; n?: number } }[] | null
-  onPlay?: { op: string; t?: string; kw?: { k: string; n?: number } }[] | null
+  /** Match engine data exactly so real CardDefs can be displayed without weakening their types. */
+  statics?: CardDef['statics'] | null
+  onPlay?: CardDef['onPlay'] | null
 }
 
 const frameTint: Record<string, string> = {
@@ -123,8 +125,8 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
   // #114: one chip per printed keyword, numbered ones carrying their number (🪖2, 🏹3).
   // Upgrades also show their granted abilities: a Guard upgrade should look like Guard.
   const grantedKeywords = [
-    ...(card.statics ?? []).filter(s => s.s === 'aura' && s.scope === 'attached' && s.kw).map(s => s.kw!),
-    ...(card.onPlay ?? []).filter(o => o.op === 'grant' && (o.t === 'self' || o.t === 'attached') && o.kw).map(o => o.kw!),
+    ...(card.statics ?? []).flatMap(s => s.s === 'aura' && s.scope === 'attached' && s.kw ? [s.kw] : []),
+    ...(card.onPlay ?? []).flatMap(o => o.op === 'grant' && (o.t === 'self' || o.t === 'attached') ? [o.kw] : []),
   ]
   const keywordChips = [...(card.kw ?? []), ...grantedKeywords]
     .filter(k => iconFor(k.k))
