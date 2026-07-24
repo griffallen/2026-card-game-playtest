@@ -189,8 +189,8 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       if (h !== undefined && typeof h !== 'boolean') err("per:{count:'influence'} half must be true/false")
     } else if (p.count === 'targetRemainingHealth' || p.count === 'targetCostHalf') {   // #122 (Assassin's Contract): read the chosen0 target
       if (chosenSlots < 1) err(`per:{count:'${p.count}'} reads the chosen target but the card declares no targets`)
-    } else if (p.count === 'targetPower') {
-      if (chosenSlots < 1) err("per:{count:'targetPower'} reads the chosen target but the card declares no targets")
+    } else if (p.count === 'targetPower' || p.count === 'targetPipCount') {
+      if (chosenSlots < 1) err(`per:{count:'${p.count}'} reads the chosen target but the card declares no targets`)
     } else if (p.count === 'exhaustedEnemyUnits' || p.count === 'allExhaustedUnits' || p.count === 'positiveHope' || p.count === 'opponentPositiveHope' || p.count === 'readiedUnits' || p.count === 'newlyExhaustedEnemies' || p.count === 'sourceCost' || p.count === 'declaredX') {
       // #122 (The Unseen Court): global board counts — no target, side, or filter to validate
     } else err(`bad per count ${String(p.count)}`)
@@ -206,11 +206,13 @@ function validateOp(slug: string, op: Op, def: CardDef, chosenSlots: number, whe
       for (const [k, v] of [['moveInfluence', op.moveInfluence], ['attackLife', op.attackLife], ['endLife', op.endLife], ['endInfluence', op.endInfluence]] as const)
         if (!isInt(v, 0, 30)) err(`bad lastStand ${k}`)
       break
-    case 'reckoning':   // #122 (Midnight Reckoning): the self-contained AoE finisher — n damage plus three non-negative int knobs, all in sane ranges
+    case 'reckoning':   // an all-units sweep with optional Hope-per-kill and fixed-Life riders
       if (!isInt(op.n, 0, 30)) err('bad reckoning n')
-      if (!isInt(op.influencePerKill, 0, 20)) err('bad reckoning influencePerKill')
-      if (!isInt(op.killThreshold, 0, 30)) err('bad reckoning killThreshold')
-      if (!isInt(op.shortfallLife, 0, 30)) err('bad reckoning shortfallLife')
+      if (op.influencePerKill !== undefined && !isInt(op.influencePerKill, 0, 20)) err('bad reckoning influencePerKill')
+      if (op.opponentInfluencePerKill !== undefined && !isInt(op.opponentInfluencePerKill, 0, 20)) err('bad reckoning opponentInfluencePerKill')
+      if (op.killThreshold !== undefined && !isInt(op.killThreshold, 0, 30)) err('bad reckoning killThreshold')
+      if (op.shortfallLife !== undefined && !isInt(op.shortfallLife, 0, 30)) err('bad reckoning shortfallLife')
+      if ((op.killThreshold === undefined) !== (op.shortfallLife === undefined)) err('reckoning shortfall needs both threshold and life')
       break
 
     case 'countBuff': checkTargetRef(op.t); if (!isInt(op.p, 1, 10)) err('bad countBuff p'); break
