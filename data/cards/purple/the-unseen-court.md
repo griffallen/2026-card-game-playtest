@@ -10,7 +10,7 @@ art: /cards/the-unseen-court.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
 effects: {"powerFromCount":"discardUnitsBoth"}
 ---
-Hidden. Power equals the number of unit cards in all discard piles. Health 8.
+Hidden. Power equals the number of unit cards in all discard piles.
 
 ## Design notes
 
