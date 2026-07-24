@@ -4,14 +4,13 @@ type: unit
 cost: 1
 power: 2
 health: 1
-influenceTrigger: onKill
 pips: purple
 status: canon
 art: /cards/whisper-blade.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onKill":[{"op":"influence","n":1}]}
+effects: {"onKill":[{"op":"influenceOpponent","n":1}]}
 ---
-When this defeats a unit, gain 1 Hope.
+When this defeats a unit, your opponent loses 1 Hope.
 
 ## Design notes
 
