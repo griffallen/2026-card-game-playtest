@@ -53,6 +53,9 @@ export interface CardLike {
   xCost?: boolean | null
   /** printed keywords (issue #114) — each wears its locked symbol on the frame */
   kw?: { k: string; n?: number }[] | null
+  /** Optional effect data lets an upgrade advertise the keywords it gives its wearer. */
+  statics?: { s: string; scope?: string; kw?: { k: string; n?: number } }[] | null
+  onPlay?: { op: string; t?: string; kw?: { k: string; n?: number } }[] | null
 }
 
 const frameTint: Record<string, string> = {
@@ -117,9 +120,15 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
   const meta = typeMeta[card.type] ?? typeMeta.unit
   const bigStat = size === 'sm' ? 'text-[13px]' : size === 'lg' ? 'text-[16px]' : 'text-[14px]'
   const kwSize = size === 'sm' ? 'text-[9.5px]' : size === 'lg' ? 'text-[13px]' : 'text-[11px]'
-  // #114: one chip per printed keyword, numbered ones carrying their number (🪖2, 🏹3)
-  const keywordChips = (card.kw ?? [])
+  // #114: one chip per printed keyword, numbered ones carrying their number (🪖2, 🏹3).
+  // Upgrades also show their granted abilities: a Guard upgrade should look like Guard.
+  const grantedKeywords = [
+    ...(card.statics ?? []).filter(s => s.s === 'aura' && s.scope === 'attached' && s.kw).map(s => s.kw!),
+    ...(card.onPlay ?? []).filter(o => o.op === 'grant' && (o.t === 'self' || o.t === 'attached') && o.kw).map(o => o.kw!),
+  ]
+  const keywordChips = [...(card.kw ?? []), ...grantedKeywords]
     .filter(k => iconFor(k.k))
+    .filter((k, i, all) => all.findIndex(other => other.k === k.k && other.n === k.n) === i)
     .map(k => ({
       key: k.k,
       text: `${iconFor(k.k)}${k.n ?? ''}`,
