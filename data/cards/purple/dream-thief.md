@@ -9,9 +9,9 @@ pips: purple, purple
 status: canon
 art: /cards/dream-thief.jpg
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"onPlay":[{"op":"draw","n":1}],"sneak":{"ops":[{"op":"influence","n":2}]}}
+effects: {"onPlay":[{"op":"draw","n":1}],"sneak":{"ops":[{"op":"influence","n":-2},{"op":"influenceOpponent","n":2}]}}
 ---
-Hidden. When this enters play, draw a card. Sneak — gain 2 Hope.
+Hidden. When this enters play, draw a card. Sneak — you and your opponent lose 2 Hope.
 
 ## Design notes
 
