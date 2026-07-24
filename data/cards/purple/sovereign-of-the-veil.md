@@ -8,10 +8,10 @@ keywords: hidden, infiltrate, sneak
 pips: purple, purple, purple
 status: canon
 # effects is agent-maintained: ask for changes in the PR, do not hand-edit
-effects: {"sneak":{"targets":[{"t":"unit","side":"enemy"}],"ops":[{"op":"damage","t":"chosen0","n":4},{"op":"influence","n":1}]}}
+effects: {"sneak":{"targets":[{"t":"unit","side":"enemy"}],"ops":[{"op":"damage","t":"chosen0","n":4},{"op":"influenceOpponent","n":1}]}}
 art: /cards/sovereign-of-the-veil.jpg
 ---
-Hidden. Infiltrate. Sneak — deal 4 damage to target enemy unit in this zone and gain 1 Hope.
+Hidden. Infiltrate. Sneak — deal 4 damage to target enemy unit in this zone and your opponent loses 1 Hope.
 
 ## Design notes
 
