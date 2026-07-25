@@ -2,6 +2,7 @@ import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { ProceduralArt } from './ProceduralArt.tsx'
 import { SLEEVE_EDGE, SLEEVE_TAB, type Sleeve } from '../game/sleeves.ts'
 import { iconFor, shortGlossFor } from '../game/gloss.ts'
+import type { CardDef } from '@newgame/engine'
 
 /** Long-press (450ms, cancels on drag) that also swallows the click it would otherwise trigger.
  *  Right-click fires the same inspect path — the desktop mirror of the mobile long-press. */
@@ -53,6 +54,10 @@ export interface CardLike {
   xCost?: boolean | null
   /** printed keywords (issue #114) — each wears its locked symbol on the frame */
   kw?: { k: string; n?: number }[] | null
+  /** Optional effect data lets an upgrade advertise the keywords it gives its wearer. */
+  /** Match engine data exactly so real CardDefs can be displayed without weakening their types. */
+  statics?: CardDef['statics'] | null
+  onPlay?: CardDef['onPlay'] | null
 }
 
 const frameTint: Record<string, string> = {
@@ -117,9 +122,15 @@ export function CardFrame({ card, size = 'md', onClick, selected, dimmed, badge,
   const meta = typeMeta[card.type] ?? typeMeta.unit
   const bigStat = size === 'sm' ? 'text-[13px]' : size === 'lg' ? 'text-[16px]' : 'text-[14px]'
   const kwSize = size === 'sm' ? 'text-[9.5px]' : size === 'lg' ? 'text-[13px]' : 'text-[11px]'
-  // #114: one chip per printed keyword, numbered ones carrying their number (🪖2, 🏹3)
-  const keywordChips = (card.kw ?? [])
+  // #114: one chip per printed keyword, numbered ones carrying their number (🪖2, 🏹3).
+  // Upgrades also show their granted abilities: a Guard upgrade should look like Guard.
+  const grantedKeywords = [
+    ...(card.statics ?? []).flatMap(s => s.s === 'aura' && s.scope === 'attached' && s.kw ? [s.kw] : []),
+    ...(card.onPlay ?? []).flatMap(o => o.op === 'grant' && (o.t === 'self' || o.t === 'attached') ? [o.kw] : []),
+  ]
+  const keywordChips = [...(card.kw ?? []), ...grantedKeywords]
     .filter(k => iconFor(k.k))
+    .filter((k, i, all) => all.findIndex(other => other.k === k.k && other.n === k.n) === i)
     .map(k => ({
       key: k.k,
       text: `${iconFor(k.k)}${k.n ?? ''}`,

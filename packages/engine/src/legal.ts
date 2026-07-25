@@ -187,6 +187,7 @@ export function getLegalActions(state: GameState, seat: Seat): GameAction[] {
     if (u.exhausted) continue
     const def = defOf(state, u.id)
     if (!def.sneak || !(def.kw ?? []).some(k => k.k === 'sneak')) continue
+    if (def.sneak.unavailableInOwnHome && u.zone === homeZone(seat)) continue
     const specs = def.sneak.targets ?? []
     if (!specs.length) { out.push({ type: 'activate', unit: u.id }); continue }
     const spec = specs[0]

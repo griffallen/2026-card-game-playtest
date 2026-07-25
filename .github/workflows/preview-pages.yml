@@ -1,8 +1,8 @@
-name: Deploy Red Hope preview
+name: Deploy Purple Hope preview
 
 on:
   push:
-    branches: [griff-red-hope-rework]
+    branches: [griff-purple-hope-rework]
   workflow_dispatch:
 
 permissions:
@@ -27,6 +27,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run cards
       - run: npm run build --workspace=@newgame/demo
       - uses: actions/configure-pages@v5
         with:
