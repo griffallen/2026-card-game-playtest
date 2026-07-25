@@ -2,7 +2,7 @@ name: Deploy Purple Hope preview
 
 on:
   push:
-    branches: [red-card-art-july25]
+    branches: [griff-red-hope-rework]
   workflow_dispatch:
 
 permissions:
