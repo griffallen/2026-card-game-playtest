@@ -1,5 +1,5 @@
 ---
-name: Nocturne Sniper
+name: Nocturne Archer
 type: unit
 cost: 5
 power: 0
@@ -7,7 +7,7 @@ health: 3
 keywords: ranged 3
 pips: purple, purple, purple
 status: canon
-art: /cards/nocturne-sniper.jpg
+art: /cards/nocturne-archer.jpg
 ---
 Ranged 3.
 
