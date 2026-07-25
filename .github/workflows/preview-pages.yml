@@ -2,7 +2,7 @@ name: Deploy Purple Hope preview
 
 on:
   push:
-    branches: [griff-purple-hope-rework]
+    branches: [griff-purple-art-refresh]
   workflow_dispatch:
 
 permissions:
@@ -25,13 +25,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run cards
-      - run: npm run build --workspace=@newgame/demo
-      - uses: actions/configure-pages@v5
+          cache: pnpm
+      - uses: pnpm/action-setup@v4
         with:
-          enablement: true
+          version: 9
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @newgame/demo build
+      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/demo/dist
