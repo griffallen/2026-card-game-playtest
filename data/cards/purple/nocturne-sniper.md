@@ -1,5 +1,5 @@
 ---
-name: Nocturne Sniper
+name: Nocturne Shadow
 type: unit
 cost: 5
 power: 0
